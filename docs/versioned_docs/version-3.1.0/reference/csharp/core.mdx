@@ -1,0 +1,244 @@
+---
+sidebar_position: 6
+toc_max_heading_level: 3
+---
+
+# Core Types
+
+This page documents the public C# API for core types, generated from the XML documentation of the compiled library. Values are immutable, constructors take named arguments and validate them, and read-only properties return what was passed.
+
+## ISlackObject
+
+A value that can be written as Slack Block Kit JSON.
+
+Every slackblocks type implements this interface, including the role interfaces such as [`IBlock`](/reference/csharp/blocks#iblock), so a collection of blocks can be serialized without knowing each concrete type.
+
+### ToJson
+
+Returns this value as compact Slack JSON.
+
+```csharp
+string ToJson()
+```
+
+**Returns:** Compact JSON text.
+
+### ToJsonNode
+
+Returns a mutable copy of this value's Slack JSON.
+
+```csharp
+JsonObject ToJsonNode()
+```
+
+**Returns:** A new JSON object.
+
+## NumberInputBound
+
+A number-input bound sent as a JSON string. Numeric conversions use invariant culture.
+
+### NumberInputBound
+
+Creates a bound; the containing number input validates its numeric value.
+
+```csharp
+public NumberInputBound(string value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Value
+
+Gets the supplied wire string.
+
+```csharp
+public string Value { get; }
+```
+
+### Implicit conversion — `string?`
+
+Preserves a supplied decimal string.
+
+```csharp
+public static implicit operator NumberInputBound?(string? value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `double`
+
+Converts a numeric convenience argument using invariant culture.
+
+```csharp
+public static implicit operator NumberInputBound(double value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `double?`
+
+Preserves nullable numeric arguments and omission.
+
+```csharp
+public static implicit operator NumberInputBound?(double? value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `Decimal`
+
+Preserves exact decimal arithmetic.
+
+```csharp
+public static implicit operator NumberInputBound(Decimal value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `long`
+
+Preserves an exact integer bound.
+
+```csharp
+public static implicit operator NumberInputBound(long value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `UInt64`
+
+Preserves an exact unsigned integer bound, including native unsigned integers.
+
+```csharp
+public static implicit operator NumberInputBound(UInt64 value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `UInt32`
+
+Preserves an unsigned integer without an ambiguous signed conversion.
+
+```csharp
+public static implicit operator NumberInputBound(UInt32 value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `UInt16`
+
+Preserves an unsigned integer without an ambiguous signed conversion.
+
+```csharp
+public static implicit operator NumberInputBound(UInt16 value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `Byte`
+
+Preserves an unsigned integer without an ambiguous signed conversion.
+
+```csharp
+public static implicit operator NumberInputBound(Byte value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `Char`
+
+Preserves the numeric value accepted by the former double parameter.
+
+```csharp
+public static implicit operator NumberInputBound(Char value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+### Implicit conversion — `int`
+
+Preserves an exact integer bound.
+
+```csharp
+public static implicit operator NumberInputBound(int value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` |  |
+
+**Related types:** [`NumberInputBound`](/reference/csharp/core#numberinputbound)
+
+## SlackblocksInfo
+
+Package metadata shared with the slackblocks conformance corpus.
+
+## SlackObject
+
+Base class for every immutable slackblocks value. A value is validated once, when it is constructed, and cannot change afterwards.
+
+Two values are equal when they are the same type and produce the same Slack JSON, ignoring object key order. `Object.ToString` returns the compact JSON.
+
+### ToJson
+
+Returns this value as compact Slack JSON.
+
+```csharp
+public string ToJson()
+```
+
+**Returns:** Compact JSON text.
+
+### ToJsonNode
+
+Returns a mutable copy of this value's Slack JSON.
+
+```csharp
+public JsonObject ToJsonNode()
+```
+
+**Returns:** A new JSON object.

@@ -45,3 +45,10 @@ the documented shape; application code owns calendar and business constraints.
 Haskell factories and checked builders enforce the same rules. Its typed fields
 retain explicit zero and empty lists for validation; optional `Nothing` omits a
 field. `decode` validates the receiving model after checking raw JSON syntax.
+
+
+## Layout accounting
+
+Layout support starts in 3.2.0. Slackblocks retains the existing **50 top-level blocks per message** and **100 top-level blocks per view**. Each layout occupies one top-level position; its children and fallback do not introduce an additional block-count budget. Existing per-field, chart and aggregate text limits still apply.
+
+Slack says labels and nested blocks count toward the enclosing surface limit but does not provide a complete counting formula. The real message endpoint accepted 50 layouts, each containing a divider, during 2026-10-30 probes. Slackblocks therefore retains confirmed top-level counting rather than imposing an unverified recursive formula. The [sanitized evidence](https://github.com/nicklambourne/slackblocks/blob/master/spec/evidence/layout-block.json) records the discrepancy. Schema-only `blocks.validate` success does not override confirmed receiving-surface restrictions.

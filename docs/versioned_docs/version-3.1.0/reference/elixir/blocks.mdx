@@ -1,0 +1,1662 @@
+---
+sidebar_position: 1
+---
+
+# Blocks
+
+Generated from compiled Elixir documentation and native typespecs. Values are immutable; constructors and changes use keyword options.
+
+## Slackblocks.Blocks.Actions {#slackblocks-blocks-actions}
+
+A block that holds interactive elements such as buttons and menus.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/actions-block
+
+### Fields
+
+* `elements` — Adds interactive elements in display order. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Actions{
+  block_id: binary() | nil,
+  elements: [Slackblocks.Types.element()]
+}
+```
+
+### change/2 {#slackblocks-blocks-actions-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-actions-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-actions-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-actions-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Alert {#slackblocks-blocks-alert}
+
+A severity-labelled alert, available in modals.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/alert-block
+
+### Fields
+
+* `text` — Sets the alert message. Required.
+* `level` — Sets the alert severity, which controls its color and icon. Optional; `nil` omits the field.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Alert{
+  block_id: binary() | nil,
+  level: Slackblocks.Types.alert_level() | nil,
+  text: Slackblocks.Types.text()
+}
+```
+
+### change/2 {#slackblocks-blocks-alert-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-alert-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-alert-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-alert-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Card {#slackblocks-blocks-card}
+
+A compact card with an image, text, and up to three buttons.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/card-block
+
+### Fields
+
+* `hero_image` — Sets the image displayed prominently at the top of the card. Optional; `nil` omits the field.
+* `icon` — Sets the image displayed beside the title. Optional; `nil` omits the field.
+* `title` — Sets the card title. Optional; `nil` omits the field.
+* `subtitle` — Sets the supporting text shown below the title. Optional; `nil` omits the field.
+* `body` — Sets the main body text of the card. Optional; `nil` omits the field.
+* `actions` — Adds buttons displayed at the bottom of the card, in display order. Optional; `nil` omits the field.
+* `slack_icon` — Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon. Optional; `nil` omits the field.
+* `subtext` — Sets the small print shown at the bottom of the card. Optional; `nil` omits the field.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Card{
+  actions: [Slackblocks.Elements.Button.t()] | nil,
+  block_id: binary() | nil,
+  body: Slackblocks.Types.text() | nil,
+  hero_image: Slackblocks.Elements.Image.t() | nil,
+  icon: Slackblocks.Elements.Image.t() | nil,
+  slack_icon: Slackblocks.Objects.SlackIcon.t() | nil,
+  subtext: Slackblocks.Types.text() | nil,
+  subtitle: Slackblocks.Types.text() | nil,
+  title: Slackblocks.Types.text() | nil
+}
+```
+
+### change/2 {#slackblocks-blocks-card-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-card-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-card-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-card-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Carousel {#slackblocks-blocks-carousel}
+
+A horizontally scrolling set of cards, available in messages and App Home.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/carousel-block
+
+### Fields
+
+* `elements` — Adds the cards in display order. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Carousel{
+  block_id: binary() | nil,
+  elements: [Slackblocks.Blocks.Card.t()]
+}
+```
+
+### change/2 {#slackblocks-blocks-carousel-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-carousel-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-carousel-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-carousel-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Container {#slackblocks-blocks-container}
+
+A titled group of blocks that can optionally collapse.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/container-block
+
+### Fields
+
+* `child_blocks` — Adds the blocks grouped inside the container, in display order. Required.
+* `title` — Sets the container title. Provide either a title or a rich text title. Optional; `nil` omits the field.
+* `rich_text_title` — Sets a rich text block used as the title in place of a plain-text title. Optional; `nil` omits the field.
+* `subtitle` — Sets the supporting text shown below the title. Optional; `nil` omits the field.
+* `width` — Sets the horizontal width of the container. Optional; `nil` omits the field.
+* `icon` — Sets the image displayed beside the title. Optional; `nil` omits the field.
+* `is_collapsible` — Sets whether users can collapse and expand the container. Optional; `nil` omits the field.
+* `default_collapsed` — Sets whether a collapsible container starts collapsed. Requires the container to be collapsible. Optional; `nil` omits the field.
+* `has_header_divider` — Sets whether Slack draws a divider below the container header. Only valid for non-collapsible containers. Optional; `nil` omits the field.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Container{
+  block_id: binary() | nil,
+  child_blocks: [Slackblocks.Types.block()],
+  default_collapsed: boolean() | nil,
+  has_header_divider: boolean() | nil,
+  icon: Slackblocks.Elements.Image.t() | nil,
+  is_collapsible: boolean() | nil,
+  rich_text_title: Slackblocks.Blocks.RichText.t() | nil,
+  subtitle: Slackblocks.Types.text() | nil,
+  title: Slackblocks.Objects.PlainText.t() | nil,
+  width: Slackblocks.Types.container_width() | nil
+}
+```
+
+### change/2 {#slackblocks-blocks-container-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-container-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-container-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-container-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Context {#slackblocks-blocks-context}
+
+A block of small, secondary images and text.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/context-block
+
+### Fields
+
+* `elements` — Adds images and text in display order. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Context{
+  block_id: binary() | nil,
+  elements: [Slackblocks.Types.context_element()]
+}
+```
+
+### change/2 {#slackblocks-blocks-context-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-context-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-context-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-context-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.ContextActions {#slackblocks-blocks-contextactions}
+
+A row of feedback or icon buttons, usually shown below AI-generated content.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/context-actions-block
+
+### Fields
+
+* `elements` — Adds feedback buttons or icon buttons in display order. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.ContextActions{
+  block_id: binary() | nil,
+  elements: [Slackblocks.Types.context_actions_element()]
+}
+```
+
+### change/2 {#slackblocks-blocks-contextactions-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-contextactions-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-contextactions-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-contextactions-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.DataTable {#slackblocks-blocks-datatable}
+
+A sortable, paginated table of raw text, numbers, and rich text.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/data-table-block
+
+### Fields
+
+* `rows` — Adds complete table rows in display order. Every row must have the same number of cells. Required.
+* `caption` — Sets the caption that describes the table's contents. Required.
+* `page_size` — Sets how many rows Slack shows per page. Default: `5`. Optional; `nil` omits the field.
+* `row_header_column_index` — Sets the zero-based index of the column whose cells act as row headers. Default: `0`. Optional; `nil` omits the field.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.DataTable{
+  block_id: binary() | nil,
+  caption: binary(),
+  page_size: integer() | nil,
+  row_header_column_index: integer() | nil,
+  rows: [[Slackblocks.Types.data_table_cell()]]
+}
+```
+
+### change/2 {#slackblocks-blocks-datatable-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-datatable-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-datatable-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-datatable-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.DataVisualization {#slackblocks-blocks-datavisualization}
+
+A titled pie, bar, area, or line chart.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block
+
+### Fields
+
+* `title` — Sets the chart title. Required.
+* `chart` — Sets the chart to display. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.DataVisualization{
+  block_id: binary() | nil,
+  chart: Slackblocks.Types.chart(),
+  title: binary()
+}
+```
+
+### change/2 {#slackblocks-blocks-datavisualization-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-datavisualization-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-datavisualization-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-datavisualization-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Divider {#slackblocks-blocks-divider}
+
+A horizontal rule that separates blocks.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/divider-block
+
+### Fields
+
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Divider{block_id: binary() | nil}
+```
+
+### change/2 {#slackblocks-blocks-divider-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-divider-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-divider-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-divider-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.File {#slackblocks-blocks-file}
+
+A remote file previously added with the files.remote API.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/file-block
+
+### Fields
+
+* `external_id` — Sets the external identifier of a remote file previously added with the files.remote API. Required.
+* `source` — Sets the file source. Slack currently supports only remote files. Default: `"remote"`. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.File{block_id: binary() | nil, external_id: binary(), source: binary()}
+```
+
+### change/2 {#slackblocks-blocks-file-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-file-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-file-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-file-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Header {#slackblocks-blocks-header}
+
+Large, bold plain text that introduces a group of blocks.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/header-block
+
+### Fields
+
+* `text` — Sets the header text, shown in a larger bold font. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Header{
+  block_id: binary() | nil,
+  text: Slackblocks.Objects.PlainText.t()
+}
+```
+
+### change/2 {#slackblocks-blocks-header-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-header-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-header-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-header-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Image {#slackblocks-blocks-image}
+
+A standalone image with alternative text and an optional title.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/image-block
+
+### Fields
+
+* `image_url` — Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. Optional; `nil` omits the field.
+* `slack_file` — Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. Optional; `nil` omits the field.
+* `alt_text` — Sets a plain-text summary of the image or video for assistive technology. Required.
+* `title` — Sets the title shown above the image. Optional; `nil` omits the field.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Image{
+  alt_text: binary(),
+  block_id: binary() | nil,
+  image_url: binary() | nil,
+  slack_file: Slackblocks.Objects.SlackFile.t() | nil,
+  title: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-blocks-image-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-image-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-image-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-image-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Input {#slackblocks-blocks-input}
+
+A labelled input that collects a value in a modal, App Home, or message.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/input-block
+
+### Fields
+
+* `label` — Sets the label shown above the input. Required.
+* `element` — Sets the input element that collects the user's value. Required.
+* `dispatch_action` — Sets whether changing the element sends a block_actions payload immediately. Optional; `nil` omits the field.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+* `hint` — Sets helper text shown below the input. Optional; `nil` omits the field.
+* `optional` — Sets whether the modal can be submitted when this input is empty. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Input{
+  block_id: binary() | nil,
+  dispatch_action: boolean() | nil,
+  element: Slackblocks.Types.input_element(),
+  hint: Slackblocks.Objects.PlainText.t() | nil,
+  label: Slackblocks.Objects.PlainText.t(),
+  optional: boolean() | nil
+}
+```
+
+### change/2 {#slackblocks-blocks-input-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-input-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-input-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-input-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Markdown {#slackblocks-blocks-markdown}
+
+Standard markdown rendered by Slack, intended for AI-generated content.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/markdown-block
+
+### Fields
+
+* `text` — Sets standard markdown content, which Slack renders directly. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Markdown{block_id: binary() | nil, text: binary()}
+```
+
+### change/2 {#slackblocks-blocks-markdown-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-markdown-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-markdown-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-markdown-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Plan {#slackblocks-blocks-plan}
+
+A titled sequence of task cards.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/plan-block
+
+### Fields
+
+* `title` — Sets the plan title. Required.
+* `tasks` — Adds task cards in display order. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Plan{
+  block_id: binary() | nil,
+  tasks: [Slackblocks.Blocks.TaskCard.t()],
+  title: binary()
+}
+```
+
+### change/2 {#slackblocks-blocks-plan-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-plan-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-plan-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-plan-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.RichText {#slackblocks-blocks-richtext}
+
+Formatted text built from sections, lists, preformatted blocks, and quotes.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/rich-text-block
+
+### Fields
+
+* `elements` — Adds sections, lists, preformatted blocks, and quotes in display order. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.RichText{
+  block_id: binary() | nil,
+  elements: [Slackblocks.Types.rich_text_block_element()]
+}
+```
+
+### change/2 {#slackblocks-blocks-richtext-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-richtext-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-richtext-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-richtext-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Section {#slackblocks-blocks-section}
+
+Text, a grid of fields, or both, with an optional accessory element.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/section-block
+
+### Fields
+
+* `text` — Sets the main text of the section. Optional; `nil` omits the field.
+* `fields` — Adds section fields, shown in a two-column grid, in display order. Optional; `nil` omits the field.
+* `accessory` — Sets the element displayed beside the section text. Optional; `nil` omits the field.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Section{
+  accessory: Slackblocks.Types.element() | nil,
+  block_id: binary() | nil,
+  fields: [Slackblocks.Types.text()] | nil,
+  text: Slackblocks.Types.text() | nil
+}
+```
+
+### change/2 {#slackblocks-blocks-section-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-section-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-section-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-section-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Table {#slackblocks-blocks-table}
+
+A simple table of raw text and rich text cells.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/table-block
+
+### Fields
+
+* `rows` — Adds complete table rows in display order. Required.
+* `column_settings` — Adds per-column settings in column order. Provide one entry for every column. Optional; `nil` omits the field.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Table{
+  block_id: binary() | nil,
+  column_settings: [Slackblocks.Objects.ColumnSettings.t()] | nil,
+  rows: [[Slackblocks.Types.table_cell()]]
+}
+```
+
+### change/2 {#slackblocks-blocks-table-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-table-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-table-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-table-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.TaskCard {#slackblocks-blocks-taskcard}
+
+One task with its status, details, output, and sources.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/task-card-block
+
+### Fields
+
+* `task_id` — Sets the identifier of the task. Required.
+* `title` — Sets the task title. Required.
+* `details` — Sets a rich text description of the task. Optional; `nil` omits the field.
+* `output` — Sets rich text describing the task's output. Optional; `nil` omits the field.
+* `sources` — Adds links to the sources the task used, in display order. Optional; `nil` omits the field.
+* `status` — Sets the task's current state. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.TaskCard{
+  block_id: binary() | nil,
+  details: Slackblocks.Blocks.RichText.t() | nil,
+  output: Slackblocks.Blocks.RichText.t() | nil,
+  sources: [Slackblocks.Objects.UrlSource.t()] | nil,
+  status: Slackblocks.Types.task_status(),
+  task_id: binary(),
+  title: binary()
+}
+```
+
+### change/2 {#slackblocks-blocks-taskcard-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-taskcard-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-taskcard-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-taskcard-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Blocks.Video {#slackblocks-blocks-video}
+
+An embedded video player.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/blocks/video-block
+
+### Fields
+
+* `alt_text` — Sets a plain-text summary of the image or video for assistive technology. Required.
+* `thumbnail_url` — Sets the URL of the image shown before the video plays. Required.
+* `title` — Sets the video title. Required.
+* `video_url` — Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains. Required.
+* `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
+* `author_name` — Sets the name of the video's author. Optional; `nil` omits the field.
+* `description` — Sets the video description. Optional; `nil` omits the field.
+* `provider_icon_url` — Sets the URL of the video provider's icon. Optional; `nil` omits the field.
+* `provider_name` — Sets the name of the video provider, such as YouTube. Optional; `nil` omits the field.
+* `title_url` — Sets the HTTPS URL opened when the title is clicked. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Blocks.Video{
+  alt_text: binary(),
+  author_name: binary() | nil,
+  block_id: binary() | nil,
+  description: Slackblocks.Objects.PlainText.t() | nil,
+  provider_icon_url: binary() | nil,
+  provider_name: binary() | nil,
+  thumbnail_url: binary(),
+  title: Slackblocks.Objects.PlainText.t(),
+  title_url: binary() | nil,
+  video_url: binary()
+}
+```
+
+### change/2 {#slackblocks-blocks-video-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-blocks-video-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-blocks-video-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-blocks-video-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+

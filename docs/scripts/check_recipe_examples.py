@@ -85,6 +85,7 @@ def check_result(recipe, value, language):
         "parse-json": "section",
         "workflow-button": "workflow_button",
         "accordion-pagination": "container",
+        "layout-grid": "layout",
     }
     if recipe in required:
         assert required[recipe] in types, (recipe, types)
@@ -107,6 +108,17 @@ def check_result(recipe, value, language):
         assert value == {"category": "length-exceeded", "handled": True}
     elif recipe == "accordion-pagination":
         assert any(obj.get("type") == "button" and obj.get("value") == "2" for obj in objects)
+    elif recipe == "layout-grid":
+        assert value["type"] == "layout" and value["label"] == "Service status"
+        assert value["is_label_visible"] is True and value["grid_lines"] == "rows"
+        assert len(value["rows"]) == 2 and len(value["fallback"]) == 1
+        for row, service, status in zip(value["rows"], ["API", "Worker"], ["Healthy", "Delayed"]):
+            left, right = row["items"]
+            assert left["width"] == "wide" and right["width"] == "narrow"
+            assert right["horizontal_alignment"] == "end"
+            assert left["block"]["text"]["text"] == service
+            assert right["block"]["text"]["text"] == status
+        assert value["fallback"][0]["text"]["text"] == "API: Healthy; Worker: Delayed"
     elif recipe == "metadata":
         fields = value["metadata"]["event_payload"]
         assert any(item is False for item in fields.values())
@@ -134,7 +146,7 @@ def sources():
             snippets = re.findall(rf"^```{fence}\n(.*?)\n```", regions[0], re.S | re.M)
             assert len(snippets) == 1, (name, language, "expected one complete program")
             result[language][name] = snippets[0]
-    assert len(catalog) == 14, "Review the complete recipe catalogue when changing it"
+    assert len(catalog) == 15, "Review the complete recipe catalogue when changing it"
     return result
 
 

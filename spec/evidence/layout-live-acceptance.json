@@ -1,0 +1,827 @@
+{
+  "checked_at": "2026-10-30",
+  "source_core_commit": "6337589c64f8e1ec7f58d7da7cc97a12bb37693d",
+  "scope": "Existing isolated stress app, synthetic data and one reused message. No OAuth scope or app changes.",
+  "native_messages": [
+    {
+      "language": "Python",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "type": "layout",
+        "block_id": "service-layout",
+        "label": "Service status",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "block_id": "api",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "API"
+                  }
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "block_id": "api-status",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Healthy"
+                  }
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "block_id": "worker",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Worker"
+                  }
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "block_id": "worker-status",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Delayed"
+                  }
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          }
+        ],
+        "is_label_visible": true,
+        "grid_lines": "rows",
+        "fallback": [
+          {
+            "type": "section",
+            "block_id": "status-fallback",
+            "text": {
+              "type": "plain_text",
+              "text": "API: Healthy; Worker: Delayed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "language": "TypeScript",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "label": "Service status",
+        "block_id": "service-layout",
+        "is_label_visible": true,
+        "grid_lines": "rows",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "text": {
+                    "text": "API",
+                    "type": "plain_text"
+                  },
+                  "block_id": "api",
+                  "type": "section"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "text": {
+                    "text": "Healthy",
+                    "type": "plain_text"
+                  },
+                  "block_id": "api-status",
+                  "type": "section"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "text": {
+                    "text": "Worker",
+                    "type": "plain_text"
+                  },
+                  "block_id": "worker",
+                  "type": "section"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "text": {
+                    "text": "Delayed",
+                    "type": "plain_text"
+                  },
+                  "block_id": "worker-status",
+                  "type": "section"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          }
+        ],
+        "fallback": [
+          {
+            "text": {
+              "text": "API: Healthy; Worker: Delayed",
+              "type": "plain_text"
+            },
+            "block_id": "status-fallback",
+            "type": "section"
+          }
+        ],
+        "type": "layout"
+      }
+    },
+    {
+      "language": "Go",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "block_id": "service-layout",
+        "fallback": [
+          {
+            "block_id": "status-fallback",
+            "text": {
+              "text": "API: Healthy; Worker: Delayed",
+              "type": "plain_text"
+            },
+            "type": "section"
+          }
+        ],
+        "grid_lines": "rows",
+        "is_label_visible": true,
+        "label": "Service status",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "block_id": "api",
+                  "text": {
+                    "text": "API",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "block_id": "api-status",
+                  "text": {
+                    "text": "Healthy",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "horizontal_alignment": "end",
+                "width": "narrow"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "block_id": "worker",
+                  "text": {
+                    "text": "Worker",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "block_id": "worker-status",
+                  "text": {
+                    "text": "Delayed",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "horizontal_alignment": "end",
+                "width": "narrow"
+              }
+            ]
+          }
+        ],
+        "type": "layout"
+      }
+    },
+    {
+      "language": "Java",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "type": "layout",
+        "label": "Service status",
+        "block_id": "service-layout",
+        "is_label_visible": true,
+        "grid_lines": "rows",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "API"
+                  },
+                  "block_id": "api"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Healthy"
+                  },
+                  "block_id": "api-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Worker"
+                  },
+                  "block_id": "worker"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Delayed"
+                  },
+                  "block_id": "worker-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          }
+        ],
+        "fallback": [
+          {
+            "type": "section",
+            "text": {
+              "type": "plain_text",
+              "text": "API: Healthy; Worker: Delayed"
+            },
+            "block_id": "status-fallback"
+          }
+        ]
+      }
+    },
+    {
+      "language": "CSharp",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "type": "layout",
+        "label": "Service status",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "API"
+                  },
+                  "block_id": "api"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Healthy"
+                  },
+                  "block_id": "api-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Worker"
+                  },
+                  "block_id": "worker"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Delayed"
+                  },
+                  "block_id": "worker-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          }
+        ],
+        "is_label_visible": true,
+        "grid_lines": "rows",
+        "fallback": [
+          {
+            "type": "section",
+            "text": {
+              "type": "plain_text",
+              "text": "API: Healthy; Worker: Delayed"
+            },
+            "block_id": "status-fallback"
+          }
+        ],
+        "block_id": "service-layout"
+      }
+    },
+    {
+      "language": "Ruby",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "type": "layout",
+        "label": "Service status",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "API"
+                  },
+                  "block_id": "api"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Healthy"
+                  },
+                  "block_id": "api-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Worker"
+                  },
+                  "block_id": "worker"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Delayed"
+                  },
+                  "block_id": "worker-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          }
+        ],
+        "is_label_visible": true,
+        "grid_lines": "rows",
+        "fallback": [
+          {
+            "type": "section",
+            "text": {
+              "type": "plain_text",
+              "text": "API: Healthy; Worker: Delayed"
+            },
+            "block_id": "status-fallback"
+          }
+        ],
+        "block_id": "service-layout"
+      }
+    },
+    {
+      "language": "Rust",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "type": "layout",
+        "label": "Service status",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "API"
+                  },
+                  "block_id": "api"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Healthy"
+                  },
+                  "block_id": "api-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Worker"
+                  },
+                  "block_id": "worker"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Delayed"
+                  },
+                  "block_id": "worker-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          }
+        ],
+        "is_label_visible": true,
+        "grid_lines": "rows",
+        "fallback": [
+          {
+            "type": "section",
+            "text": {
+              "type": "plain_text",
+              "text": "API: Healthy; Worker: Delayed"
+            },
+            "block_id": "status-fallback"
+          }
+        ],
+        "block_id": "service-layout"
+      }
+    },
+    {
+      "language": "PHP",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "type": "layout",
+        "label": "Service status",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "API"
+                  },
+                  "block_id": "api"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Healthy"
+                  },
+                  "block_id": "api-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Worker"
+                  },
+                  "block_id": "worker"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Delayed"
+                  },
+                  "block_id": "worker-status"
+                },
+                "width": "narrow",
+                "horizontal_alignment": "end"
+              }
+            ]
+          }
+        ],
+        "is_label_visible": true,
+        "grid_lines": "rows",
+        "fallback": [
+          {
+            "type": "section",
+            "text": {
+              "type": "plain_text",
+              "text": "API: Healthy; Worker: Delayed"
+            },
+            "block_id": "status-fallback"
+          }
+        ],
+        "block_id": "service-layout"
+      }
+    },
+    {
+      "language": "Elixir",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "block_id": "service-layout",
+        "fallback": [
+          {
+            "block_id": "status-fallback",
+            "text": {
+              "text": "API: Healthy; Worker: Delayed",
+              "type": "plain_text"
+            },
+            "type": "section"
+          }
+        ],
+        "grid_lines": "rows",
+        "is_label_visible": true,
+        "label": "Service status",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "block_id": "api",
+                  "text": {
+                    "text": "API",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "block_id": "api-status",
+                  "text": {
+                    "text": "Healthy",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "horizontal_alignment": "end",
+                "width": "narrow"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "block_id": "worker",
+                  "text": {
+                    "text": "Worker",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "block_id": "worker-status",
+                  "text": {
+                    "text": "Delayed",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "horizontal_alignment": "end",
+                "width": "narrow"
+              }
+            ]
+          }
+        ],
+        "type": "layout"
+      }
+    },
+    {
+      "language": "Haskell",
+      "method": "chat.update",
+      "ok": true,
+      "payload": {
+        "block_id": "service-layout",
+        "fallback": [
+          {
+            "block_id": "status-fallback",
+            "text": {
+              "text": "API: Healthy; Worker: Delayed",
+              "type": "plain_text"
+            },
+            "type": "section"
+          }
+        ],
+        "grid_lines": "rows",
+        "is_label_visible": true,
+        "label": "Service status",
+        "rows": [
+          {
+            "items": [
+              {
+                "block": {
+                  "block_id": "api",
+                  "text": {
+                    "text": "API",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "block_id": "api-status",
+                  "text": {
+                    "text": "Healthy",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "horizontal_alignment": "end",
+                "width": "narrow"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "block": {
+                  "block_id": "worker",
+                  "text": {
+                    "text": "Worker",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "width": "wide"
+              },
+              {
+                "block": {
+                  "block_id": "worker-status",
+                  "text": {
+                    "text": "Delayed",
+                    "type": "plain_text"
+                  },
+                  "type": "section"
+                },
+                "horizontal_alignment": "end",
+                "width": "narrow"
+              }
+            ]
+          }
+        ],
+        "type": "layout"
+      }
+    }
+  ],
+  "views": [
+    {
+      "method": "views.publish",
+      "ok": true,
+      "type": "home"
+    },
+    {
+      "method": "chat.update",
+      "ok": true,
+      "type": null
+    },
+    {
+      "method": "views.open",
+      "ok": true,
+      "type": "modal"
+    }
+  ],
+  "modal_submission": {
+    "acknowledged": true,
+    "callback_id": "layout.acceptance",
+    "values": {
+      "layout-input": {
+        "layout.value": {
+          "type": "plain_text_input",
+          "value": "Synthetic layout acceptance"
+        }
+      }
+    }
+  },
+  "visual_review": {
+    "desktop_message": "Visible label, two weighted rows, end-aligned status text, outer/horizontal borders; no vertical border.",
+    "modal": "Visible layout label and nested input; synthetic submission closed the modal.",
+    "home": "Visible layout label and native section rendered on the test app Home tab."
+  },
+  "not_verified": [
+    "older-client fallback rendering",
+    "mobile wrapping",
+    "screen-reader interaction"
+  ],
+  "counting_decision": "Retain confirmed top-level 50-message / 100-view counting, as selected by the owner; no recursive child/fallback block budget."
+}

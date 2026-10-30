@@ -52,6 +52,27 @@ function Block({ value }: { value: Json }) {
     case "alert": return <div className={styles.alert}><Inline value={block.text} /></div>;
     case "input": return <label className={styles.input}><Inline value={block.label} /><input disabled placeholder={text(object(block.element).placeholder)} /></label>;
     case "table": return <table className={styles.table}><tbody>{list(block.rows).map((row, index) => <tr key={index}>{list(row).map((cell, column) => <td key={column}>{object(cell).type === "raw_text" ? text(cell) : <Rich value={cell} />}</td>)}</tr>)}</tbody></table>;
+    case "layout": return <div className={styles.layout}>
+      {block.is_label_visible === true && <div className={styles.layoutLabel}><strong>{text(block.label)}</strong></div>}
+      <div className={styles.layoutGrid} data-grid={text(block.grid_lines) || "none"}>
+        {list(block.rows).map((row, rowIndex) => {
+          const items = list(object(row).items);
+          const columns = items.map((item) => object(item).width === "narrow" ? "1fr" : object(item).width === "wide" ? "3fr" : "2fr").join(" ");
+          return <div key={rowIndex} className={styles.layoutRow} style={{ "--layout-columns": columns } as React.CSSProperties}>
+            {items.map((item, index) => {
+              const cell = object(item);
+              const alignment = text(cell.horizontal_alignment);
+              return <div key={index} className={styles.layoutCell} data-alignment={alignment || "fill"}>
+                <div><Block value={cell.block} /></div>
+              </div>;
+            })}
+          </div>;
+        })}
+      </div>
+      {block.fallback !== undefined && <details className={styles.layoutFallback}><summary>Linear fallback</summary>
+        {list(block.fallback).length ? <Blocks values={list(block.fallback)} /> : <p>No fallback content.</p>}
+      </details>}
+    </div>;
     case "container": return <details className={styles.container} open={!block.default_collapsed}><summary><Inline value={block.title} /></summary><Blocks values={list(block.child_blocks)} /></details>;
     default: throw new Error(`Recipe preview has no renderer for ${String(block.type)}`);
   }
