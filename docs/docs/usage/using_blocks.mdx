@@ -68,10 +68,130 @@ Use checked immutable values and typed child roles. Each complete program below 
 </Haskell>
 </LanguageContent>
 
+## Ownership and edits
 
-### Layout grids
+<LanguageContent>
+<Python>
 
-From **3.2.0**, `LayoutBlock` groups native blocks into one to five `LayoutRow` values, each containing one to three `LayoutItem` values. Elixir names the block `Slackblocks.Blocks.Layout`. Use the [weighted layout recipe](/usage/recipes/layout-grid) for a complete example and rendered output in your selected language.
+Models are mutable. Collection coercion can retain the caller's list and nested model references, so changing a source list can change a later serialization. Build a fresh model, or copy application inputs, when personalizing a reusable template.
+
+</Python>
+<TypeScript>
+
+Fluent builders retain nested objects and builders until `build()`. Factory serialization produces a wire snapshot. Mutate inputs deliberately before building and keep built payloads as snapshots. Collection methods append; compose a new builder when replacing a collection.
+
+</TypeScript>
+<Go>
+
+Fluent builders are mutable and retain nested builders until `Build()`. Built modeled maps and lists are materialized afresh: changing a nested builder changes the next build while earlier modeled snapshots remain independent. Collection methods append, so rebuild from application data when replacing a collection. Arbitrary custom values passed through escape hatches need their own ownership review.
+
+</Go>
+<Java>
+
+Built values hold defensive snapshots and expose immutable collections; builders remain mutable. Compose the next value with native builders. Getter collections and the exported `toMap()` are not editable views of the model. See [conditional getters](troubleshooting#conditional-getters) when a valid alternative omits a field.
+
+</Java>
+<CSharp>
+
+Models copy collection inputs, expose read-only properties and export independent copies of JSON nodes. Construct a replacement value using its properties and changed arguments. Editing an exported JSON node does not edit the model. See [optional properties](troubleshooting#optional-properties) when a valid alternative omits a field.
+
+</CSharp>
+<Ruby>
+
+Native values freeze their copied nested content. Use `with` to create a changed value and retain the original for comparison. `as_json` exports a fresh representation. Component helpers return values or arrays rather than mutable fluent builders.
+
+</Ruby>
+<Rust>
+
+Models own their data and getters borrow values. `clone().into_builder()` starts an independent editable builder; clone first when the old value is still needed. Use checked construction or parsing for the new value.
+
+</Rust>
+<PHP>
+
+Readonly native values and immutable nested values retain constructor state. Use `with` or construct a new value instead of mutating properties. Exports are independent representations.
+
+</PHP>
+<Elixir>
+
+Structs, lists and maps are immutable. Model `change/2` validates a replacement and returns a tagged result; `change!/2` raises on failure. Keep the original value for reuse. Validate the complete receiving payload with `Slackblocks.to_map/1`; direct struct updates are rechecked at wire boundaries.
+
+</Elixir>
+<Haskell>
+
+Checked values are immutable and have hidden constructors. `inspect…` returns editable field records; `build…` checks a replacement and returns `Result`. Rebuild changes before encoding: field records have no `ToJSON` instance, and explicit role conversions preserve parent constraints. See [wire and value behavior](compatibility#wire-and-value-behavior) for checked JSON ingress and exact numbers.
+
+</Haskell>
+</LanguageContent>
+
+These guarantees concern modeled fields, not arbitrary foreign objects or unchecked
+extension values. Application state, callback revisions and database records remain
+application-owned.
+
+## Omission and defaults
+
+Leave an optional argument or setter unused to request omission. Required fields,
+defaults and normalization are field-specific; inspect the final wire payload
+when an explicit zero, false or empty collection matters.
+
+<LanguageContent>
+<Python>
+
+Omitted block IDs are generated. Some serializers retain legacy truthiness normalization: `DateTimePicker(initial_datetime=0)` omits `initial_date_time` even though the model attribute remains zero. Pin block IDs in tests and inspect serialized fields where zero or `False` matters.
+
+</Python>
+<TypeScript>
+
+Leave a setter unused to omit a field. On a fresh fluent builder, `.options([])` explicitly supplies an empty list and is rejected when built, as is `staticSelect({options: []})`. On a populated builder, `.options([])` appends nothing and leaves existing options intact. Other fields have their own empty-list behavior.
+
+</TypeScript>
+<Go>
+
+`NewPlainText().Text("Hi").Emoji(false)` preserves `emoji: false`; leaving `Emoji` uncalled omits it. A supplied empty enum is invalid. A typed nil nested builder is a type error, not an omission request.
+
+</Go>
+<Java>
+
+Varargs collection setters append. Zero arguments leave an unset field omitted and do not clear an existing collection. An explicit empty array supplied through `wireField` is validated as a supplied list. Optional getters commonly return `Optional`; check the field's generated signature rather than assuming every getter can represent absence.
+
+</Java>
+<CSharp>
+
+Optional properties use nullable types. Follow each constructor and generated property signature to distinguish omission from a supplied value. An omitted wire field is not an explicit JSON null; do not substitute an empty collection or `false` to remove a field.
+
+</CSharp>
+<Ruby>
+
+Optional native fields use `nil`. Follow the field signature and generated documentation: omission is not explicit JSON null, and supplying an empty collection or `false` is not a general way to remove a field.
+
+</Ruby>
+<Rust>
+
+Optional native fields use `Option`. Read the field signature and generated documentation when deciding whether to supply a value. An omitted wire field is not explicit JSON null; an empty collection, zero and `false` remain field-specific inputs.
+
+</Rust>
+<PHP>
+
+Optional native fields use `null`. Follow the named constructor and field documentation: an omitted wire field is not explicit JSON null, and an empty collection or `false` is not a general omission request.
+
+</PHP>
+<Elixir>
+
+Optional `nil` fields are omitted; explicit `false` and zero are retained when valid for the field. Model `change/2` replaces supplied fields atomically while leaving other fields unchanged. Use `Slackblocks.from_map/2` for checked wire input and `Slackblocks.to_map/1` for complete output validation.
+
+</Elixir>
+<Haskell>
+
+Optional `Nothing` omits a key; explicit false, zero and allowed empty values remain. No block ID is generated. Field-specific requiredness and defaults still apply. The [compatibility guide](compatibility#wire-and-value-behavior) covers parsing defaults and numeric representation.
+
+</Haskell>
+</LanguageContent>
+
+See [Validation boundaries](validation-boundary) for local checks and application-owned
+constraints. Existing defaults are retained for compatibility.
+
+## Layout grids
+
+From **3.2.0**, a layout block groups native blocks into one to five rows, each containing one to three items. Use the [weighted layout recipe](/usage/recipes/layout-grid) for a complete example and rendered output in your selected language.
 
 The required label is 1–150 Unicode code points. It is hidden unless `is_label_visible` is true; visible labels are bold text rather than headings, and hidden labels are not accessible names. Widths are `narrow` (1), `standard` (2, the default) and `wide` (3). Explicit alignment is `start`, `center` or `end`; omission fills the cell. `grid_lines` accepts `none`, `rows` (outer plus horizontal dividers) or `outer`.
 
@@ -86,7 +206,6 @@ Direct nested layouts and markdown blocks are not layout children. A layout/cont
 Fallback replaces the grid on clients without layout support. Explicit empty fallback remains empty. Child and fallback blocks must be valid on the receiving surface; for example, nesting an input in a modal still requires a submit label. Existing aggregate chart and text limits continue to apply. [Layout accounting](/usage/validation-boundary#layout-accounting) explains the retained top-level block limits and the observed Slack discrepancy.
 
 [Official Slack layout reference](https://docs.slack.dev/reference/block-kit/blocks/layout-block).
-
 
 ## Section Block
 
@@ -4215,6 +4334,9 @@ DataTableBlock()
   .build();
 ```
 
+The JavaScript `number` type is not an arbitrary-precision integer type. Check
+both the native input and serialized payload when large or exact values matter.
+
 </TypeScript>
 <Go>
 
@@ -4228,6 +4350,17 @@ block, err := slackblocks.NewDataTableBlock().
     BlockID("fake_block_id").
     Build()
 ```
+
+`RawNumberBuilder.Value(float64)` can round an integer such as `9007199254740993`
+before serialization. For exact JSON, import `encoding/json` and use
+`slackblocks.NewRawNumber().ValueNumber(json.Number("9007199254740993")).Text("9,007,199,254,740,993")`.
+The `slackblocks` import is `github.com/nicklambourne/slackblocks/go/v3`.
+
+`Build()` validates JSON number syntax, rejecting empty numbers, leading zeros,
+NaN and infinity. Integer, decimal and exponent lexemes stay numeric JSON values,
+not quoted strings; `Text` supplies the separate display label. This preserves
+emitted JSON, without promising arbitrary-precision sorting or rendering in Slack.
+Avoid a floating-point conversion earlier in an exact-value application path.
 
 </Go>
 <Java>
@@ -5134,7 +5267,8 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 Compose ordinary Python block lists and `ContainerBlock` values for reusable
 layouts. Python does not currently expose the named `Paginator` and `Accordion`
-helpers shown for other languages. Use `block_kit_builder_url` for preview links;
+helpers. Keep paging state in the application. Use `block_kit_builder_url` for
+preview links;
 see [Utilities](../reference/python/builder) and [Blocks](../reference/python/blocks).
 
 </Python>
@@ -5217,7 +5351,8 @@ rule.
 
 ## Higher-Level Components
 
-Components expand to ordinary `slack.Block` values. Call `SlackBlocks()` and pass the
+`NewPaginator()` and `NewAccordionSection()` are fluent group builders. Components
+expand to ordinary `slack.Block` values. Call `SlackBlocks()` and pass the
 result straight to `slack.MsgOptionBlocks`; use `BuildMany()` only when composing a raw
 JSON payload.
 
@@ -5365,8 +5500,9 @@ Accordion sections use Slack-native collapsible containers and need no applicati
 
 ## Higher-Level Components
 
-Accordion sections render as collapsible containers. Pagination returns an array
-of ordinary blocks; the receiving message validates the expanded result.
+`AccordionSection.create(...)` returns a collapsible `ContainerBlock`;
+`Paginator.create(...)` returns an array of ordinary native blocks. The receiving
+message validates the expanded result.
 
 ```ruby
 require "slackblocks"
@@ -5403,7 +5539,10 @@ to Slack. See the [recipe book](recipes) and [components reference](../reference
 
 ## Higher-Level Components
 
-Components return ordinary block lists; the application owns state and interaction routing.
+`Paginator.to_blocks/2` returns `{:ok, blocks}` or an error.
+`AccordionSection.new/1` returns a collapsible container in the same tagged form,
+and `Accordion.to_blocks/1` validates the list of sections. Bang variants return
+the value or raise. The application owns state and interaction routing.
 
 ```elixir
 alias Slackblocks.Blocks.Section
@@ -5462,3 +5601,7 @@ Helpers return ordinary checked blocks. The application owns interaction state a
 
 </Haskell>
 </LanguageContent>
+
+Component helpers compose blocks and controls. They do not store pagination state,
+process callbacks, schedule work or grant Slack permissions. Recompose each payload
+from application state and validate its receiving surface after expanding helpers.

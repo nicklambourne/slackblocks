@@ -1,9 +1,11 @@
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+
 # Validation boundaries
 
 Slackblocks checks the shared model and its declared contextual rules. Successful
 local construction is not a Slack API receipt: permissions, enabled features,
-receiving surfaces and write-path rules still apply. The implementations also
-have different native normalization behavior.
+receiving surfaces and write-path rules still apply. Native normalization and error
+handling are described below.
 
 The following rules were reviewed against official Slack references and minimal
 `blocks.validate` view probes on 2026-10-13. The sanitized requests and responses
@@ -17,35 +19,104 @@ posting results.
 | Plain-text input `min_length` and `max_length` | Each retains its documented scalar range; when both are supplied, minimum must not exceed maximum. Equality, zero minimum and omitted bounds are supported. | This is an explicit library consistency rule derived from the [minimum/maximum meanings](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element/). Slack's structural validator accepted the reversed pair 20/10; this stricter library rule prevents an unsatisfiable input. |
 | External select `min_query_length`, single and multi | An explicitly supplied threshold must be nonnegative; zero is preserved. | Slack's [select](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element/) and [multi-select](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element/) docs describe a character count. The validator accepted zero and rejected minus one for both families. |
 | Static select `options` and `option_groups`, single and multi | Each supplied list must contain at least one item; the existing maximum and mutual-exclusion rules still apply. | Empty lists were rejected with `min_items: 1`; corresponding one-item lists passed. This does not make an external options-response payload subject to static-menu constraints. |
-| Date picker `initial_date` | The string must have the ASCII `YYYY-MM-DD` shape. | The [date-picker reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element/) specifies this format. The validator rejected a prose date but accepted `2028-02-30`. Python's existing calendar parser additionally rejects that impossible date; the other implementations preserve it. Validate calendar/business constraints in the application. |
+| Date picker `initial_date` | The string must have the ASCII `YYYY-MM-DD` shape. | The [date-picker reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element/) specifies this format. The validator rejected a prose date but accepted `2028-02-30`. Native calendar handling is described below. Validate calendar/business constraints in the application. |
 | Time picker `initial_time` | The string must be an ASCII, zero-padded 24-hour time from `00:00` through `23:59`. | The [time-picker reference](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element/) specifies `HH:mm`; the validator rejected `9:00` and `25:99`, and accepted `23:59`. |
 | Image-element `alt_text` | The existing maximum remains; an empty string is permitted. | The [image reference](https://docs.slack.dev/reference/block-kit/block-elements/image-element/) does not establish a positive minimum. Empty and nonempty controls both passed structural validation. |
 
 Invalid ordered bounds and negative query thresholds use `out-of-range`;
-malformed dates/times use `type-mismatch`; empty static lists use
-`length-exceeded`. Go, TypeScript, Java, C#, Ruby, Rust, PHP, Elixir and Haskell expose a field
-path with these categories. Python exposes the corresponding `RangeError`,
-`TypeMismatchError` or `LengthError` class and a diagnostic message; its existing
-calendar parser may raise `ValueError` for an impossible date.
-
-These checks deliberately change previously accepted invalid configurations.
-Remove an optional field to omit it. Native factories that accept an explicit
-empty static list now reject it, including the TypeScript legacy factories that
-previously omitted it. TypeScript `.options([])` records an empty list on a fresh
-builder and is rejected; on a populated builder it appends nothing. Java varargs
-setters treat zero arguments as no additions and leave an unset field omitted.
+malformed dates/times use `type-mismatch`; empty static lists use `length-exceeded`.
+These checks deliberately reject previously accepted invalid configurations.
 The shared contract does not infer new calendar-validity or positive
 image-alt-text minimum rules from an application failure.
 
-Elixir constructors and immutable changes preserve omitted (`nil`) fields and
-explicit zero thresholds, reject supplied empty static lists, and validate the
-same rules on checked JSON decoding and serialization. Its date picker checks
-the documented shape; application code owns calendar and business constraints.
+## Native validation behavior
 
-Haskell factories and checked builders enforce the same rules. Its typed fields
-retain explicit zero and empty lists for validation; optional `Nothing` omits a
-field. `decode` validates the receiving model after checking raw JSON syntax.
+<LanguageContent>
+<Python>
 
+Errors expose the corresponding `RangeError`, `TypeMismatchError` or `LengthError`
+class and a diagnostic message. The existing calendar parser also rejects an
+impossible date such as `2028-02-30` and may raise `ValueError`.
+
+Remove an optional argument to request omission. Some serializers retain legacy
+truthiness normalization; see [omission and defaults](using_blocks#omission-and-defaults)
+when explicit zero or `False` matters.
+
+</Python>
+<TypeScript>
+
+Validation errors expose a field path and category. Date pickers check the documented
+ASCII shape, so application code must reject impossible calendar dates.
+
+A supplied empty static list is rejected, including through legacy factories.
+On a fresh fluent builder, `.options([])` records an empty list and is rejected;
+on a populated builder it appends nothing. Leave the setter unused to omit a field.
+
+</TypeScript>
+<Go>
+
+Validation errors expose a field path and category. Date pickers check the documented
+ASCII shape, so application code must reject impossible calendar dates. Leave an
+optional setter uncalled to omit the field; a supplied empty static list is rejected.
+See [omission and defaults](using_blocks#omission-and-defaults) for explicit false
+and typed nil inputs.
+
+</Go>
+<Java>
+
+Validation errors expose a field path and category. Date pickers check the documented
+ASCII shape, so application code must reject impossible calendar dates. Varargs
+setters treat zero arguments as no additions and leave an unset collection omitted;
+an explicitly supplied empty static list is invalid.
+
+</Java>
+<CSharp>
+
+Validation errors expose a field path and category. Date pickers check the documented
+ASCII shape, so application code must reject impossible calendar dates. Omit an
+optional argument rather than supplying an empty collection to remove it; a supplied
+empty static list is rejected.
+
+</CSharp>
+<Ruby>
+
+Validation errors expose a field path and category. Date pickers check the documented
+ASCII shape, so application code must reject impossible calendar dates. Follow each
+keyword argument's omission rules; supplying an empty static list is invalid.
+
+</Ruby>
+<Rust>
+
+Validation errors expose a field path and category. Date pickers check the documented
+ASCII shape, so application code must reject impossible calendar dates. Optional
+fields use `Option`; a supplied empty static list is rejected by checked construction.
+
+</Rust>
+<PHP>
+
+Validation errors expose a field path and category. Date pickers check the documented
+ASCII shape, so application code must reject impossible calendar dates. Follow the
+named constructor's optional-field rules; a supplied empty static list is rejected.
+
+</PHP>
+<Elixir>
+
+Validation errors expose a field path and category. Constructors and immutable
+changes omit optional `nil` fields, preserve explicit zero thresholds, and reject
+supplied empty static lists. Checked JSON decoding and serialization apply the same
+rules. Date pickers check the documented shape; application code owns calendar and
+business constraints.
+
+</Elixir>
+<Haskell>
+
+Validation errors expose a field path and category. Factories and checked builders
+retain explicit zero and empty lists for validation; optional `Nothing` omits a field.
+`decode` validates the receiving model after checking raw JSON syntax. Date pickers
+check the documented shape; application code owns calendar and business constraints.
+
+</Haskell>
+</LanguageContent>
 
 ## Layout accounting
 

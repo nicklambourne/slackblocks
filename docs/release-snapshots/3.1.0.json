@@ -1,6 +1,6 @@
 {
   "version": "3.1.0",
-  "source_commit": "a2f0712b0c49285a4728eab017530ea32ce0ed64",
+  "source_commit": "aca848456a4c870fd17e058494edd3ebc38e304a",
   "languages": [
     "python",
     "typescript",
@@ -19,7 +19,7 @@
     "docs/versioned_docs/version-3.1.0/contributing/index.mdx": "43828a7451fe4cd0aa16496ab99b42086e6c25d1670779cfe6dff31c3b44ad8b",
     "docs/versioned_docs/version-3.1.0/contributing/maintaining-block-kit.mdx": "600f9dfea7b242441590eae8fc3551edaef131dbd50620b960f21902906a886c",
     "docs/versioned_docs/version-3.1.0/download-statistics.mdx": "43cf95a81143914c1a6f0fd4517c908c12afa3dd3c2101358645dfbe74a2d7ae",
-    "docs/versioned_docs/version-3.1.0/index.mdx": "8f4140635b435dbec6f76ec5c826dda63f5d8ebd101ba6929c9fa0fa5286bc62",
+    "docs/versioned_docs/version-3.1.0/index.mdx": "63996c0c97830c4735c1830d47ddbbf34db2f9a99d214f70da2a56e1c93b14cc",
     "docs/versioned_docs/version-3.1.0/quick-start.mdx": "f59a6b288cd6929648410cde5b5f7ab104bbf79f1c872921e7415b207c295b93",
     "docs/versioned_docs/version-3.1.0/recipes/_category_.json": "528a0fd0dc9550cc328cba28b20ae69520ea9d8f2ce021869826990bedeea5f5",
     "docs/versioned_docs/version-3.1.0/recipes/accordion-pagination.mdx": "d715513f353c6142415e3c25f9fffe3d9f91d316b5d178422f2f8adabd11eaad",
@@ -132,17 +132,16 @@
     "docs/versioned_docs/version-3.1.0/typescript-views-redirect.mdx": "0b995d3f20777c9a31c8f60d16c423dbc723f48893d3a8ba00e23d90e78e8794",
     "docs/versioned_docs/version-3.1.0/usage/_category_.json": "60ee08607c4ba625116281b3f34a2a61a340643d732137064fcd32123399a308",
     "docs/versioned_docs/version-3.1.0/usage/agent-prompts.mdx": "3c2e294b57667eb2d6184bf6fdccb36074412466bc979b5e1729a5a36e1c8c87",
-    "docs/versioned_docs/version-3.1.0/usage/compatibility.mdx": "79397ef3fb96aaeece633697065b5a832e48e78dfdad57eec9ff98b867909872",
+    "docs/versioned_docs/version-3.1.0/usage/compatibility.mdx": "3d4de6154844bbc6d5f7cbd6ebad90204e1a5fa33ba8a6f894eefa620bd733ed",
     "docs/versioned_docs/version-3.1.0/usage/cookbook.mdx": "995e118c531d33e0d50ff3319de8130ea30f5925f5b869166f6ed0a052c4a6b9",
     "docs/versioned_docs/version-3.1.0/usage/erlang.mdx": "f3d54c466f7718631d2ff24c7a6562ffd386f476a019116bd41f1a165697b651",
     "docs/versioned_docs/version-3.1.0/usage/installation.mdx": "721e9c223aea23b69f5b808a33163aeee253787f83dfa9f61aa748805e9e5244",
-    "docs/versioned_docs/version-3.1.0/usage/language-semantics.mdx": "82807d16ef4cacf5dd01fa104eaba70e22c46dc2a45c4ffe51026ac863e88642",
     "docs/versioned_docs/version-3.1.0/usage/migration.mdx": "eede170c3ccf3432d0c1df5db773275007fe08f06adfd2f1b267eecc460a5ecf",
     "docs/versioned_docs/version-3.1.0/usage/sending_messages.mdx": "3c5923576885ba2098dc6539709508b0d3237d0af68112890148ebf5d4d98986",
-    "docs/versioned_docs/version-3.1.0/usage/troubleshooting.mdx": "50db0304d08e294ff92a248362bceb445338dcc20ec7c38379351ee9633b6541",
-    "docs/versioned_docs/version-3.1.0/usage/using_blocks.mdx": "1e48d88c8b00d3e9961dfcd9697833dae3c1e40b3a1397858a2b9b708df016eb",
-    "docs/versioned_docs/version-3.1.0/usage/validation-boundary.mdx": "2b01795c587ffea83878ef18deb7f6b70b8da05bee05bf90cfd4cd125d9532fc",
+    "docs/versioned_docs/version-3.1.0/usage/troubleshooting.mdx": "0f79f848fe60d35ce3fd7f5bda73da7b96fc116f658b6832d5ea64ce3e824e5e",
+    "docs/versioned_docs/version-3.1.0/usage/using_blocks.mdx": "71260a89cd465c207a58724b51876c1f3fc7831490916745bed0235db92b7174",
+    "docs/versioned_docs/version-3.1.0/usage/validation-boundary.mdx": "8d383dd2d033682a8a64cf4708772842a661ff2fbafad6931a919292f574613f",
     "docs/versioned_sidebars/version-3.1.0-sidebars.json": "44d34036954201b3ffb413429543dbf3985b60d8a8602036399c1df59a83b8f9"
   },
-  "sha256": "a6bd5a9e63211158928464dce4924dc7a049c98afa63bbed2f20e7c4fbc1818c"
+  "sha256": "60c7c9c0eda1b3e4bb20647d2e7083dc622ae4f9c08dd3026d38c03ff3f00785"
 }
