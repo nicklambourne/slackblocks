@@ -13,7 +13,7 @@ const pages = await Promise.all(domains.map(domain => read(`docs/docs/reference/
 const text = pages.join("\n");
 const expected = Object.entries(inventory).filter(([, entry]) => !["internal", "protocol"].includes(entry.kind)).map(([name]) => name).sort();
 assert.deepEqual(reference.modules.map(entry => entry.module).sort(), expected);
-assert.equal(expected.length, 97);
+assert.equal(expected.length, 100);
 assert.deepEqual([...text.matchAll(/^## (Slackblocks\S*) \{#/gm)].map(match => match[1]).sort(), expected);
 // Compiler-generated struct/exception functions and these explicitly internal
 // Style receiving-context helpers have @doc false; they are not consumer APIs.
