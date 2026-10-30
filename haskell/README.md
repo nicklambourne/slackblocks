@@ -76,7 +76,7 @@ Run `cabal test all` from the package directory. Tests use local data and make n
 Slack requests. The package version is the coordinated 3.2.0 release;
 the independent shared contract version is 1.5.0.
 
-The conformance suite constructs all 113 valid fixtures through native APIs and
+The conformance suite constructs all 120 valid fixtures through native APIs and
 independently checks their wire objects. It also checks every invalid input at
 JSON ingress, native invalid constructions where representable, and compiler
 rejections where the type system prevents construction. `python bin/check`

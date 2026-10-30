@@ -68,7 +68,7 @@ Generated classes come directly from the shared model. The package's tests and d
 
 ## Conformance and quality
 
-The suite constructs all 105 valid shared fixtures and rejects all 167 invalid cases with the required categories. It checks every scalar limit, vocabulary, capability and exported class. The release skiplist is empty. Public constructors, enums, readonly fields and helper methods are independently inventoried.
+The suite constructs all 120 valid shared fixtures and rejects all 207 invalid cases with the required categories. It checks every scalar limit, vocabulary, capability and exported class. The release skiplist is empty. Public constructors, enums, readonly fields and helper methods are independently inventoried.
 
 PHPStan level 8 checks the library and positive/negative consumers. CI enforces at least 95% line coverage for handwritten code and reports generated coverage separately. Package checks install the actual Composer ZIP and exercise native VCS discovery, stable source installs and development source installs in fresh external projects on each supported platform. There are no third-party runtime dependencies to resolve at lower bounds; the development lock is resolved on PHP 8.2.
 
