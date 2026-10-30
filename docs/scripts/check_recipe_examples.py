@@ -112,7 +112,9 @@ def check_result(recipe, value, language):
         assert value["type"] == "layout" and value["label"] == "Service status"
         assert value["is_label_visible"] is True and value["grid_lines"] == "rows"
         assert len(value["rows"]) == 2 and len(value["fallback"]) == 1
-        for row, service, status in zip(value["rows"], ["API", "Worker"], ["Healthy", "Delayed"]):
+        for row, service, status in zip(
+            value["rows"], ["API", "Worker"], ["Healthy", "Delayed"], strict=True
+        ):
             left, right = row["items"]
             assert left["width"] == "wide" and right["width"] == "narrow"
             assert right["horizontal_alignment"] == "end"
