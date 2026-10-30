@@ -144,8 +144,29 @@ assert.ok(rustDocuments.some(({u}) => u.includes("/reference/rust")));
 assert.ok(rustDocuments.some(({u}) => u.endsWith("/usage/compatibility")));
 
 const allLanguages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "haskell"];
+const nativeGuidance = {
+  python: "Collection coercion can retain the caller's list",
+  typescript: "Factory serialization produces a wire snapshot",
+  go: "A typed nil nested builder is a type error",
+  java: "Varargs collection setters append",
+  csharp: "Optional properties use nullable types",
+  ruby: "Native values freeze their copied nested content",
+  rust: "clone().into_builder()",
+  php: "Readonly native values",
+  elixir: "Model change/2 replaces supplied fields atomically",
+  haskell: "Field records have no ToJSON",
+};
 for (const language of allLanguages) {
   const documents = await readDocuments(language);
+  const blockGuide = documents
+    .filter(({ u }) => u === "/slackblocks/usage/using_blocks")
+    .map(({ t }) => t).join(" ").replace(/\s+/g, " ");
+  for (const [owner, guidance] of Object.entries(nativeGuidance)) {
+    assert.equal(blockGuide.toLowerCase().includes(guidance.toLowerCase()), owner === language,
+      `${language} search has incorrect visibility for ${owner} value guidance`);
+  }
+  assert.equal(documents.some(({ u }) => u === "/slackblocks/usage/language-semantics"), false,
+    `${language} still indexes the retired cross-language semantics page`);
   for (const other of allLanguages.filter((candidate) => candidate !== language)) {
     assert.equal(documents.some(({ u }) => u.includes(`/reference/${other}`)), false, `${language} leaked ${other} reference`);
   }

@@ -6,8 +6,8 @@ Practical answers to common questions, gotchas, and validation errors.
 
 See [Validation boundaries](validation-boundary) for the distinction between
 local checks, Slack structural validation and application-owned date rules.
-See [Language semantics](language-semantics) for ownership, omitted values, getter
-optionality, helper availability and exact numbers.
+See [Using Blocks](using_blocks#ownership-and-edits) for ownership, editing and
+omitted values, plus native helper and numeric examples.
 
 <LanguageContent>
 <Python>
@@ -369,6 +369,18 @@ Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 </Go>
 <Java>
 
+## Why does a getter throw for a valid value? {#conditional-getters}
+
+Some getters retain a required-field signature even when a valid alternative omits
+that field. A URL-only `ButtonElement` can omit `action_id`, so `getActionId()`
+throws `IllegalStateException`. An `ImageBlock` using a Slack file can omit
+`image_url`, so `getImageUrl()` throws. Choose the getter for the alternative you
+constructed, or check the immutable `toMap()` before calling a required getter.
+
+`SectionBlock.getText()` returns `Optional<Text>` and safely represents a fields-only
+section. These getter signatures do not make URL-only buttons or Slack-file images
+invalid.
+
 ## Why is Slack showing literal `*asterisks*`?
 
 `SectionBlock.builder().markdownText(...)` creates `mrkdwn`, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. Markdown syntax in those fields is intentionally literal.
@@ -439,6 +451,13 @@ Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 
 </Java>
 <CSharp>
+
+## Why is a property null on a valid value? {#optional-properties}
+
+A URL-only `ButtonElement` can omit `action_id`, and an `ImageBlock` using a Slack
+file can omit `image_url`. Their `ActionId` and `ImageUrl` properties are nullable.
+Read the properties for the alternative you constructed; absence does not make
+these models invalid.
 
 ## Why is Slack showing literal `*asterisks*`?
 
