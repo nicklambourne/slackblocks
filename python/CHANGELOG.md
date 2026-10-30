@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add native layout blocks, rows and items with typed widths/alignment, closed child and fallback roles, checked nesting and receiving-surface validation (spec 1.5.0).
 - Preserve confirmed top-level message/view block counting, supported runtime minimums, legacy container-only behavior, and existing chart/text limits. No unconfirmed recursive block budget is imposed.
 - Add a runnable ten-language layout recipe and rendered preview; preserve outgoing 3.1.0 documentation.
+- Preserve real nested layout/container/fallback locations in surface-validation errors. `Block.from_dict` recognizes layout and raises the documented `NotImplementedError` for unsupported nested parsing.
 
 ## [3.1.0] — 2026-10-28
 
