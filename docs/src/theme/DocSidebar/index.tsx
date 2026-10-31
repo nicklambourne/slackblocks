@@ -20,6 +20,7 @@ const USAGE_ORDER = [
   "usage/using_blocks",
   "usage/sending_messages",
   "usage/erlang",
+  "usage/layouts",
   "usage/cookbook",
   "usage/troubleshooting",
   "usage/compatibility",
