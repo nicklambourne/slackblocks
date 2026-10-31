@@ -6,7 +6,7 @@ encoding. Requires GHC 9.6.7 or newer within the tested compiler range.
 The native API covers all 89 shared models, closed roles and enumerations in
 contract 1.5.0. Haskell joins the coordinated 3.1.0 release on
 [Hackage](https://hackage.haskell.org/package/slackblocks). Add
-`slackblocks >= 3.1 && < 3.2` to your application's Cabal `build-depends`,
+`slackblocks >= 3.2 && < 3.3` to your application's Cabal `build-depends`,
 run `cabal update`, then `cabal build`. The source archive and native HTTP
 integration are checked on supported compiler endpoints.
 
@@ -73,10 +73,10 @@ through a binary floating-point number. Exponents are compared without expanding
 them into potentially enormous integers.
 
 Run `cabal test all` from the package directory. Tests use local data and make no
-Slack requests. The package version is the coordinated 3.1.0 release;
+Slack requests. The package version is the coordinated 3.2.0 release;
 the independent shared contract version is 1.5.0.
 
-The conformance suite constructs all 113 valid fixtures through native APIs and
+The conformance suite constructs all 120 valid fixtures through native APIs and
 independently checks their wire objects. It also checks every invalid input at
 JSON ingress, native invalid constructions where representable, and compiler
 rejections where the type system prevents construction. `python bin/check`

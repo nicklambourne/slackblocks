@@ -6,7 +6,7 @@ import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust,
 
 Choose a language from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
 
-These instructions target coordinated release 3.1.0 across all ten implementations. Frozen [3.0.0 documentation](/3.0.0/usage/installation) remains available.
+These instructions target coordinated release 3.2.0 across all ten implementations. Frozen [3.1.0 documentation](/3.1.0/usage/installation) remains available.
 
 <LanguageContent>
 <Python>
@@ -100,7 +100,7 @@ console.log(
 );
 ```
 
-Run it with `node hello.mjs`. Stay on the 3.x release line with `@nicklambourne/slackblocks@^3.1.0`, and uninstall with `pnpm remove @nicklambourne/slackblocks` (or your package manager's equivalent).
+Run it with `node hello.mjs`. Stay on the 3.x release line with `@nicklambourne/slackblocks@^3.2.0`, and uninstall with `pnpm remove @nicklambourne/slackblocks` (or your package manager's equivalent).
 
 </TypeScript>
 <Go>
@@ -150,7 +150,7 @@ Install the Java artifact from Maven Central. Java 17 or newer is required.
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>3.1.0</version>
+  <version>3.2.0</version>
 </dependency>
 ```
 
@@ -158,14 +158,14 @@ Install the Java artifact from Maven Central. Java 17 or newer is required.
 <TabItem value="gradle-kotlin" label="Gradle (Kotlin)">
 
 ```kotlin
-implementation("io.github.nicklambourne:slackblocks:3.1.0")
+implementation("io.github.nicklambourne:slackblocks:3.2.0")
 ```
 
 </TabItem>
 <TabItem value="gradle-groovy" label="Gradle (Groovy)">
 
 ```groovy
-implementation 'io.github.nicklambourne:slackblocks:3.1.0'
+implementation 'io.github.nicklambourne:slackblocks:3.2.0'
 ```
 
 </TabItem>
@@ -209,7 +209,7 @@ dotnet add package Slackblocks
 <TabItem value="package-reference" label="PackageReference">
 
 ```xml
-<PackageReference Include="Slackblocks" Version="3.1.0" />
+<PackageReference Include="Slackblocks" Version="3.2.0" />
 ```
 
 </TabItem>
@@ -279,11 +279,11 @@ Rust 1.85 or newer is required. The crate uses edition 2024, Serde and serde_jso
 Rust support begins with coordinated version 2.6.0.
 
 ```sh
-cargo add slackblocks@3.1.0
+cargo add slackblocks@3.2.0
 cargo add serde_json
 ```
 
-The equivalent dependency is `slackblocks = "3.1.0"`. The package includes
+The equivalent dependency is `slackblocks = "3.2.0"`. The package includes
 generated sources; application builds do not require Python or the shared
 specification directory. Use `cargo update` within your normal Cargo version policy.
 
@@ -405,7 +405,7 @@ Haskell joins coordinated **3.1.0** on
 GHC 9.6.7+ within the [tested compiler series](/usage/compatibility) is required.
 Development uses Cabal 3.16.1.0; the package declares Cabal syntax 3.0 and GHC2021.
 
-Declare `slackblocks >= 3.1 && < 3.2`, `aeson` and `base` in your application's
+Declare `slackblocks >= 3.2 && < 3.3`, `aeson` and `base` in your application's
 `build-depends`. Run `cabal update`, then `cabal build` or `cabal run` from the
 application. Cabal resolves the package from Hackage; do not use `cabal install`
 to add a library into an application's dependency graph.
@@ -422,7 +422,7 @@ In a separate application's `cabal.project`, list its package and the local
 archive, replacing the absolute path with your archive location:
 
 ```cabal
-packages: . /absolute/path/slackblocks-3.1.0.tar.gz
+packages: . /absolute/path/slackblocks-3.2.0.tar.gz
 ```
 
 Keep the same `build-depends`. Remove the archive from `packages` to return to

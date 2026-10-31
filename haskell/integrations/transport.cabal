@@ -14,7 +14,7 @@ executable transport-check
   ghc-options: -Wall -Wcompat
   build-depends:
     base >=4.18 && <4.23,
-    slackblocks ==3.1.0,
+    slackblocks ==3.2.0,
     aeson >=2.2 && <2.4,
     bytestring >=0.11.5.4 && <0.13,
     containers >=0.6.7 && <0.9,

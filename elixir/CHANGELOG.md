@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.2.0] — 2026-10-31
+
+- Add native layout blocks, rows and items with typed widths/alignment, closed child and fallback roles, checked nesting and receiving-surface validation (spec 1.5.0).
+- Preserve confirmed top-level message/view block counting, supported runtime minimums, legacy container-only behavior, and existing chart/text limits. No unconfirmed recursive block budget is imposed.
+- Add a runnable ten-language layout recipe and rendered preview; preserve outgoing 3.1.0 documentation.
+
 ## [3.1.0] — 2026-10-28
 
 - Coordinate this release with the new Haskell implementation and ten-language documentation. Existing runtime support remains unchanged.

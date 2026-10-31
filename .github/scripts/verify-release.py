@@ -85,6 +85,12 @@ def validate(root, requested=None, strict=False):
     versions["Haskell"] = match(
         root / "haskell/slackblocks.cabal", r"^version:\s*(\S+)$"
     )
+    versions["Haskell HTTP consumer"] = match(
+        root / "haskell/integrations/transport.cabal", r"^\s*slackblocks ==([^,\s]+),?$"
+    )
+    versions["PHP public API inventory"] = json.loads(
+        (root / "php/conformance/api-inventory.json").read_text()
+    )["Version"]["constants"]["PACKAGE"]
     version = requested or versions["Rust"]
     require(re.fullmatch(r"\d+\.\d+\.\d+", version), "Use a stable X.Y.Z version")
     require(

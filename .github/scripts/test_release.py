@@ -26,6 +26,8 @@ cargo = load("cargo_release", ROOT / "rust/bin/release.py")
 SOURCE_VERSION = release.rust_package(ROOT)["version"]
 VERSION = "2.6.0"
 FILES = [
+    "haskell/integrations/transport.cabal",
+    "php/conformance/api-inventory.json",
     "haskell/slackblocks.cabal",
     "haskell/release.json",
     "haskell/src/Slackblocks/Models.hs",
@@ -265,6 +267,21 @@ class ReleaseTests(unittest.TestCase):
         self.edit("rust/Cargo.toml", f'version = "{VERSION}"', 'version = "9.9.9"')
         with self.assertRaisesRegex(release.ReleaseError, "versions differ"):
             release.validate(self.root, VERSION)
+
+    def test_consumer_and_inventory_versions_must_match(self):
+        for name in (
+            "haskell/integrations/transport.cabal",
+            "php/conformance/api-inventory.json",
+        ):
+            path = self.root / name
+            original = path.read_text()
+            path.write_text(original.replace(VERSION, "9.9.9"))
+            with (
+                self.subTest(name=name),
+                self.assertRaisesRegex(release.ReleaseError, "versions differ"),
+            ):
+                release.validate(self.root)
+            path.write_text(original)
 
     def test_own_lockfiles_must_match(self):
         for name in (
