@@ -3,7 +3,7 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
-## [3.2.0] — 2026-10-30
+## [3.2.0] — 2026-10-31
 
 - Add native layout blocks, rows and items with typed widths/alignment, closed child and fallback roles, checked nesting and receiving-surface validation (spec 1.5.0).
 - Preserve confirmed top-level message/view block counting, supported runtime minimums, legacy container-only behavior, and existing chart/text limits. No unconfirmed recursive block budget is imposed.
