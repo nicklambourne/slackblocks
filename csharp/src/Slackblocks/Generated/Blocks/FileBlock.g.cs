@@ -14,7 +14,7 @@ namespace Slackblocks.Blocks;
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/file-block">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
-public sealed partial class FileBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
+public sealed partial class FileBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock, global::Slackblocks.Blocks.ILayoutChild
 {
     /// <summary>Creates and validates a <see cref="FileBlock"/>.</summary>
     /// <param name="externalId">The external identifier of a remote file previously added with the files.remote API. Required.</param>

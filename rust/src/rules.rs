@@ -2,8 +2,9 @@
 //! aggregate traversal borrows modeled children and keeps arbitrary JSON opaque.
 use crate::generated::{HOME_BLOCKS, ICONS, LIMITS, MESSAGE_BLOCKS, MODAL_BLOCKS};
 use crate::{
-    Attachment, Block, DataTableBlock, DataTableCell, ErrorCategory as C, RichTextBlockElement,
-    RichTextSectionElement, RichTextStyle, TaskCardBlock, TaskStatus, Text, ValidationError,
+    Attachment, Block, DataTableBlock, DataTableCell, ErrorCategory as C, LayoutBlock, LayoutChild,
+    RichTextBlockElement, RichTextSectionElement, RichTextStyle, TaskCardBlock, TaskStatus, Text,
+    ValidationError,
 };
 use serde::ser::SerializeSeq;
 use serde::{Serialize, Serializer};
@@ -171,7 +172,38 @@ pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), Validati
                 ));
             }
         }
+        "LayoutBlock" => composite_depth(v, path, 0, false)?,
+        "LayoutItem" => layout_keys(v, &["block", "width", "horizontal_alignment"], path)?,
+        "LayoutRow" => {
+            layout_keys(v, &["items"], path)?;
+            let items = array(&v["items"]);
+            let wide = items
+                .iter()
+                .filter(|i| {
+                    ["carousel", "data_table", "data_visualization"]
+                        .contains(&i["block"]["type"].as_str().unwrap_or_default())
+                })
+                .count();
+            if wide > 1 {
+                return Err(fail(
+                    C::InvalidUsage,
+                    path,
+                    "at most one wide-content block per row",
+                ));
+            }
+            let total: usize = items.iter().map(layout_weight).sum();
+            if items.iter().any(|i| {
+                i["block"]["type"] == "data_visualization" && layout_weight(i) * 2 <= total
+            }) {
+                return Err(fail(
+                    C::InvalidUsage,
+                    path,
+                    "a data visualization requires more than half the row weight",
+                ));
+            }
+        }
         "ContainerBlock" => {
+            composite_depth(v, path, 0, false)?;
             if !has("title") && !has("rich_text_title") {
                 return Err(fail(C::MissingRequired, path, "expected a title"));
             }
@@ -396,6 +428,16 @@ pub(crate) fn message(
         match block {
             Block::DataVisualization(_) => 1,
             Block::Container(container) => container.child_blocks().iter().map(charts).sum(),
+            Block::Layout(layout) => layout
+                .rows()
+                .iter()
+                .flat_map(|r| r.items())
+                .map(|i| match i.block() {
+                    LayoutChild::DataVisualizationBlock(_) => 1,
+                    LayoutChild::ContainerBlock(c) => c.child_blocks().iter().map(charts).sum(),
+                    _ => 0,
+                })
+                .sum(),
             _ => 0,
         }
     }
@@ -441,7 +483,7 @@ pub(crate) fn view(
     path: &str,
 ) -> Result<(), ValidationError> {
     surface(blocks, name, &format!("{path}.blocks"))?;
-    if name == "modal" && !has_submit && blocks.iter().any(|b| matches!(b, Block::Input(_))) {
+    if name == "modal" && !has_submit && blocks.iter().any(contains_input) {
         return Err(fail(
             C::MissingRequired,
             &format!("{path}.submit"),
@@ -467,6 +509,11 @@ fn surface(blocks: &[Block], name: &str, path: &str) -> Result<(), ValidationErr
             ));
         }
         standalone_task(block, &path)?;
+        match block {
+            Block::Container(c) => surface(c.child_blocks(), name, &path)?,
+            Block::Layout(l) => layout_surface(l, name, &path, allowed)?,
+            _ => {}
+        }
     }
     Ok(())
 }
@@ -495,6 +542,20 @@ fn totals(block: &Block) -> (usize, usize) {
     match block {
         Block::Markdown(value) => (value.text().chars().count(), 0),
         Block::DataTable(value) => (0, table_characters(value.rows())),
+        Block::Layout(layout) => layout
+            .rows()
+            .iter()
+            .flat_map(|r| r.items())
+            .map(|i| match i.block() {
+                LayoutChild::DataTableBlock(t) => (0, table_characters(t.rows())),
+                LayoutChild::ContainerBlock(c) => c
+                    .child_blocks()
+                    .iter()
+                    .map(totals)
+                    .fold((0, 0), |(a, b), (c, d)| (a + c, b + d)),
+                _ => (0, 0),
+            })
+            .fold((0, 0), |(a, b), (c, d)| (a + c, b + d)),
         Block::Container(value) => value
             .child_blocks()
             .iter()
@@ -631,4 +692,102 @@ fn chart(v: &Value, path: &str) -> Result<(), ValidationError> {
         }
     }
     Ok(())
+}
+
+fn layout_weight(item: &Value) -> usize {
+    match item["width"].as_str() {
+        Some("narrow") => 1,
+        Some("wide") => 3,
+        _ => 2,
+    }
+}
+fn layout_keys(value: &Value, keys: &[&str], path: &str) -> Result<(), ValidationError> {
+    if value
+        .as_object()
+        .is_some_and(|m| m.keys().any(|k| !keys.contains(&k.as_str())))
+    {
+        return Err(fail(C::TypeMismatch, path, "unsupported layout property"));
+    }
+    Ok(())
+}
+fn composite_depth(
+    value: &Value,
+    path: &str,
+    depth: usize,
+    seen: bool,
+) -> Result<(), ValidationError> {
+    let kind = value["type"].as_str().unwrap_or_default();
+    let seen = seen || kind == "layout";
+    let depth = depth + usize::from(matches!(kind, "layout" | "container"));
+    if seen && depth > 2 {
+        return Err(fail(
+            C::InvalidUsage,
+            path,
+            "layout/container nesting exceeds two composite levels",
+        ));
+    }
+    match kind {
+        "container" => {
+            for b in array(&value["child_blocks"]) {
+                composite_depth(b, path, depth, seen)?;
+            }
+        }
+        "layout" => {
+            for r in array(&value["rows"]) {
+                for i in array(&r["items"]) {
+                    composite_depth(&i["block"], path, depth, seen)?;
+                }
+            }
+        }
+        _ => {}
+    }
+    Ok(())
+}
+fn layout_surface(
+    layout: &LayoutBlock,
+    name: &str,
+    path: &str,
+    allowed: &[&str],
+) -> Result<(), ValidationError> {
+    for (r, row) in layout.rows().iter().enumerate() {
+        for (i, item) in row.items().iter().enumerate() {
+            let p = format!("{path}.rows[{r}].items[{i}].block");
+            if !allowed.contains(&item.block().wire_type()) {
+                return Err(fail(
+                    C::TypeMismatch,
+                    &p,
+                    "unsupported block on this surface",
+                ));
+            }
+            if let LayoutChild::ContainerBlock(c) = item.block() {
+                surface(c.child_blocks(), name, &p)?;
+            }
+        }
+    }
+    for (i, b) in layout.fallback().unwrap_or_default().iter().enumerate() {
+        if !allowed.contains(&b.wire_type()) {
+            return Err(fail(
+                C::TypeMismatch,
+                &format!("{path}.fallback[{i}]"),
+                "unsupported fallback on this surface",
+            ));
+        }
+    }
+    Ok(())
+}
+fn contains_input(block: &Block) -> bool {
+    match block {
+        Block::Input(_) => true,
+        Block::Container(c) => c.child_blocks().iter().any(contains_input),
+        Block::Layout(l) => l
+            .rows()
+            .iter()
+            .flat_map(|r| r.items())
+            .any(|i| match i.block() {
+                LayoutChild::InputBlock(_) => true,
+                LayoutChild::ContainerBlock(c) => c.child_blocks().iter().any(contains_input),
+                _ => false,
+            }),
+        _ => false,
+    }
 }

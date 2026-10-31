@@ -10,8 +10,9 @@ namespace Slackblocks;
  * A titled group of blocks that can optionally collapse.
  * @see https://docs.slack.dev/reference/block-kit/blocks/container-block
  * Provide a title or a rich text title.
+ * When a layout is nested, the combined layout/container depth cannot exceed two composite levels.
  */
-final readonly class ContainerBlock extends Value implements Block
+final readonly class ContainerBlock extends Value implements Block, LayoutChild
 {
     /** Adds the blocks grouped inside the container, in display order.
      * @var list<Block>

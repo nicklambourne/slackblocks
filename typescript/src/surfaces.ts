@@ -1,4 +1,5 @@
 import { TypeMismatchError } from "./errors.js";
+import { compositeDescendantEntries } from "./layout.js";
 import { requireArray } from "./internal.js";
 import type { JsonValue } from "./types.js";
 
@@ -19,6 +20,7 @@ const BLOCK_TYPES_BY_SURFACE: Record<BlockSurface, ReadonlySet<string>> = {
     "header",
     "image",
     "input",
+    "layout",
     "markdown",
     "plan",
     "rich_text",
@@ -36,6 +38,7 @@ const BLOCK_TYPES_BY_SURFACE: Record<BlockSurface, ReadonlySet<string>> = {
     "header",
     "image",
     "input",
+    "layout",
     "rich_text",
     "section",
     "video",
@@ -52,6 +55,7 @@ const BLOCK_TYPES_BY_SURFACE: Record<BlockSurface, ReadonlySet<string>> = {
     "header",
     "image",
     "input",
+    "layout",
     "rich_text",
     "section",
     "table",
@@ -66,14 +70,11 @@ export function validateSurfaceBlocks(
 ): void {
   requireArray(blocks, path);
   const allowed = BLOCK_TYPES_BY_SURFACE[surface];
-  blocks.forEach((block, index) => {
-    if (block === null || Array.isArray(block) || typeof block !== "object") {
-      throw new TypeMismatchError(`${path}[${index}]`, "expected a block object");
-    }
+  compositeDescendantEntries(blocks, path).forEach(({ block, path: blockPath }) => {
     const type = block.type;
     if (typeof type !== "string" || !allowed.has(type)) {
       throw new TypeMismatchError(
-        `${path}[${index}].type`,
+        `${blockPath}.type`,
         `block type ${String(type)} is not supported on ${surface} surfaces`,
       );
     }

@@ -24,6 +24,7 @@ defmodule Slackblocks.Types do
           | Slackblocks.Blocks.Table.t()
           | Slackblocks.Blocks.TaskCard.t()
           | Slackblocks.Blocks.Video.t()
+          | Slackblocks.Blocks.Layout.t()
   @type context_element ::
           Slackblocks.Elements.Image.t()
           | Slackblocks.Objects.MarkdownText.t()
@@ -103,6 +104,33 @@ defmodule Slackblocks.Types do
           | Slackblocks.RichText.Text.t()
           | Slackblocks.RichText.User.t()
           | Slackblocks.RichText.UserGroup.t()
+  @type layout_child ::
+          Slackblocks.Blocks.Actions.t()
+          | Slackblocks.Blocks.Alert.t()
+          | Slackblocks.Blocks.Card.t()
+          | Slackblocks.Blocks.Carousel.t()
+          | Slackblocks.Blocks.Container.t()
+          | Slackblocks.Blocks.Context.t()
+          | Slackblocks.Blocks.DataTable.t()
+          | Slackblocks.Blocks.DataVisualization.t()
+          | Slackblocks.Blocks.Divider.t()
+          | Slackblocks.Blocks.File.t()
+          | Slackblocks.Blocks.Header.t()
+          | Slackblocks.Blocks.Image.t()
+          | Slackblocks.Blocks.Input.t()
+          | Slackblocks.Blocks.RichText.t()
+          | Slackblocks.Blocks.Section.t()
+          | Slackblocks.Blocks.Table.t()
+          | Slackblocks.Blocks.Video.t()
+  @type layout_fallback ::
+          Slackblocks.Blocks.Context.t()
+          | Slackblocks.Blocks.Divider.t()
+          | Slackblocks.Blocks.Header.t()
+          | Slackblocks.Blocks.Image.t()
+          | Slackblocks.Blocks.RichText.t()
+          | Slackblocks.Blocks.Section.t()
+          | Slackblocks.Blocks.Table.t()
+          | Slackblocks.Blocks.Video.t()
   @type alert_level :: :default | :info | :warning | :error | :success
   @type container_width :: :narrow | :standard | :wide | :full
   @type task_status :: :pending | :in_progress | :complete | :error
@@ -111,4 +139,7 @@ defmodule Slackblocks.Types do
   @type column_align :: :left | :center | :right
   @type rich_text_list_style :: :bullet | :ordered
   @type response_type :: :in_channel | :ephemeral
+  @type layout_width :: :narrow | :standard | :wide
+  @type layout_alignment :: :start | :center | :end
+  @type layout_grid_lines :: :none | :rows | :outer
 end

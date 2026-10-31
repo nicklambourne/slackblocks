@@ -10,7 +10,7 @@ namespace Slackblocks;
  * Large, bold plain text that introduces a group of blocks.
  * @see https://docs.slack.dev/reference/block-kit/blocks/header-block
  */
-final readonly class HeaderBlock extends Value implements Block
+final readonly class HeaderBlock extends Value implements Block, LayoutChild, LayoutFallback
 {
     /** Sets the header text, shown in a larger bold font.
      * @var PlainText

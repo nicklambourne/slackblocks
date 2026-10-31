@@ -142,3 +142,9 @@ func NewRichTextCodeBlock() *RichTextCodeBlockBuilder {
 func NewRichTextQuote() *RichTextQuoteBuilder {
 	return newRichTextQuoteBuilder(newBuilder("RichTextQuote", "rich_text_quote"))
 }
+
+// NewLayoutRow creates one to three items in source order.
+func NewLayoutRow() *LayoutRowBuilder { return newLayoutRowBuilder(newBuilder("LayoutRow", "")) }
+
+// NewLayoutItem creates a supported child block with proportional width and alignment.
+func NewLayoutItem() *LayoutItemBuilder { return newLayoutItemBuilder(newBuilder("LayoutItem", "")) }

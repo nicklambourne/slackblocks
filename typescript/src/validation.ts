@@ -1,3 +1,5 @@
+import { compositeDescendants } from "./layout.js";
+import { validateLayoutBlock, validateCompositeDepth } from "./layout.js";
 import limits from "../../spec/limits.json" with { type: "json" };
 
 import { validateConversationFilter, validateSlackFile, validateFeedbackButton } from "./composition.js";
@@ -255,6 +257,7 @@ const REQUIRED_FIELDS: Record<string, readonly string[]> = {
   channel: ["channel_id"],
   checkboxes: ["options"],
   container: ["child_blocks"],
+  layout: ["label", "rows"],
   context: ["elements"],
   context_actions: ["elements"],
   data_table: ["rows", "caption"],
@@ -908,7 +911,11 @@ function validateKnownObject(
         }
       });
       break;
+    case "layout":
+      validateLayoutBlock(object, path);
+      break;
     case "container": {
+      validateCompositeDepth(object, path);
       if (object.title === undefined && object.rich_text_title === undefined) {
         throw new MissingRequiredError(path, "expected title or rich_text_title");
       }
@@ -938,7 +945,7 @@ function validateKnownObject(
         limits.container.child_blocks.max_items,
       );
       const allowed = new Set([
-        "actions", "context", "divider", "file", "header", "image", "input",
+        "actions", "context", "divider", "file", "header", "image", "input", "layout",
         "rich_text", "section", "table", "video",
       ]);
       object.child_blocks.forEach((block, index) => {
@@ -1237,7 +1244,7 @@ function validateKnownObject(
       if (type === "modal") {
         if (
           object.submit === undefined &&
-          object.blocks.some(
+          compositeDescendants(object.blocks).some(
             (block) =>
               block !== null &&
               !Array.isArray(block) &&

@@ -14,7 +14,7 @@ namespace Slackblocks.Blocks;
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/video-block">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
-public sealed partial class VideoBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
+public sealed partial class VideoBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock, global::Slackblocks.Blocks.ILayoutChild, global::Slackblocks.Blocks.ILayoutFallback
 {
     /// <summary>Creates and validates a <see cref="VideoBlock"/>.</summary>
     /// <param name="altText">A plain-text summary of the image or video for assistive technology. Required. Slack allows at most 2000 characters.</param>

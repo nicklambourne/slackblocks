@@ -12,6 +12,9 @@ module Slackblocks.Models
     ColumnAlign (..),
     RichTextListStyle (..),
     ResponseType (..),
+    LayoutWidth (..),
+    LayoutAlignment (..),
+    LayoutGridLines (..),
     ActionsBlock,
     ActionsBlockFields (..),
     actionsBlock,
@@ -457,6 +460,21 @@ module Slackblocks.Models
     webhookMessage,
     buildWebhookMessage,
     inspectWebhookMessage,
+    LayoutBlock,
+    LayoutBlockFields (..),
+    layoutBlock,
+    buildLayoutBlock,
+    inspectLayoutBlock,
+    LayoutRow,
+    LayoutRowFields (..),
+    layoutRow,
+    buildLayoutRow,
+    inspectLayoutRow,
+    LayoutItem,
+    LayoutItemFields (..),
+    layoutItem,
+    buildLayoutItem,
+    inspectLayoutItem,
     PlanTask,
     buildPlanTask,
     inspectPlanTask,
@@ -503,6 +521,8 @@ module Slackblocks.Models
     matchBlockTaskCardBlock,
     videoBlockAsBlock,
     matchBlockVideoBlock,
+    layoutBlockAsBlock,
+    matchBlockLayoutBlock,
     ContextElement,
     imageElementAsContextElement,
     matchContextElementImageElement,
@@ -661,6 +681,58 @@ module Slackblocks.Models
     matchRichTextSectionElementRichTextUser,
     richTextUserGroupAsRichTextSectionElement,
     matchRichTextSectionElementRichTextUserGroup,
+    LayoutChild,
+    actionsBlockAsLayoutChild,
+    matchLayoutChildActionsBlock,
+    alertBlockAsLayoutChild,
+    matchLayoutChildAlertBlock,
+    cardBlockAsLayoutChild,
+    matchLayoutChildCardBlock,
+    carouselBlockAsLayoutChild,
+    matchLayoutChildCarouselBlock,
+    containerBlockAsLayoutChild,
+    matchLayoutChildContainerBlock,
+    contextBlockAsLayoutChild,
+    matchLayoutChildContextBlock,
+    dataTableBlockAsLayoutChild,
+    matchLayoutChildDataTableBlock,
+    dataVisualizationBlockAsLayoutChild,
+    matchLayoutChildDataVisualizationBlock,
+    dividerBlockAsLayoutChild,
+    matchLayoutChildDividerBlock,
+    fileBlockAsLayoutChild,
+    matchLayoutChildFileBlock,
+    headerBlockAsLayoutChild,
+    matchLayoutChildHeaderBlock,
+    imageBlockAsLayoutChild,
+    matchLayoutChildImageBlock,
+    inputBlockAsLayoutChild,
+    matchLayoutChildInputBlock,
+    richTextBlockAsLayoutChild,
+    matchLayoutChildRichTextBlock,
+    sectionBlockAsLayoutChild,
+    matchLayoutChildSectionBlock,
+    tableBlockAsLayoutChild,
+    matchLayoutChildTableBlock,
+    videoBlockAsLayoutChild,
+    matchLayoutChildVideoBlock,
+    LayoutFallback,
+    contextBlockAsLayoutFallback,
+    matchLayoutFallbackContextBlock,
+    dividerBlockAsLayoutFallback,
+    matchLayoutFallbackDividerBlock,
+    headerBlockAsLayoutFallback,
+    matchLayoutFallbackHeaderBlock,
+    imageBlockAsLayoutFallback,
+    matchLayoutFallbackImageBlock,
+    richTextBlockAsLayoutFallback,
+    matchLayoutFallbackRichTextBlock,
+    sectionBlockAsLayoutFallback,
+    matchLayoutFallbackSectionBlock,
+    tableBlockAsLayoutFallback,
+    matchLayoutFallbackTableBlock,
+    videoBlockAsLayoutFallback,
+    matchLayoutFallbackVideoBlock,
   )
 where
 
@@ -683,7 +755,7 @@ specVersion :: Text
 
 packageVersion = "3.1.0"
 
-specVersion = "1.4.0"
+specVersion = "1.5.0"
 
 -- | Severity levels supported by alert blocks.
 data AlertLevel
@@ -872,6 +944,78 @@ instance FromSlackJSON ResponseType where
     _ -> failure TypeMismatch [] "enum" "unknown enumeration value"
 
 instance FromJSON ResponseType where parseJSON = checkedParser
+
+-- | Relative layout item weights: narrow is 1, standard is 2, and wide is 3.
+data LayoutWidth
+  = -- | Slack wire value: @narrow@.
+    LayoutWidthNarrow
+  | -- | Slack wire value: @standard@.
+    LayoutWidthStandard
+  | -- | Slack wire value: @wide@.
+    LayoutWidthWide
+  deriving (Eq, Ord, Show, Enum, Bounded)
+
+instance ToJSON LayoutWidth where
+  toJSON LayoutWidthNarrow = String "narrow"
+  toJSON LayoutWidthStandard = String "standard"
+  toJSON LayoutWidthWide = String "wide"
+
+instance FromSlackJSON LayoutWidth where
+  fromSlackJSON value = case value of
+    String "narrow" -> Right LayoutWidthNarrow
+    String "standard" -> Right LayoutWidthStandard
+    String "wide" -> Right LayoutWidthWide
+    _ -> failure TypeMismatch [] "enum" "unknown enumeration value"
+
+instance FromJSON LayoutWidth where parseJSON = checkedParser
+
+-- | Direction-aware alignment within a layout item. Omit for fill behavior.
+data LayoutAlignment
+  = -- | Slack wire value: @start@.
+    LayoutAlignmentStart
+  | -- | Slack wire value: @center@.
+    LayoutAlignmentCenter
+  | -- | Slack wire value: @end@.
+    LayoutAlignmentEnd
+  deriving (Eq, Ord, Show, Enum, Bounded)
+
+instance ToJSON LayoutAlignment where
+  toJSON LayoutAlignmentStart = String "start"
+  toJSON LayoutAlignmentCenter = String "center"
+  toJSON LayoutAlignmentEnd = String "end"
+
+instance FromSlackJSON LayoutAlignment where
+  fromSlackJSON value = case value of
+    String "start" -> Right LayoutAlignmentStart
+    String "center" -> Right LayoutAlignmentCenter
+    String "end" -> Right LayoutAlignmentEnd
+    _ -> failure TypeMismatch [] "enum" "unknown enumeration value"
+
+instance FromJSON LayoutAlignment where parseJSON = checkedParser
+
+-- | Layout borders: none, outer border with horizontal row dividers, or outer border only.
+data LayoutGridLines
+  = -- | Slack wire value: @none@.
+    LayoutGridLinesNone
+  | -- | Slack wire value: @rows@.
+    LayoutGridLinesRows
+  | -- | Slack wire value: @outer@.
+    LayoutGridLinesOuter
+  deriving (Eq, Ord, Show, Enum, Bounded)
+
+instance ToJSON LayoutGridLines where
+  toJSON LayoutGridLinesNone = String "none"
+  toJSON LayoutGridLinesRows = String "rows"
+  toJSON LayoutGridLinesOuter = String "outer"
+
+instance FromSlackJSON LayoutGridLines where
+  fromSlackJSON value = case value of
+    String "none" -> Right LayoutGridLinesNone
+    String "rows" -> Right LayoutGridLinesRows
+    String "outer" -> Right LayoutGridLinesOuter
+    _ -> failure TypeMismatch [] "enum" "unknown enumeration value"
+
+instance FromJSON LayoutGridLines where parseJSON = checkedParser
 
 -- | A block that holds interactive elements such as buttons and menus.
 --
@@ -1099,6 +1243,7 @@ instance FromJSON CarouselBlock where parseJSON = checkedParser
 --
 -- <https://docs.slack.dev/reference/block-kit/blocks/container-block>
 -- Provide a title or a rich text title.
+-- When a layout is nested, the combined layout/container depth cannot exceed two composite levels.
 newtype ContainerBlock = CheckedContainerBlock ContainerBlockFields deriving (Eq, Show)
 
 -- | Editable construction input. Call 'buildContainerBlock' before encoding.
@@ -5840,6 +5985,170 @@ instance FromSlackJSON WebhookMessage where
 
 instance FromJSON WebhookMessage where parseJSON = checkedParser
 
+-- | A visual grid of one to five rows on messages, modals, and App Home. Supply fallback content for older clients.
+--
+-- <https://docs.slack.dev/reference/block-kit/blocks/layout-block>
+-- Children must be valid on the receiving surface.
+-- Layout and container nesting is limited to two composite levels.
+-- Existing message and view limits count top-level blocks; no unconfirmed nested-block counting formula is imposed.
+newtype LayoutBlock = CheckedLayoutBlock LayoutBlockFields deriving (Eq, Show)
+
+-- | Editable construction input. Call 'buildLayoutBlock' before encoding.
+data LayoutBlockFields = LayoutBlockFields
+  { -- | Describes the layout. A visible label is bold text, not a semantic heading. Required. Shared limit: @layout.label@.
+    layoutBlockLabel :: Text,
+    -- | Adds one to five rows in source and reading order. Required. Shared limit: @layout.rows@.
+    layoutBlockRows :: [LayoutRow],
+    -- | Shows the label above the grid. Slack defaults to false; hidden labels are not exposed to screen readers. Optional; Nothing omits the field. Factory default: @Nothing@.
+    layoutBlockIsLabelVisible :: Maybe (Bool),
+    -- | Sets outer borders and horizontal row dividers. Slack defaults to none; there are no vertical dividers. Optional; Nothing omits the field. Factory default: @Nothing@.
+    layoutBlockGridLines :: Maybe (LayoutGridLines),
+    -- | Adds stable blocks rendered in place of the layout on older clients. Omission is allowed; Slack normalizes it to an empty array and does not synthesize content. Optional; Nothing omits the field. Factory default: @Nothing@.
+    layoutBlockFallback :: Maybe ([LayoutFallback]),
+    -- | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @block_id@.
+    layoutBlockBlockId :: Maybe (Text),
+    -- | Unmodeled extension fields. Reserved and modeled keys are rejected.
+    layoutBlockExtensions :: Map Text Value
+  }
+  deriving (Eq, Show)
+
+-- | Start editable fields for LayoutBlock; required arguments follow the signature.
+-- Optional fields start absent except the explicit shared defaults; no block ID is invented.
+-- Finish with 'buildLayoutBlock' to validate before JSON encoding.
+layoutBlock :: Text -> [LayoutRow] -> LayoutBlockFields
+layoutBlock arg0 arg1 = LayoutBlockFields (arg0) (arg1) (Nothing) (Nothing) (Nothing) (Nothing) (Map.empty)
+
+-- | Inspect immutable construction fields. Rebuild edits with 'buildLayoutBlock' to revalidate.
+inspectLayoutBlock :: LayoutBlock -> LayoutBlockFields
+inspectLayoutBlock (CheckedLayoutBlock fields) = fields
+
+-- | Validate fields, extensions and receiving context. Return structured errors or a checked LayoutBlock.
+buildLayoutBlock :: LayoutBlockFields -> Result LayoutBlock
+buildLayoutBlock fields = do
+  checkExtensions ["label", "rows", "is_label_visible", "grid_lines", "fallback", "block_id"] (layoutBlockExtensions fields)
+  validateFields "LayoutBlock" (wireLayoutBlock fields)
+  pure (CheckedLayoutBlock fields)
+
+wireLayoutBlock :: LayoutBlockFields -> Value
+wireLayoutBlock fields =
+  object $
+    ["type" .= ("layout" :: Text)] <> ["label" .= (layoutBlockLabel fields)] <> ["rows" .= (layoutBlockRows fields)] <> optional "is_label_visible" (layoutBlockIsLabelVisible fields) <> optional "grid_lines" (layoutBlockGridLines fields) <> optional "fallback" (layoutBlockFallback fields) <> optional "block_id" (layoutBlockBlockId fields) <> extensionPairs (layoutBlockExtensions fields)
+
+instance ToJSON LayoutBlock where toJSON (CheckedLayoutBlock fields) = wireLayoutBlock fields
+
+instance FromSlackJSON LayoutBlock where
+  fromSlackJSON value = do
+    fields <- wireObject "layout" value
+    parsedLabel <- required "label" fields
+    parsedRows <- required "rows" fields
+    parsedIsLabelVisible <- optionalField "is_label_visible" fields
+    parsedGridLines <- optionalField "grid_lines" fields
+    parsedFallback <- optionalField "fallback" fields
+    parsedBlockId <- optionalField "block_id" fields
+    buildLayoutBlock (LayoutBlockFields parsedLabel parsedRows parsedIsLabelVisible parsedGridLines parsedFallback parsedBlockId (remaining ["label", "rows", "is_label_visible", "grid_lines", "fallback", "block_id"] fields))
+
+instance FromJSON LayoutBlock where parseJSON = checkedParser
+
+-- | One to three layout items in reading order. A row has no alignment or discriminator.
+--
+-- <https://docs.slack.dev/reference/block-kit/blocks/layout-block>
+-- At most one carousel, data table, or data visualization may occupy a row.
+-- A data visualization must have more than half of the total row weight.
+newtype LayoutRow = CheckedLayoutRow LayoutRowFields deriving (Eq, Show)
+
+-- | Editable construction input. Call 'buildLayoutRow' before encoding.
+data LayoutRowFields = LayoutRowFields
+  { -- | Adds one to three items in source order. Required. Shared limit: @layout.items@.
+    layoutRowItems :: [LayoutItem],
+    -- | Unmodeled extension fields. Reserved and modeled keys are rejected.
+    layoutRowExtensions :: Map Text Value
+  }
+  deriving (Eq, Show)
+
+-- | Start editable fields for LayoutRow; required arguments follow the signature.
+-- Optional fields start absent except the explicit shared defaults; no block ID is invented.
+-- Finish with 'buildLayoutRow' to validate before JSON encoding.
+layoutRow :: [LayoutItem] -> LayoutRowFields
+layoutRow arg0 = LayoutRowFields (arg0) (Map.empty)
+
+-- | Inspect immutable construction fields. Rebuild edits with 'buildLayoutRow' to revalidate.
+inspectLayoutRow :: LayoutRow -> LayoutRowFields
+inspectLayoutRow (CheckedLayoutRow fields) = fields
+
+-- | Validate fields, extensions and receiving context. Return structured errors or a checked LayoutRow.
+buildLayoutRow :: LayoutRowFields -> Result LayoutRow
+buildLayoutRow fields = do
+  checkExtensions ["items"] (layoutRowExtensions fields)
+  validateFields "LayoutRow" (wireLayoutRow fields)
+  pure (CheckedLayoutRow fields)
+
+wireLayoutRow :: LayoutRowFields -> Value
+wireLayoutRow fields =
+  object $
+    [] <> ["items" .= (layoutRowItems fields)] <> extensionPairs (layoutRowExtensions fields)
+
+instance ToJSON LayoutRow where toJSON (CheckedLayoutRow fields) = wireLayoutRow fields
+
+instance FromSlackJSON LayoutRow where
+  fromSlackJSON value = do
+    fields <- wireObject "" value
+    parsedItems <- required "items" fields
+    buildLayoutRow (LayoutRowFields parsedItems (remaining ["items"] fields))
+
+instance FromJSON LayoutRow where parseJSON = checkedParser
+
+-- | One supported child block with a proportional width and optional direction-aware alignment.
+--
+-- <https://docs.slack.dev/reference/block-kit/blocks/layout-block>
+newtype LayoutItem = CheckedLayoutItem LayoutItemFields deriving (Eq, Show)
+
+-- | Editable construction input. Call 'buildLayoutItem' before encoding.
+data LayoutItemFields = LayoutItemFields
+  { -- | Sets the child block. Direct nested layouts and markdown blocks are not supported. Required.
+    layoutItemBlock :: LayoutChild,
+    -- | Sets the relative row weight: narrow 1, standard 2 (default), wide 3. Full is not supported. Optional; Nothing omits the field. Factory default: @Nothing@.
+    layoutItemWidth :: Maybe (LayoutWidth),
+    -- | Aligns content within the cell. Omission fills the cell; start and end follow text direction. Optional; Nothing omits the field. Factory default: @Nothing@.
+    layoutItemHorizontalAlignment :: Maybe (LayoutAlignment),
+    -- | Unmodeled extension fields. Reserved and modeled keys are rejected.
+    layoutItemExtensions :: Map Text Value
+  }
+  deriving (Eq, Show)
+
+-- | Start editable fields for LayoutItem; required arguments follow the signature.
+-- Optional fields start absent except the explicit shared defaults; no block ID is invented.
+-- Finish with 'buildLayoutItem' to validate before JSON encoding.
+layoutItem :: LayoutChild -> LayoutItemFields
+layoutItem arg0 = LayoutItemFields (arg0) (Nothing) (Nothing) (Map.empty)
+
+-- | Inspect immutable construction fields. Rebuild edits with 'buildLayoutItem' to revalidate.
+inspectLayoutItem :: LayoutItem -> LayoutItemFields
+inspectLayoutItem (CheckedLayoutItem fields) = fields
+
+-- | Validate fields, extensions and receiving context. Return structured errors or a checked LayoutItem.
+buildLayoutItem :: LayoutItemFields -> Result LayoutItem
+buildLayoutItem fields = do
+  checkExtensions ["block", "width", "horizontal_alignment"] (layoutItemExtensions fields)
+  validateFields "LayoutItem" (wireLayoutItem fields)
+  pure (CheckedLayoutItem fields)
+
+wireLayoutItem :: LayoutItemFields -> Value
+wireLayoutItem fields =
+  object $
+    [] <> ["block" .= (layoutItemBlock fields)] <> optional "width" (layoutItemWidth fields) <> optional "horizontal_alignment" (layoutItemHorizontalAlignment fields) <> extensionPairs (layoutItemExtensions fields)
+
+instance ToJSON LayoutItem where toJSON (CheckedLayoutItem fields) = wireLayoutItem fields
+
+instance FromSlackJSON LayoutItem where
+  fromSlackJSON value = do
+    fields <- wireObject "" value
+    parsedBlock <- required "block" fields
+    parsedWidth <- optionalField "width" fields
+    parsedHorizontalAlignment <- optionalField "horizontal_alignment" fields
+    buildLayoutItem (LayoutItemFields parsedBlock parsedWidth parsedHorizontalAlignment (remaining ["block", "width", "horizontal_alignment"] fields))
+
+instance FromJSON LayoutItem where parseJSON = checkedParser
+
 -- | A task in a plan. Unlike a standalone task card, it may be pending.
 newtype PlanTask = CheckedPlanTask TaskCardBlock deriving (Eq, Show)
 
@@ -5861,7 +6170,7 @@ instance FromSlackJSON PlanTask where fromSlackJSON = decodeTaskCard buildPlanTa
 instance FromJSON PlanTask where parseJSON = checkedParser
 
 -- | Closed role: only checked members may enter this position.
-data Block = BlockActionsBlock ActionsBlock | BlockAlertBlock AlertBlock | BlockCardBlock CardBlock | BlockCarouselBlock CarouselBlock | BlockContainerBlock ContainerBlock | BlockContextActionsBlock ContextActionsBlock | BlockContextBlock ContextBlock | BlockDataTableBlock DataTableBlock | BlockDataVisualizationBlock DataVisualizationBlock | BlockDividerBlock DividerBlock | BlockFileBlock FileBlock | BlockHeaderBlock HeaderBlock | BlockImageBlock ImageBlock | BlockInputBlock InputBlock | BlockMarkdownBlock MarkdownBlock | BlockPlanBlock PlanBlock | BlockRichTextBlock RichTextBlock | BlockSectionBlock SectionBlock | BlockTableBlock TableBlock | BlockTaskCardBlock TaskCardBlock | BlockVideoBlock VideoBlock deriving (Eq, Show)
+data Block = BlockActionsBlock ActionsBlock | BlockAlertBlock AlertBlock | BlockCardBlock CardBlock | BlockCarouselBlock CarouselBlock | BlockContainerBlock ContainerBlock | BlockContextActionsBlock ContextActionsBlock | BlockContextBlock ContextBlock | BlockDataTableBlock DataTableBlock | BlockDataVisualizationBlock DataVisualizationBlock | BlockDividerBlock DividerBlock | BlockFileBlock FileBlock | BlockHeaderBlock HeaderBlock | BlockImageBlock ImageBlock | BlockInputBlock InputBlock | BlockMarkdownBlock MarkdownBlock | BlockPlanBlock PlanBlock | BlockRichTextBlock RichTextBlock | BlockSectionBlock SectionBlock | BlockTableBlock TableBlock | BlockTaskCardBlock TaskCardBlock | BlockVideoBlock VideoBlock | BlockLayoutBlock LayoutBlock deriving (Eq, Show)
 
 instance ToJSON Block where
   toJSON (BlockActionsBlock value) = toJSON value
@@ -5885,6 +6194,7 @@ instance ToJSON Block where
   toJSON (BlockTableBlock value) = toJSON value
   toJSON (BlockTaskCardBlock value) = toJSON value
   toJSON (BlockVideoBlock value) = toJSON value
+  toJSON (BlockLayoutBlock value) = toJSON value
 
 instance FromSlackJSON Block where
   fromSlackJSON value = do
@@ -5911,6 +6221,7 @@ instance FromSlackJSON Block where
       "table" -> BlockTableBlock <$> fromSlackJSON value
       "task_card" -> fromSlackJSON value >>= taskCardBlockAsBlock
       "video" -> BlockVideoBlock <$> fromSlackJSON value
+      "layout" -> BlockLayoutBlock <$> fromSlackJSON value
       _ -> failure TypeMismatch [Field "type"] "role" "unsupported child type"
 
 instance FromJSON Block where parseJSON = checkedParser
@@ -6105,6 +6416,15 @@ videoBlockAsBlock = BlockVideoBlock
 matchBlockVideoBlock :: Block -> Maybe VideoBlock
 matchBlockVideoBlock (BlockVideoBlock value) = Just value
 matchBlockVideoBlock _ = Nothing
+
+-- | Place a checked LayoutBlock in the Block role. The receiving parent retains its contextual validation.
+layoutBlockAsBlock :: LayoutBlock -> Block
+layoutBlockAsBlock = BlockLayoutBlock
+
+-- | Return the LayoutBlock member when present, otherwise Nothing; no unchecked cast.
+matchBlockLayoutBlock :: Block -> Maybe LayoutBlock
+matchBlockLayoutBlock (BlockLayoutBlock value) = Just value
+matchBlockLayoutBlock _ = Nothing
 
 -- | Closed role: only checked members may enter this position.
 data ContextElement = ContextElementImageElement ImageElement | ContextElementMarkdownText MarkdownText | ContextElementPlainText PlainText deriving (Eq, Show)
@@ -7049,3 +7369,304 @@ richTextUserGroupAsRichTextSectionElement = RichTextSectionElementRichTextUserGr
 matchRichTextSectionElementRichTextUserGroup :: RichTextSectionElement -> Maybe RichTextUserGroup
 matchRichTextSectionElementRichTextUserGroup (RichTextSectionElementRichTextUserGroup value) = Just value
 matchRichTextSectionElementRichTextUserGroup _ = Nothing
+
+-- | Closed role: only checked members may enter this position.
+data LayoutChild = LayoutChildActionsBlock ActionsBlock | LayoutChildAlertBlock AlertBlock | LayoutChildCardBlock CardBlock | LayoutChildCarouselBlock CarouselBlock | LayoutChildContainerBlock ContainerBlock | LayoutChildContextBlock ContextBlock | LayoutChildDataTableBlock DataTableBlock | LayoutChildDataVisualizationBlock DataVisualizationBlock | LayoutChildDividerBlock DividerBlock | LayoutChildFileBlock FileBlock | LayoutChildHeaderBlock HeaderBlock | LayoutChildImageBlock ImageBlock | LayoutChildInputBlock InputBlock | LayoutChildRichTextBlock RichTextBlock | LayoutChildSectionBlock SectionBlock | LayoutChildTableBlock TableBlock | LayoutChildVideoBlock VideoBlock deriving (Eq, Show)
+
+instance ToJSON LayoutChild where
+  toJSON (LayoutChildActionsBlock value) = toJSON value
+  toJSON (LayoutChildAlertBlock value) = toJSON value
+  toJSON (LayoutChildCardBlock value) = toJSON value
+  toJSON (LayoutChildCarouselBlock value) = toJSON value
+  toJSON (LayoutChildContainerBlock value) = toJSON value
+  toJSON (LayoutChildContextBlock value) = toJSON value
+  toJSON (LayoutChildDataTableBlock value) = toJSON value
+  toJSON (LayoutChildDataVisualizationBlock value) = toJSON value
+  toJSON (LayoutChildDividerBlock value) = toJSON value
+  toJSON (LayoutChildFileBlock value) = toJSON value
+  toJSON (LayoutChildHeaderBlock value) = toJSON value
+  toJSON (LayoutChildImageBlock value) = toJSON value
+  toJSON (LayoutChildInputBlock value) = toJSON value
+  toJSON (LayoutChildRichTextBlock value) = toJSON value
+  toJSON (LayoutChildSectionBlock value) = toJSON value
+  toJSON (LayoutChildTableBlock value) = toJSON value
+  toJSON (LayoutChildVideoBlock value) = toJSON value
+
+instance FromSlackJSON LayoutChild where
+  fromSlackJSON value = do
+    tag <- wireTag value
+    case tag of
+      "actions" -> LayoutChildActionsBlock <$> fromSlackJSON value
+      "alert" -> LayoutChildAlertBlock <$> fromSlackJSON value
+      "card" -> LayoutChildCardBlock <$> fromSlackJSON value
+      "carousel" -> LayoutChildCarouselBlock <$> fromSlackJSON value
+      "container" -> LayoutChildContainerBlock <$> fromSlackJSON value
+      "context" -> LayoutChildContextBlock <$> fromSlackJSON value
+      "data_table" -> LayoutChildDataTableBlock <$> fromSlackJSON value
+      "data_visualization" -> LayoutChildDataVisualizationBlock <$> fromSlackJSON value
+      "divider" -> LayoutChildDividerBlock <$> fromSlackJSON value
+      "file" -> LayoutChildFileBlock <$> fromSlackJSON value
+      "header" -> LayoutChildHeaderBlock <$> fromSlackJSON value
+      "image" -> LayoutChildImageBlock <$> fromSlackJSON value
+      "input" -> LayoutChildInputBlock <$> fromSlackJSON value
+      "rich_text" -> LayoutChildRichTextBlock <$> fromSlackJSON value
+      "section" -> LayoutChildSectionBlock <$> fromSlackJSON value
+      "table" -> LayoutChildTableBlock <$> fromSlackJSON value
+      "video" -> LayoutChildVideoBlock <$> fromSlackJSON value
+      _ -> failure TypeMismatch [Field "type"] "role" "unsupported child type"
+
+instance FromJSON LayoutChild where parseJSON = checkedParser
+
+-- | Place a checked ActionsBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+actionsBlockAsLayoutChild :: ActionsBlock -> LayoutChild
+actionsBlockAsLayoutChild = LayoutChildActionsBlock
+
+-- | Return the ActionsBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildActionsBlock :: LayoutChild -> Maybe ActionsBlock
+matchLayoutChildActionsBlock (LayoutChildActionsBlock value) = Just value
+matchLayoutChildActionsBlock _ = Nothing
+
+-- | Place a checked AlertBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+alertBlockAsLayoutChild :: AlertBlock -> LayoutChild
+alertBlockAsLayoutChild = LayoutChildAlertBlock
+
+-- | Return the AlertBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildAlertBlock :: LayoutChild -> Maybe AlertBlock
+matchLayoutChildAlertBlock (LayoutChildAlertBlock value) = Just value
+matchLayoutChildAlertBlock _ = Nothing
+
+-- | Place a checked CardBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+cardBlockAsLayoutChild :: CardBlock -> LayoutChild
+cardBlockAsLayoutChild = LayoutChildCardBlock
+
+-- | Return the CardBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildCardBlock :: LayoutChild -> Maybe CardBlock
+matchLayoutChildCardBlock (LayoutChildCardBlock value) = Just value
+matchLayoutChildCardBlock _ = Nothing
+
+-- | Place a checked CarouselBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+carouselBlockAsLayoutChild :: CarouselBlock -> LayoutChild
+carouselBlockAsLayoutChild = LayoutChildCarouselBlock
+
+-- | Return the CarouselBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildCarouselBlock :: LayoutChild -> Maybe CarouselBlock
+matchLayoutChildCarouselBlock (LayoutChildCarouselBlock value) = Just value
+matchLayoutChildCarouselBlock _ = Nothing
+
+-- | Place a checked ContainerBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+containerBlockAsLayoutChild :: ContainerBlock -> LayoutChild
+containerBlockAsLayoutChild = LayoutChildContainerBlock
+
+-- | Return the ContainerBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildContainerBlock :: LayoutChild -> Maybe ContainerBlock
+matchLayoutChildContainerBlock (LayoutChildContainerBlock value) = Just value
+matchLayoutChildContainerBlock _ = Nothing
+
+-- | Place a checked ContextBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+contextBlockAsLayoutChild :: ContextBlock -> LayoutChild
+contextBlockAsLayoutChild = LayoutChildContextBlock
+
+-- | Return the ContextBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildContextBlock :: LayoutChild -> Maybe ContextBlock
+matchLayoutChildContextBlock (LayoutChildContextBlock value) = Just value
+matchLayoutChildContextBlock _ = Nothing
+
+-- | Place a checked DataTableBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+dataTableBlockAsLayoutChild :: DataTableBlock -> LayoutChild
+dataTableBlockAsLayoutChild = LayoutChildDataTableBlock
+
+-- | Return the DataTableBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildDataTableBlock :: LayoutChild -> Maybe DataTableBlock
+matchLayoutChildDataTableBlock (LayoutChildDataTableBlock value) = Just value
+matchLayoutChildDataTableBlock _ = Nothing
+
+-- | Place a checked DataVisualizationBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+dataVisualizationBlockAsLayoutChild :: DataVisualizationBlock -> LayoutChild
+dataVisualizationBlockAsLayoutChild = LayoutChildDataVisualizationBlock
+
+-- | Return the DataVisualizationBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildDataVisualizationBlock :: LayoutChild -> Maybe DataVisualizationBlock
+matchLayoutChildDataVisualizationBlock (LayoutChildDataVisualizationBlock value) = Just value
+matchLayoutChildDataVisualizationBlock _ = Nothing
+
+-- | Place a checked DividerBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+dividerBlockAsLayoutChild :: DividerBlock -> LayoutChild
+dividerBlockAsLayoutChild = LayoutChildDividerBlock
+
+-- | Return the DividerBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildDividerBlock :: LayoutChild -> Maybe DividerBlock
+matchLayoutChildDividerBlock (LayoutChildDividerBlock value) = Just value
+matchLayoutChildDividerBlock _ = Nothing
+
+-- | Place a checked FileBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+fileBlockAsLayoutChild :: FileBlock -> LayoutChild
+fileBlockAsLayoutChild = LayoutChildFileBlock
+
+-- | Return the FileBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildFileBlock :: LayoutChild -> Maybe FileBlock
+matchLayoutChildFileBlock (LayoutChildFileBlock value) = Just value
+matchLayoutChildFileBlock _ = Nothing
+
+-- | Place a checked HeaderBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+headerBlockAsLayoutChild :: HeaderBlock -> LayoutChild
+headerBlockAsLayoutChild = LayoutChildHeaderBlock
+
+-- | Return the HeaderBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildHeaderBlock :: LayoutChild -> Maybe HeaderBlock
+matchLayoutChildHeaderBlock (LayoutChildHeaderBlock value) = Just value
+matchLayoutChildHeaderBlock _ = Nothing
+
+-- | Place a checked ImageBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+imageBlockAsLayoutChild :: ImageBlock -> LayoutChild
+imageBlockAsLayoutChild = LayoutChildImageBlock
+
+-- | Return the ImageBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildImageBlock :: LayoutChild -> Maybe ImageBlock
+matchLayoutChildImageBlock (LayoutChildImageBlock value) = Just value
+matchLayoutChildImageBlock _ = Nothing
+
+-- | Place a checked InputBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+inputBlockAsLayoutChild :: InputBlock -> LayoutChild
+inputBlockAsLayoutChild = LayoutChildInputBlock
+
+-- | Return the InputBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildInputBlock :: LayoutChild -> Maybe InputBlock
+matchLayoutChildInputBlock (LayoutChildInputBlock value) = Just value
+matchLayoutChildInputBlock _ = Nothing
+
+-- | Place a checked RichTextBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+richTextBlockAsLayoutChild :: RichTextBlock -> LayoutChild
+richTextBlockAsLayoutChild = LayoutChildRichTextBlock
+
+-- | Return the RichTextBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildRichTextBlock :: LayoutChild -> Maybe RichTextBlock
+matchLayoutChildRichTextBlock (LayoutChildRichTextBlock value) = Just value
+matchLayoutChildRichTextBlock _ = Nothing
+
+-- | Place a checked SectionBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+sectionBlockAsLayoutChild :: SectionBlock -> LayoutChild
+sectionBlockAsLayoutChild = LayoutChildSectionBlock
+
+-- | Return the SectionBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildSectionBlock :: LayoutChild -> Maybe SectionBlock
+matchLayoutChildSectionBlock (LayoutChildSectionBlock value) = Just value
+matchLayoutChildSectionBlock _ = Nothing
+
+-- | Place a checked TableBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+tableBlockAsLayoutChild :: TableBlock -> LayoutChild
+tableBlockAsLayoutChild = LayoutChildTableBlock
+
+-- | Return the TableBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildTableBlock :: LayoutChild -> Maybe TableBlock
+matchLayoutChildTableBlock (LayoutChildTableBlock value) = Just value
+matchLayoutChildTableBlock _ = Nothing
+
+-- | Place a checked VideoBlock in the LayoutChild role. The receiving parent retains its contextual validation.
+videoBlockAsLayoutChild :: VideoBlock -> LayoutChild
+videoBlockAsLayoutChild = LayoutChildVideoBlock
+
+-- | Return the VideoBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutChildVideoBlock :: LayoutChild -> Maybe VideoBlock
+matchLayoutChildVideoBlock (LayoutChildVideoBlock value) = Just value
+matchLayoutChildVideoBlock _ = Nothing
+
+-- | Closed role: only checked members may enter this position.
+data LayoutFallback = LayoutFallbackContextBlock ContextBlock | LayoutFallbackDividerBlock DividerBlock | LayoutFallbackHeaderBlock HeaderBlock | LayoutFallbackImageBlock ImageBlock | LayoutFallbackRichTextBlock RichTextBlock | LayoutFallbackSectionBlock SectionBlock | LayoutFallbackTableBlock TableBlock | LayoutFallbackVideoBlock VideoBlock deriving (Eq, Show)
+
+instance ToJSON LayoutFallback where
+  toJSON (LayoutFallbackContextBlock value) = toJSON value
+  toJSON (LayoutFallbackDividerBlock value) = toJSON value
+  toJSON (LayoutFallbackHeaderBlock value) = toJSON value
+  toJSON (LayoutFallbackImageBlock value) = toJSON value
+  toJSON (LayoutFallbackRichTextBlock value) = toJSON value
+  toJSON (LayoutFallbackSectionBlock value) = toJSON value
+  toJSON (LayoutFallbackTableBlock value) = toJSON value
+  toJSON (LayoutFallbackVideoBlock value) = toJSON value
+
+instance FromSlackJSON LayoutFallback where
+  fromSlackJSON value = do
+    tag <- wireTag value
+    case tag of
+      "context" -> LayoutFallbackContextBlock <$> fromSlackJSON value
+      "divider" -> LayoutFallbackDividerBlock <$> fromSlackJSON value
+      "header" -> LayoutFallbackHeaderBlock <$> fromSlackJSON value
+      "image" -> LayoutFallbackImageBlock <$> fromSlackJSON value
+      "rich_text" -> LayoutFallbackRichTextBlock <$> fromSlackJSON value
+      "section" -> LayoutFallbackSectionBlock <$> fromSlackJSON value
+      "table" -> LayoutFallbackTableBlock <$> fromSlackJSON value
+      "video" -> LayoutFallbackVideoBlock <$> fromSlackJSON value
+      _ -> failure TypeMismatch [Field "type"] "role" "unsupported child type"
+
+instance FromJSON LayoutFallback where parseJSON = checkedParser
+
+-- | Place a checked ContextBlock in the LayoutFallback role. The receiving parent retains its contextual validation.
+contextBlockAsLayoutFallback :: ContextBlock -> LayoutFallback
+contextBlockAsLayoutFallback = LayoutFallbackContextBlock
+
+-- | Return the ContextBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutFallbackContextBlock :: LayoutFallback -> Maybe ContextBlock
+matchLayoutFallbackContextBlock (LayoutFallbackContextBlock value) = Just value
+matchLayoutFallbackContextBlock _ = Nothing
+
+-- | Place a checked DividerBlock in the LayoutFallback role. The receiving parent retains its contextual validation.
+dividerBlockAsLayoutFallback :: DividerBlock -> LayoutFallback
+dividerBlockAsLayoutFallback = LayoutFallbackDividerBlock
+
+-- | Return the DividerBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutFallbackDividerBlock :: LayoutFallback -> Maybe DividerBlock
+matchLayoutFallbackDividerBlock (LayoutFallbackDividerBlock value) = Just value
+matchLayoutFallbackDividerBlock _ = Nothing
+
+-- | Place a checked HeaderBlock in the LayoutFallback role. The receiving parent retains its contextual validation.
+headerBlockAsLayoutFallback :: HeaderBlock -> LayoutFallback
+headerBlockAsLayoutFallback = LayoutFallbackHeaderBlock
+
+-- | Return the HeaderBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutFallbackHeaderBlock :: LayoutFallback -> Maybe HeaderBlock
+matchLayoutFallbackHeaderBlock (LayoutFallbackHeaderBlock value) = Just value
+matchLayoutFallbackHeaderBlock _ = Nothing
+
+-- | Place a checked ImageBlock in the LayoutFallback role. The receiving parent retains its contextual validation.
+imageBlockAsLayoutFallback :: ImageBlock -> LayoutFallback
+imageBlockAsLayoutFallback = LayoutFallbackImageBlock
+
+-- | Return the ImageBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutFallbackImageBlock :: LayoutFallback -> Maybe ImageBlock
+matchLayoutFallbackImageBlock (LayoutFallbackImageBlock value) = Just value
+matchLayoutFallbackImageBlock _ = Nothing
+
+-- | Place a checked RichTextBlock in the LayoutFallback role. The receiving parent retains its contextual validation.
+richTextBlockAsLayoutFallback :: RichTextBlock -> LayoutFallback
+richTextBlockAsLayoutFallback = LayoutFallbackRichTextBlock
+
+-- | Return the RichTextBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutFallbackRichTextBlock :: LayoutFallback -> Maybe RichTextBlock
+matchLayoutFallbackRichTextBlock (LayoutFallbackRichTextBlock value) = Just value
+matchLayoutFallbackRichTextBlock _ = Nothing
+
+-- | Place a checked SectionBlock in the LayoutFallback role. The receiving parent retains its contextual validation.
+sectionBlockAsLayoutFallback :: SectionBlock -> LayoutFallback
+sectionBlockAsLayoutFallback = LayoutFallbackSectionBlock
+
+-- | Return the SectionBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutFallbackSectionBlock :: LayoutFallback -> Maybe SectionBlock
+matchLayoutFallbackSectionBlock (LayoutFallbackSectionBlock value) = Just value
+matchLayoutFallbackSectionBlock _ = Nothing
+
+-- | Place a checked TableBlock in the LayoutFallback role. The receiving parent retains its contextual validation.
+tableBlockAsLayoutFallback :: TableBlock -> LayoutFallback
+tableBlockAsLayoutFallback = LayoutFallbackTableBlock
+
+-- | Return the TableBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutFallbackTableBlock :: LayoutFallback -> Maybe TableBlock
+matchLayoutFallbackTableBlock (LayoutFallbackTableBlock value) = Just value
+matchLayoutFallbackTableBlock _ = Nothing
+
+-- | Place a checked VideoBlock in the LayoutFallback role. The receiving parent retains its contextual validation.
+videoBlockAsLayoutFallback :: VideoBlock -> LayoutFallback
+videoBlockAsLayoutFallback = LayoutFallbackVideoBlock
+
+-- | Return the VideoBlock member when present, otherwise Nothing; no unchecked cast.
+matchLayoutFallbackVideoBlock :: LayoutFallback -> Maybe VideoBlock
+matchLayoutFallbackVideoBlock (LayoutFallbackVideoBlock value) = Just value
+matchLayoutFallbackVideoBlock _ = Nothing

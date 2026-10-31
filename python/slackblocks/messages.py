@@ -13,6 +13,7 @@ from json import dumps
 from typing import Any
 
 from slackblocks._core import resolve
+from slackblocks._layout import descendants
 from slackblocks._limits import (
     DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH,
     MARKDOWN_TOTAL_TEXT_MAX_LENGTH,
@@ -27,10 +28,6 @@ from slackblocks.utils import coerce_to_list, validate_string_nonnull
 from .attachments import Attachment
 from .blocks import (
     Block,
-    ContainerBlock,
-    DataTableBlock,
-    DataVisualizationBlock,
-    MarkdownBlock,
     _text_character_count,
 )
 from .errors import LengthError, TypeMismatchError
@@ -62,25 +59,25 @@ def _validate_message_totals(
     """
     all_blocks = [*(blocks or []), *(block for att in attachments or [] for block in att.blocks)]
 
-    def chart_count(block: Block) -> int:
-        if isinstance(block, DataVisualizationBlock):
-            return 1
-        if isinstance(block, ContainerBlock):
-            return sum(chart_count(child) for child in block.child_blocks)
-        return 0
+    rendered_blocks = descendants([resolve(block) for block in all_blocks])
 
-    if sum(chart_count(block) for block in all_blocks) > MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS:
+    if (
+        sum(block.get("type") == "data_visualization" for block in rendered_blocks)
+        > MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS
+    ):
         raise LengthError("A message may contain at most two data visualization blocks.")
-    markdown = sum(len(block.text) for block in all_blocks if isinstance(block, MarkdownBlock))
+    markdown = sum(
+        len(block["text"]) for block in rendered_blocks if block.get("type") == "markdown"
+    )
     if markdown > MARKDOWN_TOTAL_TEXT_MAX_LENGTH:
         raise LengthError(
             f"Markdown block text ({markdown} characters) exceeds the message-wide limit of "
             f"{MARKDOWN_TOTAL_TEXT_MAX_LENGTH} characters."
         )
     data_table = sum(
-        _text_character_count(resolve(block.rows))
-        for block in all_blocks
-        if isinstance(block, DataTableBlock)
+        _text_character_count(block["rows"])
+        for block in rendered_blocks
+        if block.get("type") == "data_table"
     )
     if data_table > DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH:
         raise LengthError(

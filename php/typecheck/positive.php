@@ -16,3 +16,6 @@ if ($section->text !== null) {
 foreach ($message->blocks ?? [] as $block) {
     echo $block->toJson();
 }
+
+$layout = new \Slackblocks\LayoutBlock('Grid', [new \Slackblocks\LayoutRow([new \Slackblocks\LayoutItem(new SectionBlock(text: 'Hello'), \Slackblocks\LayoutWidth::Wide, \Slackblocks\LayoutAlignment::End)])], fallback: [new SectionBlock(text: 'Hello')]);
+echo (new MessagePayload('C1', blocks: [$layout]))->toJson();

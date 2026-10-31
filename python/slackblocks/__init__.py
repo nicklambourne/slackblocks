@@ -19,6 +19,14 @@ from .blocks import (
     HeaderBlock,
     ImageBlock,
     InputBlock,
+    LayoutAlignment,
+    LayoutBlock,
+    LayoutChild,
+    LayoutFallback,
+    LayoutGridLines,
+    LayoutItem,
+    LayoutRow,
+    LayoutWidth,
     MarkdownBlock,
     PlanBlock,
     RichTextBlock,
@@ -123,7 +131,7 @@ name = "slackblocks"
 
 # The version of the shared conformance spec (spec/SPEC.md) this
 # implementation conforms to.
-SPEC_VERSION: str = "1.4.0"
+SPEC_VERSION: str = "1.5.0"
 
 # Literal exports are visible to strict external type checkers.
 __all__ = [
@@ -182,6 +190,14 @@ __all__ = [
     "LengthError",
     "LineChart",
     "Markdown",
+    "LayoutBlock",
+    "LayoutRow",
+    "LayoutItem",
+    "LayoutWidth",
+    "LayoutAlignment",
+    "LayoutGridLines",
+    "LayoutChild",
+    "LayoutFallback",
     "MarkdownBlock",
     "Message",
     "MessageResponse",

@@ -26,7 +26,7 @@ import java.util.Optional;
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/video-block">Slack reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class VideoBlock implements Block {
+public final class VideoBlock implements Block, LayoutChild, LayoutFallback {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

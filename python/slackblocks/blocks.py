@@ -46,6 +46,12 @@ from slackblocks._limits import (
     IMAGE_TITLE_MAX_LENGTH,
     INPUT_HINT_MAX_LENGTH,
     INPUT_LABEL_MAX_LENGTH,
+    LAYOUT_ITEMS_MAX_ITEMS,
+    LAYOUT_ITEMS_MIN_ITEMS,
+    LAYOUT_LABEL_MAX_LENGTH,
+    LAYOUT_LABEL_MIN_LENGTH,
+    LAYOUT_ROWS_MAX_ITEMS,
+    LAYOUT_ROWS_MIN_ITEMS,
     MARKDOWN_TEXT_MAX_LENGTH,
     PLAN_TASKS_MAX_ITEMS,
     SECTION_FIELDS_ITEM_MAX_LENGTH,
@@ -184,6 +190,7 @@ class BlockType(Enum):
     HEADER = "header"
     IMAGE = "image"
     INPUT = "input"
+    LAYOUT = "layout"
     MARKDOWN = "markdown"
     PLAN = "plan"
     RICH_TEXT = "rich_text"
@@ -238,7 +245,7 @@ class Block(RenderableMixin, ABC):
                 containing nested elements, cards, tasks, charts, or
                 rich text -- ``ActionsBlock``, ``InputBlock``,
                 ``TableBlock``, ``CardBlock``, ``CarouselBlock``,
-                ``ContainerBlock``, ``ContextActionsBlock``,
+                ``ContainerBlock``, ``LayoutBlock``, ``ContextActionsBlock``,
                 ``DataTableBlock``, ``DataVisualizationBlock``,
                 ``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b
                 and 7.4c).
@@ -279,6 +286,7 @@ def _block_from_dict_registry() -> dict[str, Any]:
         BlockType.HEADER.value: HeaderBlock.from_dict,
         BlockType.IMAGE.value: ImageBlock.from_dict,
         BlockType.INPUT.value: InputBlock.from_dict,
+        BlockType.LAYOUT.value: LayoutBlock.from_dict,
         BlockType.MARKDOWN.value: MarkdownBlock.from_dict,
         BlockType.PLAN.value: PlanBlock.from_dict,
         BlockType.RICH_TEXT.value: RichTextBlock.from_dict,
@@ -1204,7 +1212,7 @@ class ContainerBlock(Block):
         child_blocks: a list of between 1 and 10 blocks to display inside
             the container. Supported child block types are actions, context,
             divider, file, header, image, input, rich text, section, table,
-            and video blocks.
+            layout, and video blocks.
         title: the container's title (plaintext only; max 150 chars).
         rich_text_title: a `RichTextBlock` used as the container's title in
             place of `title`.
@@ -1233,6 +1241,7 @@ class ContainerBlock(Block):
         BlockType.HEADER,
         BlockType.IMAGE,
         BlockType.INPUT,
+        BlockType.LAYOUT,
         BlockType.RICH_TEXT,
         BlockType.SECTION,
         BlockType.TABLE,
@@ -1285,6 +1294,9 @@ class ContainerBlock(Block):
         self.is_collapsible = is_collapsible
         self.default_collapsed = default_collapsed
         self.has_header_divider = has_header_divider
+        from ._layout import validate_composite_depth
+
+        validate_composite_depth(self._resolve())
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -1600,4 +1612,195 @@ class PlanBlock(Block):
     def from_dict(cls, data: dict[str, Any]) -> PlanBlock:
         raise NotImplementedError(
             "PlanBlock.from_dict requires nested task parsing, which is not implemented."
+        )
+
+
+LayoutWidth: TypeAlias = Literal["narrow", "standard", "wide"]
+LayoutAlignment: TypeAlias = Literal["start", "center", "end"]
+LayoutGridLines: TypeAlias = Literal["none", "rows", "outer"]
+LayoutChild: TypeAlias = (
+    ActionsBlock
+    | AlertBlock
+    | CardBlock
+    | CarouselBlock
+    | ContainerBlock
+    | ContextBlock
+    | DataTableBlock
+    | DataVisualizationBlock
+    | DividerBlock
+    | FileBlock
+    | HeaderBlock
+    | ImageBlock
+    | InputBlock
+    | RichTextBlock
+    | SectionBlock
+    | TableBlock
+    | VideoBlock
+)
+LayoutFallback: TypeAlias = (
+    ContextBlock
+    | DividerBlock
+    | HeaderBlock
+    | ImageBlock
+    | RichTextBlock
+    | SectionBlock
+    | TableBlock
+    | VideoBlock
+)
+
+
+class LayoutItem(RenderableMixin):
+    """One layout cell containing a supported block.
+
+    Widths are relative weights: narrow 1, standard 2, wide 3. Alignment is
+    direction-aware; omit it for fill behavior. The child must also be allowed
+    on the enclosing message, modal, or Home surface.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/layout-block>.
+    """
+
+    _CHILD_TYPES = frozenset(
+        {
+            "actions",
+            "alert",
+            "card",
+            "carousel",
+            "container",
+            "context",
+            "data_table",
+            "data_visualization",
+            "divider",
+            "file",
+            "header",
+            "image",
+            "input",
+            "rich_text",
+            "section",
+            "table",
+            "video",
+        }
+    )
+
+    def __init__(
+        self,
+        block: LayoutChild,
+        width: LayoutWidth | None = None,
+        horizontal_alignment: LayoutAlignment | None = None,
+    ) -> None:
+        self.block = validate_type(block, Block, "block")
+        if self.block.type.value not in self._CHILD_TYPES:
+            raise TypeMismatchError("Unsupported layout child block.")
+        if width not in (None, "narrow", "standard", "wide"):
+            raise TypeMismatchError("Unknown layout item width.")
+        if horizontal_alignment not in (None, "start", "center", "end"):
+            raise TypeMismatchError("Unknown layout item alignment.")
+        self.width = width
+        self.horizontal_alignment = horizontal_alignment
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve(
+            {
+                "block": self.block,
+                "width": self.width,
+                "horizontal_alignment": self.horizontal_alignment,
+            }
+        )
+
+
+class LayoutRow(RenderableMixin):
+    """One to three items in source order, with at most one wide-content block.
+
+    A carousel, data table, or data visualization cannot share a row with
+    another such block. A data visualization requires more than half the total
+    row weight. Alignment belongs to each item, never to the row itself.
+    """
+
+    def __init__(self, items: list[LayoutItem]) -> None:
+        self.items: list[LayoutItem] = coerce_to_list_nonnull(
+            items, LayoutItem, min_size=LAYOUT_ITEMS_MIN_ITEMS, max_size=LAYOUT_ITEMS_MAX_ITEMS
+        )
+        wide = [
+            item
+            for item in self.items
+            if item.block.type
+            in (BlockType.CAROUSEL, BlockType.DATA_TABLE, BlockType.DATA_VISUALIZATION)
+        ]
+        if len(wide) > 1:
+            raise InvalidUsageError("A layout row permits at most one wide-content block.")
+        weights = {None: 2, "narrow": 1, "standard": 2, "wide": 3}
+        total = sum(weights[item.width] for item in self.items)
+        for item in self.items:
+            if item.block.type == BlockType.DATA_VISUALIZATION and weights[item.width] * 2 <= total:
+                raise InvalidUsageError(
+                    "A data visualization requires more than half the row width."
+                )
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve({"items": self.items})
+
+
+class LayoutBlock(Block):
+    """A visual grid of one to five rows on messages, modals, and App Home.
+
+    The label is required (1–150 Unicode characters). Slack hides it by default;
+    a visible label is bold text without heading semantics. Rows retain source
+    order when wrapping, and stack on mobile. Supply stable fallback blocks for
+    older clients: Slack never synthesizes them. Omitted optional fields remain
+    omitted on input; Slack normalizes an omitted fallback to an empty array.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/layout-block>.
+    """
+
+    _FALLBACK_TYPES = frozenset(
+        {"context", "divider", "header", "image", "rich_text", "section", "table", "video"}
+    )
+
+    def __init__(
+        self,
+        label: str,
+        rows: list[LayoutRow],
+        *,
+        is_label_visible: bool | None = None,
+        grid_lines: LayoutGridLines | None = None,
+        fallback: list[LayoutFallback] | None = None,
+        block_id: str | None = None,
+    ) -> None:
+        super().__init__(BlockType.LAYOUT, block_id)
+        self.label = validate_string_nonnull(
+            label, "label", min_length=LAYOUT_LABEL_MIN_LENGTH, max_length=LAYOUT_LABEL_MAX_LENGTH
+        )
+        self.rows: list[LayoutRow] = coerce_to_list_nonnull(
+            rows, LayoutRow, min_size=LAYOUT_ROWS_MIN_ITEMS, max_size=LAYOUT_ROWS_MAX_ITEMS
+        )
+        self.is_label_visible = validate_type(
+            is_label_visible, bool, "is_label_visible", allow_none=True
+        )
+        if grid_lines not in (None, "none", "rows", "outer"):
+            raise TypeMismatchError("Unknown layout grid lines.")
+        self.grid_lines = grid_lines
+        self.fallback: list[Block] | None = None
+        if fallback is not None:
+            self.fallback = coerce_to_list_nonnull(list[Block](fallback), Block)
+            if any(b.type.value not in self._FALLBACK_TYPES for b in self.fallback):
+                raise TypeMismatchError("Unsupported layout fallback block.")
+        from ._layout import validate_composite_depth
+
+        validate_composite_depth(self._resolve())
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve(
+            {
+                **self._attributes(),
+                "label": self.label,
+                "rows": self.rows,
+                "is_label_visible": self.is_label_visible,
+                "grid_lines": self.grid_lines,
+                "fallback": self.fallback,
+            }
+        )
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> LayoutBlock:
+        raise NotImplementedError(
+            "LayoutBlock.from_dict requires nested block parsing, which is not implemented."
         )

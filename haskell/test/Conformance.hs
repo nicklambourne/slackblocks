@@ -100,5 +100,5 @@ main = do
         <> show (length invalidCases)
         <> " invalid ingress cases and "
         <> show nativeCount
-        <> " native invalid constructions passed. Eight unrepresentable inputs have compiler rejection controls."
+        <> " native invalid constructions passed. Unrepresentable inputs have compiler rejection controls."
     )

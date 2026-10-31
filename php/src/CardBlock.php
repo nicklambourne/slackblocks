@@ -12,7 +12,7 @@ namespace Slackblocks;
  * Provide at least one of a hero image, title, actions, or body.
  * An image icon and a Slack icon cannot be combined.
  */
-final readonly class CardBlock extends Value implements Block
+final readonly class CardBlock extends Value implements Block, LayoutChild
 {
     /** Sets the image displayed prominently at the top of the card.
      * @var ImageElement|null

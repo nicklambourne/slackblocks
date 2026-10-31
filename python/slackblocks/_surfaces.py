@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from ._core import resolve
+from ._layout import descendants_with_paths
 from .errors import TypeMismatchError
 
 BlockSurface = Literal["home", "message", "modal"]
@@ -25,6 +26,7 @@ _BLOCK_TYPES_BY_SURFACE: dict[BlockSurface, frozenset[str]] = {
             "header",
             "image",
             "input",
+            "layout",
             "markdown",
             "plan",
             "rich_text",
@@ -44,6 +46,7 @@ _BLOCK_TYPES_BY_SURFACE: dict[BlockSurface, frozenset[str]] = {
             "header",
             "image",
             "input",
+            "layout",
             "rich_text",
             "section",
             "video",
@@ -62,6 +65,7 @@ _BLOCK_TYPES_BY_SURFACE: dict[BlockSurface, frozenset[str]] = {
             "header",
             "image",
             "input",
+            "layout",
             "rich_text",
             "section",
             "table",
@@ -83,12 +87,10 @@ def block_type(block: Any) -> str | None:
 def validate_surface_blocks(blocks: list[Any], surface: BlockSurface) -> None:
     """Reject block types that Slack does not support on ``surface``."""
     allowed = _BLOCK_TYPES_BY_SURFACE[surface]
-    for index, block in enumerate(blocks):
+    for path, block in descendants_with_paths([resolve(block) for block in blocks]):
         type_ = block_type(block)
         if type_ not in allowed:
-            raise TypeMismatchError(
-                f"blocks[{index}] type {type_!r} is not supported on {surface} surfaces"
-            )
+            raise TypeMismatchError(f"{path} type {type_!r} is not supported on {surface} surfaces")
     validate_standalone_task_cards(blocks)
 
 

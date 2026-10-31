@@ -34,4 +34,4 @@ export type SlackObject<Type extends string> = JsonObject & {
 export type SlackWire<Type> = Type & JsonObject;
 
 /** Compatibility helper for call sites that accept Slack's official block types. */
-export type SlackCompatibleBlock = SlackWire<KnownBlock>;
+export type SlackCompatibleBlock = SlackWire<KnownBlock> | SlackObject<"layout">;

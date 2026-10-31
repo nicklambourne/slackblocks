@@ -172,3 +172,8 @@ func NewVideoBlock() *VideoBlockBuilder {
 		coerce("title", plainTextLike).
 		coerce("description", plainTextLike))
 }
+
+// NewLayoutBlock creates a visual grid with optional older-client fallback.
+func NewLayoutBlock() *LayoutBlockBuilder {
+	return newLayoutBlockBuilder(newBuilder("LayoutBlock", "layout"))
+}

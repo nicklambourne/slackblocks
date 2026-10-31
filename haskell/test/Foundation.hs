@@ -2,6 +2,7 @@ module Main (main) where
 
 import Control.Monad (unless)
 import Data.Aeson (ToJSON (..), object, (.=))
+import Data.Maybe (isNothing)
 import Data.Text qualified as T
 import Slackblocks
 
@@ -49,5 +50,17 @@ main = do
   assert "empty prompt is present" $
     either (const False) (const True) $
       buildButtonElement ((buttonElement label) {buttonElementAgentPrompt = Just "", buttonElementAgentPromptDisplay = Just "Summary"})
-  assert "spec identity" $ specVersion == "1.4.0"
+  divider <- either (fail . show) pure $ buildDividerBlock dividerBlock
+  item <- either (fail . show) pure $ buildLayoutItem ((layoutItem (dividerBlockAsLayoutChild divider)) {layoutItemWidth = Just LayoutWidthWide, layoutItemHorizontalAlignment = Just LayoutAlignmentEnd})
+  row <- either (fail . show) pure $ buildLayoutRow (layoutRow [item])
+  grid <- either (fail . show) pure $ buildLayoutBlock (layoutBlock "Grid" [row])
+  _ <- either (fail . show) pure $ buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just (replicate 50 (layoutBlockAsBlock grid))})
+  _ <- either (fail . show) pure $ buildHomeTabView (homeTabView (replicate 100 (layoutBlockAsBlock grid)))
+  changed <- either (fail . show) pure $ buildLayoutBlock ((inspectLayoutBlock grid) {layoutBlockFallback = Just (replicate 51 (dividerBlockAsLayoutFallback divider)), layoutBlockIsLabelVisible = Just False})
+  _ <- either (fail . show) pure $ buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [layoutBlockAsBlock changed]})
+  assert "layout omission preserved by editing" $ isNothing (layoutBlockFallback (inspectLayoutBlock grid))
+  assert "layout false preserved" $ layoutBlockIsLabelVisible (inspectLayoutBlock changed) == Just False
+  assert "layout typed width" $ layoutItemWidth (inspectLayoutItem item) == Just LayoutWidthWide
+  assert "layout native decoding" $ (fromValue (toJSON changed) :: Result LayoutBlock) == Right changed
+  assert "spec identity" $ specVersion == "1.5.0"
   putStrLn "Foundation construction, wire, Unicode, editing and prompt controls passed."

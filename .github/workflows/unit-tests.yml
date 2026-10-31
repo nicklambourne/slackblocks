@@ -6,6 +6,8 @@ on:
     paths:
       - "python/**"
       - "spec/**"
+      - "docs/docs/usage/using_blocks.mdx"
+      - "docs/docs/usage/agent-prompts.mdx"
       - "docs/examples/python/**"
       - "docs/examples/section_hello.json"
       - ".github/workflows/unit-tests.yml"
@@ -40,7 +42,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(python/|spec/|docs/examples/python/|docs/examples/section_hello\.json$|\.github/workflows/unit-tests\.yml$)' <<<"$files"; then
+          if grep -qE '^(python/|spec/|docs/docs/usage/(using_blocks|agent-prompts)\.mdx$|docs/examples/python/|docs/examples/section_hello\.json$|\.github/workflows/unit-tests\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"

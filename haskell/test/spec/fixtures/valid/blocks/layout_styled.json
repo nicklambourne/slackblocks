@@ -1,0 +1,43 @@
+{
+  "type": "layout",
+  "label": "Status",
+  "rows": [
+    {
+      "items": [
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "0"
+          },
+          "width": "narrow",
+          "horizontal_alignment": "start"
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "1"
+          },
+          "width": "standard",
+          "horizontal_alignment": "center"
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "2"
+          },
+          "width": "wide",
+          "horizontal_alignment": "end"
+        }
+      ]
+    }
+  ],
+  "block_id": "layout",
+  "is_label_visible": true,
+  "grid_lines": "rows",
+  "fallback": [
+    {
+      "type": "divider",
+      "block_id": "fallback"
+    }
+  ]
+}

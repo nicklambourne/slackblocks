@@ -230,6 +230,24 @@ internal static class SlackLimits
     /// <summary><c>input.label.max_length</c></summary>
     public const int InputLabelMaxLength = 2000;
 
+    /// <summary><c>layout.items.max_items</c></summary>
+    public const int LayoutItemsMaxItems = 3;
+
+    /// <summary><c>layout.items.min_items</c></summary>
+    public const int LayoutItemsMinItems = 1;
+
+    /// <summary><c>layout.label.max_length</c></summary>
+    public const int LayoutLabelMaxLength = 150;
+
+    /// <summary><c>layout.label.min_length</c></summary>
+    public const int LayoutLabelMinLength = 1;
+
+    /// <summary><c>layout.rows.max_items</c></summary>
+    public const int LayoutRowsMaxItems = 5;
+
+    /// <summary><c>layout.rows.min_items</c></summary>
+    public const int LayoutRowsMinItems = 1;
+
     /// <summary><c>markdown.text.max_length</c></summary>
     public const int MarkdownTextMaxLength = 12000;
 

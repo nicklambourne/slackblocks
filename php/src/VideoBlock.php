@@ -10,7 +10,7 @@ namespace Slackblocks;
  * An embedded video player.
  * @see https://docs.slack.dev/reference/block-kit/blocks/video-block
  */
-final readonly class VideoBlock extends Value implements Block
+final readonly class VideoBlock extends Value implements Block, LayoutChild, LayoutFallback
 {
     /** Sets a plain-text summary of the image or video for assistive technology.
      * @var string

@@ -19,7 +19,7 @@ import java.util.Map;
  *     reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class DividerBlock implements Block {
+public final class DividerBlock implements Block, LayoutChild, LayoutFallback {
   private final Map<String, Object> values;
   private final int hash;
 

@@ -10,7 +10,7 @@ namespace Slackblocks;
  * A titled pie, bar, area, or line chart.
  * @see https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block
  */
-final readonly class DataVisualizationBlock extends Value implements Block
+final readonly class DataVisualizationBlock extends Value implements Block, LayoutChild
 {
     /** Sets the chart title.
      * @var string

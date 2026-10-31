@@ -25,7 +25,7 @@ import java.util.Objects;
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/header-block">Slack reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class HeaderBlock implements Block {
+public final class HeaderBlock implements Block, LayoutChild, LayoutFallback {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

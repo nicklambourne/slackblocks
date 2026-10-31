@@ -73,7 +73,23 @@ module Slackblocks
         if wire.key?("icon") && wire.key?("slack_icon")
           fail!("mutually-exclusive", path, "icon and slack_icon cannot both be present")
         end
+      when "LayoutBlock"
+        composite_depth(wire, path)
+      when "LayoutRow"
+        fail!("type-mismatch", path, "a row only supports items") unless (wire.keys - ["items"]).empty?
+        items = wire.fetch("items")
+        wide = items.count { |item| %w[carousel data_table data_visualization].include?(item.fetch("block")["type"]) }
+        fail!("invalid-usage", path, "at most one wide-content block per row") if wide > 1
+        total = items.sum { |item| layout_weight(item) }
+        items.each do |item|
+          if item.fetch("block")["type"] == "data_visualization" && layout_weight(item) * 2 <= total
+            fail!("invalid-usage", path, "a data visualization requires more than half the row weight")
+          end
+        end
+      when "LayoutItem"
+        fail!("type-mismatch", path, "unsupported layout item property") unless (wire.keys - %w[block width horizontal_alignment]).empty?
       when "ContainerBlock"
+        composite_depth(wire, path)
         unless wire.key?("title") || wire.key?("rich_text_title")
           fail!("missing-required", path, "expected title")
         end
@@ -147,7 +163,7 @@ module Slackblocks
         message(wire, path)
       when "ModalView", "HomeTabView"
         surface(wire.fetch("blocks"), (klass == ModalView) ? "modal" : "home", "#{path}.blocks")
-        if klass == ModalView && !wire.key?("submit") && wire.fetch("blocks").any? { |block| block["type"] == "input" }
+        if klass == ModalView && !wire.key?("submit") && descendants(wire.fetch("blocks")).any? { |block| block["type"] == "input" }
           fail!("missing-required", "#{path}.submit", "required when modal contains an input")
         end
       end
@@ -179,12 +195,40 @@ module Slackblocks
       left[0] * (rank.zero? ? left[2].ljust(width, "0") <=> right[2].ljust(width, "0") : rank)
     end
 
+    def self.layout_weight(item)
+      {"narrow" => 1, "wide" => 3}.fetch(item["width"], 2)
+    end
+
+    def self.composite_children(block, fallback: true)
+      empty = [] # : Array[Hash[String, untyped]]
+      case block["type"]
+      when "container" then block.fetch("child_blocks")
+      when "layout"
+        block.fetch("rows").flat_map { |row| row.fetch("items").map { |item| item.fetch("block") } } + (fallback ? block.fetch("fallback", empty) : empty)
+      else []
+      end
+    end
+
+    def self.composite_depth(block, path, depth = 0, has_layout = false)
+      has_layout ||= block["type"] == "layout"
+      depth += 1 if %w[layout container].include?(block["type"])
+      fail!("invalid-usage", path, "layout/container nesting exceeds two composite levels") if has_layout && depth > 2
+      composite_children(block, fallback: false).each { |child| composite_depth(child, path, depth, has_layout) }
+    end
+
+    def self.descendants(blocks)
+      blocks.flat_map { |block| [block] + descendants(composite_children(block)) }
+    end
+
     def self.surface(blocks, name, path)
+      empty = [] # : Array[Hash[String, untyped]]
       allowed = Vocabulary::SURFACE_BLOCK_TYPES.fetch(name)
       blocks.each_with_index do |block, index|
         type = block["type"]
         fail!("type-mismatch", "#{path}[#{index}].type", "unsupported #{name} block") unless allowed.include?(type)
         standalone_task(block, "#{path}[#{index}]")
+        surface(composite_children(block, fallback: false), name, "#{path}[#{index}].children")
+        surface(block.fetch("fallback", empty), name, "#{path}[#{index}].fallback") if type == "layout"
       end
     end
 
@@ -227,8 +271,8 @@ module Slackblocks
           totals["data_visualization"] += 1
         elsif node["type"] == "data_table"
           totals["data_table"] += characters(node.fetch("rows"))
-        elsif node["type"] == "container"
-          tally(node["child_blocks"], totals)
+        elsif %w[container layout].include?(node["type"])
+          tally(composite_children(node), totals)
         end
       when Array
         node.each { |child| tally(child, totals) }

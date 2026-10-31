@@ -14,7 +14,7 @@ namespace Slackblocks.Blocks;
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/rich-text-block">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
-public sealed partial class RichTextBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock, global::Slackblocks.Blocks.ITableCell, global::Slackblocks.Blocks.IDataTableCell
+public sealed partial class RichTextBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock, global::Slackblocks.Blocks.ITableCell, global::Slackblocks.Blocks.IDataTableCell, global::Slackblocks.Blocks.ILayoutChild, global::Slackblocks.Blocks.ILayoutFallback
 {
     /// <summary>Creates and validates a <see cref="RichTextBlock"/>.</summary>
     /// <param name="elements">Sections, lists, preformatted blocks, and quotes in display order. Required.</param>

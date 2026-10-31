@@ -93,7 +93,10 @@
     "MessagePayload": "Slackblocks.Message",
     "MessageResponse": "Slackblocks.MessageResponse",
     "ModalView": "Slackblocks.Views.Modal",
-    "WebhookMessage": "Slackblocks.WebhookMessage"
+    "WebhookMessage": "Slackblocks.WebhookMessage",
+    "LayoutBlock": "Slackblocks.Blocks.Layout",
+    "LayoutRow": "Slackblocks.Objects.LayoutRow",
+    "LayoutItem": "Slackblocks.Objects.LayoutItem"
   },
   "sources": [
     "spec/model.json",

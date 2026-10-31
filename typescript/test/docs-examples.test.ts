@@ -12,6 +12,9 @@ import { payload } from "../../docs/examples/typescript/section_hello.js";
 // components have multiple examples and variable output rather than one block
 // plus one JSON tab; their payloads are covered by components.test.ts.
 const EXCLUDED_SECTIONS = new Set(["Higher-Level Components"]);
+// These sections contain prose only. Layout examples run in the ten-language
+// Recipe Book harness; a code fence here must not silently escape execution.
+const NARRATIVE_SECTIONS = new Set(["Ownership and edits", "Omission and defaults", "Layout grids"]);
 
 const usingBlocksPath = resolve(
   import.meta.dirname,
@@ -31,6 +34,10 @@ function blockSections(): BlockSection[] {
       heading.index + heading[0].length,
       headings[index + 1]?.index ?? contents.length,
     );
+    if (NARRATIVE_SECTIONS.has(title)) {
+      expect(body, `${title} must remain prose-only`).not.toMatch(/```(?:ts|typescript|json)\n/);
+      return;
+    }
     const code = body.match(/```ts\n([\s\S]*?)```/)?.[1];
     const expected = body.match(/```json\n([\s\S]*?)```/)?.[1];
     if (code && expected) {
@@ -65,7 +72,7 @@ it("keeps the TypeScript docs example aligned with the JSON tab", () => {
 it("covers every block section in the using-blocks guide", () => {
   const titles = [...readFileSync(usingBlocksPath, "utf8").matchAll(/^## (.+)$/gm)]
     .map((heading) => heading[1] ?? "")
-    .filter((title) => !EXCLUDED_SECTIONS.has(title));
+    .filter((title) => !EXCLUDED_SECTIONS.has(title) && !NARRATIVE_SECTIONS.has(title));
   expect(blockSections().map(({ title }) => title)).toEqual(titles);
 });
 

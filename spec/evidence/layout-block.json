@@ -1,0 +1,4156 @@
+{
+  "checked_on": "2026-10-30",
+  "announcement_date": "2026-10-29",
+  "sources": [
+    "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+    "https://docs.slack.dev/reference/block-kit/blocks/container-block",
+    "https://docs.slack.dev/reference/methods/blocks.validate/"
+  ],
+  "contract": {
+    "types": [
+      "layout block",
+      "untagged layout row",
+      "untagged layout item"
+    ],
+    "surfaces": [
+      "message",
+      "modal",
+      "home"
+    ],
+    "label": "Required, 1–150 Unicode code points. Optional visible bold label carries no heading semantics; hidden labels are not accessible names.",
+    "grid": "1–5 rows, 1–3 items per row; weights narrow=1, standard=2, wide=3; alignment start/center/end, omission fills the cell; grid lines none/rows/outer.",
+    "nesting": "Direct layout children and markdown are forbidden. A layout/container path may contain at most two composite levels.",
+    "wide_content": "At most one carousel, data table or chart per row; a chart must have strictly more than half the total row weight.",
+    "fallback": "Exactly the eight documented stable block types, rendered instead of the grid. Omission remains omitted on input; Slack normalizes it to an empty array.",
+    "context": "Every nested child and fallback block must be permitted on the enclosing surface; existing aggregate chart and text limits still apply."
+  },
+  "library_policy": {
+    "block_budget": "Retain the existing 50-message/100-view top-level block count, including layouts. Do not add nested child or fallback counts without a confirmed accounting formula. Existing per-field, chart and text aggregate limits remain.",
+    "budget_caveat": "Slack documentation says nested content consumes the enclosing budget but gives no formula. The actual message endpoint accepted 50 layouts each containing a divider. The owner explicitly selected confirmed top-level counting on 2026-10-30; this discrepancy remains documented.",
+    "character_budget": "Retain existing field and message-wide markdown/data-table bounds. Do not invent a global character threshold or assign the label to unrelated text budgets.",
+    "receiving_validation": "Prefer documented contextual restrictions over permissive schema-only validation. Real chat.update rejected nested markdown, a direct nested layout, three composite levels, message alert and a half-width chart; a 3:2 chart row succeeded."
+  },
+  "limitations": [
+    "Initial message-schema probes incorrectly included text in a restricted validation envelope; their errors are retained and are not evidence of layout rejection. Corrected block-only probes follow.",
+    "An initial table probe omitted a required caption and is not a valid child-support comparison.",
+    "These are synthetic contract probes, not yet a claim of ten-language live acceptance or visual/browser interaction coverage.",
+    "No old Slack client was available to verify actual fallback rendering. Mobile wrapping and screen-reader behavior are documented behavior, not live-tested claims.",
+    "Modal/Home schema validation succeeded; actual views.open/views.publish acceptance is not established here."
+  ],
+  "probes": [
+    {
+      "id": "minimal-blocks",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:14:59.690594+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "minimal-message",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:02.033796+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "minimal-modal",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:04.383266+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "view": "{\"type\": \"modal\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}], \"title\": {\"type\": \"plain_text\", \"text\": \"Layout\"}}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "minimal-home",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:06.765483+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "view": "{\"type\": \"home\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "field-label-",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:09.132172+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "min_length",
+              "expected": 1,
+              "got": 0
+            },
+            "message": "must be more than 0 characters",
+            "pointer": "/0/label"
+          }
+        ]
+      }
+    },
+    {
+      "id": "field-label-None",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:11.473610+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": null, \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "errors": [
+          {
+            "code": "invalid_type",
+            "message": "must provide a string",
+            "pointer": "/0/label"
+          }
+        ]
+      }
+    },
+    {
+      "id": "field-label-😀😀😀😀😀😀😀😀",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:13.825862+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "field-label-😀😀😀😀😀😀😀😀",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:16.196419+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "max_length",
+              "expected": 150,
+              "got": 151
+            },
+            "message": "must be less than 151 characters",
+            "pointer": "/0/label"
+          }
+        ]
+      }
+    },
+    {
+      "id": "field-rows-[]",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:18.548183+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": []}]"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "min_items",
+              "expected": 1,
+              "got": 0
+            },
+            "message": "must provide at least 1 items",
+            "pointer": "/0/rows"
+          }
+        ]
+      }
+    },
+    {
+      "id": "field-fallback-None",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:20.887295+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"fallback\": null}]"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "errors": [
+          {
+            "code": "invalid_type",
+            "message": "must provide an array",
+            "pointer": "/0/fallback"
+          }
+        ]
+      }
+    },
+    {
+      "id": "field-fallback-[]",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:23.242551+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"fallback\": []}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "row-extra",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:25.587237+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}], \"horizontal_alignment\": \"start\"}]}]"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: horizontal_alignment",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "horizontal_alignment"
+            },
+            "pointer": "/0/rows/0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-extra",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:27.947216+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}, \"unknown\": true}]}]}]"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: unknown",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "unknown"
+            },
+            "pointer": "/0/rows/0/items/0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "direct-layout",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:30.316103+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "chart-standalone",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:32.669042+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"data_visualization\", \"title\": \"Pies by Tastiness\", \"chart\": {\"type\": \"bar\", \"series\": [{\"name\": \"Pies\", \"data\": [{\"label\": \"Pumpkin\", \"value\": 70}, {\"label\": \"Blueberry\", \"value\": 90}]}], \"axis_config\": {\"categories\": [\"Pumpkin\", \"Blueberry\"], \"x_label\": \"Pies\", \"y_label\": \"Tastiness\"}}}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "duplicate-chart",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:35.029737+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"data_visualization\", \"title\": \"Pies by Tastiness\", \"chart\": {\"type\": \"bar\", \"series\": [{\"name\": \"Pies\", \"data\": [{\"label\": \"Pumpkin\", \"value\": 70}, {\"label\": \"Blueberry\", \"value\": 90}]}], \"axis_config\": {\"categories\": [\"Pumpkin\", \"Blueberry\"], \"x_label\": \"Pies\", \"y_label\": \"Tastiness\"}}}}, {\"block\": {\"type\": \"data_visualization\", \"title\": \"Pies by Tastiness\", \"chart\": {\"type\": \"bar\", \"series\": [{\"name\": \"Pies\", \"data\": [{\"label\": \"Pumpkin\", \"value\": 70}, {\"label\": \"Blueberry\", \"value\": 90}]}], \"axis_config\": {\"categories\": [\"Pumpkin\", \"Blueberry\"], \"x_label\": \"Pies\", \"y_label\": \"Tastiness\"}}}}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "table-standalone",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:37.379424+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"data_table\", \"rows\": [[{\"type\": \"raw_text\", \"text\": \"Value\"}]]}]"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "errors": [
+          {
+            "code": "missing_field",
+            "message": "missing required field: caption",
+            "field": "caption",
+            "pointer": "/0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "duplicate-table",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:39.724221+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"data_table\", \"rows\": [[{\"type\": \"raw_text\", \"text\": \"Value\"}]]}}, {\"block\": {\"type\": \"data_table\", \"rows\": [[{\"type\": \"raw_text\", \"text\": \"Value\"}]]}}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "carousel-standalone",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:42.070347+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"carousel\", \"elements\": [{\"type\": \"card\", \"title\": {\"type\": \"plain_text\", \"text\": \"Card\"}}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "duplicate-carousel",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:44.423146+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"carousel\", \"elements\": [{\"type\": \"card\", \"title\": {\"type\": \"plain_text\", \"text\": \"Card\"}}]}}, {\"block\": {\"type\": \"carousel\", \"elements\": [{\"type\": \"card\", \"title\": {\"type\": \"plain_text\", \"text\": \"Card\"}}]}}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "chart-majority",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:46.776986+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"data_visualization\", \"title\": \"Pies by Tastiness\", \"chart\": {\"type\": \"bar\", \"series\": [{\"name\": \"Pies\", \"data\": [{\"label\": \"Pumpkin\", \"value\": 70}, {\"label\": \"Blueberry\", \"value\": 90}]}], \"axis_config\": {\"categories\": [\"Pumpkin\", \"Blueberry\"], \"x_label\": \"Pies\", \"y_label\": \"Tastiness\"}}}, \"width\": \"wide\"}, {\"block\": {\"type\": \"divider\"}, \"width\": \"standard\"}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "chart-half",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:49.130518+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"data_visualization\", \"title\": \"Pies by Tastiness\", \"chart\": {\"type\": \"bar\", \"series\": [{\"name\": \"Pies\", \"data\": [{\"label\": \"Pumpkin\", \"value\": 70}, {\"label\": \"Blueberry\", \"value\": 90}]}], \"axis_config\": {\"categories\": [\"Pumpkin\", \"Blueberry\"], \"x_label\": \"Pies\", \"y_label\": \"Tastiness\"}}}, \"width\": \"standard\"}, {\"block\": {\"type\": \"divider\"}, \"width\": \"standard\"}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "chart-exact-half3",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:51.480527+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"data_visualization\", \"title\": \"Pies by Tastiness\", \"chart\": {\"type\": \"bar\", \"series\": [{\"name\": \"Pies\", \"data\": [{\"label\": \"Pumpkin\", \"value\": 70}, {\"label\": \"Blueberry\", \"value\": 90}]}], \"axis_config\": {\"categories\": [\"Pumpkin\", \"Blueberry\"], \"x_label\": \"Pies\", \"y_label\": \"Tastiness\"}}}, \"width\": \"wide\"}, {\"block\": {\"type\": \"divider\"}, \"width\": \"standard\"}, {\"block\": {\"type\": \"divider\"}, \"width\": \"narrow\"}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "layout-container",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:53.836394+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"container\", \"title\": {\"type\": \"plain_text\", \"text\": \"Container\"}, \"child_blocks\": [{\"type\": \"divider\"}]}}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "container-layout",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:56.180984+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"container\", \"title\": {\"type\": \"plain_text\", \"text\": \"Container\"}, \"child_blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "three-level",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:15:58.530332+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "blocks": "[{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"container\", \"title\": {\"type\": \"plain_text\", \"text\": \"Container\"}, \"child_blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}}]}]}]"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "flat-budget-49",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:00.884848+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "flat-budget-50",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:03.235416+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "flat-budget-51",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:05.582193+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "max_items",
+              "expected": 50,
+              "got": 51
+            },
+            "message": "no more than 50 items allowed",
+            "pointer": "/blocks"
+          },
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "layout-budget-24",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:07.929357+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "layout-budget-25",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:10.337980+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "layout-budget-26",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:12.730202+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "fallback-budget-48",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:15.075135+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"fallback\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "fallback-budget-49",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:17.476006+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"fallback\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "fallback-budget-50",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:19.849374+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"fallback\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "layout-label-budget-False",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:22.197273+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"is_label_visible\": false}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "layout-label-budget-True",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:24.567646+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"text\": \"Layout validation\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"is_label_visible\": true}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "message": "invalid additional property: text",
+            "constraint": {
+              "type": "additional_properties",
+              "got": "text"
+            },
+            "pointer": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "attachment-layout",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:26.923468+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"attachments\": [{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "nested-input-no-submit",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:29.287324+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "view": "{\"type\": \"modal\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"Name\"}, \"element\": {\"type\": \"plain_text_input\", \"action_id\": \"name\"}}}]}]}], \"title\": {\"type\": \"plain_text\", \"text\": \"Layout\"}}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "nested-container-modal",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:31.642176+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "view": "{\"type\": \"modal\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"container\", \"title\": {\"type\": \"plain_text\", \"text\": \"Container\"}, \"child_blocks\": [{\"type\": \"divider\"}]}}]}]}], \"title\": {\"type\": \"plain_text\", \"text\": \"Layout\"}}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "fallback-table-modal",
+      "source_receipt": "probes.jsonl",
+      "at": "2026-10-30T05:16:33.991679+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "view": "{\"type\": \"modal\", \"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"fallback\": [{\"type\": \"table\", \"rows\": [[{\"type\": \"raw_text\", \"text\": \"A\"}]]}]}], \"title\": {\"type\": \"plain_text\", \"text\": \"Layout\"}}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "minimal-message-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:13.631828+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "flat-budget-49-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:15.978637+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "flat-budget-50-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:18.332320+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "flat-budget-51-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:20.684203+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_message",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "max_items",
+              "expected": 50,
+              "got": 51
+            },
+            "message": "no more than 50 items allowed",
+            "pointer": "/blocks"
+          }
+        ]
+      }
+    },
+    {
+      "id": "layout-budget-24-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:23.033440+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "layout-budget-25-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:25.437950+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "layout-budget-26-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:27.850667+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}, {\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "fallback-budget-48-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:30.229197+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"fallback\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "fallback-budget-49-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:32.600045+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"fallback\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "fallback-budget-50-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:34.955269+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"fallback\": [{\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "layout-label-budget-False-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:37.312519+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"is_label_visible\": false}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "layout-label-budget-True-without-envelope-text",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:39.658437+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\"}}]}], \"is_label_visible\": true}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}, {\"type\": \"divider\"}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "markdown",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:42.025861+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"markdown\", \"text\": \"Text\"}}]}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "input",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:44.388533+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"Name\"}, \"element\": {\"type\": \"plain_text_input\", \"action_id\": \"name\"}}}]}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "bad-divider",
+      "source_receipt": "context-probes.jsonl",
+      "at": "2026-10-30T05:20:46.756695+00:00",
+      "method": "blocks.validate",
+      "request": {
+        "message": "{\"blocks\": [{\"type\": \"layout\", \"label\": \"Layout\", \"rows\": [{\"items\": [{\"block\": {\"type\": \"divider\", \"unexpected\": \"must reject\"}}]}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "minimal-live",
+      "source_receipt": "receiving-probes.jsonl",
+      "at": "2026-10-30T05:21:17.500446+00:00",
+      "method": "chat.postMessage",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "section",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "Layout support validation — synthetic test data."
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "fallback": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Layout acceptance fallback."
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "layout-budget-25",
+      "source_receipt": "receiving-probes.jsonl",
+      "at": "2026-10-30T05:21:19.910897+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "layout-budget-26",
+      "source_receipt": "receiving-probes.jsonl",
+      "at": "2026-10-30T05:21:22.386832+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "fallback-budget-50",
+      "source_receipt": "receiving-probes.jsonl",
+      "at": "2026-10-30T05:21:24.834879+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ],
+            "fallback": [
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "divider"
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "nested-invalid-markdown",
+      "source_receipt": "receiving-probes.jsonl",
+      "at": "2026-10-30T05:21:27.337489+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "markdown",
+                      "text": "Synthetic"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "0": "Unsupported layout item block type: markdown [json-pointer:/blocks/0/rows/0/items/0/block]",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] Unsupported layout item block type: markdown [json-pointer:/blocks/0/rows/0/items/0/block]"
+          ]
+        }
+      }
+    },
+    {
+      "id": "nested-direct-layout",
+      "source_receipt": "receiving-probes.jsonl",
+      "at": "2026-10-30T05:21:29.729321+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "layout",
+                      "label": "Synthetic layout acceptance",
+                      "rows": [
+                        {
+                          "items": [
+                            {
+                              "block": {
+                                "type": "section",
+                                "text": {
+                                  "type": "plain_text",
+                                  "text": "Layout support validation — synthetic test data."
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "0": "Unsupported layout item block type: layout [json-pointer:/blocks/0/rows/0/items/0/block]",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] Unsupported layout item block type: layout [json-pointer:/blocks/0/rows/0/items/0/block]"
+          ]
+        }
+      }
+    },
+    {
+      "id": "final-visible-summary",
+      "source_receipt": "receiving-probes.jsonl",
+      "at": "2026-10-30T05:21:32.190621+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Synthetic layout acceptance",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "section",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "Layout support validation — synthetic test data."
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "fallback": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Synthetic layout acceptance. Detailed results retained locally."
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "15-children-plus35",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:22:41.694838+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "15-children-plus36",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:22:44.285213+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "4-times15-children",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:22:46.751564+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              },
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "49-plus2-children",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:22:49.204207+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "50-times1-child",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:22:51.749573+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "divider"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "layout-container-layout",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:22:54.133587+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "container",
+                      "title": {
+                        "type": "plain_text",
+                        "text": "Nested"
+                      },
+                      "child_blocks": [
+                        {
+                          "type": "layout",
+                          "label": "Boundary probe",
+                          "rows": [
+                            {
+                              "items": [
+                                {
+                                  "block": {
+                                    "type": "divider"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "0": "layout and container blocks may not be nested more than 2 levels deep [json-pointer:/blocks/0/rows/0/items/0/block/child_blocks/0/type]",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] layout and container blocks may not be nested more than 2 levels deep [json-pointer:/blocks/0/rows/0/items/0/block/child_blocks/0/type]"
+          ]
+        }
+      }
+    },
+    {
+      "id": "layout-alert-message",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:22:56.481923+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "alert",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "Alert"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "0": "Block type is not supported in this container [json-pointer:/blocks/0/rows/0/items/0/block]",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] Block type is not supported in this container [json-pointer:/blocks/0/rows/0/items/0/block]"
+          ]
+        }
+      }
+    },
+    {
+      "id": "chart-['wide', 'standard']",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:22:58.942065+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "data_visualization",
+                      "title": "Pies by Tastiness",
+                      "chart": {
+                        "type": "bar",
+                        "series": [
+                          {
+                            "name": "Pies",
+                            "data": [
+                              {
+                                "label": "Pumpkin",
+                                "value": 70
+                              },
+                              {
+                                "label": "Blueberry",
+                                "value": 90
+                              }
+                            ]
+                          }
+                        ],
+                        "axis_config": {
+                          "categories": [
+                            "Pumpkin",
+                            "Blueberry"
+                          ],
+                          "x_label": "Pies",
+                          "y_label": "Tastiness"
+                        }
+                      }
+                    },
+                    "width": "wide"
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    },
+                    "width": "standard"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "chart-['standard', 'standard']",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:23:01.331123+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "layout",
+            "label": "Boundary probe",
+            "rows": [
+              {
+                "items": [
+                  {
+                    "block": {
+                      "type": "data_visualization",
+                      "title": "Pies by Tastiness",
+                      "chart": {
+                        "type": "bar",
+                        "series": [
+                          {
+                            "name": "Pies",
+                            "data": [
+                              {
+                                "label": "Pumpkin",
+                                "value": 70
+                              },
+                              {
+                                "label": "Blueberry",
+                                "value": 90
+                              }
+                            ]
+                          }
+                        ],
+                        "axis_config": {
+                          "categories": [
+                            "Pumpkin",
+                            "Blueberry"
+                          ],
+                          "x_label": "Pies",
+                          "y_label": "Tastiness"
+                        }
+                      }
+                    },
+                    "width": "standard"
+                  },
+                  {
+                    "block": {
+                      "type": "divider"
+                    },
+                    "width": "standard"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "0": "A data_visualization must take up more than half of its layout row; give it a wider column or fewer sibling items. [json-pointer:/blocks/0/rows/0]",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] A data_visualization must take up more than half of its layout row; give it a wider column or fewer sibling items. [json-pointer:/blocks/0/rows/0]"
+          ]
+        }
+      }
+    },
+    {
+      "id": "restore-readable-summary",
+      "source_receipt": "receiving-boundaries.jsonl",
+      "at": "2026-10-30T05:23:03.796701+00:00",
+      "method": "chat.update",
+      "request": {
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "plain_text",
+              "text": "Slackblocks layout contract probes completed. Synthetic content only; detailed evidence retained locally."
+            }
+          }
+        ]
+      },
+      "result": {
+        "ok": true
+      }
+    }
+  ]
+}

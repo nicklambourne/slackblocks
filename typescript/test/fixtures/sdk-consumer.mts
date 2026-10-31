@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { WebClient } from '@slack/web-api';
-import { Message, SectionBlock, message, Confirmation, RichTextEmoji, Button } from '@nicklambourne/slackblocks';
+import { Message, SectionBlock, message, Confirmation, RichTextEmoji, Button, LayoutBlock, LayoutRow, LayoutItem } from '@nicklambourne/slackblocks';
 
 const payload = Message().channel('C_TEST').text('SDK fallback').blocks(SectionBlock().text('SDK body').accessory(Button().text('Ask').agentPrompt('Ask Slackbot').agentPromptDisplay('Summary'))).build();
 assert.equal(Confirmation().title('Confirm').text('Proceed?').confirm('Yes').deny('No').style('danger').build().style, 'danger');
@@ -32,14 +32,18 @@ try {
   });
   await client.chat.postMessage(payload);
   await client.chat.postMessage(message({ channel: 'C_TEST', text: 'Legacy factory' }));
-  assert.equal(received.length, 2);
+  const layout = LayoutBlock().label('SDK layout').rows(LayoutRow().items(LayoutItem().block(SectionBlock().text('Native child')).width('wide').horizontalAlignment('end'))).fallback(SectionBlock().text('Fallback')).build();
+  const layoutPayload = Message().channel('C_TEST').text('Layout fallback').blocks(layout).build();
+  await client.chat.postMessage(layoutPayload);
+  assert.equal(received.length, 3);
+  assert.deepEqual(JSON.parse(received[2]?.get('blocks') ?? 'null'), [layout]);
   const blocks = JSON.parse(received[0]?.get('blocks') ?? 'null');
   assert.equal(blocks[0].accessory.agent_prompt, 'Ask Slackbot');
   assert.equal(blocks[0].accessory.agent_prompt_display, 'Summary');
   assert.equal(received[0]?.get('channel'), 'C_TEST');
   assert.equal(received[0]?.get('text'), 'SDK fallback');
   assert.deepEqual(JSON.parse(received[0]?.get('blocks') ?? 'null'), payload.blocks);
-  console.log('Installed package: strict SDK types and two loopback HTTP requests passed');
+  console.log('Installed package: strict SDK types and three loopback HTTP requests passed');
 } finally {
   server.close();
   await once(server, 'close');

@@ -11,6 +11,7 @@ from json import dumps
 from typing import Any
 
 from slackblocks._core import resolve
+from slackblocks._layout import descendants
 from slackblocks._limits import (
     VIEW_BLOCKS_MAX_ITEMS,
     VIEW_CALLBACK_ID_MAX_LENGTH,
@@ -170,7 +171,9 @@ class ModalView(View):
         self.submit = Text.to_text(
             submit, force_plaintext=True, max_length=VIEW_SUBMIT_MAX_LENGTH, allow_none=True
         )
-        if self.submit is None and any(block_type(block) == "input" for block in self.blocks):
+        if self.submit is None and any(
+            block_type(block) == "input" for block in descendants([resolve(b) for b in self.blocks])
+        ):
             raise MissingRequiredError("submit is required when a modal contains an input block")
         self.clear_on_close = clear_on_close
         self.notify_on_close = notify_on_close

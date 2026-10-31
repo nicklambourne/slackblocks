@@ -21,9 +21,10 @@ import type {
   VideoBlock,
 } from "@slack/types";
 
-import { create, dropEmpty } from "../internal.js";
+import { create, createObject, dropEmpty } from "../internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject, SlackWire } from "../types.js";
+import { validateLayoutItem, validateLayoutRow } from "../layout.js";
 import type { SlackObject } from "../types.js";
 
 /** Severity shown by an alert block. */
@@ -644,4 +645,50 @@ export function videoBlock(
     },
     settings,
   ) as SlackWire<VideoBlock>;
+}
+
+
+/** Layout item widths carry relative weights 1, 2, and 3 respectively. */
+export type LayoutWidth = "narrow" | "standard" | "wide";
+/** Direction-aware alignment; omission fills the cell. */
+export type LayoutAlignment = "start" | "center" | "end";
+/** Borders drawn around the layout and between rows. */
+export type LayoutGridLines = "none" | "rows" | "outer";
+/** Blocks accepted in a layout item, subject to receiving-surface rules. */
+export type LayoutChild = SlackObject<"actions" | "alert" | "card" | "carousel" | "container" | "context" | "data_table" | "data_visualization" | "divider" | "file" | "header" | "image" | "input" | "rich_text" | "section" | "table" | "video">;
+/** Stable blocks that older clients render instead of a layout. */
+export type LayoutFallback = SlackObject<"context" | "divider" | "header" | "image" | "rich_text" | "section" | "table" | "video">;
+/** Wire representation of a single layout item. */
+export type LayoutItemValue = JsonObject & { block: LayoutChild; width?: LayoutWidth; horizontal_alignment?: LayoutAlignment };
+/** Wire representation of a row, without a discriminator or alignment field. */
+export type LayoutRowValue = JsonObject & { items: LayoutItemValue[] };
+
+/** Creates a checked cell with a supported child, proportional width and optional alignment. */
+export function layoutItem(input: { block: LayoutChild; width?: LayoutWidth; horizontalAlignment?: LayoutAlignment }, settings: FactorySettings = {}): LayoutItemValue {
+  const value = createObject(input, settings);
+  if (settings.validate !== false) validateLayoutItem(value, "LayoutItem");
+  return value as LayoutItemValue;
+}
+/** Creates one to three items in source order; charts need more than half the row weight. */
+export function layoutRow(input: { items: LayoutItemValue[] }, settings: FactorySettings = {}): LayoutRowValue {
+  const value = createObject(input, settings);
+  if (settings.validate !== false) validateLayoutRow(value, "LayoutRow");
+  return value as LayoutRowValue;
+}
+/** Creates a visual grid on messages, modals and App Home. Supply fallback for older clients. */
+export function layoutBlock(input: {
+  /** Required 1–150 character description; hidden by default. */
+  label: string;
+  /** One to five rows in source order. */
+  rows: LayoutRowValue[];
+  /** Displays bold label text without heading semantics. */
+  isLabelVisible?: boolean;
+  /** Borders; defaults to none. */
+  gridLines?: LayoutGridLines;
+  /** Older-client content, never synthesized from rows. */
+  fallback?: LayoutFallback[];
+  /** Optional stable identifier. */
+  blockId?: string;
+}, settings: FactorySettings = {}): SlackObject<"layout"> {
+  return create("layout", input, settings);
 }

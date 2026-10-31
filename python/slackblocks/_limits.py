@@ -295,3 +295,15 @@ VIEW_TITLE_MAX_LENGTH = 24
 VIEW_CLOSE_MAX_LENGTH = 24
 # view.submit.max_length
 VIEW_SUBMIT_MAX_LENGTH = 24
+# layout.label.min_length
+LAYOUT_LABEL_MIN_LENGTH = 1
+# layout.label.max_length
+LAYOUT_LABEL_MAX_LENGTH = 150
+# layout.rows.min_items
+LAYOUT_ROWS_MIN_ITEMS = 1
+# layout.rows.max_items
+LAYOUT_ROWS_MAX_ITEMS = 5
+# layout.items.min_items
+LAYOUT_ITEMS_MIN_ITEMS = 1
+# layout.items.max_items
+LAYOUT_ITEMS_MAX_ITEMS = 3

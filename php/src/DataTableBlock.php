@@ -12,7 +12,7 @@ namespace Slackblocks;
  * The first row is the header row and cannot contain rich text.
  * Every row must have the same number of cells, and all cell text together is limited to 20,000 characters.
  */
-final readonly class DataTableBlock extends Value implements Block
+final readonly class DataTableBlock extends Value implements Block, LayoutChild
 {
     /** Adds complete table rows in display order. Every row must have the same number of cells.
      * @var list<list<DataTableCell>>

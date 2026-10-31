@@ -16,7 +16,7 @@ namespace Slackblocks.Blocks;
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/data-table-block">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
-public sealed partial class DataTableBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
+public sealed partial class DataTableBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock, global::Slackblocks.Blocks.ILayoutChild
 {
     /// <summary>Creates and validates a <see cref="DataTableBlock"/>.</summary>
     /// <param name="rows">Complete table rows in display order. Every row must have the same number of cells. Required. Must contain between 2 and 201 items.</param>

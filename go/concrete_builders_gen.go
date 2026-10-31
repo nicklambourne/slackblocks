@@ -8,9 +8,9 @@ package slackblocks
 // *AlertBlockBuilder, *CardBlockBuilder, *CarouselBlockBuilder, *ContainerBlockBuilder,
 // *ContextActionsBlockBuilder, *ContextBlockBuilder, *DataTableBlockBuilder,
 // *DataVisualizationBlockBuilder, *DividerBlockBuilder, *FileBlockBuilder, *HeaderBlockBuilder,
-// *ImageBlockBuilder, *InputBlockBuilder, *MarkdownBlockBuilder, *PaginatorBuilder,
-// *PlanBlockBuilder, *RichTextBlockBuilder, *SectionBlockBuilder, *TableBlockBuilder,
-// *TaskCardBlockBuilder, and *VideoBlockBuilder.
+// *ImageBlockBuilder, *InputBlockBuilder, *LayoutBlockBuilder, *MarkdownBlockBuilder,
+// *PaginatorBuilder, *PlanBlockBuilder, *RichTextBlockBuilder, *SectionBlockBuilder,
+// *TableBlockBuilder, *TaskCardBlockBuilder, and *VideoBlockBuilder.
 type Block interface {
 	slackblocksBlock()
 }
@@ -31,6 +31,7 @@ func (*FileBlockBuilder) slackblocksBlock()              {}
 func (*HeaderBlockBuilder) slackblocksBlock()            {}
 func (*ImageBlockBuilder) slackblocksBlock()             {}
 func (*InputBlockBuilder) slackblocksBlock()             {}
+func (*LayoutBlockBuilder) slackblocksBlock()            {}
 func (*MarkdownBlockBuilder) slackblocksBlock()          {}
 func (*PaginatorBuilder) slackblocksBlock()              {}
 func (*PlanBlockBuilder) slackblocksBlock()              {}
@@ -157,6 +158,53 @@ func (*TimePickerBuilder) slackblocksInputElement()              {}
 func (*URLInputBuilder) slackblocksInputElement()                {}
 func (*UserMultiSelectBuilder) slackblocksInputElement()         {}
 func (*UserSelectBuilder) slackblocksInputElement()              {}
+
+// LayoutChild is a supported layout item block.
+// Implemented by *ActionsBlockBuilder, *AlertBlockBuilder, *CardBlockBuilder,
+// *CarouselBlockBuilder, *ContainerBlockBuilder, *ContextBlockBuilder, *DataTableBlockBuilder,
+// *DataVisualizationBlockBuilder, *DividerBlockBuilder, *FileBlockBuilder, *HeaderBlockBuilder,
+// *ImageBlockBuilder, *InputBlockBuilder, *RichTextBlockBuilder, *SectionBlockBuilder,
+// *TableBlockBuilder, and *VideoBlockBuilder.
+type LayoutChild interface {
+	Block
+	slackblocksLayoutChild()
+}
+
+func (*ActionsBlockBuilder) slackblocksLayoutChild()           {}
+func (*AlertBlockBuilder) slackblocksLayoutChild()             {}
+func (*CardBlockBuilder) slackblocksLayoutChild()              {}
+func (*CarouselBlockBuilder) slackblocksLayoutChild()          {}
+func (*ContainerBlockBuilder) slackblocksLayoutChild()         {}
+func (*ContextBlockBuilder) slackblocksLayoutChild()           {}
+func (*DataTableBlockBuilder) slackblocksLayoutChild()         {}
+func (*DataVisualizationBlockBuilder) slackblocksLayoutChild() {}
+func (*DividerBlockBuilder) slackblocksLayoutChild()           {}
+func (*FileBlockBuilder) slackblocksLayoutChild()              {}
+func (*HeaderBlockBuilder) slackblocksLayoutChild()            {}
+func (*ImageBlockBuilder) slackblocksLayoutChild()             {}
+func (*InputBlockBuilder) slackblocksLayoutChild()             {}
+func (*RichTextBlockBuilder) slackblocksLayoutChild()          {}
+func (*SectionBlockBuilder) slackblocksLayoutChild()           {}
+func (*TableBlockBuilder) slackblocksLayoutChild()             {}
+func (*VideoBlockBuilder) slackblocksLayoutChild()             {}
+
+// LayoutFallback is a stable older-client layout fallback block.
+// Implemented by *ContextBlockBuilder, *DividerBlockBuilder, *HeaderBlockBuilder,
+// *ImageBlockBuilder, *RichTextBlockBuilder, *SectionBlockBuilder, *TableBlockBuilder, and
+// *VideoBlockBuilder.
+type LayoutFallback interface {
+	Block
+	slackblocksLayoutFallback()
+}
+
+func (*ContextBlockBuilder) slackblocksLayoutFallback()  {}
+func (*DividerBlockBuilder) slackblocksLayoutFallback()  {}
+func (*HeaderBlockBuilder) slackblocksLayoutFallback()   {}
+func (*ImageBlockBuilder) slackblocksLayoutFallback()    {}
+func (*RichTextBlockBuilder) slackblocksLayoutFallback() {}
+func (*SectionBlockBuilder) slackblocksLayoutFallback()  {}
+func (*TableBlockBuilder) slackblocksLayoutFallback()    {}
+func (*VideoBlockBuilder) slackblocksLayoutFallback()    {}
 
 // RichTextBlockElement is a section, list, preformatted block, or quote inside a rich text
 // block.
@@ -304,6 +352,46 @@ const (
 	ResponseTypeInChannel ResponseType = "in_channel"
 	// Visible only to the user who triggered the response.
 	ResponseTypeEphemeral ResponseType = "ephemeral"
+)
+
+// LayoutWidth is a named Slack value. Relative layout item weights: narrow is 1, standard is 2,
+// and wide is 3. Untyped string constants such as "narrow" also convert to it.
+type LayoutWidth string
+
+const (
+	// Weight 1.
+	LayoutWidthNarrow LayoutWidth = "narrow"
+	// Weight 2 (the default).
+	LayoutWidthStandard LayoutWidth = "standard"
+	// Weight 3.
+	LayoutWidthWide LayoutWidth = "wide"
+)
+
+// LayoutAlignment is a named Slack value. Direction-aware alignment within a layout item. Omit
+// for fill behavior. Untyped string constants such as "start" also convert to it.
+type LayoutAlignment string
+
+const (
+	// Align to the leading edge.
+	LayoutAlignmentStart LayoutAlignment = "start"
+	// Center the content.
+	LayoutAlignmentCenter LayoutAlignment = "center"
+	// Align to the trailing edge.
+	LayoutAlignmentEnd LayoutAlignment = "end"
+)
+
+// LayoutGridLines is a named Slack value. Layout borders: none, outer border with horizontal
+// row dividers, or outer border only. Untyped string constants such as "none" also convert to
+// it.
+type LayoutGridLines string
+
+const (
+	// No borders (the default).
+	LayoutGridLinesNone LayoutGridLines = "none"
+	// Outer border and horizontal row dividers.
+	LayoutGridLinesRows LayoutGridLines = "rows"
+	// Outer border only.
+	LayoutGridLinesOuter LayoutGridLines = "outer"
 )
 
 // RichTextStyle sets formatting flags on inline rich text, such as
@@ -1113,6 +1201,7 @@ func (b *ConfirmationBuilder) Style(value ButtonStyle) *ConfirmationBuilder {
 //
 //   - Required: ChildBlocks.
 //   - Provide a title or a rich text title.
+//   - When a layout is nested, the combined layout/container depth cannot exceed two composite levels.
 //
 // See https://docs.slack.dev/reference/block-kit/blocks/container-block for Slack's reference.
 type ContainerBlockBuilder struct{ *slackBlockBuilder }
@@ -2378,6 +2467,134 @@ func (b *InputParameterBuilder) Name(value string) *InputParameterBuilder {
 // Value sets the value passed to the workflow input. Required.
 func (b *InputParameterBuilder) Value(value string) *InputParameterBuilder {
 	b.core.Value(value)
+	return b
+}
+
+// LayoutBlockBuilder is the concrete fluent builder returned by NewLayoutBlock.
+//
+// A visual grid of one to five rows on messages, modals, and App Home. Supply fallback content for older clients.
+//
+//   - Required: Label and Rows.
+//   - Children must be valid on the receiving surface.
+//   - Layout and container nesting is limited to two composite levels.
+//   - Existing message and view limits count top-level blocks; no unconfirmed nested-block counting formula is imposed.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/layout-block for Slack's reference.
+type LayoutBlockBuilder struct{ *slackBlockBuilder }
+
+func newLayoutBlockBuilder(core *builder) *LayoutBlockBuilder {
+	return &LayoutBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
+}
+
+// Label Describes the layout. A visible label is bold text, not a semantic heading. Required.
+// Must be between 1 and 150 characters.
+func (b *LayoutBlockBuilder) Label(value string) *LayoutBlockBuilder {
+	b.core.Label(value)
+	return b
+}
+
+// Rows adds one to five rows in source and reading order. Required. Must contain between 1 and
+// 5 items. Each call appends to any values already added.
+func (b *LayoutBlockBuilder) Rows(values ...*LayoutRowBuilder) *LayoutBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Rows(items...)
+	return b
+}
+
+// IsLabelVisible Shows the label above the grid. Slack defaults to false; hidden labels are not
+// exposed to screen readers.
+func (b *LayoutBlockBuilder) IsLabelVisible(value bool) *LayoutBlockBuilder {
+	b.core.IsLabelVisible(value)
+	return b
+}
+
+// GridLines sets outer borders and horizontal row dividers. Slack defaults to none; there are
+// no vertical dividers. Accepted values: "none", "rows", and "outer".
+func (b *LayoutBlockBuilder) GridLines(value LayoutGridLines) *LayoutBlockBuilder {
+	b.core.GridLines(string(value))
+	return b
+}
+
+// Fallback adds stable blocks rendered in place of the layout on older clients. Omission is
+// allowed; Slack normalizes it to an empty array and does not synthesize content. Each call
+// appends to any values already added.
+func (b *LayoutBlockBuilder) Fallback(values ...LayoutFallback) *LayoutBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Fallback(items...)
+	return b
+}
+
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
+func (b *LayoutBlockBuilder) BlockID(value string) *LayoutBlockBuilder {
+	b.core.BlockID(value)
+	return b
+}
+
+// LayoutItemBuilder is the concrete fluent builder returned by NewLayoutItem.
+//
+// One supported child block with a proportional width and optional direction-aware alignment.
+//
+//   - Required: Block.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/layout-block for Slack's reference.
+type LayoutItemBuilder struct{ *concreteBuilder }
+
+func newLayoutItemBuilder(core *builder) *LayoutItemBuilder {
+	return &LayoutItemBuilder{concreteBuilder: newConcreteBuilder(core)}
+}
+
+// Block sets the child block. Direct nested layouts and markdown blocks are not supported.
+// Required.
+func (b *LayoutItemBuilder) Block(value LayoutChild) *LayoutItemBuilder {
+	b.core.Block(value)
+	return b
+}
+
+// Width sets the relative row weight: narrow 1, standard 2 (default), wide 3. Full is not
+// supported. Accepted values: "narrow", "standard", and "wide".
+func (b *LayoutItemBuilder) Width(value LayoutWidth) *LayoutItemBuilder {
+	b.core.Width(string(value))
+	return b
+}
+
+// HorizontalAlignment Aligns content within the cell. Omission fills the cell; start and end
+// follow text direction. Accepted values: "start", "center", and "end".
+func (b *LayoutItemBuilder) HorizontalAlignment(value LayoutAlignment) *LayoutItemBuilder {
+	b.core.HorizontalAlignment(string(value))
+	return b
+}
+
+// LayoutRowBuilder is the concrete fluent builder returned by NewLayoutRow.
+//
+// One to three layout items in reading order. A row has no alignment or discriminator.
+//
+//   - Required: Items.
+//   - At most one carousel, data table, or data visualization may occupy a row.
+//   - A data visualization must have more than half of the total row weight.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/layout-block for Slack's reference.
+type LayoutRowBuilder struct{ *concreteBuilder }
+
+func newLayoutRowBuilder(core *builder) *LayoutRowBuilder {
+	return &LayoutRowBuilder{concreteBuilder: newConcreteBuilder(core)}
+}
+
+// Items adds one to three items in source order. Required. Must contain between 1 and 3 items.
+// Each call appends to any values already added.
+func (b *LayoutRowBuilder) Items(values ...*LayoutItemBuilder) *LayoutRowBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Items(items...)
 	return b
 }
 

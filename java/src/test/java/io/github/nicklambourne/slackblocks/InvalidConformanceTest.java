@@ -73,6 +73,484 @@ final class InvalidConformanceTest {
 
   private static InvalidValue invalidValue(String id) {
     return switch (id) {
+      case "layout-home-alert" ->
+          invalid(
+              "HomeTabView",
+              map(
+                  "type",
+                  "home",
+                  "blocks",
+                  List.of(
+                      map(
+                          "type",
+                          "layout",
+                          "label",
+                          "Layout",
+                          "rows",
+                          List.of(
+                              map(
+                                  "items",
+                                  List.of(
+                                      map(
+                                          "block",
+                                          map(
+                                              "type",
+                                              "alert",
+                                              "text",
+                                              map(
+                                                  "type",
+                                                  "plain_text",
+                                                  "text",
+                                                  "Modal only"))))))))));
+      case "layout-modal-fallback-table" ->
+          invalid(
+              "ModalView",
+              map(
+                  "type",
+                  "modal",
+                  "title",
+                  map("type", "plain_text", "text", "Grid"),
+                  "blocks",
+                  List.of(
+                      map(
+                          "type",
+                          "layout",
+                          "label",
+                          "Layout",
+                          "rows",
+                          List.of(map("items", List.of(map("block", map("type", "divider"))))),
+                          "fallback",
+                          List.of(
+                              map(
+                                  "type",
+                                  "table",
+                                  "rows",
+                                  List.of(List.of(map("type", "raw_text", "text", "Cell")))))))));
+      case "layout-chart-three-items" ->
+          invalid(
+              "LayoutRow",
+              map(
+                  "items",
+                  List.of(
+                      map("block", map("type", "divider")),
+                      map(
+                          "block",
+                          map(
+                              "type",
+                              "data_visualization",
+                              "title",
+                              "Chart",
+                              "chart",
+                              map(
+                                  "type",
+                                  "pie",
+                                  "segments",
+                                  List.of(map("label", "One", "value", 1))))),
+                      map("block", map("type", "divider")))));
+      case "layout-nested-table-total" ->
+          invalid(
+              "MessagePayload",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  List.of(
+                      map(
+                          "type",
+                          "container",
+                          "title",
+                          map("type", "plain_text", "text", "Group"),
+                          "child_blocks",
+                          List.of(
+                              map(
+                                  "type",
+                                  "layout",
+                                  "label",
+                                  "Layout",
+                                  "rows",
+                                  List.of(
+                                      map(
+                                          "items",
+                                          List.of(
+                                              map(
+                                                  "block",
+                                                  map(
+                                                      "type",
+                                                      "data_table",
+                                                      "rows",
+                                                      List.of(
+                                                          List.of(
+                                                              map("type", "raw_text", "text", "H")),
+                                                          List.of(
+                                                              map(
+                                                                  "type",
+                                                                  "raw_text",
+                                                                  "text",
+                                                                  repeated("x", 10000)))),
+                                                      "caption",
+                                                      "Data")))))),
+                              map(
+                                  "type",
+                                  "layout",
+                                  "label",
+                                  "Layout",
+                                  "rows",
+                                  List.of(
+                                      map(
+                                          "items",
+                                          List.of(
+                                              map(
+                                                  "block",
+                                                  map(
+                                                      "type",
+                                                      "data_table",
+                                                      "rows",
+                                                      List.of(
+                                                          List.of(
+                                                              map("type", "raw_text", "text", "H")),
+                                                          List.of(
+                                                              map(
+                                                                  "type",
+                                                                  "raw_text",
+                                                                  "text",
+                                                                  repeated("x", 10000)))),
+                                                      "caption",
+                                                      "Data")))))))))));
+
+      case "layout-message-budget" ->
+          invalid(
+              "MessagePayload",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  copies(
+                      51,
+                      index ->
+                          map(
+                              "type",
+                              "layout",
+                              "label",
+                              "Layout",
+                              "rows",
+                              List.of(
+                                  map("items", List.of(map("block", map("type", "divider")))))))));
+      case "layout-view-budget" ->
+          invalid(
+              "HomeTabView",
+              map(
+                  "type",
+                  "home",
+                  "blocks",
+                  copies(
+                      101,
+                      index ->
+                          map(
+                              "type",
+                              "layout",
+                              "label",
+                              "Layout",
+                              "rows",
+                              List.of(
+                                  map("items", List.of(map("block", map("type", "divider")))))))));
+      case "layout-label-empty" ->
+          invalid(
+              "LayoutBlock",
+              map(
+                  "type",
+                  "layout",
+                  "label",
+                  "",
+                  "rows",
+                  List.of(map("items", List.of(map("block", map("type", "divider")))))));
+      case "layout-label-too-long" ->
+          invalid(
+              "LayoutBlock",
+              map(
+                  "type",
+                  "layout",
+                  "label",
+                  repeated("😀", 151),
+                  "rows",
+                  List.of(map("items", List.of(map("block", map("type", "divider")))))));
+      case "layout-rows-empty" ->
+          invalid("LayoutBlock", map("type", "layout", "label", "Layout", "rows", List.of()));
+      case "layout-too-many-rows" ->
+          invalid(
+              "LayoutBlock",
+              map(
+                  "type",
+                  "layout",
+                  "label",
+                  "Layout",
+                  "rows",
+                  List.of(
+                      map("items", List.of(map("block", map("type", "divider")))),
+                      map("items", List.of(map("block", map("type", "divider")))),
+                      map("items", List.of(map("block", map("type", "divider")))),
+                      map("items", List.of(map("block", map("type", "divider")))),
+                      map("items", List.of(map("block", map("type", "divider")))),
+                      map("items", List.of(map("block", map("type", "divider")))))));
+      case "layout-items-empty" -> invalid("LayoutRow", map("items", List.of()));
+      case "layout-too-many-items" ->
+          invalid(
+              "LayoutRow",
+              map(
+                  "items",
+                  List.of(
+                      map("block", map("type", "divider")),
+                      map("block", map("type", "divider")),
+                      map("block", map("type", "divider")),
+                      map("block", map("type", "divider")))));
+      case "layout-markdown-child" ->
+          invalid("LayoutItem", map("block", map("type", "markdown", "text", "No")));
+      case "layout-direct-child" ->
+          invalid(
+              "LayoutItem",
+              map(
+                  "block",
+                  map(
+                      "type",
+                      "layout",
+                      "label",
+                      "Layout",
+                      "rows",
+                      List.of(map("items", List.of(map("block", map("type", "divider"))))))));
+      case "layout-fallback-actions" ->
+          invalid(
+              "LayoutBlock",
+              map(
+                  "type",
+                  "layout",
+                  "label",
+                  "Layout",
+                  "rows",
+                  List.of(map("items", List.of(map("block", map("type", "divider"))))),
+                  "fallback",
+                  List.of(
+                      map(
+                          "type",
+                          "actions",
+                          "elements",
+                          List.of(
+                              map(
+                                  "type",
+                                  "button",
+                                  "text",
+                                  map("type", "plain_text", "text", "Go")))))));
+      case "layout-wide-siblings" ->
+          invalid(
+              "LayoutRow",
+              map(
+                  "items",
+                  List.of(
+                      map(
+                          "block",
+                          map(
+                              "type",
+                              "carousel",
+                              "elements",
+                              List.of(
+                                  map(
+                                      "type",
+                                      "card",
+                                      "title",
+                                      map("type", "plain_text", "text", "Card"))))),
+                      map(
+                          "block",
+                          map(
+                              "type",
+                              "data_visualization",
+                              "title",
+                              "Chart",
+                              "chart",
+                              map(
+                                  "type",
+                                  "pie",
+                                  "segments",
+                                  List.of(map("label", "One", "value", 1))))))));
+      case "layout-chart-half" ->
+          invalid(
+              "LayoutRow",
+              map(
+                  "items",
+                  List.of(
+                      map(
+                          "block",
+                          map(
+                              "type",
+                              "data_visualization",
+                              "title",
+                              "Chart",
+                              "chart",
+                              map(
+                                  "type",
+                                  "pie",
+                                  "segments",
+                                  List.of(map("label", "One", "value", 1))))),
+                      map("block", map("type", "divider")))));
+      case "layout-depth-three" ->
+          invalid(
+              "LayoutBlock",
+              map(
+                  "type",
+                  "layout",
+                  "label",
+                  "Layout",
+                  "rows",
+                  List.of(
+                      map(
+                          "items",
+                          List.of(
+                              map(
+                                  "block",
+                                  map(
+                                      "type",
+                                      "container",
+                                      "title",
+                                      plain("Container"),
+                                      "child_blocks",
+                                      List.of(
+                                          map(
+                                              "type",
+                                              "layout",
+                                              "label",
+                                              "Layout",
+                                              "rows",
+                                              List.of(
+                                                  map(
+                                                      "items",
+                                                      List.of(
+                                                          map(
+                                                              "block",
+                                                              map("type", "divider"))))))))))))));
+      case "layout-message-alert" ->
+          invalid(
+              "MessagePayload",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  List.of(
+                      map(
+                          "type",
+                          "layout",
+                          "label",
+                          "Layout",
+                          "rows",
+                          List.of(
+                              map(
+                                  "items",
+                                  List.of(
+                                      map(
+                                          "block",
+                                          map(
+                                              "type",
+                                              "alert",
+                                              "text",
+                                              map(
+                                                  "type",
+                                                  "plain_text",
+                                                  "text",
+                                                  "Modal only"))))))))));
+      case "layout-modal-input-submit" ->
+          invalid(
+              "ModalView",
+              map(
+                  "type",
+                  "modal",
+                  "title",
+                  map("type", "plain_text", "text", "Input"),
+                  "blocks",
+                  List.of(
+                      map(
+                          "type",
+                          "layout",
+                          "label",
+                          "Layout",
+                          "rows",
+                          List.of(
+                              map(
+                                  "items",
+                                  List.of(
+                                      map(
+                                          "block",
+                                          map(
+                                              "type",
+                                              "input",
+                                              "label",
+                                              map("type", "plain_text", "text", "Name"),
+                                              "element",
+                                              map(
+                                                  "type",
+                                                  "plain_text_input",
+                                                  "action_id",
+                                                  "name"))))))))));
+      case "layout-three-charts" ->
+          invalid(
+              "MessagePayload",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  List.of(
+                      map(
+                          "type",
+                          "layout",
+                          "label",
+                          "Layout",
+                          "rows",
+                          List.of(
+                              map(
+                                  "items",
+                                  List.of(
+                                      map(
+                                          "block",
+                                          map(
+                                              "type",
+                                              "data_visualization",
+                                              "title",
+                                              "Chart",
+                                              "chart",
+                                              map(
+                                                  "type",
+                                                  "pie",
+                                                  "segments",
+                                                  List.of(map("label", "One", "value", 1))))))),
+                              map(
+                                  "items",
+                                  List.of(
+                                      map(
+                                          "block",
+                                          map(
+                                              "type",
+                                              "data_visualization",
+                                              "title",
+                                              "Chart",
+                                              "chart",
+                                              map(
+                                                  "type",
+                                                  "pie",
+                                                  "segments",
+                                                  List.of(map("label", "One", "value", 1))))))),
+                              map(
+                                  "items",
+                                  List.of(
+                                      map(
+                                          "block",
+                                          map(
+                                              "type",
+                                              "data_visualization",
+                                              "title",
+                                              "Chart",
+                                              "chart",
+                                              map(
+                                                  "type",
+                                                  "pie",
+                                                  "segments",
+                                                  List.of(
+                                                      map("label", "One", "value", 1))))))))))));
+
       case "text-empty" -> invalid("PlainText", text("plain_text", ""));
       case "text-too-long" -> invalid("PlainText", text("plain_text", repeated("x", 3001)));
       case "button-agent-prompt-too-long" ->

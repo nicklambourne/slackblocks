@@ -4,6 +4,9 @@
  * @module blocks
  */
 import {
+  layoutBlock as createLayoutBlock,
+  layoutRow as createLayoutRow,
+  layoutItem as createLayoutItem,
   actionsBlock as createActionsBlock,
   alertBlock as createAlertBlock,
   cardBlock as createCardBlock,
@@ -350,4 +353,26 @@ export function VideoBlock(): FluentBuilder<
   Output<typeof createVideoBlock>
 > {
   return createFluentBuilder(createVideoBlock);
+}
+
+/**
+ * Builds a grid of one to five rows with a required label, optional visible label
+ * and explicit older-client fallback blocks. Nested content retains its surface rules.
+ */
+export function LayoutBlock(): FluentBuilder<FirstInput<typeof createLayoutBlock>, Output<typeof createLayoutBlock>> {
+  return createFluentBuilder(createLayoutBlock, { collections: { rows: "flat", fallback: "flat" } });
+}
+/**
+ * Builds one to three cells in source and reading order. Each row permits at most
+ * one carousel, data table or chart; a chart requires a majority of its width.
+ */
+export function LayoutRow(): FluentBuilder<FirstInput<typeof createLayoutRow>, Output<typeof createLayoutRow>> {
+  return createFluentBuilder(createLayoutRow, { collections: { items: "flat" } });
+}
+/**
+ * Builds a supported native child cell with proportional narrow, standard or wide
+ * width and optional start, center or end alignment. Omitted alignment fills the cell.
+ */
+export function LayoutItem(): FluentBuilder<FirstInput<typeof createLayoutItem>, Output<typeof createLayoutItem>> {
+  return createFluentBuilder(createLayoutItem);
 }

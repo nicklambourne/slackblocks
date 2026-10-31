@@ -6,6 +6,7 @@ on:
     paths:
       - "typescript/**"
       - "spec/**"
+      - "docs/docs/usage/using_blocks.mdx"
       - "docs/examples/typescript/**"
       - "docs/examples/section_hello.json"
       - "package.json"
@@ -43,7 +44,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(typescript/|spec/|docs/examples/typescript/|docs/examples/section_hello\.json$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/typescript\.yml$)' <<<"$files"; then
+          if grep -qE '^(typescript/|spec/|docs/docs/usage/using_blocks\.mdx$|docs/examples/typescript/|docs/examples/section_hello\.json$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/typescript\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"

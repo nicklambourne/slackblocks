@@ -1,11 +1,11 @@
 {
-  "spec_version": "1.4.0",
+  "spec_version": "1.5.0",
   "capabilities": {
     "blocks.actions": ["blocks/actions_block_checkboxes"],
     "blocks.alert": ["blocks/alert_block"],
     "blocks.card": ["blocks/card_block"],
     "blocks.carousel": ["blocks/carousel_block"],
-    "blocks.container": ["blocks/container_block"],
+    "blocks.container": ["blocks/container_block", "blocks/container_layout", "blocks/layout_container"],
     "blocks.context": ["blocks/context_block_text_only"],
     "blocks.context_actions": [
       "blocks/context_actions_feedback_buttons",
@@ -106,6 +106,9 @@
     "rich_text.user": ["rich_text/rich_text_user_basic"],
     "rich_text.user_group": ["rich_text/rich_text_user_group_basic"],
     "views.home_tab": ["views/hometab_view"],
-    "views.modal": ["views/modal_with_blocks", "views/modal_without_blocks"]
+    "views.modal": ["views/modal_with_blocks", "views/modal_without_blocks"],
+    "blocks.layout": ["blocks/layout_block", "blocks/layout_styled", "blocks/layout_empty_fallback", "blocks/layout_limits", "blocks/layout_container", "blocks/layout_chart_majority"],
+    "objects.layout_row": ["blocks/layout_styled", "blocks/layout_limits", "blocks/layout_chart_majority"],
+    "objects.layout_item": ["blocks/layout_styled", "blocks/layout_chart_majority"]
   }
 }

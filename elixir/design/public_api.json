@@ -2061,6 +2061,69 @@
       "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
       "kind": "model",
       "capability": "objects.input_parameter"
+    },
+    "Slackblocks.Blocks.Layout": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; native construction, checked decoding, immutable edits, roles and conformance fixtures cover its API.",
+      "kind": "model",
+      "capability": "blocks.layout"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Layout": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; native layout fixtures and consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.LayoutRow": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; native construction, checked decoding, immutable edits, roles and conformance fixtures cover its API.",
+      "kind": "model",
+      "capability": "objects.layout_row"
+    },
+    "Jason.Encoder.Slackblocks.Objects.LayoutRow": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; native layout fixtures and consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.LayoutItem": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; native construction, checked decoding, immutable edits, roles and conformance fixtures cover its API.",
+      "kind": "model",
+      "capability": "objects.layout_item"
+    },
+    "Jason.Encoder.Slackblocks.Objects.LayoutItem": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; native layout fixtures and consumers cover it.",
+      "kind": "protocol"
     }
   },
   "schema_version": 1

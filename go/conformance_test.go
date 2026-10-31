@@ -203,6 +203,12 @@ type fixtureBuilderValue interface {
 }
 
 func fixtureBuilder(object map[string]any, fixtureID string) fixtureBuilderValue {
+	if _, ok := object["items"]; ok {
+		return slackblocks.NewLayoutRow()
+	}
+	if _, ok := object["block"]; ok {
+		return slackblocks.NewLayoutItem()
+	}
 	typeName, _ := object["type"].(string)
 	switch typeName {
 	case "actions":
@@ -225,6 +231,8 @@ func fixtureBuilder(object map[string]any, fixtureID string) fixtureBuilderValue
 		return slackblocks.NewChannelSelect()
 	case "checkboxes":
 		return slackblocks.NewCheckboxes()
+	case "layout":
+		return slackblocks.NewLayoutBlock()
 	case "container":
 		return slackblocks.NewContainerBlock()
 	case "context":
