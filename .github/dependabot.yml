@@ -22,7 +22,8 @@ updates:
       - dependency-name: typescript
         update-types: ["version-update:semver-major"]
 
-  # Track newer SDK support separately from the Go 1.22-compatible core minimum.
+  # Track the latest SDK separately from the Go 1.22 core minimum and the
+  # intentionally retained Go 1.25 compatibility profile (go125.mod).
   - package-ecosystem: gomod
     directory: /go/integrations
     schedule:

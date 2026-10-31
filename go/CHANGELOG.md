@@ -3,6 +3,10 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
+## [Unreleased]
+
+- Add a separately tested slack-go v0.30.1 integration profile for Go 1.26+, including its file-URL token-disclosure fix. Preserve the Go 1.22 / SDK v0.17.3 default and Go 1.25 / SDK v0.23.1 profile; applications must explicitly select the newer SDK to receive its fixes.
+
 ## [3.2.0] — 2026-10-31
 
 - Add native layout blocks, rows and items with typed widths/alignment, closed child and fallback roles, checked nesting and receiving-surface validation (spec 1.5.0).
