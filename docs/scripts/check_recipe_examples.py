@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Execute every literal recipe and compare the output used by its preview.
+"""Execute every literal recipe and the basic Layouts guide example against their previews.
 
 --record is an explicit authoring operation; CI never refreshes expected output.
 Only Python's automatically generated UUID block IDs are replaced in snapshots.
@@ -149,6 +149,25 @@ def sources():
             assert len(snippets) == 1, (name, language, "expected one complete program")
             result[language][name] = snippets[0]
     assert len(catalog) == 15, "Review the complete recipe catalogue when changing it"
+    layout = (ROOT / "docs/docs/usage/layouts.mdx").read_text()
+    for language, fence in LANGUAGES.items():
+        regions = re.findall(f"<{language}>(.*?)</{language}>", layout, re.S)
+        assert len(regions) == 1, (
+            "layout-basic",
+            language,
+            "missing/duplicate language",
+        )
+        snippets = re.findall(rf"^```{fence}\n(.*?)\n```", regions[0], re.S | re.M)
+        assert len(snippets) == 1, (
+            "layout-basic",
+            language,
+            "expected one complete program",
+        )
+        assert f"{language.lower()}: layoutOutput" in layout, (
+            language,
+            "missing preview",
+        )
+        result[language]["layout-basic"] = snippets[0]
     return result
 
 
@@ -388,6 +407,14 @@ def main():
                 check_result(name, value, language)
                 actual[name] = normalize(value) if language == "Python" else value
             for name, value in actual.items():
+                if name == "layout-basic":
+                    source = (ROOT / "docs/docs/usage/layouts.mdx").read_text()
+                    match = re.search(r"export const layoutOutput = (.*?);\n", source, re.S)
+                    assert match, "Missing basic layout preview payload"
+                    assert value == json.loads(match[1]), (
+                        f"{language} basic layout differs from its reviewed preview"
+                    )
+                    continue
                 page = ROOT / "docs/docs/recipes" / f"{name}.mdx"
                 source = page.read_text()
                 match = re.search(r"export const recipeOutputs = (.*?);\n", source, re.S)
@@ -404,7 +431,7 @@ def main():
                         f"{language} {name}: output differs from its reviewed preview"
                     )
             print(
-                f"{language}: all {len(cases)} literal recipes executed; output and intent checks passed",
+                f"{language}: all {len(cases) - 1} literal recipes and the basic Layouts example executed; output and intent checks passed",
                 flush=True,
             )
 

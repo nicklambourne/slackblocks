@@ -52,4 +52,9 @@ for (const { id, title } of catalog) {
   assert.ok(source.includes(`<RecipeOutput recipe="${id}" outputs={recipeOutputs} />`), `${title} lacks its executable output preview`);
 }
 
+const layouts = await readFile(path.join(docsDirectory, "layouts.mdx"), "utf8");
+assert.match(layouts, /!\[[^\]]+\]\(\/img\/usage\/layout-anatomy\.svg\)/, "Layouts needs its anatomy diagram");
+await access(path.join(staticDirectory, "img/usage/layout-anatomy.svg"));
+assert.match(layouts, /<RecipeOutput recipe="layout-basic" outputs=/, "Layouts needs its tested example preview");
+
 console.log("Guide preview checks passed.");
