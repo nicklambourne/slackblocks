@@ -1,0 +1,1054 @@
+---
+sidebar_position: 6
+toc_max_heading_level: 3
+---
+
+# Core Types
+
+Generated from actual PHP reflection and PHPDoc. Names live in the `Slackblocks` namespace. Use named arguments and `declare(strict_types=1)`; values validate before construction returns.
+
+## AlertLevel
+
+Severity levels supported by alert blocks.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Default` | `'default'` | Neutral styling. |
+| `Info` | `'info'` | Informational styling. |
+| `Warning` | `'warning'` | Warning styling. |
+| `Error` | `'error'` | Error styling. |
+| `Success` | `'success'` | Success styling. |
+
+### $name
+
+PHP case name, as declared in the enum.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Slack wire string represented by this case.
+
+```php
+public readonly string $value;
+```
+
+### cases
+
+Returns every enum case in declaration order.
+
+```php
+public static function cases(): array
+```
+
+**Returns:** list&lt;AlertLevel&gt; Declared cases.
+
+### from
+
+Resolves a Slack wire string to its enum case, throwing if it is unknown.
+
+```php
+public static function from(string|int $value): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** AlertLevel Matching case.
+
+| Throws | When |
+| --- | --- |
+| `ValueError` | The wire string has no matching case. |
+
+### tryFrom
+
+Resolves a Slack wire string to its enum case, returning null if it is unknown.
+
+```php
+public static function tryFrom(string|int $value): ?static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** AlertLevel|null Matching case.
+
+## Block
+
+A validated Slack layout block.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+## ButtonStyle
+
+Visual emphasis for buttons and confirmation dialogs.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Primary` | `'primary'` | Green emphasis for the affirmative action. |
+| `Danger` | `'danger'` | Red emphasis for destructive actions. |
+
+### $name
+
+PHP case name, as declared in the enum.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Slack wire string represented by this case.
+
+```php
+public readonly string $value;
+```
+
+### cases
+
+Returns every enum case in declaration order.
+
+```php
+public static function cases(): array
+```
+
+**Returns:** list&lt;ButtonStyle&gt; Declared cases.
+
+### from
+
+Resolves a Slack wire string to its enum case, throwing if it is unknown.
+
+```php
+public static function from(string|int $value): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ButtonStyle Matching case.
+
+| Throws | When |
+| --- | --- |
+| `ValueError` | The wire string has no matching case. |
+
+### tryFrom
+
+Resolves a Slack wire string to its enum case, returning null if it is unknown.
+
+```php
+public static function tryFrom(string|int $value): ?static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ButtonStyle|null Matching case.
+
+## Chart
+
+A chart that can be displayed by a data visualization block.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+## ColumnAlign
+
+Horizontal alignment for table columns.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Left` | `'left'` | Align cell content to the left. |
+| `Center` | `'center'` | Center cell content. |
+| `Right` | `'right'` | Align cell content to the right. |
+
+### $name
+
+PHP case name, as declared in the enum.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Slack wire string represented by this case.
+
+```php
+public readonly string $value;
+```
+
+### cases
+
+Returns every enum case in declaration order.
+
+```php
+public static function cases(): array
+```
+
+**Returns:** list&lt;ColumnAlign&gt; Declared cases.
+
+### from
+
+Resolves a Slack wire string to its enum case, throwing if it is unknown.
+
+```php
+public static function from(string|int $value): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ColumnAlign Matching case.
+
+| Throws | When |
+| --- | --- |
+| `ValueError` | The wire string has no matching case. |
+
+### tryFrom
+
+Resolves a Slack wire string to its enum case, returning null if it is unknown.
+
+```php
+public static function tryFrom(string|int $value): ?static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ColumnAlign|null Matching case.
+
+## ContainerWidth
+
+Widths supported by Slack container blocks.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Narrow` | `'narrow'` | A compact container. |
+| `Standard` | `'standard'` | Slack's standard container width. |
+| `Wide` | `'wide'` | A wide container. |
+| `Full` | `'full'` | The full available width. |
+
+### $name
+
+PHP case name, as declared in the enum.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Slack wire string represented by this case.
+
+```php
+public readonly string $value;
+```
+
+### cases
+
+Returns every enum case in declaration order.
+
+```php
+public static function cases(): array
+```
+
+**Returns:** list&lt;ContainerWidth&gt; Declared cases.
+
+### from
+
+Resolves a Slack wire string to its enum case, throwing if it is unknown.
+
+```php
+public static function from(string|int $value): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ContainerWidth Matching case.
+
+| Throws | When |
+| --- | --- |
+| `ValueError` | The wire string has no matching case. |
+
+### tryFrom
+
+Resolves a Slack wire string to its enum case, returning null if it is unknown.
+
+```php
+public static function tryFrom(string|int $value): ?static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ContainerWidth|null Matching case.
+
+## ContextActionsElement
+
+A value that can appear in a context actions block: feedback buttons or an icon button.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+## ContextElement
+
+A value that can appear in a context block: an image element or a text object.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+## DataTableCell
+
+A value that can appear as a data table cell: raw text, a raw number, or a rich text block.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+## Element
+
+A validated interactive, visual, or input element nested inside a Slack block.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+## IconButtonIcon
+
+Icons supported by icon buttons.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Trash` | `'trash'` | A trash can, for delete actions. |
+
+### $name
+
+PHP case name, as declared in the enum.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Slack wire string represented by this case.
+
+```php
+public readonly string $value;
+```
+
+### cases
+
+Returns every enum case in declaration order.
+
+```php
+public static function cases(): array
+```
+
+**Returns:** list&lt;IconButtonIcon&gt; Declared cases.
+
+### from
+
+Resolves a Slack wire string to its enum case, throwing if it is unknown.
+
+```php
+public static function from(string|int $value): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** IconButtonIcon Matching case.
+
+| Throws | When |
+| --- | --- |
+| `ValueError` | The wire string has no matching case. |
+
+### tryFrom
+
+Resolves a Slack wire string to its enum case, returning null if it is unknown.
+
+```php
+public static function tryFrom(string|int $value): ?static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** IconButtonIcon|null Matching case.
+
+## InputElement
+
+An element that can be placed in an input block.
+
+## JsonObject
+
+Immutable, opaque application JSON. An empty instance encodes as &#123;&#125;, not []. Nested objects are copied on input and export; modeled validation never traverses this content.
+
+### __construct
+
+Copies opaque object members into immutable JSON storage.
+
+```php
+public function __construct(stdClass|array $fields = [])
+```
+
+| Parameter | Description |
+| --- | --- |
+| `fields` | array&lt;string\|int, mixed&gt;\|\stdClass — Object members, including explicit nulls. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | Members contain invalid UTF-8, nonfinite numbers, cycles or unsupported values. |
+
+### fromJson
+
+Parses object-shaped JSON, rejecting unsupported numeric ranges and malformed UTF-8.
+
+```php
+public static function fromJson(string $json): self
+```
+
+| Parameter | Description |
+| --- | --- |
+| `json` | string — Complete JSON object text, including quoted member names. |
+
+**Returns:** self A detached opaque object; empty objects remain objects.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | JSON syntax, root type, numeric range or member data is invalid. |
+
+### jsonSerialize
+
+Returns a detached object, preserving nested &#123;&#125; versus [] and explicit nulls.
+
+```php
+public function jsonSerialize(): stdClass
+```
+
+### toArray
+
+Exports a detached copy of the opaque object members.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string\|int, mixed&gt; Detached members; nested objects remain stdClass.
+
+### toJson
+
+Encodes without exposing the internal storage.
+
+```php
+public function toJson(): string
+```
+
+## ResponseType
+
+Visibility of a slash-command or interaction response.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `InChannel` | `'in_channel'` | Visible to everyone in the channel. |
+| `Ephemeral` | `'ephemeral'` | Visible only to the user who triggered the response. |
+
+### $name
+
+PHP case name, as declared in the enum.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Slack wire string represented by this case.
+
+```php
+public readonly string $value;
+```
+
+### cases
+
+Returns every enum case in declaration order.
+
+```php
+public static function cases(): array
+```
+
+**Returns:** list&lt;ResponseType&gt; Declared cases.
+
+### from
+
+Resolves a Slack wire string to its enum case, throwing if it is unknown.
+
+```php
+public static function from(string|int $value): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ResponseType Matching case.
+
+| Throws | When |
+| --- | --- |
+| `ValueError` | The wire string has no matching case. |
+
+### tryFrom
+
+Resolves a Slack wire string to its enum case, returning null if it is unknown.
+
+```php
+public static function tryFrom(string|int $value): ?static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ResponseType|null Matching case.
+
+## RichTextBlockElement
+
+A top-level element of a rich text block: a section, list, preformatted block, or quote.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+## RichTextListStyle
+
+Marker styles for rich text lists.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Bullet` | `'bullet'` | An unordered, bulleted list. |
+| `Ordered` | `'ordered'` | A numbered list. |
+
+### $name
+
+PHP case name, as declared in the enum.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Slack wire string represented by this case.
+
+```php
+public readonly string $value;
+```
+
+### cases
+
+Returns every enum case in declaration order.
+
+```php
+public static function cases(): array
+```
+
+**Returns:** list&lt;RichTextListStyle&gt; Declared cases.
+
+### from
+
+Resolves a Slack wire string to its enum case, throwing if it is unknown.
+
+```php
+public static function from(string|int $value): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** RichTextListStyle Matching case.
+
+| Throws | When |
+| --- | --- |
+| `ValueError` | The wire string has no matching case. |
+
+### tryFrom
+
+Resolves a Slack wire string to its enum case, returning null if it is unknown.
+
+```php
+public static function tryFrom(string|int $value): ?static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** RichTextListStyle|null Matching case.
+
+## RichTextSectionElement
+
+An inline rich text element: text, a link, an emoji, or a channel, user, or user group mention.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+## RichTextStyle
+
+Inline text styling. Each rich text owner restricts which flags it accepts.
+
+### $bold
+
+Uses bold emphasis on text, links or mentions.
+
+```php
+public readonly ?bool $bold;
+```
+
+### $italic
+
+Uses italic emphasis on text, links or mentions.
+
+```php
+public readonly ?bool $italic;
+```
+
+### $strike
+
+Uses strikethrough on text, links or mentions.
+
+```php
+public readonly ?bool $strike;
+```
+
+### $code
+
+Uses inline code styling; accepted by text and link nodes.
+
+```php
+public readonly ?bool $code;
+```
+
+### $highlight
+
+Highlights a channel, user or user-group mention.
+
+```php
+public readonly ?bool $highlight;
+```
+
+### $clientHighlight
+
+Applies client highlight styling to a channel, user or user-group mention.
+
+```php
+public readonly ?bool $clientHighlight;
+```
+
+### $unlink
+
+Displays a channel, user or user-group mention without a link.
+
+```php
+public readonly ?bool $unlink;
+```
+
+### __construct
+
+Sets optional flags; null omits a flag and explicit false is preserved. The owning rich-text node rejects flags outside its supported set.
+
+```php
+public function __construct(?bool $bold = NULL, ?bool $italic = NULL, ?bool $strike = NULL, ?bool $code = NULL, ?bool $highlight = NULL, ?bool $clientHighlight = NULL, ?bool $unlink = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `bold` | bool\|null — Uses bold emphasis on text, links or mentions. |
+| `italic` | bool\|null — Uses italic emphasis on text, links or mentions. |
+| `strike` | bool\|null — Uses strikethrough on text, links or mentions. |
+| `code` | bool\|null — Uses inline code styling; accepted by text and link nodes. |
+| `highlight` | bool\|null — Highlights a channel, user or user-group mention. |
+| `clientHighlight` | bool\|null — Applies client highlight styling to a channel, user or user-group mention. |
+| `unlink` | bool\|null — Displays a channel, user or user-group mention without a link. |
+
+### jsonSerialize
+
+Returns only supplied flags, preserving explicit false.
+
+```php
+public function jsonSerialize(): stdClass
+```
+
+## TableCell
+
+A value that can appear as a table block cell: raw text or a rich text block.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+## TaskStatus
+
+States supported by task card blocks.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Pending` | `'pending'` | The task has not started. |
+| `InProgress` | `'in_progress'` | The task is running. |
+| `Complete` | `'complete'` | The task finished successfully. |
+| `Error` | `'error'` | The task failed. |
+
+### $name
+
+PHP case name, as declared in the enum.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Slack wire string represented by this case.
+
+```php
+public readonly string $value;
+```
+
+### cases
+
+Returns every enum case in declaration order.
+
+```php
+public static function cases(): array
+```
+
+**Returns:** list&lt;TaskStatus&gt; Declared cases.
+
+### from
+
+Resolves a Slack wire string to its enum case, throwing if it is unknown.
+
+```php
+public static function from(string|int $value): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** TaskStatus Matching case.
+
+| Throws | When |
+| --- | --- |
+| `ValueError` | The wire string has no matching case. |
+
+### tryFrom
+
+Resolves a Slack wire string to its enum case, returning null if it is unknown.
+
+```php
+public static function tryFrom(string|int $value): ?static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** TaskStatus|null Matching case.
+
+## Text
+
+A Slack text composition object: plain text or mrkdwn.
+
+### toArray
+
+Exports the Slack wire fields as a detached array.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields.
+
+### toJson
+
+Encodes this validated value as Slack JSON.
+
+```php
+public function toJson(): string
+```
+
+### getText
+
+Returns the text content regardless of its plain/mrkdwn variant.
+
+```php
+public function getText(): string
+```
+
+## Value
+
+A validated immutable Slack value. Use concrete classes and named constructors. Optional null fields are omitted. Arrays are detached; nested values are immutable.
+
+### $extensions
+
+Additional opaque JSON fields; modeled names and type are reserved.
+
+```php
+public readonly ?JsonObject $extensions;
+```
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+### with
+
+Validates a copy with named constructor changes; the original is unchanged.
+
+```php
+public function with(mixed ...$changes): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `changes` | mixed — Named constructor arguments to replace; positional changes are rejected. |
+
+**Returns:** static A new validated value of the same concrete class.
+
+| Throws | When |
+| --- | --- |
+| `\InvalidArgumentException` | A field is unknown or a change is positional. |
+| [`ValidationError`](/reference/php/errors#validationerror) | Replacement content violates a field or contextual rule. |
+| `\TypeError` | A replacement is incompatible with its constructor parameter. |
+
+### toArray
+
+Exports Slack wire fields with detached collections and opaque object values.
+
+```php
+public function toArray(): array
+```
+
+**Returns:** array&lt;string, mixed&gt; Slack wire fields, preserving opaque object values.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A pending task is serialized outside a plan. |
+
+### jsonSerialize
+
+Serializes for json_encode(), rejecting pending tasks outside plans.
+
+```php
+public function jsonSerialize(): stdClass
+```
+
+**Returns:** \stdClass Slack wire object with absent optional fields omitted.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A pending task is serialized outside a plan. |
+
+### toJson
+
+Encodes Slack JSON, throwing ValidationError for invalid serialization context.
+
+```php
+public function toJson(): string
+```
+
+**Returns:** string Complete JSON text, preserving integer and opaque-object semantics.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A pending task is serialized outside a plan. |
+
+### fromArray
+
+Reconstructs the concrete value from checked Slack wire fields.
+
+```php
+public static function fromArray(stdClass|array $fields): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `fields` | array&lt;string, mixed&gt;\|\stdClass — Untrusted Slack wire fields. |
+
+**Returns:** static Validated concrete value with normalized child objects.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A wire type, field, extension or contextual rule is invalid. |
+
+### fromJson
+
+Parses untrusted Slack JSON with categorized errors and checked number ranges.
+
+```php
+public static function fromJson(string $json): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `json` | string — Complete Slack JSON object text for this concrete type. |
+
+**Returns:** static Validated concrete value with normalized child objects.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | JSON syntax, numeric range, fields or context are invalid. |
+
+## Version
+
+Package and shared contract versions. PHP's first release is not yet published.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `PACKAGE` | `'3.1.0'` | Coordinated Composer package version, pending first publication. |
+| `SPEC` | `'1.4.0'` | Shared Block Kit contract version implemented by this package. |

@@ -38,6 +38,10 @@ Errors expose the corresponding `RangeError`, `TypeMismatchError` or `LengthErro
 class and a diagnostic message. The existing calendar parser also rejects an
 impossible date such as `2028-02-30` and may raise `ValueError`.
 
+A rejected layout child retains its real location, such as
+`blocks[1].rows[1].items[1].block` in the message. Container children and
+linear fallback use `child_blocks[index]` and `fallback[index]` respectively.
+
 Remove an optional argument to request omission. Some serializers retain legacy
 truthiness normalization; see [omission and defaults](using_blocks#omission-and-defaults)
 when explicit zero or `False` matters.
@@ -47,6 +51,11 @@ when explicit zero or `False` matters.
 
 Validation errors expose a field path and category. Date pickers check the documented
 ASCII shape, so application code must reject impossible calendar dates.
+
+A rejected layout child retains its real location, ending with
+`blocks[1].rows[1].items[1].block.type` in `error.path`. The prefix identifies
+the payload being built. Container children and linear fallback retain their
+`child_blocks[index]` and `fallback[index]` positions too.
 
 A supplied empty static list is rejected, including through legacy factories.
 On a fresh fluent builder, `.options([])` records an empty list and is rejected;
@@ -117,3 +126,9 @@ check the documented shape; application code owns calendar and business constrai
 
 </Haskell>
 </LanguageContent>
+
+## Layout accounting
+
+Layout support starts in 3.2.0. Slackblocks retains the existing **50 top-level blocks per message** and **100 top-level blocks per view**. Each layout occupies one top-level position; its children and fallback do not introduce an additional block-count budget. Existing per-field, chart and aggregate text limits still apply.
+
+Slack says labels and nested blocks count toward the enclosing surface limit but does not provide a complete counting formula. The real message endpoint accepted 50 layouts, each containing a divider, during 2026-10-30 probes. Slackblocks therefore retains confirmed top-level counting rather than imposing an unverified recursive formula. The [sanitized evidence](https://github.com/nicklambourne/slackblocks/blob/master/spec/evidence/layout-block.json) records the discrepancy. Schema-only `blocks.validate` success does not override confirmed receiving-surface restrictions.

@@ -1,0 +1,264 @@
+---
+title: Typed validation error handling
+slug: /usage/recipes/validation-errors
+sidebar_position: 12
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "category": "length-exceeded",
+    "handled": true
+  },
+  "java": {
+    "handled": true,
+    "category": "length-exceeded"
+  },
+  "go": {
+    "category": "length-exceeded",
+    "handled": true
+  },
+  "ruby": {
+    "category": "length-exceeded",
+    "handled": true
+  },
+  "csharp": {
+    "category": "length-exceeded",
+    "handled": true
+  },
+  "php": {
+    "category": "length-exceeded",
+    "handled": true
+  },
+  "rust": {
+    "category": "length-exceeded",
+    "handled": true
+  },
+  "haskell": {
+    "category": "length-exceeded",
+    "handled": true
+  },
+  "typescript": {
+    "category": "length-exceeded",
+    "handled": true
+  },
+  "python": {
+    "category": "length-exceeded",
+    "handled": true
+  }
+};
+
+# Typed validation error handling
+
+Handle an expected validation category without relying on error-message wording. Every example deliberately rejects an oversized button label.
+
+<RecipeOutput recipe="validation-errors" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+Catch `LengthError` for a label-length failure; catch `InvalidUsageError` for any slackblocks validation failure. Do not classify failures by matching their message text.
+
+```python
+import json
+from slackblocks import Button, LengthError
+
+try:
+    Button(text="x" * 100, action_id="approve")
+except LengthError:
+    print(json.dumps({"category": "length-exceeded", "handled": True}))
+else:
+    raise AssertionError("Expected a button label length error")
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+try {
+  S.Button().text("x".repeat(100)).actionId("approve").build();
+  throw new Error("Expected a length error");
+} catch (error) {
+  if (!(error instanceof S.LengthError)) throw error;
+  console.log(JSON.stringify({category: error.category, handled: true}));
+}
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"errors"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+	"strings"
+)
+
+func main() {
+	_, err := s.NewButton().Text(strings.Repeat("x", 100)).ActionID("approve").Build()
+	var validation *s.ValidationError
+	if !errors.As(err, &validation) || validation.Category != s.LengthExceeded {
+		panic("Expected a length error")
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(map[string]any{"category": validation.Category, "handled": true}); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    try {
+      ButtonElement.builder().text("x".repeat(100)).actionId("approve").build();
+      throw new AssertionError("Expected a length error");
+    } catch (ValidationException error) {
+      if (error.getCategory() != ErrorCategory.LENGTH_EXCEEDED) throw error;
+      System.out.println(new com.google.gson.Gson().toJson(Map.of("category", error.getCategory().wireValue(), "handled", true)));
+    }
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+try {
+    _ = new ButtonElement(new string('x', 100), actionId: "approve");
+    throw new InvalidOperationException("Expected a length error");
+} catch (ValidationException error) when (error.Category == ErrorCategory.LengthExceeded) {
+    Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { category = error.Category.ToWireValue(), handled = true }));
+}
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+begin
+  ButtonElement.new(text: "x" * 100, action_id: "approve")
+  raise "Expected a length error"
+rescue ValidationError => error
+  raise unless error.category == "length-exceeded"
+  puts JSON.generate(category: error.category, handled: true)
+end
+```
+
+</Ruby>
+
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let error = ButtonElement::builder().text("x".repeat(100)).action_id("approve").build().expect_err("Expected a length error");
+    assert_eq!(error.category(), ErrorCategory::LengthExceeded);
+    println!("{}", serde_json::json!({"category": error.category().as_str(), "handled": true}));
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+require 'vendor/autoload.php';
+use Slackblocks as S;
+
+try {
+    new S\ButtonElement(text: str_repeat('x', 100), actionId: 'approve');
+    throw new RuntimeException('Expected a length error');
+} catch (S\ValidationError $error) {
+    if ($error->category !== S\ErrorCategory::LengthExceeded) { throw $error; }
+    echo json_encode(['category' => $error->category->value, 'handled' => true], JSON_THROW_ON_ERROR);
+}
+```
+
+</PHP>
+
+<Elixir>
+
+Use tagged results for expected validation failures. Bang constructors raise `Slackblocks.ValidationError` instead.
+
+```elixir
+case Slackblocks.Elements.Button.new(text: String.duplicate("x", 100), action_id: "approve") do
+  {:error, %Slackblocks.ValidationError{category: :length_exceeded}} ->
+    %{"category" => "length-exceeded", "handled" => true}
+  other -> raise "Expected a length error, got: #{inspect(other)}"
+end
+```
+
+</Elixir>
+
+<Haskell>
+
+Pattern-match on the error category in `Result`; construction returns errors rather than throwing exceptions.
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode, object, (.=))
+import qualified Data.List.NonEmpty as NE
+import qualified Data.Text as T
+import Slackblocks
+
+example = do
+  label <- buildPlainText (plainText (T.replicate 100 "x"))
+  case buildButtonElement ((buttonElement label) {buttonElementActionId = Just "approve"}) of
+    Left errors
+      | all ((== LengthExceeded) . errorCategory) (NE.toList errors) ->
+          pure (object ["category" .= ("length-exceeded" :: T.Text), "handled" .= True])
+    Left errors -> Left errors
+    Right _ -> failure InvalidUsage [] "recipe" "Expected a length error"
+```
+
+</Haskell>
+
+</LanguageContent>

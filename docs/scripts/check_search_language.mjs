@@ -170,6 +170,17 @@ for (const language of allLanguages) {
   for (const other of allLanguages.filter((candidate) => candidate !== language)) {
     assert.equal(documents.some(({ u }) => u.includes(`/reference/${other}`)), false, `${language} leaked ${other} reference`);
   }
+  const parseGuide = documents.filter(({ u }) => u === "/slackblocks/usage/recipes/parse-json").map(({ t }) => t).join(" ");
+  assert.equal(parseGuide.includes("Layout (3.2.0+)"), language === "python", `${language}: incorrect visibility for Python layout parsing limitation`);
+  const validationGuide = documents.filter(({ u }) => u === "/slackblocks/usage/validation-boundary").map(({ t }) => t).join(" ");
+  const pythonPath = "blocks[1].rows[1].items[1].block in the message";
+  const typescriptPath = "blocks[1].rows[1].items[1].block.type in error.path";
+  assert.equal(validationGuide.includes(pythonPath), language === "python", `${language}: incorrect Python nested-path guidance`);
+  assert.equal(validationGuide.includes(typescriptPath), language === "typescript", `${language}: incorrect TypeScript nested-path guidance`);
+  const referenceText = documents.filter(({ u }) => u.startsWith(`/slackblocks/reference/${language}/`)).map(({ t }) => t).join(" ");
+  for (const symbol of language === "elixir" ? ["Slackblocks.Blocks.Layout", "Slackblocks.Objects.LayoutRow", "Slackblocks.Objects.LayoutItem"] : ["LayoutBlock", "LayoutRow", "LayoutItem"]) {
+    assert.ok(referenceText.includes(symbol), `${language}: ${symbol} absent from the indexed native reference`);
+  }
   if (language === "elixir") {
     const text = documents.map(({ t }) => t).join("\n");
     assert.ok(/Elixir 1\.16\.3\+/.test(text), "Elixir installation requirements absent from search");

@@ -189,6 +189,24 @@ Optional `Nothing` omits a key; explicit false, zero and allowed empty values re
 See [Validation boundaries](validation-boundary) for local checks and application-owned
 constraints. Existing defaults are retained for compatibility.
 
+## Layout grids
+
+From **3.2.0**, a layout block groups native blocks into one to five rows, each containing one to three items. Use the [weighted layout recipe](/usage/recipes/layout-grid) for a complete example and rendered output in your selected language.
+
+The required label is 1–150 Unicode code points. It is hidden unless `is_label_visible` is true; visible labels are bold text rather than headings, and hidden labels are not accessible names. Widths are `narrow` (1), `standard` (2, the default) and `wide` (3). Explicit alignment is `start`, `center` or `end`; omission fills the cell. `grid_lines` accepts `none`, `rows` (outer plus horizontal dividers) or `outer`.
+
+| Placement | Supported content |
+| --- | --- |
+| Layout item | Actions, alert, card, carousel, container, context, data table, data visualization, divider, file, header, image, input, rich text, section, table, video |
+| Fallback | Context, divider, header, image, rich text, section, table, video |
+| Receiving surfaces | Messages, modals and App Home, subject to each child's own surface restrictions |
+
+Direct nested layouts and markdown blocks are not layout children. A layout/container path allows at most two composite levels. A container may contain a layout where that container is supported; existing container-only nesting behavior is unchanged. A row may contain only one carousel, data table or chart; a chart must receive **more than half** the row's total weight. A `wide` chart beside a `standard` item is valid; equal weights are not. In a three-item row, a `wide` chart beside two `narrow` items also has a strict majority (3 of 5); three omitted widths do not (2 of 6). The rule is independent of the chart's position.
+
+Fallback replaces the grid on clients without layout support. Explicit empty fallback remains empty. Child and fallback blocks must be valid on the receiving surface; for example, nesting an input in a modal still requires a submit label. Existing aggregate chart and text limits continue to apply. [Layout accounting](/usage/validation-boundary#layout-accounting) explains the retained top-level block limits and the observed Slack discrepancy.
+
+[Official Slack layout reference](https://docs.slack.dev/reference/block-kit/blocks/layout-block).
+
 ## Section Block
 
 A section is the most versatile block. It shows `text`, a two-column grid of `fields`, or both, and can carry one interactive `accessory` such as a button, menu, or image.

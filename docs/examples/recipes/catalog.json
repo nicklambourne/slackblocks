@@ -110,5 +110,12 @@
       "opaque-metadata-and-safe-edits",
       "opaque-metadata-preserves-json-values"
     ]
+  },
+  {
+    "id": "layout-grid",
+    "title": "Weighted layout grid",
+    "anchors": [
+      "weighted-layout-grid"
+    ]
   }
 ]

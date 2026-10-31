@@ -1,0 +1,116 @@
+# Erlang integration
+
+The Elixir package runs on the BEAM and exposes modules callable from Erlang.
+Use quoted module atoms, UTF-8 binary strings, keyword tuples for constructor
+options, ordinary lists and atom enums. Return values are `{ok, Value}` or
+`{error, Error}`. Structs are maps with a `__struct__` key; read their atom fields
+with map patterns. Wire maps from `to_map/1` use binary keys.
+
+## Executable example
+
+This exact module runs in EUnit and in a relocated standalone OTP release.
+It constructs a message, checks JSON round trips and consolidated Jason
+encoding, verifies immutable edits, matches error categories and tests a pending
+task's required plan context.
+
+```erlang title="elixir/erlang/src/slackblocks_erlang.erl"
+%% Executable Erlang example. Called by EUnit and from the self-contained release.
+-module(slackblocks_erlang).
+-export([message/0, verify/0]).
+
+-spec message() -> map().
+message() ->
+    {ok, Button} = 'Elixir.Slackblocks.Elements.Button':new([
+        {text, <<"View build">>}, {action_id, <<"view_build">>}, {style, primary}
+    ]),
+    {ok, Section} = 'Elixir.Slackblocks.Blocks.Section':new([
+        {text, <<"*Build complete*">>}, {accessory, Button}
+    ]),
+    {ok, Message} = 'Elixir.Slackblocks.Message':new([
+        {channel, <<"C123">>}, {text, <<"Build complete">>}, {blocks, [Section]}
+    ]),
+    Message.
+
+-spec verify() -> ok.
+verify() ->
+    Message = message(),
+    {ok, Wire} = 'Elixir.Slackblocks':to_map(Message),
+    <<"C123">> = maps:get(<<"channel">>, Wire),
+    {ok, Json} = 'Elixir.Slackblocks':encode(Message),
+    {ok, Wire} = 'Elixir.Jason':decode(Json),
+    {ok, Message} = 'Elixir.Slackblocks':decode('Elixir.Slackblocks.Message', Json),
+    {ok, ProtocolJson} = 'Elixir.Jason':encode(Message),
+    {ok, Wire} = 'Elixir.Jason':decode(ProtocolJson),
+    {ok, Edited} = 'Elixir.Slackblocks.Message':change(Message, [{text, <<"Updated">>}]),
+    <<"Updated">> = maps:get(text, Edited),
+    <<"Build complete">> = maps:get(text, Message),
+    {error, #{category := missing_required, path := [<<"channel">>]}} =
+        'Elixir.Slackblocks.Message':change(Message, [{channel, nil}]),
+    {error, #{category := type_mismatch}} =
+        'Elixir.Slackblocks':to_map(Message#{channel => "charlist"}),
+    {ok, Task} = 'Elixir.Slackblocks.Blocks.TaskCard':new([
+        {task_id, <<"queued">>}, {title, <<"Queued">>}, {status, pending}
+    ]),
+    {error, #{category := type_mismatch}} = 'Elixir.Slackblocks':to_map(Task),
+    {ok, Plan} = 'Elixir.Slackblocks.Blocks.Plan':new([{title, <<"Plan">>}, {tasks, [Task]}]),
+    {ok, #{<<"tasks">> := [TaskWire]}} = 'Elixir.Slackblocks':to_map(Plan),
+    false = maps:is_key(<<"type">>, TaskWire),
+    ok.
+```
+
+Bang functions can be called with quoted function atoms, but tagged functions
+make ordinary Erlang pattern matching straightforward. Elixir strings are
+binaries; Erlang charlists do not satisfy string fields. Use `nil` for optional
+absence and JSON nulls, and atoms `true` and `false` for booleans. JSON keys are
+never converted to atoms during checked decoding.
+
+## Rebar3 and Mix
+
+Build with compatible Elixir/OTP installed. This current source configuration
+targets the 3.1.0 release; the frozen [3.0.0 guide](/3.0.0/usage/erlang)
+remains available for that earlier version. The repository's `elixir/tools/erlang_check.py`
+tests a locally built archive in a temporary consumer before publication.
+
+```erlang title="elixir/erlang/rebar.config"
+{erl_opts, [debug_info, warnings_as_errors]}.
+%% Pin direct dependencies too: rebar_mix 0.5.1 predates Mix's current lock tuples.
+{deps, [{slackblocks, "3.1.0"}, {jason, "1.4.5"}, {decimal, "3.2.0"}]}.
+{plugins, [{rebar_mix, "0.5.1"}]}.
+{provider_hooks, [{post, [{compile, {mix, consolidate_protocols}}]}]}.
+{relx, [
+  {release, {slackblocks_erlang, "0.1.0"}, [sasl, slackblocks_erlang]},
+  {dev_mode, false},
+  {include_erts, true},
+  {include_src, false},
+  {extended_start_script, true},
+  {vm_args_src, "config/vm.args.src"},
+  {sys_config, "config/sys.config"},
+  {overlay, [{copy, "{{base_dir}}/consolidated", "releases/{{release_version}}/consolidated"}]}
+]}.
+```
+
+`rebar_mix` 0.5.1 requires explicit Jason and Decimal entries because it predates
+Mix's current lock tuple format. Install those dependencies before compiling
+Jason. When reusing a Jason build that predates Decimal, force its Mix compile
+as described in [Installation](installation), then rebuild the consumer.
+The package's Erlang application includes Elixir, Jason, Decimal and slackblocks
+as OTP applications; the runtime needs those libraries even though the source
+caller is Erlang.
+
+The tested consumer calls `rebar3 eunit` and `rebar3 release`. Its relx overlay
+copies consolidated protocols into the release; `config/vm.args.src` adds
+`-pa ${RELEASE_ROOT_DIR}/releases/${RELEASE_VSN}/consolidated`. Preserve that path
+when adapting the release configuration. The checked-in consumer also contains
+the application resource, callback modules and release configuration files.
+
+## Verification boundary
+
+CI checks actual Hex archives with minimum/current Elixir and Decimal 2/3. It
+includes ERTS in the release, relocates it, removes the consumer build directory,
+and executes it without Mix, Elixir compiler or Rebar3 on PATH. JSON encoding
+must use consolidated protocols. This verifies the documented configuration;
+other Erlang build integrations still need their own dependency/release checks.
+
+Run `python3 tools/erlang_check.py` from the Elixir package directory to repeat
+that check. The same test is included in the full native checker. No Slack
+workspace or network message is involved.

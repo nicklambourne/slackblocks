@@ -1,0 +1,2480 @@
+---
+sidebar_position: 1
+---
+
+# Blocks
+
+Signatures come from GHC; descriptions come from compiled Haddock comments. Import `Slackblocks` or the defining public module. Checked values encode with Aeson; field records must be built first.
+
+## ActionsBlock {#slackblocks-models-actionsblock}
+
+A block that holds interactive elements such as buttons and menus.
+
+[https://docs.slack.dev/reference/block-kit/blocks/actions-block](https://docs.slack.dev/reference/block-kit/blocks/actions-block)
+
+```haskell
+type Slackblocks.Models.ActionsBlock :: *
+```
+
+## ActionsBlockFields {#slackblocks-models-actionsblockfields}
+
+Editable construction input. Call [`buildActionsBlock`](/reference/haskell/blocks#slackblocks-models-buildactionsblock) before encoding.
+
+```haskell
+Slackblocks.Models.ActionsBlockFields ::
+  [Slackblocks.Models.Element]
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ActionsBlockFields
+
+type Slackblocks.Models.ActionsBlockFields :: *
+```
+
+## AlertBlock {#slackblocks-models-alertblock}
+
+A severity-labelled alert, available in modals.
+
+[https://docs.slack.dev/reference/block-kit/blocks/alert-block](https://docs.slack.dev/reference/block-kit/blocks/alert-block)
+
+```haskell
+type Slackblocks.Models.AlertBlock :: *
+```
+
+## AlertBlockFields {#slackblocks-models-alertblockfields}
+
+Editable construction input. Call [`buildAlertBlock`](/reference/haskell/blocks#slackblocks-models-buildalertblock) before encoding.
+
+```haskell
+Slackblocks.Models.AlertBlockFields ::
+  Slackblocks.Models.TextObject
+  -> Maybe Slackblocks.Models.AlertLevel
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.AlertBlockFields
+
+type Slackblocks.Models.AlertBlockFields :: *
+```
+
+## CardBlock {#slackblocks-models-cardblock}
+
+A compact card with an image, text, and up to three buttons.
+
+[https://docs.slack.dev/reference/block-kit/blocks/card-block](https://docs.slack.dev/reference/block-kit/blocks/card-block)
+ Provide at least one of a hero image, title, actions, or body.
+ An image icon and a Slack icon cannot be combined.
+
+```haskell
+type Slackblocks.Models.CardBlock :: *
+```
+
+## CardBlockFields {#slackblocks-models-cardblockfields}
+
+Editable construction input. Call [`buildCardBlock`](/reference/haskell/blocks#slackblocks-models-buildcardblock) before encoding.
+
+```haskell
+Slackblocks.Models.CardBlockFields ::
+  Maybe Slackblocks.Models.ImageElement
+  -> Maybe Slackblocks.Models.ImageElement
+  -> Maybe Slackblocks.Models.TextObject
+  -> Maybe Slackblocks.Models.TextObject
+  -> Maybe Slackblocks.Models.TextObject
+  -> Maybe [Slackblocks.Models.ButtonElement]
+  -> Maybe Slackblocks.Models.SlackIcon
+  -> Maybe Slackblocks.Models.TextObject
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.CardBlockFields
+
+type Slackblocks.Models.CardBlockFields :: *
+```
+
+## CarouselBlock {#slackblocks-models-carouselblock}
+
+A horizontally scrolling set of cards, available in messages and App Home.
+
+[https://docs.slack.dev/reference/block-kit/blocks/carousel-block](https://docs.slack.dev/reference/block-kit/blocks/carousel-block)
+
+```haskell
+type Slackblocks.Models.CarouselBlock :: *
+```
+
+## CarouselBlockFields {#slackblocks-models-carouselblockfields}
+
+Editable construction input. Call [`buildCarouselBlock`](/reference/haskell/blocks#slackblocks-models-buildcarouselblock) before encoding.
+
+```haskell
+Slackblocks.Models.CarouselBlockFields ::
+  [Slackblocks.Models.CardBlock]
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.CarouselBlockFields
+
+type Slackblocks.Models.CarouselBlockFields :: *
+```
+
+## ContainerBlock {#slackblocks-models-containerblock}
+
+A titled group of blocks that can optionally collapse.
+
+[https://docs.slack.dev/reference/block-kit/blocks/container-block](https://docs.slack.dev/reference/block-kit/blocks/container-block)
+ Provide a title or a rich text title.
+
+```haskell
+type Slackblocks.Models.ContainerBlock :: *
+```
+
+## ContainerBlockFields {#slackblocks-models-containerblockfields}
+
+Editable construction input. Call [`buildContainerBlock`](/reference/haskell/blocks#slackblocks-models-buildcontainerblock) before encoding.
+
+```haskell
+Slackblocks.Models.ContainerBlockFields ::
+  [Slackblocks.Models.Block]
+  -> Maybe Slackblocks.Models.PlainText
+  -> Maybe Slackblocks.Models.RichTextBlock
+  -> Maybe Slackblocks.Models.TextObject
+  -> Maybe Slackblocks.Models.ContainerWidth
+  -> Maybe Slackblocks.Models.ImageElement
+  -> Maybe Bool
+  -> Maybe Bool
+  -> Maybe Bool
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ContainerBlockFields
+
+type Slackblocks.Models.ContainerBlockFields :: *
+```
+
+## ContextActionsBlock {#slackblocks-models-contextactionsblock}
+
+A row of feedback or icon buttons, usually shown below AI-generated content.
+
+[https://docs.slack.dev/reference/block-kit/blocks/context-actions-block](https://docs.slack.dev/reference/block-kit/blocks/context-actions-block)
+
+```haskell
+type Slackblocks.Models.ContextActionsBlock :: *
+```
+
+## ContextActionsBlockFields {#slackblocks-models-contextactionsblockfields}
+
+Editable construction input. Call [`buildContextActionsBlock`](/reference/haskell/blocks#slackblocks-models-buildcontextactionsblock) before encoding.
+
+```haskell
+Slackblocks.Models.ContextActionsBlockFields ::
+  [Slackblocks.Models.ContextActionsElement]
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ContextActionsBlockFields
+
+type Slackblocks.Models.ContextActionsBlockFields :: *
+```
+
+## ContextBlock {#slackblocks-models-contextblock}
+
+A block of small, secondary images and text.
+
+[https://docs.slack.dev/reference/block-kit/blocks/context-block](https://docs.slack.dev/reference/block-kit/blocks/context-block)
+
+```haskell
+type Slackblocks.Models.ContextBlock :: *
+```
+
+## ContextBlockFields {#slackblocks-models-contextblockfields}
+
+Editable construction input. Call [`buildContextBlock`](/reference/haskell/blocks#slackblocks-models-buildcontextblock) before encoding.
+
+```haskell
+Slackblocks.Models.ContextBlockFields ::
+  [Slackblocks.Models.ContextElement]
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ContextBlockFields
+
+type Slackblocks.Models.ContextBlockFields :: *
+```
+
+## DataTableBlock {#slackblocks-models-datatableblock}
+
+A sortable, paginated table of raw text, numbers, and rich text.
+
+[https://docs.slack.dev/reference/block-kit/blocks/data-table-block](https://docs.slack.dev/reference/block-kit/blocks/data-table-block)
+ The first row is the header row and cannot contain rich text.
+ Every row must have the same number of cells, and all cell text together is limited to 20,000 characters.
+
+```haskell
+type Slackblocks.Models.DataTableBlock :: *
+```
+
+## DataTableBlockFields {#slackblocks-models-datatableblockfields}
+
+Editable construction input. Call [`buildDataTableBlock`](/reference/haskell/blocks#slackblocks-models-builddatatableblock) before encoding.
+
+```haskell
+Slackblocks.Models.DataTableBlockFields ::
+  [[Slackblocks.Models.DataTableCell]]
+  -> Data.Text.Text
+  -> Maybe Integer
+  -> Maybe Integer
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.DataTableBlockFields
+
+type Slackblocks.Models.DataTableBlockFields :: *
+```
+
+## DataVisualizationBlock {#slackblocks-models-datavisualizationblock}
+
+A titled pie, bar, area, or line chart.
+
+[https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block)
+
+```haskell
+type Slackblocks.Models.DataVisualizationBlock :: *
+```
+
+## DataVisualizationBlockFields {#slackblocks-models-datavisualizationblockfields}
+
+Editable construction input. Call [`buildDataVisualizationBlock`](/reference/haskell/blocks#slackblocks-models-builddatavisualizationblock) before encoding.
+
+```haskell
+Slackblocks.Models.DataVisualizationBlockFields ::
+  Data.Text.Text
+  -> Slackblocks.Models.Chart
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.DataVisualizationBlockFields
+
+type Slackblocks.Models.DataVisualizationBlockFields :: *
+```
+
+## DividerBlock {#slackblocks-models-dividerblock}
+
+A horizontal rule that separates blocks.
+
+[https://docs.slack.dev/reference/block-kit/blocks/divider-block](https://docs.slack.dev/reference/block-kit/blocks/divider-block)
+
+```haskell
+type Slackblocks.Models.DividerBlock :: *
+```
+
+## DividerBlockFields {#slackblocks-models-dividerblockfields}
+
+Editable construction input. Call [`buildDividerBlock`](/reference/haskell/blocks#slackblocks-models-builddividerblock) before encoding.
+
+```haskell
+Slackblocks.Models.DividerBlockFields ::
+  Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.DividerBlockFields
+
+type Slackblocks.Models.DividerBlockFields :: *
+```
+
+## FileBlock {#slackblocks-models-fileblock}
+
+A remote file previously added with the files.remote API.
+
+[https://docs.slack.dev/reference/block-kit/blocks/file-block](https://docs.slack.dev/reference/block-kit/blocks/file-block)
+
+```haskell
+type Slackblocks.Models.FileBlock :: *
+```
+
+## FileBlockFields {#slackblocks-models-fileblockfields}
+
+Editable construction input. Call [`buildFileBlock`](/reference/haskell/blocks#slackblocks-models-buildfileblock) before encoding.
+
+```haskell
+Slackblocks.Models.FileBlockFields ::
+  Data.Text.Text
+  -> Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.FileBlockFields
+
+type Slackblocks.Models.FileBlockFields :: *
+```
+
+## HeaderBlock {#slackblocks-models-headerblock}
+
+Large, bold plain text that introduces a group of blocks.
+
+[https://docs.slack.dev/reference/block-kit/blocks/header-block](https://docs.slack.dev/reference/block-kit/blocks/header-block)
+
+```haskell
+type Slackblocks.Models.HeaderBlock :: *
+```
+
+## HeaderBlockFields {#slackblocks-models-headerblockfields}
+
+Editable construction input. Call [`buildHeaderBlock`](/reference/haskell/blocks#slackblocks-models-buildheaderblock) before encoding.
+
+```haskell
+Slackblocks.Models.HeaderBlockFields ::
+  Slackblocks.Models.PlainText
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.HeaderBlockFields
+
+type Slackblocks.Models.HeaderBlockFields :: *
+```
+
+## ImageBlock {#slackblocks-models-imageblock}
+
+A standalone image with alternative text and an optional title.
+
+[https://docs.slack.dev/reference/block-kit/blocks/image-block](https://docs.slack.dev/reference/block-kit/blocks/image-block)
+ Provide exactly one of an image URL or a Slack file.
+
+```haskell
+type Slackblocks.Models.ImageBlock :: *
+```
+
+## ImageBlockFields {#slackblocks-models-imageblockfields}
+
+Editable construction input. Call [`buildImageBlock`](/reference/haskell/blocks#slackblocks-models-buildimageblock) before encoding.
+
+```haskell
+Slackblocks.Models.ImageBlockFields ::
+  Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.SlackFile
+  -> Data.Text.Text
+  -> Maybe Slackblocks.Models.PlainText
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ImageBlockFields
+
+type Slackblocks.Models.ImageBlockFields :: *
+```
+
+## InputBlock {#slackblocks-models-inputblock}
+
+A labelled input that collects a value in a modal, App Home, or message.
+
+[https://docs.slack.dev/reference/block-kit/blocks/input-block](https://docs.slack.dev/reference/block-kit/blocks/input-block)
+
+```haskell
+type Slackblocks.Models.InputBlock :: *
+```
+
+## InputBlockFields {#slackblocks-models-inputblockfields}
+
+Editable construction input. Call [`buildInputBlock`](/reference/haskell/blocks#slackblocks-models-buildinputblock) before encoding.
+
+```haskell
+Slackblocks.Models.InputBlockFields ::
+  Slackblocks.Models.PlainText
+  -> Slackblocks.Models.InputElement
+  -> Maybe Bool
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.PlainText
+  -> Maybe Bool
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.InputBlockFields
+
+type Slackblocks.Models.InputBlockFields :: *
+```
+
+## MarkdownBlock {#slackblocks-models-markdownblock}
+
+Standard markdown rendered by Slack, intended for AI-generated content.
+
+[https://docs.slack.dev/reference/block-kit/blocks/markdown-block](https://docs.slack.dev/reference/block-kit/blocks/markdown-block)
+
+```haskell
+type Slackblocks.Models.MarkdownBlock :: *
+```
+
+## MarkdownBlockFields {#slackblocks-models-markdownblockfields}
+
+Editable construction input. Call [`buildMarkdownBlock`](/reference/haskell/blocks#slackblocks-models-buildmarkdownblock) before encoding.
+
+```haskell
+Slackblocks.Models.MarkdownBlockFields ::
+  Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.MarkdownBlockFields
+
+type Slackblocks.Models.MarkdownBlockFields :: *
+```
+
+## PlanBlock {#slackblocks-models-planblock}
+
+A titled sequence of task cards.
+
+[https://docs.slack.dev/reference/block-kit/blocks/plan-block](https://docs.slack.dev/reference/block-kit/blocks/plan-block)
+ Task IDs must be unique within a plan.
+
+```haskell
+type Slackblocks.Models.PlanBlock :: *
+```
+
+## PlanBlockFields {#slackblocks-models-planblockfields}
+
+Editable construction input. Call [`buildPlanBlock`](/reference/haskell/blocks#slackblocks-models-buildplanblock) before encoding.
+
+```haskell
+Slackblocks.Models.PlanBlockFields ::
+  Data.Text.Text
+  -> [Slackblocks.Models.PlanTask]
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.PlanBlockFields
+
+type Slackblocks.Models.PlanBlockFields :: *
+```
+
+## RichTextBlock {#slackblocks-models-richtextblock}
+
+Formatted text built from sections, lists, preformatted blocks, and quotes.
+
+[https://docs.slack.dev/reference/block-kit/blocks/rich-text-block](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block)
+
+```haskell
+type Slackblocks.Models.RichTextBlock :: *
+```
+
+## RichTextBlockElement {#slackblocks-models-richtextblockelement}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.RichTextBlockElement :: *
+```
+
+## RichTextBlockFields {#slackblocks-models-richtextblockfields}
+
+Editable construction input. Call [`buildRichTextBlock`](/reference/haskell/blocks#slackblocks-models-buildrichtextblock) before encoding.
+
+```haskell
+Slackblocks.Models.RichTextBlockFields ::
+  [Slackblocks.Models.RichTextBlockElement]
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.RichTextBlockFields
+
+type Slackblocks.Models.RichTextBlockFields :: *
+```
+
+## SectionBlock {#slackblocks-models-sectionblock}
+
+Text, a grid of fields, or both, with an optional accessory element.
+
+[https://docs.slack.dev/reference/block-kit/blocks/section-block](https://docs.slack.dev/reference/block-kit/blocks/section-block)
+ Provide text, fields, or both.
+
+```haskell
+type Slackblocks.Models.SectionBlock :: *
+```
+
+## SectionBlockFields {#slackblocks-models-sectionblockfields}
+
+Editable construction input. Call [`buildSectionBlock`](/reference/haskell/blocks#slackblocks-models-buildsectionblock) before encoding.
+
+```haskell
+Slackblocks.Models.SectionBlockFields ::
+  Maybe Slackblocks.Models.TextObject
+  -> Maybe [Slackblocks.Models.TextObject]
+  -> Maybe Slackblocks.Models.Element
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.SectionBlockFields
+
+type Slackblocks.Models.SectionBlockFields :: *
+```
+
+## TableBlock {#slackblocks-models-tableblock}
+
+A simple table of raw text and rich text cells.
+
+[https://docs.slack.dev/reference/block-kit/blocks/table-block](https://docs.slack.dev/reference/block-kit/blocks/table-block)
+
+```haskell
+type Slackblocks.Models.TableBlock :: *
+```
+
+## TableBlockFields {#slackblocks-models-tableblockfields}
+
+Editable construction input. Call [`buildTableBlock`](/reference/haskell/blocks#slackblocks-models-buildtableblock) before encoding.
+
+```haskell
+Slackblocks.Models.TableBlockFields ::
+  [[Slackblocks.Models.TableCell]]
+  -> Maybe [Slackblocks.Models.ColumnSettings]
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.TableBlockFields
+
+type Slackblocks.Models.TableBlockFields :: *
+```
+
+## TaskCardBlock {#slackblocks-models-taskcardblock}
+
+One task with its status, details, output, and sources.
+
+[https://docs.slack.dev/reference/block-kit/blocks/task-card-block](https://docs.slack.dev/reference/block-kit/blocks/task-card-block)
+ A standalone task card's status cannot be pending; pending is only valid for plan tasks.
+
+```haskell
+type Slackblocks.Models.TaskCardBlock :: *
+```
+
+## TaskCardBlockFields {#slackblocks-models-taskcardblockfields}
+
+Editable construction input. Call [`buildTaskCardBlock`](/reference/haskell/blocks#slackblocks-models-buildtaskcardblock) before encoding.
+
+```haskell
+Slackblocks.Models.TaskCardBlockFields ::
+  Data.Text.Text
+  -> Data.Text.Text
+  -> Maybe Slackblocks.Models.RichTextBlock
+  -> Maybe Slackblocks.Models.RichTextBlock
+  -> Maybe [Slackblocks.Models.UrlSource]
+  -> Slackblocks.Models.TaskStatus
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.TaskCardBlockFields
+
+type Slackblocks.Models.TaskCardBlockFields :: *
+```
+
+## VideoBlock {#slackblocks-models-videoblock}
+
+An embedded video player.
+
+[https://docs.slack.dev/reference/block-kit/blocks/video-block](https://docs.slack.dev/reference/block-kit/blocks/video-block)
+
+```haskell
+type Slackblocks.Models.VideoBlock :: *
+```
+
+## VideoBlockFields {#slackblocks-models-videoblockfields}
+
+Editable construction input. Call [`buildVideoBlock`](/reference/haskell/blocks#slackblocks-models-buildvideoblock) before encoding.
+
+```haskell
+Slackblocks.Models.VideoBlockFields ::
+  Data.Text.Text
+  -> Data.Text.Text
+  -> Slackblocks.Models.PlainText
+  -> Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.PlainText
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.VideoBlockFields
+
+type Slackblocks.Models.VideoBlockFields :: *
+```
+
+## actionsBlock {#slackblocks-models-actionsblock}
+
+Start editable fields for ActionsBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildActionsBlock`](/reference/haskell/blocks#slackblocks-models-buildactionsblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.actionsBlock ::
+  [Slackblocks.Models.Element]
+  -> Slackblocks.Models.ActionsBlockFields
+```
+
+## actionsBlockAsBlock {#slackblocks-models-actionsblockasblock}
+
+Place a checked ActionsBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.actionsBlockAsBlock ::
+  Slackblocks.Models.ActionsBlock -> Slackblocks.Models.Block
+```
+
+## actionsBlockBlockId {#slackblocks-models-actionsblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.actionsBlockBlockId ::
+  Slackblocks.Models.ActionsBlockFields -> Maybe Data.Text.Text
+```
+
+## actionsBlockElements {#slackblocks-models-actionsblockelements}
+
+Adds interactive elements in display order. Required. Shared limit: `actions.elements`.
+
+```haskell
+Slackblocks.Models.actionsBlockElements ::
+  Slackblocks.Models.ActionsBlockFields
+  -> [Slackblocks.Models.Element]
+```
+
+## actionsBlockExtensions {#slackblocks-models-actionsblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.actionsBlockExtensions ::
+  Slackblocks.Models.ActionsBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## alertBlock {#slackblocks-models-alertblock}
+
+Start editable fields for AlertBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildAlertBlock`](/reference/haskell/blocks#slackblocks-models-buildalertblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.alertBlock ::
+  Slackblocks.Models.TextObject
+  -> Slackblocks.Models.AlertBlockFields
+```
+
+## alertBlockAsBlock {#slackblocks-models-alertblockasblock}
+
+Place a checked AlertBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.alertBlockAsBlock ::
+  Slackblocks.Models.AlertBlock -> Slackblocks.Models.Block
+```
+
+## alertBlockBlockId {#slackblocks-models-alertblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.alertBlockBlockId ::
+  Slackblocks.Models.AlertBlockFields -> Maybe Data.Text.Text
+```
+
+## alertBlockExtensions {#slackblocks-models-alertblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.alertBlockExtensions ::
+  Slackblocks.Models.AlertBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## alertBlockLevel {#slackblocks-models-alertblocklevel}
+
+Sets the alert severity, which controls its color and icon. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.alertBlockLevel ::
+  Slackblocks.Models.AlertBlockFields
+  -> Maybe Slackblocks.Models.AlertLevel
+```
+
+## alertBlockText {#slackblocks-models-alertblocktext}
+
+Sets the alert message. Required. Shared limit: `alert.text`.
+
+```haskell
+Slackblocks.Models.alertBlockText ::
+  Slackblocks.Models.AlertBlockFields
+  -> Slackblocks.Models.TextObject
+```
+
+## buildActionsBlock {#slackblocks-models-buildactionsblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ActionsBlock.
+
+```haskell
+Slackblocks.Models.buildActionsBlock ::
+  Slackblocks.Models.ActionsBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.ActionsBlock
+```
+
+## buildAlertBlock {#slackblocks-models-buildalertblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked AlertBlock.
+
+```haskell
+Slackblocks.Models.buildAlertBlock ::
+  Slackblocks.Models.AlertBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.AlertBlock
+```
+
+## buildCardBlock {#slackblocks-models-buildcardblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked CardBlock.
+
+```haskell
+Slackblocks.Models.buildCardBlock ::
+  Slackblocks.Models.CardBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.CardBlock
+```
+
+## buildCarouselBlock {#slackblocks-models-buildcarouselblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked CarouselBlock.
+
+```haskell
+Slackblocks.Models.buildCarouselBlock ::
+  Slackblocks.Models.CarouselBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.CarouselBlock
+```
+
+## buildContainerBlock {#slackblocks-models-buildcontainerblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ContainerBlock.
+
+```haskell
+Slackblocks.Models.buildContainerBlock ::
+  Slackblocks.Models.ContainerBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.ContainerBlock
+```
+
+## buildContextActionsBlock {#slackblocks-models-buildcontextactionsblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ContextActionsBlock.
+
+```haskell
+Slackblocks.Models.buildContextActionsBlock ::
+  Slackblocks.Models.ContextActionsBlockFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.ContextActionsBlock
+```
+
+## buildContextBlock {#slackblocks-models-buildcontextblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ContextBlock.
+
+```haskell
+Slackblocks.Models.buildContextBlock ::
+  Slackblocks.Models.ContextBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.ContextBlock
+```
+
+## buildDataTableBlock {#slackblocks-models-builddatatableblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked DataTableBlock.
+
+```haskell
+Slackblocks.Models.buildDataTableBlock ::
+  Slackblocks.Models.DataTableBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.DataTableBlock
+```
+
+## buildDataVisualizationBlock {#slackblocks-models-builddatavisualizationblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked DataVisualizationBlock.
+
+```haskell
+Slackblocks.Models.buildDataVisualizationBlock ::
+  Slackblocks.Models.DataVisualizationBlockFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.DataVisualizationBlock
+```
+
+## buildDividerBlock {#slackblocks-models-builddividerblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked DividerBlock.
+
+```haskell
+Slackblocks.Models.buildDividerBlock ::
+  Slackblocks.Models.DividerBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.DividerBlock
+```
+
+## buildFileBlock {#slackblocks-models-buildfileblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked FileBlock.
+
+```haskell
+Slackblocks.Models.buildFileBlock ::
+  Slackblocks.Models.FileBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.FileBlock
+```
+
+## buildHeaderBlock {#slackblocks-models-buildheaderblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked HeaderBlock.
+
+```haskell
+Slackblocks.Models.buildHeaderBlock ::
+  Slackblocks.Models.HeaderBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.HeaderBlock
+```
+
+## buildImageBlock {#slackblocks-models-buildimageblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ImageBlock.
+
+```haskell
+Slackblocks.Models.buildImageBlock ::
+  Slackblocks.Models.ImageBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.ImageBlock
+```
+
+## buildInputBlock {#slackblocks-models-buildinputblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked InputBlock.
+
+```haskell
+Slackblocks.Models.buildInputBlock ::
+  Slackblocks.Models.InputBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.InputBlock
+```
+
+## buildMarkdownBlock {#slackblocks-models-buildmarkdownblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked MarkdownBlock.
+
+```haskell
+Slackblocks.Models.buildMarkdownBlock ::
+  Slackblocks.Models.MarkdownBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.MarkdownBlock
+```
+
+## buildPlanBlock {#slackblocks-models-buildplanblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked PlanBlock.
+
+```haskell
+Slackblocks.Models.buildPlanBlock ::
+  Slackblocks.Models.PlanBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.PlanBlock
+```
+
+## buildRichTextBlock {#slackblocks-models-buildrichtextblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked RichTextBlock.
+
+```haskell
+Slackblocks.Models.buildRichTextBlock ::
+  Slackblocks.Models.RichTextBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.RichTextBlock
+```
+
+## buildSectionBlock {#slackblocks-models-buildsectionblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked SectionBlock.
+
+```haskell
+Slackblocks.Models.buildSectionBlock ::
+  Slackblocks.Models.SectionBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.SectionBlock
+```
+
+## buildTableBlock {#slackblocks-models-buildtableblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked TableBlock.
+
+```haskell
+Slackblocks.Models.buildTableBlock ::
+  Slackblocks.Models.TableBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.TableBlock
+```
+
+## buildTaskCardBlock {#slackblocks-models-buildtaskcardblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked TaskCardBlock.
+
+```haskell
+Slackblocks.Models.buildTaskCardBlock ::
+  Slackblocks.Models.TaskCardBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.TaskCardBlock
+```
+
+## buildVideoBlock {#slackblocks-models-buildvideoblock}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked VideoBlock.
+
+```haskell
+Slackblocks.Models.buildVideoBlock ::
+  Slackblocks.Models.VideoBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.VideoBlock
+```
+
+## cardBlock {#slackblocks-models-cardblock}
+
+Start editable fields for CardBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildCardBlock`](/reference/haskell/blocks#slackblocks-models-buildcardblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.cardBlock :: Slackblocks.Models.CardBlockFields
+```
+
+## cardBlockActions {#slackblocks-models-cardblockactions}
+
+Adds buttons displayed at the bottom of the card, in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `card.actions`.
+
+```haskell
+Slackblocks.Models.cardBlockActions ::
+  Slackblocks.Models.CardBlockFields
+  -> Maybe [Slackblocks.Models.ButtonElement]
+```
+
+## cardBlockAsBlock {#slackblocks-models-cardblockasblock}
+
+Place a checked CardBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.cardBlockAsBlock ::
+  Slackblocks.Models.CardBlock -> Slackblocks.Models.Block
+```
+
+## cardBlockBlockId {#slackblocks-models-cardblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.cardBlockBlockId ::
+  Slackblocks.Models.CardBlockFields -> Maybe Data.Text.Text
+```
+
+## cardBlockBody {#slackblocks-models-cardblockbody}
+
+Sets the main body text of the card. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `card.body`.
+
+```haskell
+Slackblocks.Models.cardBlockBody ::
+  Slackblocks.Models.CardBlockFields
+  -> Maybe Slackblocks.Models.TextObject
+```
+
+## cardBlockExtensions {#slackblocks-models-cardblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.cardBlockExtensions ::
+  Slackblocks.Models.CardBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## cardBlockHeroImage {#slackblocks-models-cardblockheroimage}
+
+Sets the image displayed prominently at the top of the card. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.cardBlockHeroImage ::
+  Slackblocks.Models.CardBlockFields
+  -> Maybe Slackblocks.Models.ImageElement
+```
+
+## cardBlockIcon {#slackblocks-models-cardblockicon}
+
+Sets the image displayed beside the title. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.cardBlockIcon ::
+  Slackblocks.Models.CardBlockFields
+  -> Maybe Slackblocks.Models.ImageElement
+```
+
+## cardBlockSlackIcon {#slackblocks-models-cardblockslackicon}
+
+Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.cardBlockSlackIcon ::
+  Slackblocks.Models.CardBlockFields
+  -> Maybe Slackblocks.Models.SlackIcon
+```
+
+## cardBlockSubtext {#slackblocks-models-cardblocksubtext}
+
+Sets the small print shown at the bottom of the card. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `card.subtext`.
+
+```haskell
+Slackblocks.Models.cardBlockSubtext ::
+  Slackblocks.Models.CardBlockFields
+  -> Maybe Slackblocks.Models.TextObject
+```
+
+## cardBlockSubtitle {#slackblocks-models-cardblocksubtitle}
+
+Sets the supporting text shown below the title. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `card.subtitle`.
+
+```haskell
+Slackblocks.Models.cardBlockSubtitle ::
+  Slackblocks.Models.CardBlockFields
+  -> Maybe Slackblocks.Models.TextObject
+```
+
+## cardBlockTitle {#slackblocks-models-cardblocktitle}
+
+Sets the card title. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `card.title`.
+
+```haskell
+Slackblocks.Models.cardBlockTitle ::
+  Slackblocks.Models.CardBlockFields
+  -> Maybe Slackblocks.Models.TextObject
+```
+
+## carouselBlock {#slackblocks-models-carouselblock}
+
+Start editable fields for CarouselBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildCarouselBlock`](/reference/haskell/blocks#slackblocks-models-buildcarouselblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.carouselBlock ::
+  [Slackblocks.Models.CardBlock]
+  -> Slackblocks.Models.CarouselBlockFields
+```
+
+## carouselBlockAsBlock {#slackblocks-models-carouselblockasblock}
+
+Place a checked CarouselBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.carouselBlockAsBlock ::
+  Slackblocks.Models.CarouselBlock -> Slackblocks.Models.Block
+```
+
+## carouselBlockBlockId {#slackblocks-models-carouselblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.carouselBlockBlockId ::
+  Slackblocks.Models.CarouselBlockFields -> Maybe Data.Text.Text
+```
+
+## carouselBlockElements {#slackblocks-models-carouselblockelements}
+
+Adds the cards in display order. Required. Shared limit: `carousel.elements`.
+
+```haskell
+Slackblocks.Models.carouselBlockElements ::
+  Slackblocks.Models.CarouselBlockFields
+  -> [Slackblocks.Models.CardBlock]
+```
+
+## carouselBlockExtensions {#slackblocks-models-carouselblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.carouselBlockExtensions ::
+  Slackblocks.Models.CarouselBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## containerBlock {#slackblocks-models-containerblock}
+
+Start editable fields for ContainerBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildContainerBlock`](/reference/haskell/blocks#slackblocks-models-buildcontainerblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.containerBlock ::
+  [Slackblocks.Models.Block]
+  -> Slackblocks.Models.ContainerBlockFields
+```
+
+## containerBlockAsBlock {#slackblocks-models-containerblockasblock}
+
+Place a checked ContainerBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.containerBlockAsBlock ::
+  Slackblocks.Models.ContainerBlock -> Slackblocks.Models.Block
+```
+
+## containerBlockBlockId {#slackblocks-models-containerblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.containerBlockBlockId ::
+  Slackblocks.Models.ContainerBlockFields -> Maybe Data.Text.Text
+```
+
+## containerBlockChildBlocks {#slackblocks-models-containerblockchildblocks}
+
+Adds the blocks grouped inside the container, in display order. Required. Shared limit: `container.child_blocks`.
+
+```haskell
+Slackblocks.Models.containerBlockChildBlocks ::
+  Slackblocks.Models.ContainerBlockFields
+  -> [Slackblocks.Models.Block]
+```
+
+## containerBlockDefaultCollapsed {#slackblocks-models-containerblockdefaultcollapsed}
+
+Sets whether a collapsible container starts collapsed. Requires the container to be collapsible. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.containerBlockDefaultCollapsed ::
+  Slackblocks.Models.ContainerBlockFields -> Maybe Bool
+```
+
+## containerBlockExtensions {#slackblocks-models-containerblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.containerBlockExtensions ::
+  Slackblocks.Models.ContainerBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## containerBlockHasHeaderDivider {#slackblocks-models-containerblockhasheaderdivider}
+
+Sets whether Slack draws a divider below the container header. Only valid for non-collapsible containers. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.containerBlockHasHeaderDivider ::
+  Slackblocks.Models.ContainerBlockFields -> Maybe Bool
+```
+
+## containerBlockIcon {#slackblocks-models-containerblockicon}
+
+Sets the image displayed beside the title. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.containerBlockIcon ::
+  Slackblocks.Models.ContainerBlockFields
+  -> Maybe Slackblocks.Models.ImageElement
+```
+
+## containerBlockIsCollapsible {#slackblocks-models-containerblockiscollapsible}
+
+Sets whether users can collapse and expand the container. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.containerBlockIsCollapsible ::
+  Slackblocks.Models.ContainerBlockFields -> Maybe Bool
+```
+
+## containerBlockRichTextTitle {#slackblocks-models-containerblockrichtexttitle}
+
+Sets a rich text block used as the title in place of a plain-text title. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.containerBlockRichTextTitle ::
+  Slackblocks.Models.ContainerBlockFields
+  -> Maybe Slackblocks.Models.RichTextBlock
+```
+
+## containerBlockSubtitle {#slackblocks-models-containerblocksubtitle}
+
+Sets the supporting text shown below the title. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `container.subtitle`.
+
+```haskell
+Slackblocks.Models.containerBlockSubtitle ::
+  Slackblocks.Models.ContainerBlockFields
+  -> Maybe Slackblocks.Models.TextObject
+```
+
+## containerBlockTitle {#slackblocks-models-containerblocktitle}
+
+Sets the container title. Provide either a title or a rich text title. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `container.title`.
+
+```haskell
+Slackblocks.Models.containerBlockTitle ::
+  Slackblocks.Models.ContainerBlockFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## containerBlockWidth {#slackblocks-models-containerblockwidth}
+
+Sets the horizontal width of the container. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.containerBlockWidth ::
+  Slackblocks.Models.ContainerBlockFields
+  -> Maybe Slackblocks.Models.ContainerWidth
+```
+
+## contextActionsBlock {#slackblocks-models-contextactionsblock}
+
+Start editable fields for ContextActionsBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildContextActionsBlock`](/reference/haskell/blocks#slackblocks-models-buildcontextactionsblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.contextActionsBlock ::
+  [Slackblocks.Models.ContextActionsElement]
+  -> Slackblocks.Models.ContextActionsBlockFields
+```
+
+## contextActionsBlockAsBlock {#slackblocks-models-contextactionsblockasblock}
+
+Place a checked ContextActionsBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.contextActionsBlockAsBlock ::
+  Slackblocks.Models.ContextActionsBlock -> Slackblocks.Models.Block
+```
+
+## contextActionsBlockBlockId {#slackblocks-models-contextactionsblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.contextActionsBlockBlockId ::
+  Slackblocks.Models.ContextActionsBlockFields
+  -> Maybe Data.Text.Text
+```
+
+## contextActionsBlockElements {#slackblocks-models-contextactionsblockelements}
+
+Adds feedback buttons or icon buttons in display order. Required. Shared limit: `context_actions.elements`.
+
+```haskell
+Slackblocks.Models.contextActionsBlockElements ::
+  Slackblocks.Models.ContextActionsBlockFields
+  -> [Slackblocks.Models.ContextActionsElement]
+```
+
+## contextActionsBlockExtensions {#slackblocks-models-contextactionsblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.contextActionsBlockExtensions ::
+  Slackblocks.Models.ContextActionsBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## contextBlock {#slackblocks-models-contextblock}
+
+Start editable fields for ContextBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildContextBlock`](/reference/haskell/blocks#slackblocks-models-buildcontextblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.contextBlock ::
+  [Slackblocks.Models.ContextElement]
+  -> Slackblocks.Models.ContextBlockFields
+```
+
+## contextBlockAsBlock {#slackblocks-models-contextblockasblock}
+
+Place a checked ContextBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.contextBlockAsBlock ::
+  Slackblocks.Models.ContextBlock -> Slackblocks.Models.Block
+```
+
+## contextBlockBlockId {#slackblocks-models-contextblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.contextBlockBlockId ::
+  Slackblocks.Models.ContextBlockFields -> Maybe Data.Text.Text
+```
+
+## contextBlockElements {#slackblocks-models-contextblockelements}
+
+Adds images and text in display order. Required. Shared limit: `context.elements`.
+
+```haskell
+Slackblocks.Models.contextBlockElements ::
+  Slackblocks.Models.ContextBlockFields
+  -> [Slackblocks.Models.ContextElement]
+```
+
+## contextBlockExtensions {#slackblocks-models-contextblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.contextBlockExtensions ::
+  Slackblocks.Models.ContextBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## dataTableBlock {#slackblocks-models-datatableblock}
+
+Start editable fields for DataTableBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildDataTableBlock`](/reference/haskell/blocks#slackblocks-models-builddatatableblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.dataTableBlock ::
+  [[Slackblocks.Models.DataTableCell]]
+  -> Data.Text.Text -> Slackblocks.Models.DataTableBlockFields
+```
+
+## dataTableBlockAsBlock {#slackblocks-models-datatableblockasblock}
+
+Place a checked DataTableBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.dataTableBlockAsBlock ::
+  Slackblocks.Models.DataTableBlock -> Slackblocks.Models.Block
+```
+
+## dataTableBlockBlockId {#slackblocks-models-datatableblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.dataTableBlockBlockId ::
+  Slackblocks.Models.DataTableBlockFields -> Maybe Data.Text.Text
+```
+
+## dataTableBlockCaption {#slackblocks-models-datatableblockcaption}
+
+Sets the caption that describes the table's contents. Required.
+
+```haskell
+Slackblocks.Models.dataTableBlockCaption ::
+  Slackblocks.Models.DataTableBlockFields -> Data.Text.Text
+```
+
+## dataTableBlockExtensions {#slackblocks-models-datatableblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.dataTableBlockExtensions ::
+  Slackblocks.Models.DataTableBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## dataTableBlockPageSize {#slackblocks-models-datatableblockpagesize}
+
+Sets how many rows Slack shows per page. Optional; Nothing omits the field. Factory default: `Just (5)`. Shared limit: `data_table.page_size`.
+
+```haskell
+Slackblocks.Models.dataTableBlockPageSize ::
+  Slackblocks.Models.DataTableBlockFields -> Maybe Integer
+```
+
+## dataTableBlockRowHeaderColumnIndex {#slackblocks-models-datatableblockrowheadercolumnindex}
+
+Sets the zero-based index of the column whose cells act as row headers. Optional; Nothing omits the field. Factory default: `Just (0)`. Shared limit: `data_table.row_header_column_index`.
+
+```haskell
+Slackblocks.Models.dataTableBlockRowHeaderColumnIndex ::
+  Slackblocks.Models.DataTableBlockFields -> Maybe Integer
+```
+
+## dataTableBlockRows {#slackblocks-models-datatableblockrows}
+
+Adds complete table rows in display order. Every row must have the same number of cells. Required. Shared limit: `data_table.rows`.
+
+```haskell
+Slackblocks.Models.dataTableBlockRows ::
+  Slackblocks.Models.DataTableBlockFields
+  -> [[Slackblocks.Models.DataTableCell]]
+```
+
+## dataVisualizationBlock {#slackblocks-models-datavisualizationblock}
+
+Start editable fields for DataVisualizationBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildDataVisualizationBlock`](/reference/haskell/blocks#slackblocks-models-builddatavisualizationblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.dataVisualizationBlock ::
+  Data.Text.Text
+  -> Slackblocks.Models.Chart
+  -> Slackblocks.Models.DataVisualizationBlockFields
+```
+
+## dataVisualizationBlockAsBlock {#slackblocks-models-datavisualizationblockasblock}
+
+Place a checked DataVisualizationBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.dataVisualizationBlockAsBlock ::
+  Slackblocks.Models.DataVisualizationBlock
+  -> Slackblocks.Models.Block
+```
+
+## dataVisualizationBlockBlockId {#slackblocks-models-datavisualizationblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.dataVisualizationBlockBlockId ::
+  Slackblocks.Models.DataVisualizationBlockFields
+  -> Maybe Data.Text.Text
+```
+
+## dataVisualizationBlockChart {#slackblocks-models-datavisualizationblockchart}
+
+Sets the chart to display. Required.
+
+```haskell
+Slackblocks.Models.dataVisualizationBlockChart ::
+  Slackblocks.Models.DataVisualizationBlockFields
+  -> Slackblocks.Models.Chart
+```
+
+## dataVisualizationBlockExtensions {#slackblocks-models-datavisualizationblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.dataVisualizationBlockExtensions ::
+  Slackblocks.Models.DataVisualizationBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## dataVisualizationBlockTitle {#slackblocks-models-datavisualizationblocktitle}
+
+Sets the chart title. Required. Shared limit: `data_visualization.title`.
+
+```haskell
+Slackblocks.Models.dataVisualizationBlockTitle ::
+  Slackblocks.Models.DataVisualizationBlockFields -> Data.Text.Text
+```
+
+## dividerBlock {#slackblocks-models-dividerblock}
+
+Start editable fields for DividerBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildDividerBlock`](/reference/haskell/blocks#slackblocks-models-builddividerblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.dividerBlock ::
+  Slackblocks.Models.DividerBlockFields
+```
+
+## dividerBlockAsBlock {#slackblocks-models-dividerblockasblock}
+
+Place a checked DividerBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.dividerBlockAsBlock ::
+  Slackblocks.Models.DividerBlock -> Slackblocks.Models.Block
+```
+
+## dividerBlockBlockId {#slackblocks-models-dividerblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.dividerBlockBlockId ::
+  Slackblocks.Models.DividerBlockFields -> Maybe Data.Text.Text
+```
+
+## dividerBlockExtensions {#slackblocks-models-dividerblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.dividerBlockExtensions ::
+  Slackblocks.Models.DividerBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## fileBlock {#slackblocks-models-fileblock}
+
+Start editable fields for FileBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildFileBlock`](/reference/haskell/blocks#slackblocks-models-buildfileblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.fileBlock ::
+  Data.Text.Text
+  -> Data.Text.Text -> Slackblocks.Models.FileBlockFields
+```
+
+## fileBlockAsBlock {#slackblocks-models-fileblockasblock}
+
+Place a checked FileBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.fileBlockAsBlock ::
+  Slackblocks.Models.FileBlock -> Slackblocks.Models.Block
+```
+
+## fileBlockBlockId {#slackblocks-models-fileblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.fileBlockBlockId ::
+  Slackblocks.Models.FileBlockFields -> Maybe Data.Text.Text
+```
+
+## fileBlockExtensions {#slackblocks-models-fileblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.fileBlockExtensions ::
+  Slackblocks.Models.FileBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## fileBlockExternalId {#slackblocks-models-fileblockexternalid}
+
+Sets the external identifier of a remote file previously added with the files.remote API. Required.
+
+```haskell
+Slackblocks.Models.fileBlockExternalId ::
+  Slackblocks.Models.FileBlockFields -> Data.Text.Text
+```
+
+## fileBlockSource {#slackblocks-models-fileblocksource}
+
+Sets the file source. Slack currently supports only remote files. Required.
+
+```haskell
+Slackblocks.Models.fileBlockSource ::
+  Slackblocks.Models.FileBlockFields -> Data.Text.Text
+```
+
+## headerBlock {#slackblocks-models-headerblock}
+
+Start editable fields for HeaderBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildHeaderBlock`](/reference/haskell/blocks#slackblocks-models-buildheaderblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.headerBlock ::
+  Slackblocks.Models.PlainText
+  -> Slackblocks.Models.HeaderBlockFields
+```
+
+## headerBlockAsBlock {#slackblocks-models-headerblockasblock}
+
+Place a checked HeaderBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.headerBlockAsBlock ::
+  Slackblocks.Models.HeaderBlock -> Slackblocks.Models.Block
+```
+
+## headerBlockBlockId {#slackblocks-models-headerblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.headerBlockBlockId ::
+  Slackblocks.Models.HeaderBlockFields -> Maybe Data.Text.Text
+```
+
+## headerBlockExtensions {#slackblocks-models-headerblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.headerBlockExtensions ::
+  Slackblocks.Models.HeaderBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## headerBlockText {#slackblocks-models-headerblocktext}
+
+Sets the header text, shown in a larger bold font. Required. Shared limit: `header.text`.
+
+```haskell
+Slackblocks.Models.headerBlockText ::
+  Slackblocks.Models.HeaderBlockFields
+  -> Slackblocks.Models.PlainText
+```
+
+## imageBlock {#slackblocks-models-imageblock}
+
+Start editable fields for ImageBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildImageBlock`](/reference/haskell/blocks#slackblocks-models-buildimageblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.imageBlock ::
+  Data.Text.Text -> Slackblocks.Models.ImageBlockFields
+```
+
+## imageBlockAltText {#slackblocks-models-imageblockalttext}
+
+Sets a plain-text summary of the image or video for assistive technology. Required. Shared limit: `image.alt_text`.
+
+```haskell
+Slackblocks.Models.imageBlockAltText ::
+  Slackblocks.Models.ImageBlockFields -> Data.Text.Text
+```
+
+## imageBlockAsBlock {#slackblocks-models-imageblockasblock}
+
+Place a checked ImageBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.imageBlockAsBlock ::
+  Slackblocks.Models.ImageBlock -> Slackblocks.Models.Block
+```
+
+## imageBlockBlockId {#slackblocks-models-imageblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.imageBlockBlockId ::
+  Slackblocks.Models.ImageBlockFields -> Maybe Data.Text.Text
+```
+
+## imageBlockExtensions {#slackblocks-models-imageblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.imageBlockExtensions ::
+  Slackblocks.Models.ImageBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## imageBlockImageUrl {#slackblocks-models-imageblockimageurl}
+
+Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `image.image_url`.
+
+```haskell
+Slackblocks.Models.imageBlockImageUrl ::
+  Slackblocks.Models.ImageBlockFields -> Maybe Data.Text.Text
+```
+
+## imageBlockSlackFile {#slackblocks-models-imageblockslackfile}
+
+Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.imageBlockSlackFile ::
+  Slackblocks.Models.ImageBlockFields
+  -> Maybe Slackblocks.Models.SlackFile
+```
+
+## imageBlockTitle {#slackblocks-models-imageblocktitle}
+
+Sets the title shown above the image. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `image.title`.
+
+```haskell
+Slackblocks.Models.imageBlockTitle ::
+  Slackblocks.Models.ImageBlockFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## inputBlock {#slackblocks-models-inputblock}
+
+Start editable fields for InputBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildInputBlock`](/reference/haskell/blocks#slackblocks-models-buildinputblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.inputBlock ::
+  Slackblocks.Models.PlainText
+  -> Slackblocks.Models.InputElement
+  -> Slackblocks.Models.InputBlockFields
+```
+
+## inputBlockAsBlock {#slackblocks-models-inputblockasblock}
+
+Place a checked InputBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.inputBlockAsBlock ::
+  Slackblocks.Models.InputBlock -> Slackblocks.Models.Block
+```
+
+## inputBlockBlockId {#slackblocks-models-inputblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.inputBlockBlockId ::
+  Slackblocks.Models.InputBlockFields -> Maybe Data.Text.Text
+```
+
+## inputBlockDispatchAction {#slackblocks-models-inputblockdispatchaction}
+
+Sets whether changing the element sends a block_actions payload immediately. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.inputBlockDispatchAction ::
+  Slackblocks.Models.InputBlockFields -> Maybe Bool
+```
+
+## inputBlockElement {#slackblocks-models-inputblockelement}
+
+Sets the input element that collects the user's value. Required.
+
+```haskell
+Slackblocks.Models.inputBlockElement ::
+  Slackblocks.Models.InputBlockFields
+  -> Slackblocks.Models.InputElement
+```
+
+## inputBlockExtensions {#slackblocks-models-inputblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.inputBlockExtensions ::
+  Slackblocks.Models.InputBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## inputBlockHint {#slackblocks-models-inputblockhint}
+
+Sets helper text shown below the input. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `input.hint`.
+
+```haskell
+Slackblocks.Models.inputBlockHint ::
+  Slackblocks.Models.InputBlockFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## inputBlockLabel {#slackblocks-models-inputblocklabel}
+
+Sets the label shown above the input. Required. Shared limit: `input.label`.
+
+```haskell
+Slackblocks.Models.inputBlockLabel ::
+  Slackblocks.Models.InputBlockFields -> Slackblocks.Models.PlainText
+```
+
+## inputBlockOptional {#slackblocks-models-inputblockoptional}
+
+Sets whether the modal can be submitted when this input is empty. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.inputBlockOptional ::
+  Slackblocks.Models.InputBlockFields -> Maybe Bool
+```
+
+## inspectActionsBlock {#slackblocks-models-inspectactionsblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildActionsBlock`](/reference/haskell/blocks#slackblocks-models-buildactionsblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectActionsBlock ::
+  Slackblocks.Models.ActionsBlock
+  -> Slackblocks.Models.ActionsBlockFields
+```
+
+## inspectAlertBlock {#slackblocks-models-inspectalertblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildAlertBlock`](/reference/haskell/blocks#slackblocks-models-buildalertblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectAlertBlock ::
+  Slackblocks.Models.AlertBlock
+  -> Slackblocks.Models.AlertBlockFields
+```
+
+## inspectCardBlock {#slackblocks-models-inspectcardblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildCardBlock`](/reference/haskell/blocks#slackblocks-models-buildcardblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectCardBlock ::
+  Slackblocks.Models.CardBlock -> Slackblocks.Models.CardBlockFields
+```
+
+## inspectCarouselBlock {#slackblocks-models-inspectcarouselblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildCarouselBlock`](/reference/haskell/blocks#slackblocks-models-buildcarouselblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectCarouselBlock ::
+  Slackblocks.Models.CarouselBlock
+  -> Slackblocks.Models.CarouselBlockFields
+```
+
+## inspectContainerBlock {#slackblocks-models-inspectcontainerblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildContainerBlock`](/reference/haskell/blocks#slackblocks-models-buildcontainerblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectContainerBlock ::
+  Slackblocks.Models.ContainerBlock
+  -> Slackblocks.Models.ContainerBlockFields
+```
+
+## inspectContextActionsBlock {#slackblocks-models-inspectcontextactionsblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildContextActionsBlock`](/reference/haskell/blocks#slackblocks-models-buildcontextactionsblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectContextActionsBlock ::
+  Slackblocks.Models.ContextActionsBlock
+  -> Slackblocks.Models.ContextActionsBlockFields
+```
+
+## inspectContextBlock {#slackblocks-models-inspectcontextblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildContextBlock`](/reference/haskell/blocks#slackblocks-models-buildcontextblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectContextBlock ::
+  Slackblocks.Models.ContextBlock
+  -> Slackblocks.Models.ContextBlockFields
+```
+
+## inspectDataTableBlock {#slackblocks-models-inspectdatatableblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildDataTableBlock`](/reference/haskell/blocks#slackblocks-models-builddatatableblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectDataTableBlock ::
+  Slackblocks.Models.DataTableBlock
+  -> Slackblocks.Models.DataTableBlockFields
+```
+
+## inspectDataVisualizationBlock {#slackblocks-models-inspectdatavisualizationblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildDataVisualizationBlock`](/reference/haskell/blocks#slackblocks-models-builddatavisualizationblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectDataVisualizationBlock ::
+  Slackblocks.Models.DataVisualizationBlock
+  -> Slackblocks.Models.DataVisualizationBlockFields
+```
+
+## inspectDividerBlock {#slackblocks-models-inspectdividerblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildDividerBlock`](/reference/haskell/blocks#slackblocks-models-builddividerblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectDividerBlock ::
+  Slackblocks.Models.DividerBlock
+  -> Slackblocks.Models.DividerBlockFields
+```
+
+## inspectFileBlock {#slackblocks-models-inspectfileblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildFileBlock`](/reference/haskell/blocks#slackblocks-models-buildfileblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectFileBlock ::
+  Slackblocks.Models.FileBlock -> Slackblocks.Models.FileBlockFields
+```
+
+## inspectHeaderBlock {#slackblocks-models-inspectheaderblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildHeaderBlock`](/reference/haskell/blocks#slackblocks-models-buildheaderblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectHeaderBlock ::
+  Slackblocks.Models.HeaderBlock
+  -> Slackblocks.Models.HeaderBlockFields
+```
+
+## inspectImageBlock {#slackblocks-models-inspectimageblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildImageBlock`](/reference/haskell/blocks#slackblocks-models-buildimageblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectImageBlock ::
+  Slackblocks.Models.ImageBlock
+  -> Slackblocks.Models.ImageBlockFields
+```
+
+## inspectInputBlock {#slackblocks-models-inspectinputblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildInputBlock`](/reference/haskell/blocks#slackblocks-models-buildinputblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectInputBlock ::
+  Slackblocks.Models.InputBlock
+  -> Slackblocks.Models.InputBlockFields
+```
+
+## inspectMarkdownBlock {#slackblocks-models-inspectmarkdownblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildMarkdownBlock`](/reference/haskell/blocks#slackblocks-models-buildmarkdownblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectMarkdownBlock ::
+  Slackblocks.Models.MarkdownBlock
+  -> Slackblocks.Models.MarkdownBlockFields
+```
+
+## inspectPlanBlock {#slackblocks-models-inspectplanblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildPlanBlock`](/reference/haskell/blocks#slackblocks-models-buildplanblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectPlanBlock ::
+  Slackblocks.Models.PlanBlock -> Slackblocks.Models.PlanBlockFields
+```
+
+## inspectRichTextBlock {#slackblocks-models-inspectrichtextblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildRichTextBlock`](/reference/haskell/blocks#slackblocks-models-buildrichtextblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectRichTextBlock ::
+  Slackblocks.Models.RichTextBlock
+  -> Slackblocks.Models.RichTextBlockFields
+```
+
+## inspectSectionBlock {#slackblocks-models-inspectsectionblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildSectionBlock`](/reference/haskell/blocks#slackblocks-models-buildsectionblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectSectionBlock ::
+  Slackblocks.Models.SectionBlock
+  -> Slackblocks.Models.SectionBlockFields
+```
+
+## inspectTableBlock {#slackblocks-models-inspecttableblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildTableBlock`](/reference/haskell/blocks#slackblocks-models-buildtableblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectTableBlock ::
+  Slackblocks.Models.TableBlock
+  -> Slackblocks.Models.TableBlockFields
+```
+
+## inspectTaskCardBlock {#slackblocks-models-inspecttaskcardblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildTaskCardBlock`](/reference/haskell/blocks#slackblocks-models-buildtaskcardblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectTaskCardBlock ::
+  Slackblocks.Models.TaskCardBlock
+  -> Slackblocks.Models.TaskCardBlockFields
+```
+
+## inspectVideoBlock {#slackblocks-models-inspectvideoblock}
+
+Inspect immutable construction fields. Rebuild edits with [`buildVideoBlock`](/reference/haskell/blocks#slackblocks-models-buildvideoblock) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectVideoBlock ::
+  Slackblocks.Models.VideoBlock
+  -> Slackblocks.Models.VideoBlockFields
+```
+
+## markdownBlock {#slackblocks-models-markdownblock}
+
+Start editable fields for MarkdownBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildMarkdownBlock`](/reference/haskell/blocks#slackblocks-models-buildmarkdownblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.markdownBlock ::
+  Data.Text.Text -> Slackblocks.Models.MarkdownBlockFields
+```
+
+## markdownBlockAsBlock {#slackblocks-models-markdownblockasblock}
+
+Place a checked MarkdownBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.markdownBlockAsBlock ::
+  Slackblocks.Models.MarkdownBlock -> Slackblocks.Models.Block
+```
+
+## markdownBlockBlockId {#slackblocks-models-markdownblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.markdownBlockBlockId ::
+  Slackblocks.Models.MarkdownBlockFields -> Maybe Data.Text.Text
+```
+
+## markdownBlockExtensions {#slackblocks-models-markdownblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.markdownBlockExtensions ::
+  Slackblocks.Models.MarkdownBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## markdownBlockText {#slackblocks-models-markdownblocktext}
+
+Sets standard markdown content, which Slack renders directly. Required. Shared limit: `markdown.text`.
+
+```haskell
+Slackblocks.Models.markdownBlockText ::
+  Slackblocks.Models.MarkdownBlockFields -> Data.Text.Text
+```
+
+## planBlock {#slackblocks-models-planblock}
+
+Start editable fields for PlanBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildPlanBlock`](/reference/haskell/blocks#slackblocks-models-buildplanblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.planBlock ::
+  Data.Text.Text
+  -> [Slackblocks.Models.PlanTask]
+  -> Slackblocks.Models.PlanBlockFields
+```
+
+## planBlockAsBlock {#slackblocks-models-planblockasblock}
+
+Place a checked PlanBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.planBlockAsBlock ::
+  Slackblocks.Models.PlanBlock -> Slackblocks.Models.Block
+```
+
+## planBlockBlockId {#slackblocks-models-planblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.planBlockBlockId ::
+  Slackblocks.Models.PlanBlockFields -> Maybe Data.Text.Text
+```
+
+## planBlockExtensions {#slackblocks-models-planblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.planBlockExtensions ::
+  Slackblocks.Models.PlanBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## planBlockTasks {#slackblocks-models-planblocktasks}
+
+Adds task cards in display order. Required. Shared limit: `plan.tasks`.
+
+```haskell
+Slackblocks.Models.planBlockTasks ::
+  Slackblocks.Models.PlanBlockFields -> [Slackblocks.Models.PlanTask]
+```
+
+## planBlockTitle {#slackblocks-models-planblocktitle}
+
+Sets the plan title. Required.
+
+```haskell
+Slackblocks.Models.planBlockTitle ::
+  Slackblocks.Models.PlanBlockFields -> Data.Text.Text
+```
+
+## richTextBlock {#slackblocks-models-richtextblock}
+
+Start editable fields for RichTextBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildRichTextBlock`](/reference/haskell/blocks#slackblocks-models-buildrichtextblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.richTextBlock ::
+  [Slackblocks.Models.RichTextBlockElement]
+  -> Slackblocks.Models.RichTextBlockFields
+```
+
+## richTextBlockAsBlock {#slackblocks-models-richtextblockasblock}
+
+Place a checked RichTextBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.richTextBlockAsBlock ::
+  Slackblocks.Models.RichTextBlock -> Slackblocks.Models.Block
+```
+
+## richTextBlockAsDataTableCell {#slackblocks-models-richtextblockasdatatablecell}
+
+Place a checked RichTextBlock in the DataTableCell role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.richTextBlockAsDataTableCell ::
+  Slackblocks.Models.RichTextBlock
+  -> Slackblocks.Models.DataTableCell
+```
+
+## richTextBlockAsTableCell {#slackblocks-models-richtextblockastablecell}
+
+Place a checked RichTextBlock in the TableCell role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.richTextBlockAsTableCell ::
+  Slackblocks.Models.RichTextBlock -> Slackblocks.Models.TableCell
+```
+
+## richTextBlockBlockId {#slackblocks-models-richtextblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.richTextBlockBlockId ::
+  Slackblocks.Models.RichTextBlockFields -> Maybe Data.Text.Text
+```
+
+## richTextBlockElements {#slackblocks-models-richtextblockelements}
+
+Adds sections, lists, preformatted blocks, and quotes in display order. Required.
+
+```haskell
+Slackblocks.Models.richTextBlockElements ::
+  Slackblocks.Models.RichTextBlockFields
+  -> [Slackblocks.Models.RichTextBlockElement]
+```
+
+## richTextBlockExtensions {#slackblocks-models-richtextblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.richTextBlockExtensions ::
+  Slackblocks.Models.RichTextBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## sectionBlock {#slackblocks-models-sectionblock}
+
+Start editable fields for SectionBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildSectionBlock`](/reference/haskell/blocks#slackblocks-models-buildsectionblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.sectionBlock ::
+  Slackblocks.Models.SectionBlockFields
+```
+
+## sectionBlockAccessory {#slackblocks-models-sectionblockaccessory}
+
+Sets the element displayed beside the section text. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.sectionBlockAccessory ::
+  Slackblocks.Models.SectionBlockFields
+  -> Maybe Slackblocks.Models.Element
+```
+
+## sectionBlockAsBlock {#slackblocks-models-sectionblockasblock}
+
+Place a checked SectionBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.sectionBlockAsBlock ::
+  Slackblocks.Models.SectionBlock -> Slackblocks.Models.Block
+```
+
+## sectionBlockBlockId {#slackblocks-models-sectionblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.sectionBlockBlockId ::
+  Slackblocks.Models.SectionBlockFields -> Maybe Data.Text.Text
+```
+
+## sectionBlockExtensions {#slackblocks-models-sectionblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.sectionBlockExtensions ::
+  Slackblocks.Models.SectionBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## sectionBlockFields {#slackblocks-models-sectionblockfields}
+
+Adds section fields, shown in a two-column grid, in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `section.fields`.
+
+```haskell
+Slackblocks.Models.sectionBlockFields ::
+  Slackblocks.Models.SectionBlockFields
+  -> Maybe [Slackblocks.Models.TextObject]
+```
+
+## sectionBlockText {#slackblocks-models-sectionblocktext}
+
+Sets the main text of the section. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `section.text`.
+
+```haskell
+Slackblocks.Models.sectionBlockText ::
+  Slackblocks.Models.SectionBlockFields
+  -> Maybe Slackblocks.Models.TextObject
+```
+
+## tableBlock {#slackblocks-models-tableblock}
+
+Start editable fields for TableBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildTableBlock`](/reference/haskell/blocks#slackblocks-models-buildtableblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.tableBlock ::
+  [[Slackblocks.Models.TableCell]]
+  -> Slackblocks.Models.TableBlockFields
+```
+
+## tableBlockAsBlock {#slackblocks-models-tableblockasblock}
+
+Place a checked TableBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.tableBlockAsBlock ::
+  Slackblocks.Models.TableBlock -> Slackblocks.Models.Block
+```
+
+## tableBlockBlockId {#slackblocks-models-tableblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.tableBlockBlockId ::
+  Slackblocks.Models.TableBlockFields -> Maybe Data.Text.Text
+```
+
+## tableBlockColumnSettings {#slackblocks-models-tableblockcolumnsettings}
+
+Adds per-column settings in column order. Provide one entry for every column. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `table.column_settings`.
+
+```haskell
+Slackblocks.Models.tableBlockColumnSettings ::
+  Slackblocks.Models.TableBlockFields
+  -> Maybe [Slackblocks.Models.ColumnSettings]
+```
+
+## tableBlockExtensions {#slackblocks-models-tableblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.tableBlockExtensions ::
+  Slackblocks.Models.TableBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## tableBlockRows {#slackblocks-models-tableblockrows}
+
+Adds complete table rows in display order. Required. Shared limit: `table.rows`.
+
+```haskell
+Slackblocks.Models.tableBlockRows ::
+  Slackblocks.Models.TableBlockFields
+  -> [[Slackblocks.Models.TableCell]]
+```
+
+## taskCardBlock {#slackblocks-models-taskcardblock}
+
+Start editable fields for TaskCardBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildTaskCardBlock`](/reference/haskell/blocks#slackblocks-models-buildtaskcardblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.taskCardBlock ::
+  Data.Text.Text
+  -> Data.Text.Text
+  -> Slackblocks.Models.TaskStatus
+  -> Slackblocks.Models.TaskCardBlockFields
+```
+
+## taskCardBlockAsBlock {#slackblocks-models-taskcardblockasblock}
+
+Place a checked TaskCardBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.taskCardBlockAsBlock ::
+  Slackblocks.Models.TaskCardBlock
+  -> Slackblocks.Validation.Result Slackblocks.Models.Block
+```
+
+## taskCardBlockBlockId {#slackblocks-models-taskcardblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.taskCardBlockBlockId ::
+  Slackblocks.Models.TaskCardBlockFields -> Maybe Data.Text.Text
+```
+
+## taskCardBlockDetails {#slackblocks-models-taskcardblockdetails}
+
+Sets a rich text description of the task. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.taskCardBlockDetails ::
+  Slackblocks.Models.TaskCardBlockFields
+  -> Maybe Slackblocks.Models.RichTextBlock
+```
+
+## taskCardBlockExtensions {#slackblocks-models-taskcardblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.taskCardBlockExtensions ::
+  Slackblocks.Models.TaskCardBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## taskCardBlockOutput {#slackblocks-models-taskcardblockoutput}
+
+Sets rich text describing the task's output. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.taskCardBlockOutput ::
+  Slackblocks.Models.TaskCardBlockFields
+  -> Maybe Slackblocks.Models.RichTextBlock
+```
+
+## taskCardBlockSources {#slackblocks-models-taskcardblocksources}
+
+Adds links to the sources the task used, in display order. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.taskCardBlockSources ::
+  Slackblocks.Models.TaskCardBlockFields
+  -> Maybe [Slackblocks.Models.UrlSource]
+```
+
+## taskCardBlockStatus {#slackblocks-models-taskcardblockstatus}
+
+Sets the task's current state. Required.
+
+```haskell
+Slackblocks.Models.taskCardBlockStatus ::
+  Slackblocks.Models.TaskCardBlockFields
+  -> Slackblocks.Models.TaskStatus
+```
+
+## taskCardBlockTaskId {#slackblocks-models-taskcardblocktaskid}
+
+Sets the identifier of the task. Required.
+
+```haskell
+Slackblocks.Models.taskCardBlockTaskId ::
+  Slackblocks.Models.TaskCardBlockFields -> Data.Text.Text
+```
+
+## taskCardBlockTitle {#slackblocks-models-taskcardblocktitle}
+
+Sets the task title. Required.
+
+```haskell
+Slackblocks.Models.taskCardBlockTitle ::
+  Slackblocks.Models.TaskCardBlockFields -> Data.Text.Text
+```
+
+## videoBlock {#slackblocks-models-videoblock}
+
+Start editable fields for VideoBlock; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildVideoBlock`](/reference/haskell/blocks#slackblocks-models-buildvideoblock) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.videoBlock ::
+  Data.Text.Text
+  -> Data.Text.Text
+  -> Slackblocks.Models.PlainText
+  -> Data.Text.Text
+  -> Slackblocks.Models.VideoBlockFields
+```
+
+## videoBlockAltText {#slackblocks-models-videoblockalttext}
+
+Sets a plain-text summary of the image or video for assistive technology. Required. Shared limit: `video.alt_text`.
+
+```haskell
+Slackblocks.Models.videoBlockAltText ::
+  Slackblocks.Models.VideoBlockFields -> Data.Text.Text
+```
+
+## videoBlockAsBlock {#slackblocks-models-videoblockasblock}
+
+Place a checked VideoBlock in the Block role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.videoBlockAsBlock ::
+  Slackblocks.Models.VideoBlock -> Slackblocks.Models.Block
+```
+
+## videoBlockAuthorName {#slackblocks-models-videoblockauthorname}
+
+Sets the name of the video's author. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `video.author_name`.
+
+```haskell
+Slackblocks.Models.videoBlockAuthorName ::
+  Slackblocks.Models.VideoBlockFields -> Maybe Data.Text.Text
+```
+
+## videoBlockBlockId {#slackblocks-models-videoblockblockid}
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `block_id`.
+
+```haskell
+Slackblocks.Models.videoBlockBlockId ::
+  Slackblocks.Models.VideoBlockFields -> Maybe Data.Text.Text
+```
+
+## videoBlockDescription {#slackblocks-models-videoblockdescription}
+
+Sets the video description. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `video.description`.
+
+```haskell
+Slackblocks.Models.videoBlockDescription ::
+  Slackblocks.Models.VideoBlockFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## videoBlockExtensions {#slackblocks-models-videoblockextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.videoBlockExtensions ::
+  Slackblocks.Models.VideoBlockFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## videoBlockProviderIconUrl {#slackblocks-models-videoblockprovidericonurl}
+
+Sets the URL of the video provider's icon. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `video.provider_icon_url`.
+
+```haskell
+Slackblocks.Models.videoBlockProviderIconUrl ::
+  Slackblocks.Models.VideoBlockFields -> Maybe Data.Text.Text
+```
+
+## videoBlockProviderName {#slackblocks-models-videoblockprovidername}
+
+Sets the name of the video provider, such as YouTube. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `video.provider_name`.
+
+```haskell
+Slackblocks.Models.videoBlockProviderName ::
+  Slackblocks.Models.VideoBlockFields -> Maybe Data.Text.Text
+```
+
+## videoBlockThumbnailUrl {#slackblocks-models-videoblockthumbnailurl}
+
+Sets the URL of the image shown before the video plays. Required. Shared limit: `video.thumbnail_url`.
+
+```haskell
+Slackblocks.Models.videoBlockThumbnailUrl ::
+  Slackblocks.Models.VideoBlockFields -> Data.Text.Text
+```
+
+## videoBlockTitle {#slackblocks-models-videoblocktitle}
+
+Sets the video title. Required. Shared limit: `video.title`.
+
+```haskell
+Slackblocks.Models.videoBlockTitle ::
+  Slackblocks.Models.VideoBlockFields -> Slackblocks.Models.PlainText
+```
+
+## videoBlockTitleUrl {#slackblocks-models-videoblocktitleurl}
+
+Sets the HTTPS URL opened when the title is clicked. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `video.title_url`.
+
+```haskell
+Slackblocks.Models.videoBlockTitleUrl ::
+  Slackblocks.Models.VideoBlockFields -> Maybe Data.Text.Text
+```
+
+## videoBlockVideoUrl {#slackblocks-models-videoblockvideourl}
+
+Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains. Required. Shared limit: `video.video_url`.
+
+```haskell
+Slackblocks.Models.videoBlockVideoUrl ::
+  Slackblocks.Models.VideoBlockFields -> Data.Text.Text
+```
+
