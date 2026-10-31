@@ -98,7 +98,7 @@ provided their Go toolchain meets that SDK's own requirements.
 | --- | --- | --- | --- |
 | Current `go/v3` | v0.17.3 | 1.22 | Default minimum dependency; keeps Go 1.22, 1.23 and 1.24 compatible. |
 | Current `go/v3` | v0.23.1 | 1.25 | Explicit application upgrade; tested separately from the minimum dependency. |
-| Next release on `go/v3` (unreleased) | v0.30.1 | 1.26 | Explicit application upgrade with the upstream file-URL security fix; existing profiles remain supported. |
+| Next release on `go/v3` (unreleased) | v0.31.0 | 1.26 | Explicit application upgrade with the upstream file-URL security fix; existing profiles remain supported. |
 
 These are tested combinations, not a guarantee for every intervening or future
 SDK release. All three profiles use the same slackblocks API. No separate maintenance
@@ -118,10 +118,10 @@ With Go 1.25 or newer, select the retained Go 1.25-compatible SDK:
 go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.23.1
 ```
 
-For the next release's Go 1.26+ combination, select v0.30.1 explicitly:
+For the next release's Go 1.26+ combination, select v0.31.0 explicitly:
 
 ```bash
-go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.30.1
+go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.31.0
 ```
 
 Go's [minimal version selection](https://go.dev/ref/mod#minimal-version-selection)
@@ -132,7 +132,7 @@ another dependency may require a newer SDK or toolchain.
 
 The upstream manifests declare [Go 1.22 for v0.17.3](https://github.com/slack-go/slack/blob/v0.17.3/go.mod),
 [Go 1.25 for v0.23.1](https://github.com/slack-go/slack/blob/v0.23.1/go.mod)
-and [Go 1.26 for v0.30.1](https://github.com/slack-go/slack/blob/v0.30.1/go.mod).
+and [Go 1.26 for v0.31.0](https://github.com/slack-go/slack/blob/v0.31.0/go.mod).
 Their `toolchain` directives suggest a compiler for work in the SDK module,
 not an additional minimum for applications importing it. Go may automatically
 select a newer toolchain; use `GOTOOLCHAIN=local` when verifying a fixed compiler
@@ -143,10 +143,10 @@ select a newer toolchain; use `GOTOOLCHAIN=local` when verifying a fixed compile
 CI runs Go 1.22, 1.25, 1.26 and stable native checks, and disables
 automatic toolchain upgrades in those lanes. The core and the default multi-select
 example keep the minimum SDK. The separate `go/integrations` module selects
-v0.30.1 on Go 1.26 and stable; its alternate `go125.mod` retains v0.23.1 on
+v0.31.0 on Go 1.26 and stable; its alternate `go125.mod` retains v0.23.1 on
 Go 1.25, 1.26 and stable. Each profile runs the full native suite, a mixed
 native-SDK/slackblocks consumer, and the same multi-select source. All three
-profiles must emit the same 15 validated payloads. The v0.30.1 profile also
+profiles must emit the same 15 validated payloads. The v0.31.0 profile also
 checks file-URL token restrictions with a recording HTTP client. These tests
 make no live Slack requests.
 
@@ -162,9 +162,17 @@ v0.17.3 as its minimum. Neither v0.17.3 nor v0.23.1 includes the v0.30.1 fix for
 [GHSA-3q3v-34v2-g88f](https://github.com/slack-go/slack/security/advisories/GHSA-3q3v-34v2-g88f).
 The fix prevents `GetFile`, `GetFileContext` and `UploadToURL` from sending a Slack
 token to an arbitrary file URL. Applications using these SDK methods should
-select v0.30.1 with Go 1.26+, and review the
+select v0.30.1 or newer with Go 1.26+, and review the
 [upstream upgrade notes](https://github.com/slack-go/slack/releases/tag/v0.30.1).
 Retaining an older compatibility profile does not backport this fix.
+
+The latest tested SDK, v0.31.0, retains that fix and the Go 1.26 minimum.
+Its [upgrade notes](https://github.com/slack-go/slack/releases/tag/v0.31.0)
+include non-comparable button values, added fields that require keyed struct
+literals, newly typed rich-text decoding, stricter request-signature validation,
+POST-based token operations and token-free warning callbacks. Review these
+changes if your application uses those SDK APIs; the slackblocks API and its
+Go 1.22 default dependency remain unchanged.
 
 The earlier v0.23.1 release also changes empty signing-secret validation in
 [`NewSecretsVerifier`](https://github.com/slack-go/slack/releases/tag/v0.23.1);

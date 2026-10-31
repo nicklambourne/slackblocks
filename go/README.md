@@ -72,7 +72,7 @@ go get github.com/nicklambourne/slackblocks/go/v3
 
 Go 1.22+ is supported with the default slack-go v0.17.3 dependency. Applications
 on Go 1.25+ can select the separately tested v0.23.1 SDK. The next release adds
-a tested v0.30.1 profile for Go 1.26+, including its file-URL security fix. See the
+a tested v0.31.0 profile for Go 1.26+, retaining the v0.30.1 file-URL security fix. See the
 [Go support matrix](https://nicklambourne.github.io/slackblocks/usage/compatibility?language=go)
 for selection commands, upstream requirements and update policy. The separate
 `integrations` module tests the newer SDK; its alternate `go125.mod` preserves
