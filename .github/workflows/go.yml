@@ -59,7 +59,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: ["1.22.x", "1.25.x", "stable"]
+        go-version: ["1.22.x", "1.25.x", "1.26.x", "stable"]
     env:
       # Prove each matrix version; never silently upgrade a compatibility lane.
       GOTOOLCHAIN: local
@@ -98,7 +98,7 @@ jobs:
             ${{ steps.go-cache.outputs.modules }}
             ${{ steps.go-cache.outputs.build }}
           # The workflow hash includes analyzer compiler/tool pins and this cache recipe.
-          key: go-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.go-cache.outputs.identity }}-${{ hashFiles('go/go.mod', 'go/go.sum', 'go/integrations/go.mod', 'go/integrations/go.sum', 'docs/examples/multiselect-compat/go/go.mod', 'docs/examples/multiselect-compat/go/go.sum', '.github/workflows/go.yml') }}
+          key: go-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.go-cache.outputs.identity }}-${{ hashFiles('go/go.mod', 'go/go.sum', 'go/integrations/*.mod', 'go/integrations/*.sum', 'docs/examples/multiselect-compat/go/go.mod', 'docs/examples/multiselect-compat/go/go.sum', '.github/workflows/go.yml') }}
 
       - name: Check formatting
         if: needs.changes.outputs.relevant == 'true'
@@ -147,8 +147,19 @@ jobs:
           go run -mod=readonly . > "$RUNNER_TEMP/go-minimum-sdk.jsonl"
           python3 ../check.py "$RUNNER_TEMP/go-minimum-sdk.jsonl"
 
-      - name: Verify newer SDK consumer and full native suite
+      - name: Verify Go 1.25 SDK consumer and full native suite
         if: needs.changes.outputs.relevant == 'true' && matrix.go-version != '1.22.x'
+        working-directory: go/integrations
+        run: |
+          go mod tidy -modfile=go125.mod
+          git diff --exit-code -- go125.mod go125.sum
+          go test -modfile=go125.mod -mod=readonly -count=1 -race -cover . github.com/nicklambourne/slackblocks/go/v3/...
+          go run -modfile=go125.mod -mod=readonly ../../docs/examples/multiselect-compat/go/main.go > "$RUNNER_TEMP/go125-sdk.jsonl"
+          python3 ../../docs/examples/multiselect-compat/check.py "$RUNNER_TEMP/go125-sdk.jsonl"
+          cmp "$RUNNER_TEMP/go-minimum-sdk.jsonl" "$RUNNER_TEMP/go125-sdk.jsonl"
+
+      - name: Verify newer SDK consumer, file URL security and full native suite
+        if: needs.changes.outputs.relevant == 'true' && (matrix.go-version == '1.26.x' || matrix.go-version == 'stable')
         working-directory: go/integrations
         run: |
           go mod tidy
