@@ -36,7 +36,9 @@ def run(args, cwd=ROOT, **kwargs):
         [str(arg) for arg in args], cwd=cwd, text=True, capture_output=True, **kwargs
     )
     if result.returncode:
-        raise RuntimeError(f"{' '.join(map(str, args))}\n{result.stdout}\n{result.stderr}")
+        raise RuntimeError(
+            f"{' '.join(map(str, args))}\n{result.stdout}\n{result.stderr}"
+        )
     return result.stdout
 
 
@@ -90,7 +92,9 @@ def check_result(recipe, value, language):
     if recipe in required:
         assert required[recipe] in types, (recipe, types)
     if recipe == "approval-request":
-        assert {obj.get("action_id") for obj in objects if obj.get("type") == "button"} >= {
+        assert {
+            obj.get("action_id") for obj in objects if obj.get("type") == "button"
+        } >= {
             "approve",
             "reject",
         }
@@ -107,7 +111,9 @@ def check_result(recipe, value, language):
     elif recipe == "validation-errors":
         assert value == {"category": "length-exceeded", "handled": True}
     elif recipe == "accordion-pagination":
-        assert any(obj.get("type") == "button" and obj.get("value") == "2" for obj in objects)
+        assert any(
+            obj.get("type") == "button" and obj.get("value") == "2" for obj in objects
+        )
     elif recipe == "layout-grid":
         assert value["type"] == "layout" and value["label"] == "Service status"
         assert value["is_label_visible"] is True and value["grid_lines"] == "rows"
@@ -141,7 +147,9 @@ def sources():
         source = (ROOT / "docs/docs/recipes" / f"{name}.mdx").read_text()
         assert f'<RecipeOutput recipe="{name}" outputs={{recipeOutputs}} />' in source
         preview = re.search(r"export const recipeOutputs = (.*?);\n", source, re.S)
-        assert preview and set(json.loads(preview[1])) == {key.lower() for key in LANGUAGES}
+        assert preview and set(json.loads(preview[1])) == {
+            key.lower() for key in LANGUAGES
+        }
         for language, fence in LANGUAGES.items():
             regions = re.findall(f"<{language}>(.*?)</{language}>", source, re.S)
             assert len(regions) == 1, (name, language, "missing/duplicate language")
@@ -152,10 +160,21 @@ def sources():
     layout = (ROOT / "docs/docs/usage/layouts.mdx").read_text()
     for language, fence in LANGUAGES.items():
         regions = re.findall(f"<{language}>(.*?)</{language}>", layout, re.S)
-        assert len(regions) == 1, ("layout-basic", language, "missing/duplicate language")
+        assert len(regions) == 1, (
+            "layout-basic",
+            language,
+            "missing/duplicate language",
+        )
         snippets = re.findall(rf"^```{fence}\n(.*?)\n```", regions[0], re.S | re.M)
-        assert len(snippets) == 1, ("layout-basic", language, "expected one complete program")
-        assert f"{language.lower()}: layoutOutput" in layout, (language, "missing preview")
+        assert len(snippets) == 1, (
+            "layout-basic",
+            language,
+            "expected one complete program",
+        )
+        assert f"{language.lower()}: layoutOutput" in layout, (
+            language,
+            "missing preview",
+        )
         result[language]["layout-basic"] = snippets[0]
     return result
 
@@ -164,7 +183,10 @@ def execute(language, cases, temp):
     env = dict(os.environ)
     if language == "Python":
         env["PYTHONPATH"] = str(ROOT / "python")
-        return {name: run([sys.executable, "-c", code], env=env) for name, code in cases.items()}
+        return {
+            name: run([sys.executable, "-c", code], env=env)
+            for name, code in cases.items()
+        }
     if language == "Ruby":
         return {
             name: run(
@@ -189,7 +211,9 @@ def execute(language, cases, temp):
         }
     if language == "TypeScript":
         run(["pnpm", "--filter", "@nicklambourne/slackblocks", "build"])
-        (temp / "node_modules").symlink_to(ROOT / "docs/node_modules", target_is_directory=True)
+        (temp / "node_modules").symlink_to(
+            ROOT / "docs/node_modules", target_is_directory=True
+        )
         for name, code in cases.items():
             (temp / f"{name}.mts").write_text(code)
         run(
@@ -213,7 +237,10 @@ def execute(language, cases, temp):
             (temp / name).mkdir()
             (temp / name / "main.go").write_text(code)
         run(["go", "mod", "tidy"], cwd=temp)
-        return {name: run(["go", "run", "-mod=readonly", "./" + name], cwd=temp) for name in cases}
+        return {
+            name: run(["go", "run", "-mod=readonly", "./" + name], cwd=temp)
+            for name in cases
+        }
     if language == "Java":
         cp = temp / "classpath.txt"
         run(
@@ -235,7 +262,9 @@ def execute(language, cases, temp):
         names = {name: "Recipe" + str(index) for index, name in enumerate(cases)}
         for name, code in cases.items():
             (temp / f"{names[name]}.java").write_text(
-                code.replace("public final class Recipe", f"public final class {names[name]}")
+                code.replace(
+                    "public final class Recipe", f"public final class {names[name]}"
+                )
             )
         java_bin = Path(env["JAVA_HOME"]) / "bin" if "JAVA_HOME" in env else Path("")
         run(
@@ -280,7 +309,8 @@ def execute(language, cases, temp):
         (temp / "Program.cs").write_text(
             "switch (args[0]) {\n"
             + "\n".join(
-                f'case "{name}": Recipe{index}.Run(); break;' for index, name in enumerate(cases)
+                f'case "{name}": Recipe{index}.Run(); break;'
+                for index, name in enumerate(cases)
             )
             + '\ndefault: throw new System.ArgumentException("Unknown recipe");\n}'
         )
@@ -306,9 +336,9 @@ def execute(language, cases, temp):
             (temp / "src/bin" / f"{name}.rs").write_text(code)
         cargo = ["cargo", "+" + env.get("RUST_GUIDE_TOOLCHAIN", "stable")]
         run([*cargo, "build", "--bins"], cwd=temp)
-        target = json.loads(run([*cargo, "metadata", "--no-deps", "--format-version=1"], cwd=temp))[
-            "target_directory"
-        ]
+        target = json.loads(
+            run([*cargo, "metadata", "--no-deps", "--format-version=1"], cwd=temp)
+        )["target_directory"]
         return {name: run([Path(target) / "debug" / name]) for name in cases}
     if language == "Elixir":
         run(["mix", "compile", "--warnings-as-errors"], cwd=ROOT / "elixir")
@@ -342,7 +372,9 @@ def execute(language, cases, temp):
             "module Main where\nimport System.Environment (getArgs)\n"
             + "".join(f"import qualified Recipe{i}\n" for i in range(len(cases)))
             + "main = do\n  args <- getArgs\n  case args of\n"
-            + "".join(f'    ["{name}"] -> Recipe{i}.main\n' for i, name in enumerate(cases))
+            + "".join(
+                f'    ["{name}"] -> Recipe{i}.main\n' for i, name in enumerate(cases)
+            )
             + '    _ -> fail "Unknown recipe"\n'
         )
         run(
@@ -375,19 +407,25 @@ def main():
     args = parser.parse_args()
     scratch = os.environ.get("RUNNER_TEMP")
     if Path("/Volumes/Repos").exists():
-        assert all(Path("/Volumes", item).is_mount() for item in ("Repos", "Cache", "Scratch"))
+        assert all(
+            Path("/Volumes", item).is_mount() for item in ("Repos", "Cache", "Scratch")
+        )
         scratch = "/Volumes/Scratch"
     for language, cases in sources().items():
         if args.language and args.language != language:
             continue
-        with tempfile.TemporaryDirectory(prefix="slackblocks-recipes-", dir=scratch) as directory:
+        with tempfile.TemporaryDirectory(
+            prefix="slackblocks-recipes-", dir=scratch
+        ) as directory:
             outputs = execute(language, cases, Path(directory))
             actual = {}
             for name, output in outputs.items():
                 try:
                     value = json.loads(output)
                 except json.JSONDecodeError:
-                    assert output.strip().startswith("https://app.slack.com/block-kit-builder/"), (
+                    assert output.strip().startswith(
+                        "https://app.slack.com/block-kit-builder/"
+                    ), (
                         language,
                         name,
                         output,
@@ -398,7 +436,9 @@ def main():
             for name, value in actual.items():
                 if name == "layout-basic":
                     source = (ROOT / "docs/docs/usage/layouts.mdx").read_text()
-                    match = re.search(r"export const layoutOutput = (.*?);\n", source, re.S)
+                    match = re.search(
+                        r"export const layoutOutput = (.*?);\n", source, re.S
+                    )
                     assert match, "Missing basic layout preview payload"
                     assert value == json.loads(match[1]), (
                         f"{language} basic layout differs from its reviewed preview"
@@ -406,7 +446,9 @@ def main():
                     continue
                 page = ROOT / "docs/docs/recipes" / f"{name}.mdx"
                 source = page.read_text()
-                match = re.search(r"export const recipeOutputs = (.*?);\n", source, re.S)
+                match = re.search(
+                    r"export const recipeOutputs = (.*?);\n", source, re.S
+                )
                 expected = json.loads(match[1])
                 if args.record:
                     expected[language.lower()] = value
