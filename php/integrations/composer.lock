@@ -5124,16 +5124,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v7.4.21",
+            "version": "v7.4.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "121bf3a973bfd852db85ec32d0d64e9fbed4449b"
+                "reference": "9dd7ba9dc326b37d7f6e19588de79b5d91b20d66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/121bf3a973bfd852db85ec32d0d64e9fbed4449b",
-                "reference": "121bf3a973bfd852db85ec32d0d64e9fbed4449b",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/9dd7ba9dc326b37d7f6e19588de79b5d91b20d66",
+                "reference": "9dd7ba9dc326b37d7f6e19588de79b5d91b20d66",
                 "shasum": ""
             },
             "require": {
@@ -5201,7 +5201,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v7.4.21"
+                "source": "https://github.com/symfony/http-client/tree/v7.4.22"
             },
             "funding": [
                 {
@@ -5221,7 +5221,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-13T15:31:38+00:00"
+            "time": "2026-10-26T21:52:50+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
