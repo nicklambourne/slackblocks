@@ -1,0 +1,14 @@
+{
+  "type": "data_visualization",
+  "block_id": "fake_block_id",
+  "title": "My Favorite Candy Bars",
+  "chart": {
+    "type": "pie",
+    "segments": [
+      { "label": "Kit Kat", "value": 45 },
+      { "label": "Twix", "value": 28 },
+      { "label": "Crunch", "value": 18 },
+      { "label": "Milky Way", "value": 9 }
+    ]
+  }
+}

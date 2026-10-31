@@ -1,0 +1,341 @@
+---
+sidebar_position: 6
+---
+
+# JSON, Validation and Types
+
+Generated from compiled Elixir documentation and native typespecs. Values are immutable; constructors and changes use keyword options.
+
+## Slackblocks {#slackblocks}
+
+Constructs and validates Slack Block Kit values without sending HTTP requests.
+
+Use model constructors for text conveniences and `to_map/1` for a complete
+validated Slack payload. Every output boundary rechecks edited structs.
+
+### Examples
+
+```elixir
+iex> Slackblocks.Blocks.Divider.new!() |> Slackblocks.to_map!()
+%{"type" => "divider"}
+```
+
+```elixir
+iex> {:error, error} = Slackblocks.Blocks.Section.new([])
+iex> error.category
+:missing_required
+```
+
+
+### block_kit_builder_url/2 {#slackblocks-block_kit_builder_url-2}
+
+Returns a Block Kit Builder URL without making network requests.
+
+Accepts a block, list of blocks, message/view payload, or explicit string-keyed
+JSON map. Blocks are wrapped in `blocks`; maps are validated as JSON data only.
+Optional `team_id` is encoded as one URL path segment. The fragment preserves
+list order and Unicode; JSON object key order is unspecified.
+
+
+```elixir
+block_kit_builder_url(value, options \\ [])
+```
+
+```elixir
+@spec block_kit_builder_url(
+  struct() | list() | map(),
+  keyword()
+) :: {:ok, binary()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### block_kit_builder_url!/2 {#slackblocks-block_kit_builder_url-bang-2}
+
+Like `block_kit_builder_url/2`, raising on invalid input.
+
+```elixir
+block_kit_builder_url!(value, options \\ [])
+```
+
+```elixir
+@spec block_kit_builder_url!(
+  struct() | list() | map(),
+  keyword()
+) :: binary()
+```
+
+### decode/2 {#slackblocks-decode-2}
+
+Decodes JSON without atomizing keys; rejects duplicate keys and lossy numbers.
+
+An application that compiled Jason before installing Decimal must run
+`mix deps.compile jason --force` in each build environment, then rebuild its
+release. Missing compile-time Decimal support returns an actionable
+`ArgumentError` in the tagged result; `decode!/2` raises it.
+
+
+```elixir
+decode(selector, json)
+```
+
+```elixir
+@spec decode(module() | atom(), binary()) :: {:ok, struct()} | {:error, Exception.t()}
+```
+
+### decode!/2 {#slackblocks-decode-bang-2}
+
+Like `decode/2`, raising on failure.
+
+```elixir
+decode!(selector, json)
+```
+
+```elixir
+@spec decode!(module() | atom(), binary()) :: struct()
+```
+
+### encode/1 {#slackblocks-encode-1}
+
+Validates before encoding. Direct Jason encoding may raise ValidationError.
+
+```elixir
+encode(value)
+```
+
+```elixir
+@spec encode(struct()) :: {:ok, binary()} | {:error, Exception.t()}
+```
+
+### encode!/1 {#slackblocks-encode-bang-1}
+
+Like `encode/1`, raising on failure.
+
+```elixir
+encode!(value)
+```
+
+```elixir
+@spec encode!(struct()) :: binary()
+```
+
+### from_map/2 {#slackblocks-from_map-2}
+
+Reconstructs a known model or role from wire maps; optional defaults stay omitted.
+
+```elixir
+from_map(selector, wire)
+```
+
+```elixir
+@spec from_map(module() | atom(), map()) :: {:ok, struct()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### from_map!/2 {#slackblocks-from_map-bang-2}
+
+Like `from_map/2`, raising on failure.
+
+```elixir
+from_map!(selector, wire)
+```
+
+```elixir
+@spec from_map!(module() | atom(), map()) :: struct()
+```
+
+### spec_version/0 {#slackblocks-spec_version-0}
+
+The shared Slack Block Kit contract version implemented by this package.
+
+```elixir
+spec_version()
+```
+
+```elixir
+@spec spec_version() :: String.t()
+```
+
+### to_map/1 {#slackblocks-to_map-1}
+
+Returns a validated wire map with string keys and omitted optional nil fields.
+
+```elixir
+to_map(value)
+```
+
+```elixir
+@spec to_map(struct()) :: {:ok, map()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### to_map!/1 {#slackblocks-to_map-bang-1}
+
+Like `to_map/1`, raising on invalid values.
+
+```elixir
+to_map!(value)
+```
+
+```elixir
+@spec to_map!(struct()) :: map()
+```
+
+### validate/1 {#slackblocks-validate-1}
+
+Checks the complete value, including receiving context and payload totals.
+
+```elixir
+validate(value)
+```
+
+```elixir
+@spec validate(struct()) :: :ok | {:error, Slackblocks.ValidationError.t()}
+```
+
+### version/0 {#slackblocks-version-0}
+
+The version of the installed package.
+
+```elixir
+version()
+```
+
+```elixir
+@spec version() :: String.t()
+```
+
+## Slackblocks.Types {#slackblocks-types}
+
+Role unions, closed enum atoms and JSON data types.
+
+### Types
+
+```elixir
+@type response_type() :: :in_channel | :ephemeral
+
+@type rich_text_list_style() :: :bullet | :ordered
+
+@type column_align() :: :left | :center | :right
+
+@type icon_button_icon() :: :trash
+
+@type button_style() :: :primary | :danger
+
+@type task_status() :: :pending | :in_progress | :complete | :error
+
+@type container_width() :: :narrow | :standard | :wide | :full
+
+@type alert_level() :: :default | :info | :warning | :error | :success
+
+@type rich_text_section_element() ::
+  Slackblocks.RichText.Channel.t()
+  | Slackblocks.RichText.Emoji.t()
+  | Slackblocks.RichText.Link.t()
+  | Slackblocks.RichText.Text.t()
+  | Slackblocks.RichText.User.t()
+  | Slackblocks.RichText.UserGroup.t()
+
+@type rich_text_block_element() ::
+  Slackblocks.RichText.CodeBlock.t()
+  | Slackblocks.RichText.List.t()
+  | Slackblocks.RichText.Quote.t()
+  | Slackblocks.RichText.Section.t()
+
+@type chart() ::
+  Slackblocks.Objects.AreaChart.t()
+  | Slackblocks.Objects.BarChart.t()
+  | Slackblocks.Objects.LineChart.t()
+  | Slackblocks.Objects.PieChart.t()
+
+@type text() :: Slackblocks.Objects.MarkdownText.t() | Slackblocks.Objects.PlainText.t()
+
+@type input_element() ::
+  Slackblocks.Elements.ChannelMultiSelect.t()
+  | Slackblocks.Elements.ChannelSelect.t()
+  | Slackblocks.Elements.Checkboxes.t()
+  | Slackblocks.Elements.ConversationMultiSelect.t()
+  | Slackblocks.Elements.ConversationSelect.t()
+  | Slackblocks.Elements.DatePicker.t()
+  | Slackblocks.Elements.DateTimePicker.t()
+  | Slackblocks.Elements.EmailInput.t()
+  | Slackblocks.Elements.ExternalMultiSelect.t()
+  | Slackblocks.Elements.ExternalSelect.t()
+  | Slackblocks.Elements.FileInput.t()
+  | Slackblocks.Elements.NumberInput.t()
+  | Slackblocks.Elements.PlainTextInput.t()
+  | Slackblocks.Elements.RadioButtons.t()
+  | Slackblocks.Elements.RichTextInput.t()
+  | Slackblocks.Elements.StaticMultiSelect.t()
+  | Slackblocks.Elements.StaticSelect.t()
+  | Slackblocks.Elements.TimePicker.t()
+  | Slackblocks.Elements.UrlInput.t()
+  | Slackblocks.Elements.UserMultiSelect.t()
+  | Slackblocks.Elements.UserSelect.t()
+
+@type element() ::
+  Slackblocks.Elements.Button.t()
+  | Slackblocks.Elements.ChannelMultiSelect.t()
+  | Slackblocks.Elements.ChannelSelect.t()
+  | Slackblocks.Elements.Checkboxes.t()
+  | Slackblocks.Elements.ConversationMultiSelect.t()
+  | Slackblocks.Elements.ConversationSelect.t()
+  | Slackblocks.Elements.DatePicker.t()
+  | Slackblocks.Elements.DateTimePicker.t()
+  | Slackblocks.Elements.EmailInput.t()
+  | Slackblocks.Elements.ExternalMultiSelect.t()
+  | Slackblocks.Elements.ExternalSelect.t()
+  | Slackblocks.Elements.FeedbackButtons.t()
+  | Slackblocks.Elements.FileInput.t()
+  | Slackblocks.Elements.IconButton.t()
+  | Slackblocks.Elements.Image.t()
+  | Slackblocks.Elements.NumberInput.t()
+  | Slackblocks.Elements.Overflow.t()
+  | Slackblocks.Elements.PlainTextInput.t()
+  | Slackblocks.Elements.RadioButtons.t()
+  | Slackblocks.Elements.RichTextInput.t()
+  | Slackblocks.Elements.StaticMultiSelect.t()
+  | Slackblocks.Elements.StaticSelect.t()
+  | Slackblocks.Elements.TimePicker.t()
+  | Slackblocks.Elements.UrlInput.t()
+  | Slackblocks.Elements.UserMultiSelect.t()
+  | Slackblocks.Elements.UserSelect.t()
+  | Slackblocks.Elements.WorkflowButton.t()
+
+@type data_table_cell() ::
+  Slackblocks.Blocks.RichText.t()
+  | Slackblocks.Objects.RawNumber.t()
+  | Slackblocks.Objects.RawText.t()
+
+@type table_cell() :: Slackblocks.Blocks.RichText.t() | Slackblocks.Objects.RawText.t()
+
+@type context_actions_element() ::
+  Slackblocks.Elements.FeedbackButtons.t() | Slackblocks.Elements.IconButton.t()
+
+@type context_element() ::
+  Slackblocks.Elements.Image.t()
+  | Slackblocks.Objects.MarkdownText.t()
+  | Slackblocks.Objects.PlainText.t()
+
+@type block() ::
+  Slackblocks.Blocks.Actions.t()
+  | Slackblocks.Blocks.Alert.t()
+  | Slackblocks.Blocks.Card.t()
+  | Slackblocks.Blocks.Carousel.t()
+  | Slackblocks.Blocks.Container.t()
+  | Slackblocks.Blocks.ContextActions.t()
+  | Slackblocks.Blocks.Context.t()
+  | Slackblocks.Blocks.DataTable.t()
+  | Slackblocks.Blocks.DataVisualization.t()
+  | Slackblocks.Blocks.Divider.t()
+  | Slackblocks.Blocks.File.t()
+  | Slackblocks.Blocks.Header.t()
+  | Slackblocks.Blocks.Image.t()
+  | Slackblocks.Blocks.Input.t()
+  | Slackblocks.Blocks.Markdown.t()
+  | Slackblocks.Blocks.Plan.t()
+  | Slackblocks.Blocks.RichText.t()
+  | Slackblocks.Blocks.Section.t()
+  | Slackblocks.Blocks.Table.t()
+  | Slackblocks.Blocks.TaskCard.t()
+  | Slackblocks.Blocks.Video.t()
+
+@type json() :: nil | boolean() | number() | binary() | [json()] | %{optional(binary()) => json()}
+```
+

@@ -142,8 +142,12 @@ def model_outputs(model: dict) -> tuple[str, str, str]:
         signatures.append(f"  module {name}")
         for constant in item["constants"]:
             wire = constant["wire"]
-            source.append(f"    {constant['name']} = :{wire}")
-            signatures.append(f"    {constant['name']}: :{wire}")
+            # BEGIN and END are Ruby syntax, even in constant position.
+            constant_name = constant["name"]
+            if constant_name in {"BEGIN", "END"}:
+                constant_name += "_"
+            source.append(f"    {constant_name} = :{wire}")
+            signatures.append(f"    {constant_name}: :{wire}")
         source.extend(["  end", ""])
         signatures.extend(["  end", ""])
 

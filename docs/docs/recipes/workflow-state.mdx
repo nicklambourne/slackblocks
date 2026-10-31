@@ -1,5 +1,6 @@
 ---
 title: Test workflow content and effects
+slug: /usage/recipes/workflow-state
 ---
 
 # Test workflow content and effects
@@ -13,7 +14,7 @@ python -m pip install slackblocks
 python -m unittest discover -s docs/examples/workflow-state -p 'test_*.py'
 ```
 
-For a source checkout, set `PYTHONPATH=python`. The documentation build runs this suite with `pnpm --filter @slackblocks/docs check:workflow-state`. The example does not authenticate callbacks, contact Slack, or persist state; these remain receiver responsibilities. It is a worked Python application example, not a new application framework or a claim that all nine libraries implement workflow state.
+For a source checkout, set `PYTHONPATH=python`. The documentation build runs this suite with `pnpm --filter @slackblocks/docs check:workflow-state`. The example does not authenticate callbacks, contact Slack, or persist state; these remain receiver responsibilities. It is a worked Python application example, not a new application framework or a claim that all ten libraries implement workflow state.
 
 ## Keep domain state, payloads and transport separate
 

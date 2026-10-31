@@ -14,6 +14,8 @@ defmodule Slackblocks.Elements.Button do
   * `style` — Sets the button's emphasis. Omit it for the default neutral style. Optional; `nil` omits the field.
   * `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
   * `accessibility_label` — Sets the label read by screen readers in place of the visible text. Optional; `nil` omits the field.
+  * `agent_prompt` — Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds. Optional; `nil` omits the field.
+  * `agent_prompt_display` — Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable. Optional; `nil` omits the field.
   """
   alias Slackblocks.Internal.Value
   @enforce_keys [:text]
@@ -23,7 +25,9 @@ defmodule Slackblocks.Elements.Button do
             value: nil,
             style: nil,
             confirm: nil,
-            accessibility_label: nil
+            accessibility_label: nil,
+            agent_prompt: nil,
+            agent_prompt_display: nil
 
   @type t :: %__MODULE__{
           text: Slackblocks.Objects.PlainText.t(),
@@ -32,7 +36,9 @@ defmodule Slackblocks.Elements.Button do
           value: binary() | nil,
           style: Slackblocks.Types.button_style() | nil,
           confirm: Slackblocks.Objects.Confirmation.t() | nil,
-          accessibility_label: binary() | nil
+          accessibility_label: binary() | nil,
+          agent_prompt: binary() | nil,
+          agent_prompt_display: binary() | nil
         }
 
   @doc "Constructs and validates a value. Text conveniences apply to keyword input."

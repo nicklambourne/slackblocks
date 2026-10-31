@@ -21,9 +21,9 @@
     "check:version-selector": "node scripts/check_version_selector.mjs",
     "check:legacy-contract": "node scripts/check_legacy_docs.mjs",
     "test:legacy-fixture": "UV_CACHE_DIR=${UV_CACHE_DIR:-../.uv-cache} uv run --project ../python --group docs --no-dev python scripts/port_legacy_docs.py fixture",
-    "generate": "pnpm generate:python && pnpm generate:go && pnpm generate:java && pnpm generate:csharp && pnpm generate:ruby && pnpm check:typescript-api && pnpm generate:rust && pnpm generate:php && pnpm generate:elixir",
+    "generate": "pnpm generate:python && pnpm generate:go && pnpm generate:java && pnpm generate:csharp && pnpm generate:ruby && pnpm check:typescript-api && pnpm generate:rust && pnpm generate:php && pnpm generate:elixir && pnpm generate:haskell",
     "start": "pnpm generate && docusaurus start",
-    "build": "pnpm generate && pnpm check:guide-previews && pnpm check:language-content && pnpm check:ruby-guide-snippets && pnpm check:rust-guide-snippets && pnpm check:php-guide-snippets && pnpm check:elixir-guide-snippets && pnpm check:workflow-state && pnpm check:reliable-delivery && pnpm check:live-prerequisites && pnpm check:multiselect-compat && pnpm check:search-reuse && docusaurus build && pnpm check:reference-discovery && pnpm check:search-language && pnpm check:version-selector && pnpm check:python-api-rendering && pnpm check:typescript-api-rendering && pnpm check:go-api-rendering && pnpm check:java-api-rendering && pnpm check:csharp-api-rendering && pnpm check:ruby-api-rendering && pnpm check:rust-api-rendering && pnpm check:php-api-rendering && pnpm check:elixir-api-rendering && pnpm test:legacy-fixture && node scripts/check_legacy_docs.mjs --build-dir build",
+    "build": "pnpm generate && pnpm check:recipe-examples && pnpm check:guide-previews && pnpm check:language-content && pnpm check:ruby-guide-snippets && pnpm check:rust-guide-snippets && pnpm check:php-guide-snippets && pnpm check:elixir-guide-snippets && pnpm check:haskell-guide-snippets && pnpm check:workflow-state && pnpm check:reliable-delivery && pnpm check:live-prerequisites && pnpm check:multiselect-compat && pnpm check:search-reuse && docusaurus build && pnpm check:reference-discovery && pnpm check:search-language && pnpm check:version-selector && pnpm check:python-api-rendering && pnpm check:typescript-api-rendering && pnpm check:go-api-rendering && pnpm check:java-api-rendering && pnpm check:csharp-api-rendering && pnpm check:ruby-api-rendering && pnpm check:rust-api-rendering && pnpm check:php-api-rendering && pnpm check:elixir-api-rendering && pnpm check:haskell-api-rendering && pnpm test:legacy-fixture && node scripts/check_legacy_docs.mjs --build-dir build",
     "typecheck": "tsc --noEmit",
     "test": "pnpm typecheck && pnpm check:legacy-contract",
     "generate:java": "node scripts/generate_java_reference.mjs",
@@ -44,7 +44,11 @@
     "check:workflow-state": "PYTHONPATH=../python python3 -m unittest discover -s examples/workflow-state -p 'test_*.py' -v",
     "check:reliable-delivery": "PYTHONPATH=../python python3 -m unittest discover -s examples/reliable-delivery -p 'test_*.py' -v",
     "check:reference-discovery": "node scripts/check_reference_discovery.mjs",
-    "check:live-prerequisites": "python3 -m unittest discover -s examples/live-prerequisites -p 'test_*.py' -v"
+    "check:live-prerequisites": "python3 -m unittest discover -s examples/live-prerequisites -p 'test_*.py' -v",
+    "generate:haskell": "python3 scripts/generate_haskell_reference.py",
+    "check:haskell-guide-snippets": "python3 scripts/check_haskell_guide_snippets.py",
+    "check:haskell-api-rendering": "node scripts/check_haskell_api_rendering.mjs",
+    "check:recipe-examples": "python3 scripts/check_recipe_examples.py"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
@@ -62,7 +66,7 @@
     "@nicklambourne/slackblocks": "workspace:*",
     "typedoc": "0.28.20",
     "typedoc-docusaurus-theme": "1.4.3",
-    "typedoc-plugin-markdown": "4.14.0"
+    "typedoc-plugin-markdown": "4.14.1"
   },
   "devDependencies": {
     "@docusaurus/tsconfig": "^3.10.2",

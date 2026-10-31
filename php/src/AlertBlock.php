@@ -10,7 +10,7 @@ namespace Slackblocks;
  * A severity-labelled alert, available in modals.
  * @see https://docs.slack.dev/reference/block-kit/blocks/alert-block
  */
-final readonly class AlertBlock extends Value implements Block
+final readonly class AlertBlock extends Value implements Block, LayoutChild
 {
     /** Sets the alert message.
      * @var Text

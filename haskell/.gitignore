@@ -1,0 +1,7 @@
+/dist-newstyle/
+/dist-coverage/
+/dist-dependencies/
+/dist-http/
+/.hpc/
+/*.tix
+/cabal.project.local

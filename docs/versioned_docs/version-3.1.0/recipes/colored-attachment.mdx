@@ -1,0 +1,413 @@
+---
+title: Colored-bar attachment
+slug: /usage/recipes/colored-attachment
+sidebar_position: 8
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "attachments": [
+      {
+        "blocks": [
+          {
+            "text": {
+              "text": "All checks passed",
+              "type": "mrkdwn"
+            },
+            "type": "section"
+          }
+        ],
+        "color": "good"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Checks passed"
+  },
+  "java": {
+    "mrkdwn": true,
+    "text": "Checks passed",
+    "channel": "C1",
+    "attachments": [
+      {
+        "color": "good",
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "All checks passed"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "go": {
+    "attachments": [
+      {
+        "blocks": [
+          {
+            "text": {
+              "text": "All checks passed",
+              "type": "mrkdwn"
+            },
+            "type": "section"
+          }
+        ],
+        "color": "good"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Checks passed"
+  },
+  "ruby": {
+    "channel": "C1",
+    "attachments": [
+      {
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "All checks passed"
+            }
+          }
+        ],
+        "color": "good"
+      }
+    ],
+    "text": "Checks passed",
+    "mrkdwn": true
+  },
+  "csharp": {
+    "channel": "C1",
+    "attachments": [
+      {
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "All checks passed"
+            }
+          }
+        ],
+        "color": "good"
+      }
+    ],
+    "text": "Checks passed",
+    "mrkdwn": true
+  },
+  "php": {
+    "channel": "C1",
+    "attachments": [
+      {
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "All checks passed"
+            }
+          }
+        ],
+        "color": "good"
+      }
+    ],
+    "text": "Deployment passed",
+    "mrkdwn": true
+  },
+  "rust": {
+    "channel": "C01234567",
+    "attachments": [
+      {
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": ":warning: Disk usage is at 87%."
+            }
+          }
+        ],
+        "color": "#ffff00"
+      }
+    ],
+    "text": "Disk usage warning",
+    "mrkdwn": true
+  },
+  "haskell": {
+    "attachments": [
+      {
+        "blocks": [
+          {
+            "text": {
+              "text": "All checks passed",
+              "type": "mrkdwn"
+            },
+            "type": "section"
+          }
+        ],
+        "color": "good"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Checks passed"
+  },
+  "typescript": {
+    "mrkdwn": true,
+    "text": "Checks passed",
+    "channel": "C1",
+    "attachments": [
+      {
+        "color": "good",
+        "blocks": [
+          {
+            "text": {
+              "text": "All checks passed",
+              "type": "mrkdwn"
+            },
+            "type": "section"
+          }
+        ]
+      }
+    ]
+  },
+  "python": {
+    "channel": "#alerts",
+    "mrkdwn": true,
+    "attachments": [
+      {
+        "blocks": [
+          {
+            "type": "section",
+            "block_id": "<generated-block-id>",
+            "text": {
+              "type": "mrkdwn",
+              "text": ":warning: `/var` is at 87% capacity on `prod-db-1`."
+            }
+          }
+        ],
+        "color": "#ffff00"
+      }
+    ],
+    "text": "Disk usage warning"
+  }
+};
+
+# Colored-bar attachment
+
+Use a legacy attachment when an existing integration needs a colored side bar. Prefer regular blocks for new layouts.
+
+<RecipeOutput recipe="colored-attachment" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+Slack has long deprecated message attachments, but they're still the only way to get the colored vertical bar on the left of a message. `slackblocks` supports them when you really need that styling:
+
+```python
+from slackblocks import (
+    Attachment,
+    Color,
+    Message,
+    SectionBlock,
+)
+
+msg = Message(
+    channel="#alerts",
+    text="Disk usage warning",
+    attachments=[
+        Attachment(
+            color=Color.YELLOW,
+            blocks=[SectionBlock(":warning: `/var` is at 87% capacity on `prod-db-1`.")],
+        ),
+    ],
+)
+print(msg.json())
+```
+
+Prefer plain blocks where possible — Slack may drop attachment support in the future.
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const message = S.Message().channel("C1").text("Checks passed").attachments(
+  S.Attachment().color("good").blocks(S.SectionBlock().text("All checks passed")),
+).build();
+console.log(JSON.stringify(message));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	value, err := s.NewMessage().Channel("C1").Text("Checks passed").Attachments(
+		s.NewAttachment().Color("good").Blocks(s.NewSectionBlock().Text("All checks passed")),
+	).Build()
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var value = MessagePayload.builder().channel("C1").text("Checks passed").attachments(
+    Attachment.builder().color("good").blocks(SectionBlock.builder().markdownText("All checks passed").build()).build()).build();
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var value = new MessagePayload("C1", text: "Checks passed", attachments: [
+    new Attachment(blocks: [new SectionBlock("All checks passed")], color: "good"),
+]);
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+value = MessagePayload.new(channel: "C1", text: "Checks passed", attachments: [
+  Attachment.new(color: "good", blocks: [SectionBlock.new(text: "All checks passed")])
+])
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+Attachments are a legacy Slack feature. `AttachmentColor` supports semantic colors, named constants and checked six-digit hex parsing.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let attachment = Attachment::builder()
+        .color(AttachmentColor::YELLOW)
+        .block(
+            SectionBlock::builder()
+                .text(":warning: Disk usage is at 87%.")
+                .build()?,
+        )
+        .build()?;
+    let message = MessagePayload::builder("C01234567")
+        .text("Disk usage warning")
+        .attachment(attachment)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(channel: 'C1', text: 'Deployment passed', attachments: [
+    new S\Attachment(blocks: [new S\SectionBlock('All checks passed')], color: S\Color::GOOD),
+]);
+echo $message->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.{Message, Attachment, Color, Blocks.Section}
+attachment = Attachment.new!(color: Color.named!(:good), blocks: [Section.new!(text: "All checks passed")])
+Message.new!(channel: "C1", text: "Checks passed", attachments: [attachment]) |> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  text <- buildMarkdownText (markdownText "All checks passed")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  notice <- buildAttachment ((attachment [sectionBlockAsBlock section]) {attachmentColor = Just (colorText (namedColor Good))})
+  buildMessagePayload ((messagePayload "C1") {messagePayloadText = Just "Checks passed", messagePayloadAttachments = Just [notice]})
+```
+
+</Haskell>
+
+</LanguageContent>

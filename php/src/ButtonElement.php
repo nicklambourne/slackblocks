@@ -9,6 +9,7 @@ namespace Slackblocks;
 /**
  * An interactive button that sends a payload or opens a URL.
  * @see https://docs.slack.dev/reference/block-kit/block-elements/button-element
+ * A prompt display requires an agent prompt.
  */
 final readonly class ButtonElement extends Value implements Element
 {
@@ -47,6 +48,16 @@ final readonly class ButtonElement extends Value implements Element
      */
     public string|null $accessibilityLabel;
 
+    /** Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds.
+     * @var string|null
+     */
+    public string|null $agentPrompt;
+
+    /** Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable.
+     * @var string|null
+     */
+    public string|null $agentPromptDisplay;
+
     /**
      * @param PlainText|string $text Sets the button label.
      * @param string|null $actionId Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
@@ -55,6 +66,8 @@ final readonly class ButtonElement extends Value implements Element
      * @param ButtonStyle|null $style Sets the button's emphasis. Omit it for the default neutral style.
      * @param Confirmation|null $confirm Sets a confirmation dialog shown before the action is sent.
      * @param string|null $accessibilityLabel Sets the label read by screen readers in place of the visible text.
+     * @param string|null $agentPrompt Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds.
+     * @param string|null $agentPromptDisplay Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable.
      * @param JsonObject|null $extensions Additional JSON fields; modeled names and type are reserved.
      */
     public function __construct(
@@ -66,6 +79,8 @@ final readonly class ButtonElement extends Value implements Element
         Confirmation|null $confirm = null,
         string|null $accessibilityLabel = null,
         ?JsonObject $extensions = null,
+        string|null $agentPrompt = null,
+        string|null $agentPromptDisplay = null,
     ) {
         $this->text = is_string($text) ? new PlainText($text) : $text;
         $this->actionId = $actionId;
@@ -74,6 +89,8 @@ final readonly class ButtonElement extends Value implements Element
         $this->style = $style;
         $this->confirm = $confirm;
         $this->accessibilityLabel = $accessibilityLabel;
+        $this->agentPrompt = $agentPrompt;
+        $this->agentPromptDisplay = $agentPromptDisplay;
         parent::__construct($extensions);
     }
 }

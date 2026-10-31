@@ -1,0 +1,277 @@
+---
+title: Layouts
+---
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const layoutOutput = {
+  "type": "layout",
+  "block_id": "service-layout",
+  "label": "Service status",
+  "is_label_visible": true,
+  "grid_lines": "outer",
+  "rows": [{"items": [
+    {"block": {"type": "section", "block_id": "service", "text": {"type": "plain_text", "text": "API"}}, "width": "wide"},
+    {"block": {"type": "section", "block_id": "status", "text": {"type": "plain_text", "text": "Healthy"}}, "width": "narrow"}
+  ]}],
+  "fallback": [{"type": "section", "block_id": "fallback", "text": {"type": "plain_text", "text": "API: Healthy"}}]
+};
+
+From **3.2.0**, a layout block groups native blocks into one to five rows, each containing one to three items. Each item wraps one block and controls its share of the row's width.
+
+## Anatomy of a layout
+
+![A layout contains a label and a row. The row contains two items: a wide item wrapping the API section and a narrow item wrapping the Healthy section. A separate fallback section reads API: Healthy.](/img/usage/layout-anatomy.svg)
+
+Build from the inside out: create the child blocks, wrap each in an item, collect the items into a row, then put the row in the layout. The diagram shows the object structure; its nested outlines are annotations, not Slack grid lines.
+
+## Basic example
+
+This example places **API** beside **Healthy** in one row. The `wide` and `narrow` items request a 3:1 share of the available width. It shows the label, draws an outer border, and supplies a plain linear fallback. The code constructs a block without sending a message; add it to your message's blocks and include **API: Healthy** in the message's top-level text.
+
+<RecipeOutput recipe="layout-basic" outputs={{python: layoutOutput, typescript: layoutOutput, go: layoutOutput, java: layoutOutput, csharp: layoutOutput, ruby: layoutOutput, rust: layoutOutput, php: layoutOutput, elixir: layoutOutput, haskell: layoutOutput}} />
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import LayoutBlock, LayoutRow, LayoutItem, PlainText, SectionBlock
+
+layout = LayoutBlock(
+    label="Service status", block_id="service-layout", is_label_visible=True,
+    grid_lines="outer",
+    rows=[LayoutRow(items=[
+        LayoutItem(block=SectionBlock(text=PlainText("API"), block_id="service"), width="wide"),
+        LayoutItem(block=SectionBlock(text=PlainText("Healthy"), block_id="status"), width="narrow"),
+    ])],
+    fallback=[SectionBlock(text=PlainText("API: Healthy"), block_id="fallback")],
+)
+print(layout)
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const layout = S.LayoutBlock().label("Service status").blockId("service-layout")
+  .isLabelVisible(true).gridLines("outer")
+  .rows([S.LayoutRow().items([
+    S.LayoutItem().block(S.SectionBlock().text(S.PlainText().text("API")).blockId("service")).width("wide"),
+    S.LayoutItem().block(S.SectionBlock().text(S.PlainText().text("Healthy")).blockId("status")).width("narrow"),
+  ])])
+  .fallback([S.SectionBlock().text(S.PlainText().text("API: Healthy")).blockId("fallback")])
+  .build();
+console.log(JSON.stringify(layout));
+```
+
+</TypeScript>
+<Go>
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "os"
+    s "github.com/nicklambourne/slackblocks/go/v3"
+)
+
+func main() {
+    layout, err := s.NewLayoutBlock().Label("Service status").BlockID("service-layout").
+        IsLabelVisible(true).GridLines(s.LayoutGridLinesOuter).
+        Rows(s.NewLayoutRow().Items(
+            s.NewLayoutItem().Block(s.NewSectionBlock().TextObject(s.NewPlainText().Text("API")).BlockID("service")).Width(s.LayoutWidthWide),
+            s.NewLayoutItem().Block(s.NewSectionBlock().TextObject(s.NewPlainText().Text("Healthy")).BlockID("status")).Width(s.LayoutWidthNarrow),
+        )).
+        Fallback(s.NewSectionBlock().TextObject(s.NewPlainText().Text("API: Healthy")).BlockID("fallback")).Build()
+    if err != nil { panic(err) }
+    if err := json.NewEncoder(os.Stdout).Encode(layout); err != nil { panic(err) }
+}
+```
+
+</Go>
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.object.*;
+
+public final class Recipe {
+  public static void main(String[] args) {
+    var service = SectionBlock.builder().text(PlainText.of("API")).blockId("service").build();
+    var status = SectionBlock.builder().text(PlainText.of("Healthy")).blockId("status").build();
+    var fallback = SectionBlock.builder().text(PlainText.of("API: Healthy")).blockId("fallback").build();
+    var row = LayoutRow.builder().items(
+        LayoutItem.builder().block(service).width(LayoutWidth.WIDE).build(),
+        LayoutItem.builder().block(status).width(LayoutWidth.NARROW).build()).build();
+    var layout = io.github.nicklambourne.slackblocks.block.LayoutBlock.builder()
+        .label("Service status").blockId("service-layout").isLabelVisible(true)
+        .gridLines(LayoutGridLines.OUTER).rows(row).fallback(fallback).build();
+    System.out.println(layout.toJson());
+  }
+}
+```
+
+</Java>
+<CSharp>
+
+```csharp
+using System;
+using Slackblocks.Blocks;
+using Slackblocks.Objects;
+
+var service = new SectionBlock(text: new PlainText("API"), blockId: "service");
+var status = new SectionBlock(text: new PlainText("Healthy"), blockId: "status");
+var fallback = new SectionBlock(text: new PlainText("API: Healthy"), blockId: "fallback");
+var row = new LayoutRow([
+    new LayoutItem(service, width: LayoutWidth.Wide),
+    new LayoutItem(status, width: LayoutWidth.Narrow),
+]);
+var layout = new LayoutBlock("Service status", [row], blockId: "service-layout",
+    isLabelVisible: true, gridLines: LayoutGridLines.Outer, fallback: [fallback]);
+Console.WriteLine(layout.ToJson());
+```
+
+</CSharp>
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+layout = LayoutBlock.new(label: "Service status", block_id: "service-layout",
+  is_label_visible: true, grid_lines: :outer,
+  rows: [LayoutRow.new(items: [
+    LayoutItem.new(block: SectionBlock.new(text: PlainText.new(text: "API"), block_id: "service"), width: :wide),
+    LayoutItem.new(block: SectionBlock.new(text: PlainText.new(text: "Healthy"), block_id: "status"), width: :narrow)
+  ])],
+  fallback: [SectionBlock.new(text: PlainText.new(text: "API: Healthy"), block_id: "fallback")])
+puts layout.to_json
+```
+
+</Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let service = SectionBlock::builder().text(PlainText::new("API")?).block_id("service").build()?;
+    let status = SectionBlock::builder().text(PlainText::new("Healthy")?).block_id("status").build()?;
+    let fallback = SectionBlock::builder().text(PlainText::new("API: Healthy")?).block_id("fallback").build()?;
+    let row = LayoutRow::builder().items([
+        LayoutItem::builder().block(service).width(LayoutWidth::Wide).build()?,
+        LayoutItem::builder().block(status).width(LayoutWidth::Narrow).build()?,
+    ]).build()?;
+    let layout = LayoutBlock::builder().label("Service status").block_id("service-layout")
+        .is_label_visible(true).grid_lines(LayoutGridLines::Outer).rows([row])
+        .fallback([LayoutFallback::from(fallback)]).build()?;
+    println!("{}", serde_json::to_string(&layout)?);
+    Ok(())
+}
+```
+
+</Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+require 'vendor/autoload.php';
+use Slackblocks as S;
+
+$service = new S\SectionBlock(text: new S\PlainText('API'), blockId: 'service');
+$status = new S\SectionBlock(text: new S\PlainText('Healthy'), blockId: 'status');
+$fallback = new S\SectionBlock(text: new S\PlainText('API: Healthy'), blockId: 'fallback');
+$row = new S\LayoutRow(items: [
+    new S\LayoutItem($service, width: S\LayoutWidth::Wide),
+    new S\LayoutItem($status, width: S\LayoutWidth::Narrow),
+]);
+$layout = new S\LayoutBlock('Service status', [$row], blockId: 'service-layout',
+    isLabelVisible: true, gridLines: S\LayoutGridLines::Outer, fallback: [$fallback]);
+echo $layout->toJson();
+```
+
+</PHP>
+<Elixir>
+
+```elixir
+alias Slackblocks.Blocks.{Layout, Section}
+alias Slackblocks.Objects.{LayoutItem, LayoutRow, PlainText}
+
+service = Section.new!(text: PlainText.new!(text: "API"), block_id: "service")
+status = Section.new!(text: PlainText.new!(text: "Healthy"), block_id: "status")
+fallback = Section.new!(text: PlainText.new!(text: "API: Healthy"), block_id: "fallback")
+row = LayoutRow.new!(items: [
+  LayoutItem.new!(block: service, width: :wide),
+  LayoutItem.new!(block: status, width: :narrow)
+])
+Layout.new!(label: "Service status", block_id: "service-layout", is_label_visible: true,
+  grid_lines: :outer, rows: [row], fallback: [fallback])
+|> Slackblocks.to_map!()
+```
+
+</Elixir>
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import Data.Text (Text)
+import Slackblocks
+
+section :: Text -> Text -> Result SectionBlock
+section text identifier = do
+  content <- buildPlainText (plainText text)
+  buildSectionBlock sectionBlock
+    {sectionBlockText = Just (plainTextAsText content), sectionBlockBlockId = Just identifier}
+
+example :: Result LayoutBlock
+example = do
+  service <- section "API" "service"
+  status <- section "Healthy" "status"
+  fallback <- section "API: Healthy" "fallback"
+  left <- buildLayoutItem (layoutItem (sectionBlockAsLayoutChild service))
+    {layoutItemWidth = Just LayoutWidthWide}
+  right <- buildLayoutItem (layoutItem (sectionBlockAsLayoutChild status))
+    {layoutItemWidth = Just LayoutWidthNarrow}
+  row <- buildLayoutRow (layoutRow [left, right])
+  buildLayoutBlock (layoutBlock "Service status" [row])
+    {layoutBlockBlockId = Just "service-layout", layoutBlockIsLabelVisible = Just True,
+     layoutBlockGridLines = Just LayoutGridLinesOuter,
+     layoutBlockFallback = Just [sectionBlockAsLayoutFallback fallback]}
+```
+
+</Haskell>
+</LanguageContent>
+
+To extend this to several rows with aligned status text, see the [weighted layout recipe](/usage/recipes/layout-grid).
+
+## Labels, widths and alignment
+
+The required label is 1–150 Unicode code points. It is hidden unless `is_label_visible` is true; visible labels are bold text rather than headings, and hidden labels are not accessible names.
+
+Widths are `narrow` (1), `standard` (2, the default) and `wide` (3). Explicit alignment is `start`, `center` or `end`; omission fills the cell. `grid_lines` accepts `none`, `rows` (outer plus horizontal dividers) or `outer`.
+
+## Supported children and surfaces
+
+| Placement | Supported content |
+| --- | --- |
+| Layout item | Actions, alert, card, carousel, container, context, data table, data visualization, divider, file, header, image, input, rich text, section, table, video |
+| Fallback | Context, divider, header, image, rich text, section, table, video |
+| Receiving surfaces | Messages, modals and App Home, subject to each child's own surface restrictions |
+
+Direct nested layouts and markdown blocks are not layout children. A layout/container path allows at most two composite levels. A container may contain a layout where that container is supported; existing container-only nesting behavior is unchanged.
+
+A row may contain only one carousel, data table or chart; a chart must receive **more than half** the row's total weight. A `wide` chart beside a `standard` item is valid; equal weights are not. In a three-item row, a `wide` chart beside two `narrow` items also has a strict majority (3 of 5); three omitted widths do not (2 of 6). The rule is independent of the chart's position.
+
+## Fallback and validation
+
+Fallback replaces the grid on clients without layout support. Explicit empty fallback remains empty. Child and fallback blocks must be valid on the receiving surface; for example, nesting an input in a modal still requires a submit label. Existing aggregate chart and text limits continue to apply. [Layout accounting](/usage/validation-boundary#layout-accounting) explains the retained top-level block limits and the observed Slack discrepancy.
+
+[Official Slack layout reference](https://docs.slack.dev/reference/block-kit/blocks/layout-block).

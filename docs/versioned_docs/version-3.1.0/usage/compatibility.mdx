@@ -1,0 +1,311 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+
+# Compatibility
+
+<LanguageContent>
+<Python>
+
+This page documents which Python versions are supported by each `slackblocks` release line, so you can choose the right line for your runtime.
+
+Each row in the table maps a major `slackblocks` release line to the oldest Python interpreter that can run it. **Minimum Python** means that version or any newer supported Python version—not that the release only works on that one version. The status in parentheses tells you whether the line receives current feature development or maintenance fixes only.
+
+Start with the Python version used by your application or deployment environment, then choose the newest `slackblocks` line whose minimum requirement it meets. For example, Python 3.9 requires `slackblocks` 1.x, while Python 3.10 and newer can use 3.x.
+
+## Support matrix
+
+| `slackblocks` version | Minimum Python | Notes |
+| --- | --- | --- |
+| `1.x` (maintenance) | 3.8.1 | The last release line to support Python 3.8 and 3.9. |
+| `2.x` | 3.10 | Modern typing (`X \| Y`, `list[X]`), dataclasses with `slots`, `match` statements, and other Python 3.10+ features used internally. |
+| `3.x` (current) | 3.10 | Corrected number-input bound APIs; the interpreter minimum is unchanged from 2.x. |
+
+If you cannot upgrade Python, pin to the appropriate major version:
+
+<Tabs>
+<TabItem value={"pip-requirements-txt"} label={"pip (`requirements.txt`)"}>
+
+```text
+slackblocks>=1,<2     # Python 3.8/3.9 friendly
+slackblocks>=3,<4     # Python 3.10+; current API
+```
+
+
+</TabItem>
+<TabItem value={"poetry-pyproject-toml"} label={"poetry (`pyproject.toml`)"}>
+
+```toml
+slackblocks = "^1"    # Python 3.8/3.9 friendly
+slackblocks = "^3"    # Python 3.10+; current API
+```
+
+
+</TabItem>
+<TabItem value={"uv-pyproject-toml"} label={"uv (`pyproject.toml`)"}>
+
+```toml
+"slackblocks>=1,<2"   # Python 3.8/3.9 friendly
+"slackblocks>=3,<4"   # Python 3.10+; current API
+```
+
+
+</TabItem>
+</Tabs>
+
+## Why we move forward
+
+`slackblocks` follows the upstream Python release cycle. Once a Python version reaches its [official end-of-life](https://devguide.python.org/versions/), it stops receiving security patches, and we prefer not to ship new feature work targeting unmaintained runtimes.
+
+| Python version | EOL date |
+| --- | --- |
+| 3.8 | 2024-10-07 |
+| 3.9 | 2025-10-31 |
+| 3.10 | 2026-10 |
+| 3.11 | 2027-10 |
+| 3.12 | 2028-10 |
+| 3.13 | 2029-10 |
+| 3.14 | 2030-10 |
+
+Bugfix releases on existing lines may continue past these dates on a best-effort basis, but new feature work will target supported Pythons.
+
+## Choosing a version
+
+- **You're on Python 3.8 or 3.9**: install the latest `1.x`.
+- **You're on Python 3.10 or newer**: install the current `3.x` release line.
+- **You're starting a new project on a modern Python**: prefer `3.x` to take advantage of the improved typing surface.
+
+For an upgrade walkthrough from `1.x` to `2.x`, see the
+[Migration Guide](migration).
+
+</Python>
+<TypeScript>
+
+See [Installation](installation) and the [TypeScript API reference](../reference/typescript) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</TypeScript>
+<Go>
+
+## Go support matrix
+
+The current `github.com/nicklambourne/slackblocks/go/v3` module supports Go 1.22
+and newer. Its minimum dependency remains `github.com/slack-go/slack` v0.17.3.
+Applications can select a newer SDK without changing the slackblocks module line,
+provided their Go toolchain meets that SDK's own requirements.
+
+| slackblocks module line | Tested `slack-go/slack` version | Minimum Go | Selection |
+| --- | --- | --- | --- |
+| Current `go/v3` | v0.17.3 | 1.22 | Default minimum dependency; keeps Go 1.22, 1.23 and 1.24 compatible. |
+| Current `go/v3` | v0.23.1 | 1.25 | Explicit application upgrade; tested separately from the minimum dependency. |
+
+These are tested combinations, not a guarantee for every intervening or future
+SDK release. Both profiles use the same slackblocks API. No separate maintenance
+release line is needed for these combinations.
+
+### Choosing an SDK version
+
+For the Go 1.22-compatible combination, select both modules in your application:
+
+```bash
+go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.17.3
+```
+
+With Go 1.25 or newer, opt into the newer tested SDK:
+
+```bash
+go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.23.1
+```
+
+Go's [minimal version selection](https://go.dev/ref/mod#minimal-version-selection)
+selects one SDK version for the application, using the highest version required
+by its module graph. The core's v0.17.3 requirement is a minimum, not an upper
+bound or a conditional version selector. Inspect `go list -m all` after updating;
+another dependency may require a newer SDK or toolchain.
+
+The upstream manifests declare [Go 1.22 for v0.17.3](https://github.com/slack-go/slack/blob/v0.17.3/go.mod)
+and [Go 1.25 for v0.23.1](https://github.com/slack-go/slack/blob/v0.23.1/go.mod).
+The latter's `toolchain go1.25.9` is a suggestion for work in that SDK module,
+not an additional minimum for applications importing it. Go may automatically
+select a newer toolchain; use `GOTOOLCHAIN=local` when verifying a fixed compiler
+([Go toolchain rules](https://go.dev/doc/toolchain)).
+
+### Compatibility checks and updates
+
+CI retains Go 1.22 and stable native checks, adds a Go 1.25 lane, and disables
+automatic toolchain upgrades in those lanes. The core and the default multi-select
+example keep the minimum SDK. The separate `go/integrations` module selects
+v0.23.1 and runs the full native suite, a mixed native-SDK/slackblocks consumer,
+and the same multi-select source on Go 1.25 and stable. Both profiles must emit
+the same 15 validated payloads. Mock HTTP tests make no live Slack requests.
+
+Dependabot tracks the newer SDK in the integration module. Updates must preserve
+the minimum core manifest and pass both profiles; they must not silently raise
+the supported Go floor. Keeping v0.17.3 does not backport fixes from newer SDKs.
+For example, v0.23.1 changes empty signing-secret validation in
+[`NewSecretsVerifier`](https://github.com/slack-go/slack/releases/tag/v0.23.1);
+applications using that SDK feature should review its upstream release notes.
+
+See [Installation](installation) and the [Go API reference](../reference/go)
+for the native API and installation instructions.
+
+</Go>
+<Java>
+
+See [Installation](installation) and the [Java API reference](../reference/java) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Java>
+<CSharp>
+
+See [Installation](installation) and the [C# API reference](../reference/csharp) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</CSharp>
+<Ruby>
+
+See [Installation](installation) and the [Ruby API reference](../reference/ruby) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Ruby>
+<Rust>
+
+## Rust support policy
+
+Rust support begins with coordinated version 2.6.0.
+The crate uses edition 2024 with MSRV 1.85.0. CI tests the MSRV and current stable
+on Linux, plus current stable on macOS and Windows. Raising the MSRV requires
+an explicit compatibility decision and release notes; dependency updates alone
+must not narrow supported versions.
+
+Runtime dependencies use compatible Serde/serde_json version requirements.
+The checked-in lockfile fixes development builds. Package checks also resolve
+fresh consumer dependencies, declared lower bounds, and the consumer-enabled
+`arbitrary_precision` and `preserve_order` serde_json features.
+
+The optional sending examples have a separate application manifest and lockfile
+in `rust/integrations`. Slack Morphism 2.29.0 and reqwest 0.13.5 are tested there on
+Rust 1.85 and stable. Resolver 3 and `rust-version = "1.85"` select compatible
+transitive dependencies, including older Serde helpers and ICU releases where
+newer versions require a newer compiler. The mock server is pinned to wiremock
+0.6.2 because later versions use Rust 1.88 syntax without declaring that minimum.
+These are application/test requirements and never enter the core crate's
+manifest or lockfile. A dependency update must pass the same compiler matrix.
+
+Role/vocabulary enums are `#[non_exhaustive]`; include a wildcard match arm so
+new Slack variants can be added. Private fields and validated builders preserve
+invariants. No earlier Rust release line exists to migrate from.
+
+</Rust>
+<PHP>
+
+## PHP support policy
+
+PHP 8.2+ on 64-bit Linux, macOS and Windows is supported. CI runs 8.2 and 8.5
+on all three platforms, plus 8.3 and 8.4 on Linux. The minimum remains 8.2 even
+when development or integration dependencies are updated. PHP itself provides
+security fixes for 8.2 through December 2026; applications should prefer a
+currently supported PHP release ([PHP support schedule](https://www.php.net/supported-versions.php)).
+
+The core needs only JSON and PCRE. cURL, JoliCode and Laravel are optional
+application dependencies tested separately. The minimum integration lock uses
+Laravel 12; newest compatible versions are also resolved on current PHP.
+
+PHP support began in 2.7.0. Named arguments, enum cases, readonly
+properties, JSON field names and validation categories are compatibility surfaces.
+Human-readable error prose may improve. Existing Python, TypeScript, Go, Java,
+C#, Ruby and Rust minimum versions are unchanged.
+
+Integers preserve the signed 64-bit range, including values above JavaScript's
+safe-integer limit. Floats use PHP's binary double semantics; arbitrary-precision
+decimal numbers are not supported. Checked JSON ingress rejects integer overflow,
+nonfinite values and nonzero numbers that underflow to zero. Strings must be valid
+UTF-8 and Slack string limits count Unicode code points. Opaque JSON is limited
+to 128 levels; cyclic graphs and custom object instances are rejected.
+
+</PHP>
+<Elixir>
+
+## Elixir support policy
+
+Elixir 1.16.3 or newer, below 2.0, with a compatible OTP version from 26.2,
+on 64-bit Linux, macOS and Windows. CI checks Elixir 1.16–1.20 against compatible
+OTP 26–29 combinations, with minimum/current compiler lanes on all three platforms.
+Elixir support begins with version 2.8.0. Other implementations' minimum
+language versions are unchanged.
+
+Runtime dependencies are Jason 1.4.5+ (below 2.0) and Decimal 2.4+ or 3.x.
+Existing Jason builds may need the [installation rebuild step](installation).
+Req, slack_elixir and Ecto integration tests use a separate project; they add no
+HTTP, database or web framework dependency to the core package.
+
+Public struct fields, constructor keywords, typespecs, enum atoms, JSON field
+names and validation categories form the compatibility surface. New optional
+fields or enum values are additive; match only fields you need and retain a
+catch-all branch for evolving enums. Error prose may improve. Persist Slack wire
+JSON instead of serialized BEAM structs across package upgrades.
+
+Integers use BEAM arbitrary precision. Checked JSON decoding preserves integer
+tokens, rejects duplicate keys and rejects decimal tokens that lose value in the
+shortest-decimal float round trip, overflow or underflow to nonzero values lost as zero.
+Integer fields reject decimal/exponent tokens. Decimal scale is not retained;
+negative zero remains a float. Map ingress cannot recover information discarded
+by another parser. Opaque JSON nesting is capped at 128 levels. UTF-8 strings are
+required and limits count Unicode code points, rather than bytes or graphemes.
+
+Erlang can call the same modules using binary strings and keyword tuples;
+see the tested [Rebar3 and standalone release configuration](erlang).
+
+</Elixir>
+<Haskell>
+
+## Haskell compiler support
+
+Haskell support begins with release 3.1.0. The minimum is GHC 9.6.7.
+The package uses GHC2021 and a bounded `base` dependency; an untested future GHC
+series is not implicitly supported.
+
+| GHC series | CI patch | Platforms | Validation |
+| --- | --- | --- | --- |
+| 9.6 | 9.6.7 (minimum) | Linux, macOS, Windows | Full native suites, source archive and external consumers |
+| 9.8 | 9.8.4 | Linux | Full native suites |
+| 9.10 | 9.10.3 | Linux | Full native suites |
+| 9.12 | 9.12.4 | Linux | Full native suites |
+| 9.14 | 9.14.1 | Linux, macOS, Windows | Full native suites, source archive and external consumers |
+
+Linux checks independent exact-lower, locked and latest-within-bounds dependency
+resolutions. Both Aeson ordered and unordered KeyMap modes run native suites.
+Lower bounds include Aeson 2.2.0.0, bytestring 0.11.5.4, text 2.0.2, containers
+0.6.7, scientific 0.3.7.0 and vector 0.13.0.0. QuickCheck, HLint and Ormolu are
+test/development tools, not consumer dependencies. The HTTP example resolves its
+own `http-client`, `http-client-tls` and `http-types` graph on minimum/current GHC.
+
+### Version bounds and source compatibility
+
+Use a range such as `slackblocks >= 3.1 && < 3.2`. Haskell follows the coordinated
+package release number; it does not use an independent 0.x numbering scheme.
+The [Haskell Package Versioning Policy](https://pvp.haskell.org/) explains why
+bounds matter when constructors and exported names evolve. A new closed enum or
+role member can affect exhaustive matches; prefer the supplied `match…` helpers
+and review release notes before widening the range. Raising the compiler floor
+requires an explicit compatibility decision, not a dependency update shortcut.
+
+### Wire and value behavior
+
+Optional `Nothing` and parsed null omit a field; explicit `Just False`, zero and
+allowed empty values are retained. Block IDs are never generated. Factories set
+only documented shared defaults; parsing does not invent absent defaults.
+`Integer` and `Scientific` avoid binary floating-point loss. Number-input bounds
+are decimal text; `decimalText` converts a `Scientific` value exactly.
+
+Checked values are immutable. Field records cannot be encoded directly. JSON
+ingress validates nested roles and contextual limits; `decode` additionally
+rejects duplicate keys, invalid UTF-8, trailing data and numeric exponents that
+overflow Aeson’s `Scientific` representation. Checked native values and JSON
+ingress also reject numbers whose normalized encoding cannot round-trip,
+including numbers in metadata and extensions. Bounded integer fields are
+range-checked before expanding exponents. Decimal bounds supplied as strings
+retain arbitrary-exponent support. Already parsed
+Aeson values cannot recover duplicate keys or exponents an earlier parser lost.
+Application metadata remains opaque JSON. See [ownership and edits](using_blocks#ownership-and-edits)
+for the native inspect-and-rebuild workflow.
+
+</Haskell>
+</LanguageContent>

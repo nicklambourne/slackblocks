@@ -59,6 +59,9 @@ from slackblocks import (
     ImageBlock,
     InputBlock,
     InputParameter,
+    LayoutBlock,
+    LayoutItem,
+    LayoutRow,
     LineChart,
     MarkdownBlock,
     Message,
@@ -69,6 +72,7 @@ from slackblocks import (
     OptionGroup,
     OverflowMenu,
     PieChart,
+    PlainText,
     PlainTextInput,
     PlanBlock,
     RadioButtonGroup,
@@ -490,6 +494,21 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
         title_url="https://example.com",
         block_id="video_1",
     ),
+    "elements/button_agent_prompt": lambda: Button(
+        text="Summarize", agent_prompt="Summarize this incident."
+    ),
+    "elements/button_agent_prompt_display": lambda: Button(
+        text="Summarize",
+        action_id="summarize",
+        agent_prompt="Summarize this incident.",
+        agent_prompt_display="x" * 80,
+    ),
+    "elements/button_agent_prompt_at_limit": lambda: Button(
+        text="Summarize", agent_prompt="😀" * 4000
+    ),
+    "elements/button_agent_prompt_empty": lambda: Button(
+        text="Summarize", agent_prompt="", agent_prompt_display=""
+    ),
     "elements/button_basic": lambda: Button(text="Click Me", value="click_me", action_id="button"),
     "elements/button_link": lambda: Button(text="Link!", url="https://ndl.im/", action_id="button"),
     "elements/button_style": lambda: Button(
@@ -803,3 +822,147 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
     ),
     "views/modal_without_blocks": lambda: Modal(title="Empty", blocks=[]),
 }
+
+# Layout examples exercise typed children and preserve explicit/omitted defaults.
+CONSTRUCTIONS.update(
+    {
+        "blocks/layout_chart_majority": lambda: LayoutBlock(
+            label="Chart summary",
+            block_id="layout",
+            rows=[
+                LayoutRow(
+                    items=[
+                        LayoutItem(
+                            block=DataVisualizationBlock(
+                                title="Chart",
+                                block_id="chart",
+                                chart=PieChart(segments=[ChartSegment(label="One", value=1)]),
+                            ),
+                            width="wide",
+                        ),
+                        LayoutItem(block=DividerBlock(block_id="child"), width="standard"),
+                    ]
+                )
+            ],
+        ),
+        "blocks/layout_block": lambda: LayoutBlock(
+            label="Layout",
+            rows=[LayoutRow(items=[LayoutItem(block=DividerBlock(block_id="child"))])],
+            block_id="layout",
+        ),
+        "blocks/layout_styled": lambda: LayoutBlock(
+            label="Status",
+            rows=[
+                LayoutRow(
+                    items=[
+                        LayoutItem(
+                            block=DividerBlock(block_id="0"),
+                            width="narrow",
+                            horizontal_alignment="start",
+                        ),
+                        LayoutItem(
+                            block=DividerBlock(block_id="1"),
+                            width="standard",
+                            horizontal_alignment="center",
+                        ),
+                        LayoutItem(
+                            block=DividerBlock(block_id="2"),
+                            width="wide",
+                            horizontal_alignment="end",
+                        ),
+                    ]
+                )
+            ],
+            block_id="layout",
+            is_label_visible=True,
+            grid_lines="rows",
+            fallback=[DividerBlock(block_id="fallback")],
+        ),
+        "blocks/layout_empty_fallback": lambda: LayoutBlock(
+            label="Layout",
+            rows=[LayoutRow(items=[LayoutItem(block=DividerBlock(block_id="child"))])],
+            block_id="layout",
+            is_label_visible=False,
+            grid_lines="none",
+            fallback=[],
+        ),
+        "blocks/layout_limits": lambda: LayoutBlock(
+            label="😀" * 150,
+            rows=[
+                LayoutRow(
+                    items=[
+                        LayoutItem(block=DividerBlock(block_id="child_0_0")),
+                        LayoutItem(block=DividerBlock(block_id="child_0_1")),
+                        LayoutItem(block=DividerBlock(block_id="child_0_2")),
+                    ]
+                ),
+                LayoutRow(
+                    items=[
+                        LayoutItem(block=DividerBlock(block_id="child_1_0")),
+                        LayoutItem(block=DividerBlock(block_id="child_1_1")),
+                        LayoutItem(block=DividerBlock(block_id="child_1_2")),
+                    ]
+                ),
+                LayoutRow(
+                    items=[
+                        LayoutItem(block=DividerBlock(block_id="child_2_0")),
+                        LayoutItem(block=DividerBlock(block_id="child_2_1")),
+                        LayoutItem(block=DividerBlock(block_id="child_2_2")),
+                    ]
+                ),
+                LayoutRow(
+                    items=[
+                        LayoutItem(block=DividerBlock(block_id="child_3_0")),
+                        LayoutItem(block=DividerBlock(block_id="child_3_1")),
+                        LayoutItem(block=DividerBlock(block_id="child_3_2")),
+                    ]
+                ),
+                LayoutRow(
+                    items=[
+                        LayoutItem(block=DividerBlock(block_id="child_4_0")),
+                        LayoutItem(block=DividerBlock(block_id="child_4_1")),
+                        LayoutItem(block=DividerBlock(block_id="child_4_2")),
+                    ]
+                ),
+            ],
+            block_id="layout",
+            grid_lines="outer",
+        ),
+        "blocks/layout_container": lambda: LayoutBlock(
+            label="Layout",
+            rows=[
+                LayoutRow(
+                    items=[
+                        LayoutItem(
+                            block=ContainerBlock(
+                                title=PlainText("Container"),
+                                child_blocks=[DividerBlock(block_id="child")],
+                                width="standard",
+                                is_collapsible=False,
+                                default_collapsed=False,
+                                has_header_divider=False,
+                                block_id="container",
+                            )
+                        )
+                    ]
+                )
+            ],
+            block_id="layout",
+        ),
+        "blocks/container_layout": lambda: ContainerBlock(
+            title=PlainText("Container"),
+            child_blocks=[
+                LayoutBlock(
+                    label="Layout",
+                    rows=[LayoutRow(items=[LayoutItem(block=DividerBlock(block_id="child"))])],
+                    block_id="layout",
+                )
+            ],
+            width="standard",
+            is_collapsible=False,
+            default_collapsed=False,
+            has_header_divider=False,
+            block_id="container",
+        ),
+    }
+)

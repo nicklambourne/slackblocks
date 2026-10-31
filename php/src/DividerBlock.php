@@ -10,7 +10,7 @@ namespace Slackblocks;
  * A horizontal rule that separates blocks.
  * @see https://docs.slack.dev/reference/block-kit/blocks/divider-block
  */
-final readonly class DividerBlock extends Value implements Block
+final readonly class DividerBlock extends Value implements Block, LayoutChild, LayoutFallback
 {
     /** Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
      * @var string|null

@@ -31,7 +31,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "Block"]
     },
     Slackblocks.Blocks.Alert => %{
       :name => "AlertBlock",
@@ -74,7 +74,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "Block"]
     },
     Slackblocks.Blocks.Card => %{
       :name => "CardBlock",
@@ -189,7 +189,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "Block"]
     },
     Slackblocks.Blocks.Carousel => %{
       :name => "CarouselBlock",
@@ -220,7 +220,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "Block"]
     },
     Slackblocks.Blocks.Container => %{
       :name => "ContainerBlock",
@@ -347,7 +347,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "Block"]
     },
     Slackblocks.Blocks.ContextActions => %{
       :name => "ContextActionsBlock",
@@ -409,7 +409,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "LayoutFallback", "Block"]
     },
     Slackblocks.Blocks.DataTable => %{
       :name => "DataTableBlock",
@@ -476,7 +476,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "Block"]
     },
     Slackblocks.Blocks.DataVisualization => %{
       :name => "DataVisualizationBlock",
@@ -519,7 +519,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "Block"]
     },
     Slackblocks.Blocks.Divider => %{
       :name => "DividerBlock",
@@ -538,7 +538,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "LayoutFallback", "Block"]
     },
     Slackblocks.Blocks.File => %{
       :name => "FileBlock",
@@ -581,7 +581,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "Block"]
     },
     Slackblocks.Blocks.Header => %{
       :name => "HeaderBlock",
@@ -612,7 +612,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "LayoutFallback", "Block"]
     },
     Slackblocks.Blocks.Image => %{
       :name => "ImageBlock",
@@ -679,7 +679,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "LayoutFallback", "Block"]
     },
     Slackblocks.Blocks.Input => %{
       :name => "InputBlock",
@@ -758,7 +758,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "Block"]
     },
     Slackblocks.Blocks.Markdown => %{
       :name => "MarkdownBlock",
@@ -863,7 +863,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["TableCell", "DataTableCell", "Block"]
+      :roles => ["TableCell", "DataTableCell", "LayoutChild", "LayoutFallback", "Block"]
     },
     Slackblocks.Blocks.Section => %{
       :name => "SectionBlock",
@@ -918,7 +918,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "LayoutFallback", "Block"]
     },
     Slackblocks.Blocks.Table => %{
       :name => "TableBlock",
@@ -961,7 +961,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "LayoutFallback", "Block"]
     },
     Slackblocks.Blocks.TaskCard => %{
       :name => "TaskCardBlock",
@@ -1179,7 +1179,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["Block"]
+      :roles => ["LayoutChild", "LayoutFallback", "Block"]
     },
     Slackblocks.Elements.Button => %{
       :name => "ButtonElement",
@@ -1267,6 +1267,30 @@ defmodule Slackblocks.Internal.Schema do
           :has_default => false,
           :coerce => nil,
           :limits => "button.accessibility_label",
+          :flags => []
+        },
+        %{
+          :key => :agent_prompt,
+          :wire => "agent_prompt",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "button.agent_prompt",
+          :flags => []
+        },
+        %{
+          :key => :agent_prompt_display,
+          :wire => "agent_prompt_display",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
           :flags => []
         }
       ],
@@ -4944,6 +4968,147 @@ defmodule Slackblocks.Internal.Schema do
         }
       ],
       :roles => []
+    },
+    Slackblocks.Blocks.Layout => %{
+      :name => "LayoutBlock",
+      :wire => "layout",
+      :fields => [
+        %{
+          :key => :label,
+          :wire => "label",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "layout.label",
+          :flags => []
+        },
+        %{
+          :key => :rows,
+          :wire => "rows",
+          :kind => :list,
+          :type => "LayoutRow",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "layout.rows",
+          :flags => []
+        },
+        %{
+          :key => :is_label_visible,
+          :wire => "is_label_visible",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :grid_lines,
+          :wire => "grid_lines",
+          :kind => :enum,
+          :type => "LayoutGridLines",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :fallback,
+          :wire => "fallback",
+          :kind => :list,
+          :type => "LayoutFallback",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Objects.LayoutRow => %{
+      :name => "LayoutRow",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :items,
+          :wire => "items",
+          :kind => :list,
+          :type => "LayoutItem",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "layout.items",
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.LayoutItem => %{
+      :name => "LayoutItem",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :block,
+          :wire => "block",
+          :kind => :object,
+          :type => "LayoutChild",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :width,
+          :wire => "width",
+          :kind => :enum,
+          :type => "LayoutWidth",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :horizontal_alignment,
+          :wire => "horizontal_alignment",
+          :kind => :enum,
+          :type => "LayoutAlignment",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
     }
   }
   @roles %{
@@ -4968,7 +5133,8 @@ defmodule Slackblocks.Internal.Schema do
       Slackblocks.Blocks.Section,
       Slackblocks.Blocks.Table,
       Slackblocks.Blocks.TaskCard,
-      Slackblocks.Blocks.Video
+      Slackblocks.Blocks.Video,
+      Slackblocks.Blocks.Layout
     ],
     "ContextElement" => [
       Slackblocks.Elements.Image,
@@ -5057,6 +5223,35 @@ defmodule Slackblocks.Internal.Schema do
       Slackblocks.RichText.Text,
       Slackblocks.RichText.User,
       Slackblocks.RichText.UserGroup
+    ],
+    "LayoutChild" => [
+      Slackblocks.Blocks.Actions,
+      Slackblocks.Blocks.Alert,
+      Slackblocks.Blocks.Card,
+      Slackblocks.Blocks.Carousel,
+      Slackblocks.Blocks.Container,
+      Slackblocks.Blocks.Context,
+      Slackblocks.Blocks.DataTable,
+      Slackblocks.Blocks.DataVisualization,
+      Slackblocks.Blocks.Divider,
+      Slackblocks.Blocks.File,
+      Slackblocks.Blocks.Header,
+      Slackblocks.Blocks.Image,
+      Slackblocks.Blocks.Input,
+      Slackblocks.Blocks.RichText,
+      Slackblocks.Blocks.Section,
+      Slackblocks.Blocks.Table,
+      Slackblocks.Blocks.Video
+    ],
+    "LayoutFallback" => [
+      Slackblocks.Blocks.Context,
+      Slackblocks.Blocks.Divider,
+      Slackblocks.Blocks.Header,
+      Slackblocks.Blocks.Image,
+      Slackblocks.Blocks.RichText,
+      Slackblocks.Blocks.Section,
+      Slackblocks.Blocks.Table,
+      Slackblocks.Blocks.Video
     ]
   }
   @enums %{
@@ -5083,7 +5278,10 @@ defmodule Slackblocks.Internal.Schema do
     "IconButtonIcon" => %{:trash => "trash"},
     "ColumnAlign" => %{:left => "left", :center => "center", :right => "right"},
     "RichTextListStyle" => %{:bullet => "bullet", :ordered => "ordered"},
-    "ResponseType" => %{:in_channel => "in_channel", :ephemeral => "ephemeral"}
+    "ResponseType" => %{:in_channel => "in_channel", :ephemeral => "ephemeral"},
+    "LayoutWidth" => %{:narrow => "narrow", :standard => "standard", :wide => "wide"},
+    "LayoutAlignment" => %{:start => "start", :center => "center", :end => "end"},
+    "LayoutGridLines" => %{:none => "none", :rows => "rows", :outer => "outer"}
   }
   @limits %{
     "text.min_length" => 1,
@@ -5094,6 +5292,7 @@ defmodule Slackblocks.Internal.Schema do
     "button.url.max_length" => 3_000,
     "button.value.max_length" => 2_000,
     "button.accessibility_label.max_length" => 75,
+    "button.agent_prompt.max_length" => 4_000,
     "confirmation.title.max_length" => 100,
     "confirmation.text.max_length" => 300,
     "confirmation.confirm.max_length" => 30,
@@ -5231,7 +5430,13 @@ defmodule Slackblocks.Internal.Schema do
     "view.external_id.max_length" => 255,
     "view.title.max_length" => 24,
     "view.close.max_length" => 24,
-    "view.submit.max_length" => 24
+    "view.submit.max_length" => 24,
+    "layout.label.min_length" => 1,
+    "layout.label.max_length" => 150,
+    "layout.rows.min_items" => 1,
+    "layout.rows.max_items" => 5,
+    "layout.items.min_items" => 1,
+    "layout.items.max_items" => 3
   }
   @vocabulary %{
     "slack_icon_names" => [
@@ -5303,6 +5508,7 @@ defmodule Slackblocks.Internal.Schema do
         "header",
         "image",
         "input",
+        "layout",
         "rich_text",
         "section",
         "table",
@@ -5322,6 +5528,7 @@ defmodule Slackblocks.Internal.Schema do
         "header",
         "image",
         "input",
+        "layout",
         "markdown",
         "plan",
         "rich_text",
@@ -5339,6 +5546,7 @@ defmodule Slackblocks.Internal.Schema do
         "header",
         "image",
         "input",
+        "layout",
         "rich_text",
         "section",
         "video"

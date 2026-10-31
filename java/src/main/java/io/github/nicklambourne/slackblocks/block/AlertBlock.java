@@ -26,7 +26,7 @@ import java.util.Optional;
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/alert-block">Slack reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class AlertBlock implements Block {
+public final class AlertBlock implements Block, LayoutChild {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

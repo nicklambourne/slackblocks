@@ -155,6 +155,8 @@ public final class Validator {
 
   private static void validateBuilder(String name, Map<String, Object> value) {
     switch (name) {
+      case "LayoutRow" -> validateLayoutRow(value, name);
+      case "LayoutItem" -> validateLayoutItem(value, name);
       case "Confirmation" -> validateConfirmation(value, name);
       case "Option" -> validateOption(value, name);
       case "OptionGroup" -> validateOptionGroup(value, name);
@@ -452,7 +454,11 @@ public final class Validator {
       }
       case "card" -> validateCard(value, path);
       case "carousel" -> validateCarousel(value, path);
-      case "container" -> validateContainer(value, path);
+      case "layout" -> validateLayout(value, path);
+      case "container" -> {
+        validateContainer(value, path);
+        validateCompositeDepth(value, path, 0, false);
+      }
       case "context_actions" ->
           sliceLength(
               listAt(value.get("elements"), child(path, "elements")),
@@ -530,6 +536,18 @@ public final class Validator {
   }
 
   private static void validateButton(Map<String, Object> value, String path) {
+    for (String field : List.of("agent_prompt", "agent_prompt_display")) {
+      if (value.containsKey(field) && !(value.get(field) instanceof String)) {
+        fail(ErrorCategory.TYPE_MISMATCH, child(path, field), "expected a string");
+      }
+    }
+    checkOptionalString(value, "agent_prompt", path, SlackLimits.BUTTON_AGENT_PROMPT_MAX_LENGTH);
+    if (value.containsKey("agent_prompt_display") && !value.containsKey("agent_prompt")) {
+      fail(
+          ErrorCategory.MISSING_REQUIRED,
+          child(path, "agent_prompt"),
+          "required when agent_prompt_display is supplied");
+    }
     textLength(value.get("text"), child(path, "text.text"), 0, SlackLimits.BUTTON_TEXT_MAX_LENGTH);
     checkOptionalString(value, "url", path, SlackLimits.BUTTON_URL_MAX_LENGTH);
     checkOptionalString(value, "value", path, SlackLimits.BUTTON_VALUE_MAX_LENGTH);
@@ -833,7 +851,7 @@ public final class Validator {
       if (!value.containsKey("submit")) {
         for (int index = 0; index < blocks.size(); index++) {
           String blockPath = child(path, "blocks") + "[" + index + "]";
-          if ("input".equals(objectType(objectAt(blocks.get(index), blockPath)))) {
+          if (containsInput(objectAt(blocks.get(index), blockPath))) {
             fail(
                 ErrorCategory.MISSING_REQUIRED,
                 child(path, "submit"),
@@ -1158,8 +1176,8 @@ public final class Validator {
         totals[2]++;
       } else if ("data_table".equals(type)) {
         totals[1] += textCharacterCount(map.get("rows"));
-      } else if ("container".equals(type)) {
-        addMessageTotals(map.get("child_blocks"), totals);
+      } else if ("container".equals(type) || "layout".equals(type)) {
+        addMessageTotals(compositeChildren(objectAt(map, "blocks"), true), totals);
       }
     } else if (value instanceof List<?> list) {
       for (Object item : list) {
@@ -1173,7 +1191,14 @@ public final class Validator {
         Objects.requireNonNull(SlackVocabulary.SURFACE_BLOCK_TYPES.get(surface), surface);
     for (int index = 0; index < blocks.size(); index++) {
       String blockPath = path + "[" + index + "]";
-      String type = objectType(objectAt(blocks.get(index), blockPath));
+      Map<String, Object> block = objectAt(blocks.get(index), blockPath);
+      String type = objectType(block);
+      validateSurface(compositeChildren(block, false), surface, child(blockPath, "children"));
+      if ("layout".equals(type) && block.containsKey("fallback"))
+        validateSurface(
+            listAt(block.get("fallback"), child(blockPath, "fallback")),
+            surface,
+            child(blockPath, "fallback"));
       if (!allowed.contains(type)) {
         fail(
             ErrorCategory.TYPE_MISMATCH,
@@ -1356,8 +1381,9 @@ public final class Validator {
     int rank = a.rank().compareTo(b.rank());
     if (rank != 0) return rank * a.sign();
     int width = Math.max(a.digits().length(), b.digits().length());
-    return (a.digits() + "0".repeat(width - a.digits().length()))
-            .compareTo(b.digits() + "0".repeat(width - b.digits().length()))
+    return Integer.signum(
+            (a.digits() + "0".repeat(width - a.digits().length()))
+                .compareTo(b.digits() + "0".repeat(width - b.digits().length())))
         * a.sign();
   }
 
@@ -1369,5 +1395,150 @@ public final class Validator {
     if (!text.matches("[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?"))
       fail(ErrorCategory.TYPE_MISMATCH, path, "expected a decimal string");
     return text;
+  }
+
+  private static final Set<String> LAYOUT_CHILDREN =
+      Set.of(
+          "actions",
+          "alert",
+          "card",
+          "carousel",
+          "container",
+          "context",
+          "data_table",
+          "data_visualization",
+          "divider",
+          "file",
+          "header",
+          "image",
+          "input",
+          "rich_text",
+          "section",
+          "table",
+          "video");
+  private static final Set<String> LAYOUT_FALLBACK =
+      Set.of("context", "divider", "header", "image", "rich_text", "section", "table", "video");
+
+  private static void layoutKeys(Map<String, Object> value, String path, Set<String> keys) {
+    for (String key : value.keySet())
+      if (!keys.contains(key))
+        fail(ErrorCategory.TYPE_MISMATCH, child(path, key), "unsupported property");
+  }
+
+  private static void layoutChoice(
+      Map<String, Object> value, String field, String path, Set<String> values) {
+    if (value.containsKey(field)
+        && !values.contains(stringAt(value.get(field), child(path, field))))
+      fail(ErrorCategory.TYPE_MISMATCH, child(path, field), "unsupported value");
+  }
+
+  private static void validateLayoutItem(Map<String, Object> value, String path) {
+    layoutKeys(value, path, Set.of("block", "width", "horizontal_alignment"));
+    require(value, "block", path);
+    if (!LAYOUT_CHILDREN.contains(objectType(objectAt(value.get("block"), child(path, "block")))))
+      fail(ErrorCategory.TYPE_MISMATCH, child(path, "block"), "unsupported layout child");
+    layoutChoice(value, "width", path, Set.of("narrow", "standard", "wide"));
+    layoutChoice(value, "horizontal_alignment", path, Set.of("start", "center", "end"));
+  }
+
+  private static void validateLayoutRow(Map<String, Object> value, String path) {
+    layoutKeys(value, path, Set.of("items"));
+    require(value, "items", path);
+    List<?> items = listAt(value.get("items"), child(path, "items"));
+    sliceLength(
+        items,
+        child(path, "items"),
+        SlackLimits.LAYOUT_ITEMS_MIN_ITEMS,
+        SlackLimits.LAYOUT_ITEMS_MAX_ITEMS);
+    int total = 0, chart = 0, wide = 0;
+    for (int i = 0; i < items.size(); i++) {
+      String itemPath = path + ".items[" + i + "]";
+      Map<String, Object> item = objectAt(items.get(i), itemPath);
+      validateLayoutItem(item, itemPath);
+      int weight =
+          "narrow".equals(item.get("width")) ? 1 : "wide".equals(item.get("width")) ? 3 : 2;
+      total += weight;
+      String type = objectType(objectAt(item.get("block"), child(itemPath, "block")));
+      if (Set.of("carousel", "data_table", "data_visualization").contains(type)) wide++;
+      if (type.equals("data_visualization")) chart = weight;
+    }
+    if (wide > 1)
+      fail(
+          ErrorCategory.INVALID_USAGE,
+          path,
+          "at most one carousel, data table, or data visualization per row");
+    if (chart > 0 && chart * 2 <= total)
+      fail(
+          ErrorCategory.INVALID_USAGE,
+          path,
+          "a data visualization requires more than half the row weight");
+  }
+
+  private static void validateLayout(Map<String, Object> value, String path) {
+    require(value, "label", path);
+    require(value, "rows", path);
+    stringLength(
+        stringAt(value.get("label"), child(path, "label")),
+        child(path, "label"),
+        SlackLimits.LAYOUT_LABEL_MIN_LENGTH,
+        SlackLimits.LAYOUT_LABEL_MAX_LENGTH);
+    List<?> rows = listAt(value.get("rows"), child(path, "rows"));
+    sliceLength(
+        rows,
+        child(path, "rows"),
+        SlackLimits.LAYOUT_ROWS_MIN_ITEMS,
+        SlackLimits.LAYOUT_ROWS_MAX_ITEMS);
+    for (int i = 0; i < rows.size(); i++)
+      validateLayoutRow(
+          objectAt(rows.get(i), path + ".rows[" + i + "]"), path + ".rows[" + i + "]");
+    if (value.containsKey("is_label_visible")
+        && !(value.get("is_label_visible") instanceof Boolean))
+      fail(ErrorCategory.TYPE_MISMATCH, child(path, "is_label_visible"), "expected a boolean");
+    layoutChoice(value, "grid_lines", path, Set.of("none", "rows", "outer"));
+    if (value.containsKey("fallback")) {
+      List<?> blocks = listAt(value.get("fallback"), child(path, "fallback"));
+      for (int i = 0; i < blocks.size(); i++)
+        if (!LAYOUT_FALLBACK.contains(
+            objectType(objectAt(blocks.get(i), path + ".fallback[" + i + "]"))))
+          fail(
+              ErrorCategory.TYPE_MISMATCH,
+              path + ".fallback[" + i + "]",
+              "unsupported fallback block");
+    }
+    validateCompositeDepth(value, path, 0, false);
+  }
+
+  private static List<?> compositeChildren(Map<String, Object> value, boolean includeFallback) {
+    String type = objectType(value);
+    if (type.equals("container")) return listAt(value.get("child_blocks"), "child_blocks");
+    if (!type.equals("layout")) return List.of();
+    List<Object> result = new java.util.ArrayList<>();
+    for (Object row : listAt(value.get("rows"), "rows"))
+      for (Object item : listAt(objectAt(row, "row").get("items"), "items"))
+        result.add(objectAt(item, "item").get("block"));
+    if (includeFallback && value.containsKey("fallback"))
+      result.addAll(listAt(value.get("fallback"), "fallback"));
+    return result;
+  }
+
+  private static void validateCompositeDepth(
+      Map<String, Object> value, String path, int depth, boolean hasLayout) {
+    String type = objectType(value);
+    hasLayout = hasLayout || type.equals("layout");
+    if (type.equals("layout") || type.equals("container")) depth++;
+    if (hasLayout && depth > 2)
+      fail(
+          ErrorCategory.INVALID_USAGE,
+          path,
+          "layout/container nesting exceeds two composite levels");
+    for (Object block : compositeChildren(value, false))
+      validateCompositeDepth(objectAt(block, path), path, depth, hasLayout);
+  }
+
+  private static boolean containsInput(Map<String, Object> block) {
+    if ("input".equals(objectType(block))) return true;
+    for (Object child : compositeChildren(block, true))
+      if (containsInput(objectAt(child, "block"))) return true;
+    return false;
   }
 }

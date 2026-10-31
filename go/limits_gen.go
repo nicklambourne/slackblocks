@@ -9,6 +9,7 @@ const (
 	limitAlertTextMaxLength                                  = 200   // alert.text.max_length
 	limitBlockIDMaxLength                                    = 255   // block_id.max_length
 	limitButtonAccessibilityLabelMaxLength                   = 75    // button.accessibility_label.max_length
+	limitButtonAgentPromptMaxLength                          = 4000  // button.agent_prompt.max_length
 	limitButtonTextMaxLength                                 = 75    // button.text.max_length
 	limitButtonURLMaxLength                                  = 3000  // button.url.max_length
 	limitButtonValueMaxLength                                = 2000  // button.value.max_length
@@ -77,6 +78,12 @@ const (
 	limitImageElementImageURLMaxLength                       = 3000  // image_element.image_url.max_length
 	limitInputHintMaxLength                                  = 2000  // input.hint.max_length
 	limitInputLabelMaxLength                                 = 2000  // input.label.max_length
+	limitLayoutItemsMaxItems                                 = 3     // layout.items.max_items
+	limitLayoutItemsMinItems                                 = 1     // layout.items.min_items
+	limitLayoutLabelMaxLength                                = 150   // layout.label.max_length
+	limitLayoutLabelMinLength                                = 1     // layout.label.min_length
+	limitLayoutRowsMaxItems                                  = 5     // layout.rows.max_items
+	limitLayoutRowsMinItems                                  = 1     // layout.rows.min_items
 	limitMarkdownTextMaxLength                               = 12000 // markdown.text.max_length
 	limitMarkdownTotalTextMaxLength                          = 12000 // markdown.total_text.max_length
 	limitMessageAttachmentsMaxItems                          = 100   // message.attachments.max_items

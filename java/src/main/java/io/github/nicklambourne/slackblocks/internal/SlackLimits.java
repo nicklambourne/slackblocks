@@ -18,6 +18,9 @@ public final class SlackLimits {
   /** {@code button.accessibility_label.max_length} */
   public static final int BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH = 75;
 
+  /** {@code button.agent_prompt.max_length} */
+  public static final int BUTTON_AGENT_PROMPT_MAX_LENGTH = 4000;
+
   /** {@code button.text.max_length} */
   public static final int BUTTON_TEXT_MAX_LENGTH = 75;
 
@@ -221,6 +224,24 @@ public final class SlackLimits {
 
   /** {@code input.label.max_length} */
   public static final int INPUT_LABEL_MAX_LENGTH = 2000;
+
+  /** {@code layout.items.max_items} */
+  public static final int LAYOUT_ITEMS_MAX_ITEMS = 3;
+
+  /** {@code layout.items.min_items} */
+  public static final int LAYOUT_ITEMS_MIN_ITEMS = 1;
+
+  /** {@code layout.label.max_length} */
+  public static final int LAYOUT_LABEL_MAX_LENGTH = 150;
+
+  /** {@code layout.label.min_length} */
+  public static final int LAYOUT_LABEL_MIN_LENGTH = 1;
+
+  /** {@code layout.rows.max_items} */
+  public static final int LAYOUT_ROWS_MAX_ITEMS = 5;
+
+  /** {@code layout.rows.min_items} */
+  public static final int LAYOUT_ROWS_MIN_ITEMS = 1;
 
   /** {@code markdown.text.max_length} */
   public static final int MARKDOWN_TEXT_MAX_LENGTH = 12000;

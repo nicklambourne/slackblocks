@@ -26,6 +26,13 @@ cargo = load("cargo_release", ROOT / "rust/bin/release.py")
 SOURCE_VERSION = release.rust_package(ROOT)["version"]
 VERSION = "2.6.0"
 FILES = [
+    "haskell/integrations/transport.cabal",
+    "php/conformance/api-inventory.json",
+    "haskell/slackblocks.cabal",
+    "haskell/release.json",
+    "haskell/src/Slackblocks/Models.hs",
+    "haskell/conformance/skiplist.txt",
+    "docs/examples/multiselect-compat/rust/Cargo.lock",
     "elixir/mix.exs",
     "elixir/mix.lock",
     "elixir/release.json",
@@ -93,6 +100,10 @@ class ReleaseTests(unittest.TestCase):
         elixir_settings = json.loads(elixir_policy.read_text())
         elixir_settings.update(enabled=True, owner="maintainer")
         elixir_policy.write_text(json.dumps(elixir_settings))
+        haskell_policy = self.root / "haskell/release.json"
+        haskell_settings = json.loads(haskell_policy.read_text())
+        haskell_settings.update(enabled=True, owner="maintainer")
+        haskell_policy.write_text(json.dumps(haskell_settings))
         manifest = self.root / "rust/Cargo.toml"
         text = re.sub(
             r"^publish = .+$",
@@ -163,7 +174,7 @@ class ReleaseTests(unittest.TestCase):
             VERSION,
         )
 
-    def test_all_nine_publishers_require_their_own_tag(self):
+    def test_all_ten_publishers_require_their_own_tag(self):
         self.tags()
         for language, prefix in release.LANGUAGES.items():
             with self.subTest(language=language):
@@ -217,7 +228,11 @@ class ReleaseTests(unittest.TestCase):
                 self.subTest(event=event),
                 patch.dict(os.environ, {"GITHUB_EVENT_NAME": event}, clear=True),
                 patch("sys.argv", ["verify-release.py", "validate"]),
-                patch.object(release, "__file__", str(self.root / ".github/scripts/verify-release.py")),
+                patch.object(
+                    release,
+                    "__file__",
+                    str(self.root / ".github/scripts/verify-release.py"),
+                ),
                 patch("sys.stdout", new_callable=io.StringIO) as output,
             ):
                 release.main()
@@ -229,13 +244,19 @@ class ReleaseTests(unittest.TestCase):
         with (
             patch.dict(os.environ, {"GITHUB_EVENT_NAME": "push"}, clear=True),
             patch("sys.argv", ["verify-release.py", "validate"]),
-            patch.object(release, "__file__", str(self.root / ".github/scripts/verify-release.py")),
+            patch.object(
+                release,
+                "__file__",
+                str(self.root / ".github/scripts/verify-release.py"),
+            ),
             self.assertRaisesRegex(SystemExit, "versions differ"),
         ):
             release.main()
 
     def test_coordinator_still_rejects_push_events(self):
-        with self.assertRaisesRegex(release.ReleaseError, "Unsupported coordinator event"):
+        with self.assertRaisesRegex(
+            release.ReleaseError, "Unsupported coordinator event"
+        ):
             release.coordinator(self.root, VERSION, "push", "refs/heads/master")
 
     def test_requested_version_mismatch(self):
@@ -246,6 +267,21 @@ class ReleaseTests(unittest.TestCase):
         self.edit("rust/Cargo.toml", f'version = "{VERSION}"', 'version = "9.9.9"')
         with self.assertRaisesRegex(release.ReleaseError, "versions differ"):
             release.validate(self.root, VERSION)
+
+    def test_consumer_and_inventory_versions_must_match(self):
+        for name in (
+            "haskell/integrations/transport.cabal",
+            "php/conformance/api-inventory.json",
+        ):
+            path = self.root / name
+            original = path.read_text()
+            path.write_text(original.replace(VERSION, "9.9.9"))
+            with (
+                self.subTest(name=name),
+                self.assertRaisesRegex(release.ReleaseError, "versions differ"),
+            ):
+                release.validate(self.root)
+            path.write_text(original)
 
     def test_own_lockfiles_must_match(self):
         for name in (
@@ -266,7 +302,9 @@ class ReleaseTests(unittest.TestCase):
             path.write_text(original)
 
     def test_matching_go_major_three(self):
-        for name in FILES + [language + "/CHANGELOG.md" for language in release.LANGUAGES]:
+        for name in FILES + [
+            language + "/CHANGELOG.md" for language in release.LANGUAGES
+        ]:
             path = self.root / name
             path.write_text(path.read_text().replace(VERSION, "3.0.0"))
         self.edit("go/go.mod", "/go/v2", "/go/v3")
@@ -450,6 +488,7 @@ class WorkflowTests(unittest.TestCase):
             "ruby": "publish-rubygems",
             "php": "publish-packagist",
             "elixir": "publish-hex",
+            "haskell": "publish-hackage",
         }
         for language, name in names.items():
             text = (ROOT / f".github/workflows/{name}.yml").read_text()

@@ -1,0 +1,1271 @@
+{
+  "spec_version": "1.5.0",
+  "cases": [
+    {
+      "id": "text-empty",
+      "category": "length-exceeded",
+      "constraint": "text.min_length",
+      "description": "A text object with an empty value must be rejected"
+    },
+    {
+      "id": "text-too-long",
+      "category": "length-exceeded",
+      "constraint": "text.max_length",
+      "description": "A text object longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "button-action-id-too-long",
+      "category": "length-exceeded",
+      "constraint": "action_id.max_length",
+      "description": "An action ID longer than 255 characters must be rejected"
+    },
+    {
+      "id": "button-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.text.max_length",
+      "description": "Button text longer than 75 characters must be rejected"
+    },
+    {
+      "id": "button-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.url.max_length",
+      "description": "A button URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "button-value-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.value.max_length",
+      "description": "A button value longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "confirmation-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "confirmation.title.max_length",
+      "description": "A confirmation title longer than 100 characters must be rejected"
+    },
+    {
+      "id": "confirmation-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "confirmation.text.max_length",
+      "description": "Confirmation text longer than 300 characters must be rejected"
+    },
+    {
+      "id": "confirmation-confirm-too-long",
+      "category": "length-exceeded",
+      "constraint": "confirmation.confirm.max_length",
+      "description": "Confirmation button text longer than 30 characters must be rejected"
+    },
+    {
+      "id": "confirmation-deny-too-long",
+      "category": "length-exceeded",
+      "constraint": "confirmation.deny.max_length",
+      "description": "Denial button text longer than 30 characters must be rejected"
+    },
+    {
+      "id": "option-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "option.text.max_length",
+      "description": "Option text longer than 75 characters must be rejected"
+    },
+    {
+      "id": "option-value-too-long",
+      "category": "length-exceeded",
+      "constraint": "option.value.max_length",
+      "description": "An option value longer than 150 characters must be rejected"
+    },
+    {
+      "id": "option-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "option.url.max_length",
+      "description": "An option URL longer than 3000 Unicode code points must be rejected (exercised with astral-plane emoji)"
+    },
+    {
+      "id": "option-description-too-long",
+      "category": "length-exceeded",
+      "constraint": "option.description.max_length",
+      "description": "An option description longer than 75 characters must be rejected"
+    },
+    {
+      "id": "option-group-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "option_group.label.max_length",
+      "description": "An option-group label longer than 75 characters must be rejected"
+    },
+    {
+      "id": "option-group-empty",
+      "category": "length-exceeded",
+      "constraint": "option_group.options.min_items",
+      "description": "An option group with no options must be rejected"
+    },
+    {
+      "id": "option-group-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "option_group.options.max_items",
+      "description": "An option group with more than 100 options must be rejected"
+    },
+    {
+      "id": "select-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "select.placeholder.max_length",
+      "description": "A select placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "plain-text-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "plain_text_input.placeholder.max_length",
+      "description": "A plain-text input placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "email-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "email_input.placeholder.max_length",
+      "description": "A email input placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "url-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "url_input.placeholder.max_length",
+      "description": "A URL input placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "number-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "number_input.placeholder.max_length",
+      "description": "A number input placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "date-picker-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "date_picker.placeholder.max_length",
+      "description": "A date picker placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "time-picker-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "time_picker.placeholder.max_length",
+      "description": "A time picker placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "rich-text-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "rich_text_input.placeholder.max_length",
+      "description": "A rich text input placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "select-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "select.options.max_items",
+      "description": "A static select with more than 100 options must be rejected"
+    },
+    {
+      "id": "select-too-many-option-groups",
+      "category": "length-exceeded",
+      "constraint": "select.option_groups.max_items",
+      "description": "A static select with more than 100 option groups must be rejected"
+    },
+    {
+      "id": "overflow-empty",
+      "category": "length-exceeded",
+      "constraint": "overflow.options.min_items",
+      "description": "An overflow menu with no options must be rejected"
+    },
+    {
+      "id": "overflow-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "overflow.options.max_items",
+      "description": "An overflow menu with more than five options must be rejected"
+    },
+    {
+      "id": "checkboxes-empty",
+      "category": "length-exceeded",
+      "constraint": "checkboxes.options.min_items",
+      "description": "A checkbox group with no options must be rejected"
+    },
+    {
+      "id": "checkboxes-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "checkboxes.options.max_items",
+      "description": "A checkbox group with more than ten options must be rejected"
+    },
+    {
+      "id": "radio-buttons-empty",
+      "category": "length-exceeded",
+      "constraint": "radio_buttons.options.min_items",
+      "description": "A radio button group with no options must be rejected"
+    },
+    {
+      "id": "radio-buttons-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "radio_buttons.options.max_items",
+      "description": "A radio button group with more than ten options must be rejected"
+    },
+    {
+      "id": "table-too-many-rows",
+      "category": "length-exceeded",
+      "constraint": "table.rows.max_items",
+      "description": "A table with more than 100 rows must be rejected"
+    },
+    {
+      "id": "table-too-many-columns",
+      "category": "length-exceeded",
+      "constraint": "table.columns.max_items",
+      "description": "A table row with more than 20 cells must be rejected"
+    },
+    {
+      "id": "file-input-max-files-too-small",
+      "category": "out-of-range",
+      "constraint": "file_input.max_files.min",
+      "description": "File input max files below one must be rejected"
+    },
+    {
+      "id": "file-input-max-files-too-large",
+      "category": "out-of-range",
+      "constraint": "file_input.max_files.max",
+      "description": "File input max files above 10 must be rejected"
+    },
+    {
+      "id": "dispatch-action-no-triggers",
+      "category": "length-exceeded",
+      "constraint": "dispatch_action_configuration.trigger_actions_on.min_items",
+      "description": "A dispatch action configuration with no triggers must be rejected"
+    },
+    {
+      "id": "dispatch-action-missing-triggers",
+      "category": "missing-required",
+      "constraint": "dispatch_action_configuration.trigger_actions_on.required",
+      "description": "A dispatch action configuration without trigger_actions_on must be rejected"
+    },
+    {
+      "id": "dispatch-action-too-many-triggers",
+      "category": "length-exceeded",
+      "constraint": "dispatch_action_configuration.trigger_actions_on.max_items",
+      "description": "A dispatch action configuration with more than two triggers must be rejected"
+    },
+    {
+      "id": "plain-text-input-max-length-too-large",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.max_length.max",
+      "description": "Plain-text input max length above 3000 must be rejected"
+    },
+    {
+      "id": "actions-too-many-elements",
+      "category": "length-exceeded",
+      "constraint": "actions.elements.max_items",
+      "description": "An actions block with more than 25 elements must be rejected"
+    },
+    {
+      "id": "context-too-many-elements",
+      "category": "length-exceeded",
+      "constraint": "context.elements.max_items",
+      "description": "A context block with more than 10 elements must be rejected"
+    },
+    {
+      "id": "header-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "header.text.max_length",
+      "description": "Header text longer than 150 characters must be rejected"
+    },
+    {
+      "id": "image-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "image.image_url.max_length",
+      "description": "An image URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "image-alt-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "image.alt_text.max_length",
+      "description": "Image alternative text longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "input-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "input.label.max_length",
+      "description": "An input-block label longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "input-hint-too-long",
+      "category": "length-exceeded",
+      "constraint": "input.hint.max_length",
+      "description": "Input-block hint text longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "markdown-too-long",
+      "category": "length-exceeded",
+      "constraint": "markdown.text.max_length",
+      "description": "Markdown block text longer than 12000 characters must be rejected"
+    },
+    {
+      "id": "section-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "section.text.max_length",
+      "description": "Section text longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "section-too-many-fields",
+      "category": "length-exceeded",
+      "constraint": "section.fields.max_items",
+      "description": "A section with more than 10 fields must be rejected"
+    },
+    {
+      "id": "section-field-too-long",
+      "category": "length-exceeded",
+      "constraint": "section.fields.item_max_length",
+      "description": "A section field longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "video-alt-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.alt_text.max_length",
+      "description": "Video alternative text longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "video-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.title.max_length",
+      "description": "A video title longer than 200 characters must be rejected"
+    },
+    {
+      "id": "video-author-name-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.author_name.max_length",
+      "description": "A video author name longer than 50 characters must be rejected"
+    },
+    {
+      "id": "video-description-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.description.max_length",
+      "description": "A video description longer than 200 characters must be rejected"
+    },
+    {
+      "id": "video-provider-name-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.provider_name.max_length",
+      "description": "A video provider name longer than 50 characters must be rejected"
+    },
+    {
+      "id": "message-channel-empty",
+      "category": "length-exceeded",
+      "constraint": "message.channel.min_length",
+      "description": "A Web API message must name a non-empty destination channel"
+    },
+    {
+      "id": "message-too-many-blocks",
+      "category": "length-exceeded",
+      "constraint": "message.blocks.max_items",
+      "description": "A message with more than 50 blocks must be rejected"
+    },
+    {
+      "id": "message-too-many-attachments",
+      "category": "length-exceeded",
+      "constraint": "message.attachments.max_items",
+      "description": "A message with more than 100 attachments must be rejected"
+    },
+    {
+      "id": "message-invalid-block-surface",
+      "category": "type-mismatch",
+      "constraint": "message.blocks.surface",
+      "description": "A message cannot contain a modal-only alert block"
+    },
+    {
+      "id": "modal-invalid-block-surface",
+      "category": "type-mismatch",
+      "constraint": "view.modal.blocks.surface",
+      "description": "A modal cannot contain a message-only markdown block"
+    },
+    {
+      "id": "home-invalid-block-surface",
+      "category": "type-mismatch",
+      "constraint": "view.home.blocks.surface",
+      "description": "An App Home tab cannot contain a modal-only alert block"
+    },
+    {
+      "id": "modal-input-requires-submit",
+      "category": "missing-required",
+      "constraint": "view.modal.submit_for_input",
+      "description": "A modal containing an input block must define submit text"
+    },
+    {
+      "id": "view-too-many-blocks",
+      "category": "length-exceeded",
+      "constraint": "view.blocks.max_items",
+      "description": "A view with more than 100 blocks must be rejected"
+    },
+    {
+      "id": "view-private-metadata-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.private_metadata.max_length",
+      "description": "View private metadata longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "view-callback-id-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.callback_id.max_length",
+      "description": "A view callback ID longer than 255 characters must be rejected"
+    },
+    {
+      "id": "view-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.title.max_length",
+      "description": "A modal title longer than 24 characters must be rejected"
+    },
+    {
+      "id": "view-close-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.close.max_length",
+      "description": "Modal close text longer than 24 characters must be rejected"
+    },
+    {
+      "id": "view-submit-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.submit.max_length",
+      "description": "Modal submit text longer than 24 characters must be rejected"
+    },
+    {
+      "id": "section-missing-content",
+      "category": "missing-required",
+      "constraint": "section.content",
+      "description": "A section with neither text nor fields must be rejected"
+    },
+    {
+      "id": "section-empty-fields",
+      "category": "missing-required",
+      "constraint": "section.fields.non_empty",
+      "description": "An empty fields array does not satisfy a section's content requirement"
+    },
+    {
+      "id": "static-select-options-and-groups",
+      "category": "mutually-exclusive",
+      "constraint": "static_select.choice_source",
+      "description": "A static select cannot define options and option groups together"
+    },
+    {
+      "id": "image-url-and-slack-file",
+      "category": "mutually-exclusive",
+      "constraint": "image.source",
+      "description": "An image element cannot define an image URL and Slack file together"
+    },
+    {
+      "id": "number-input-inverted-range",
+      "category": "out-of-range",
+      "constraint": "number_input.range",
+      "description": "A number input minimum cannot exceed its maximum"
+    },
+    {
+      "id": "context-invalid-element",
+      "category": "type-mismatch",
+      "constraint": "context.elements",
+      "description": "A context block may contain only text and image elements"
+    },
+    {
+      "id": "input-invalid-element",
+      "category": "type-mismatch",
+      "constraint": "input.element",
+      "description": "An input block must contain an input-compatible element"
+    },
+    {
+      "id": "block-id-too-long",
+      "category": "length-exceeded",
+      "constraint": "block_id.max_length",
+      "description": "A block ID longer than 255 characters must be rejected"
+    },
+    {
+      "id": "button-accessibility-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.accessibility_label.max_length",
+      "description": "A button accessibility label longer than 75 characters must be rejected"
+    },
+    {
+      "id": "workflow-button-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "workflow_button.text.max_length",
+      "description": "A workflow button with text longer than 75 characters must be rejected"
+    },
+    {
+      "id": "workflow-button-accessibility-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "workflow_button.accessibility_label.max_length",
+      "description": "A workflow button accessibility label longer than 75 characters must be rejected"
+    },
+    {
+      "id": "alert-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "alert.text.max_length",
+      "description": "Alert text longer than 200 characters must be rejected"
+    },
+    {
+      "id": "card-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "card.title.max_length",
+      "description": "A card title longer than 150 characters must be rejected"
+    },
+    {
+      "id": "card-subtitle-too-long",
+      "category": "length-exceeded",
+      "constraint": "card.subtitle.max_length",
+      "description": "A card subtitle longer than 150 characters must be rejected"
+    },
+    {
+      "id": "card-body-too-long",
+      "category": "length-exceeded",
+      "constraint": "card.body.max_length",
+      "description": "A card body longer than 200 characters must be rejected"
+    },
+    {
+      "id": "card-too-many-actions",
+      "category": "length-exceeded",
+      "constraint": "card.actions.max_items",
+      "description": "A card with more than three actions must be rejected"
+    },
+    {
+      "id": "card-subtext-too-long",
+      "category": "length-exceeded",
+      "constraint": "card.subtext.max_length",
+      "description": "Card subtext longer than 200 characters must be rejected"
+    },
+    {
+      "id": "carousel-empty",
+      "category": "length-exceeded",
+      "constraint": "carousel.elements.min_items",
+      "description": "A carousel without cards must be rejected"
+    },
+    {
+      "id": "carousel-too-many-cards",
+      "category": "length-exceeded",
+      "constraint": "carousel.elements.max_items",
+      "description": "A carousel with more than ten cards must be rejected"
+    },
+    {
+      "id": "container-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "container.title.max_length",
+      "description": "A container title longer than 150 characters must be rejected"
+    },
+    {
+      "id": "container-subtitle-too-long",
+      "category": "length-exceeded",
+      "constraint": "container.subtitle.max_length",
+      "description": "A container subtitle longer than 150 characters must be rejected"
+    },
+    {
+      "id": "container-too-many-child-blocks",
+      "category": "length-exceeded",
+      "constraint": "container.child_blocks.max_items",
+      "description": "A container with more than ten child blocks must be rejected"
+    },
+    {
+      "id": "context-actions-too-many-elements",
+      "category": "length-exceeded",
+      "constraint": "context_actions.elements.max_items",
+      "description": "A context-actions block with more than five elements must be rejected"
+    },
+    {
+      "id": "feedback-button-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "feedback_button.text.max_length",
+      "description": "Feedback button text longer than 75 characters must be rejected"
+    },
+    {
+      "id": "feedback-button-value-too-long",
+      "category": "length-exceeded",
+      "constraint": "feedback_button.value.max_length",
+      "description": "A feedback button value longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "feedback-button-accessibility-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "feedback_button.accessibility_label.max_length",
+      "description": "A feedback button accessibility label longer than 75 characters must be rejected"
+    },
+    {
+      "id": "icon-button-too-many-visible-users",
+      "category": "length-exceeded",
+      "constraint": "icon_button.visible_to_user_ids.max_items",
+      "description": "An icon button visible to more than ten users must be rejected"
+    },
+    {
+      "id": "icon-button-value-too-long",
+      "category": "length-exceeded",
+      "constraint": "icon_button.value.max_length",
+      "description": "An icon button value longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "icon-button-accessibility-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "icon_button.accessibility_label.max_length",
+      "description": "An icon button accessibility label longer than 75 characters must be rejected"
+    },
+    {
+      "id": "data-table-too-few-rows",
+      "category": "length-exceeded",
+      "constraint": "data_table.rows.min_items",
+      "description": "A data table with fewer than two rows must be rejected"
+    },
+    {
+      "id": "data-table-too-many-rows",
+      "category": "length-exceeded",
+      "constraint": "data_table.rows.max_items",
+      "description": "A data table with more than 201 rows must be rejected"
+    },
+    {
+      "id": "data-table-too-few-columns",
+      "category": "length-exceeded",
+      "constraint": "data_table.columns.min_items",
+      "description": "A data table with empty rows must be rejected"
+    },
+    {
+      "id": "data-table-too-many-columns",
+      "category": "length-exceeded",
+      "constraint": "data_table.columns.max_items",
+      "description": "A data table with more than 20 columns must be rejected"
+    },
+    {
+      "id": "data-table-page-size-too-small",
+      "category": "out-of-range",
+      "constraint": "data_table.page_size.min",
+      "description": "A data table page size below one must be rejected"
+    },
+    {
+      "id": "data-table-page-size-too-large",
+      "category": "out-of-range",
+      "constraint": "data_table.page_size.max",
+      "description": "A data table page size above 100 must be rejected"
+    },
+    {
+      "id": "data-table-cell-text-empty",
+      "category": "length-exceeded",
+      "constraint": "data_table.cell_text.min_length",
+      "description": "An empty raw data-table cell must be rejected"
+    },
+    {
+      "id": "data-table-content-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_table.content.max_length",
+      "description": "Data-table cell text exceeding 20000 total characters must be rejected"
+    },
+    {
+      "id": "data-visualization-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.title.max_length",
+      "description": "A data-visualization title longer than 50 characters must be rejected"
+    },
+    {
+      "id": "pie-chart-empty",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.segments.min_items",
+      "description": "A pie chart without segments must be rejected"
+    },
+    {
+      "id": "pie-chart-too-many-segments",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.segments.max_items",
+      "description": "A pie chart with more than 12 segments must be rejected"
+    },
+    {
+      "id": "chart-segment-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.segment.label.max_length",
+      "description": "A chart segment label longer than 20 characters must be rejected"
+    },
+    {
+      "id": "chart-segment-value-not-positive",
+      "category": "out-of-range",
+      "constraint": "data_visualization.segment.value.exclusive_min",
+      "description": "A non-positive pie segment value must be rejected"
+    },
+    {
+      "id": "chart-series-empty",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.series.min_items",
+      "description": "An axis-based chart without a series must be rejected"
+    },
+    {
+      "id": "chart-duplicate-point-labels",
+      "category": "invalid-usage",
+      "constraint": "data_visualization.series.axis_category_coverage",
+      "description": "A chart series must contain exactly one point for each axis category"
+    },
+    {
+      "id": "chart-too-many-series",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.series.max_items",
+      "description": "An axis-based chart with more than 12 series must be rejected"
+    },
+    {
+      "id": "data-series-name-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.series_name.max_length",
+      "description": "A data-series name longer than 20 characters must be rejected"
+    },
+    {
+      "id": "data-series-empty",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.data.min_items",
+      "description": "A data series without points must be rejected"
+    },
+    {
+      "id": "data-series-too-many-points",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.data.max_items",
+      "description": "A data series with more than 20 points must be rejected"
+    },
+    {
+      "id": "data-point-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.point_label.max_length",
+      "description": "A data-point label longer than 20 characters must be rejected"
+    },
+    {
+      "id": "axis-categories-empty",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.categories.min_items",
+      "description": "An axis configuration without categories must be rejected"
+    },
+    {
+      "id": "axis-too-many-categories",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.categories.max_items",
+      "description": "An axis configuration with more than 20 categories must be rejected"
+    },
+    {
+      "id": "axis-category-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.category_label.max_length",
+      "description": "An axis category label longer than 20 characters must be rejected"
+    },
+    {
+      "id": "axis-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.axis_label.max_length",
+      "description": "An axis label longer than 50 characters must be rejected"
+    },
+    {
+      "id": "plain-text-input-min-length-negative",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.min_length.min",
+      "description": "A plain-text input min_length below 0 must be rejected"
+    },
+    {
+      "id": "plain-text-input-min-length-too-large",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.min_length.max",
+      "description": "A plain-text input min_length above 3000 must be rejected"
+    },
+    {
+      "id": "plain-text-input-max-length-too-small",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.max_length.min",
+      "description": "A plain-text input max_length below 1 must be rejected"
+    },
+    {
+      "id": "rich-text-input-min-lines-too-small",
+      "category": "out-of-range",
+      "constraint": "rich_text_input.min_lines.min",
+      "description": "A rich text input min_lines below 1 must be rejected"
+    },
+    {
+      "id": "rich-text-input-min-lines-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_input.min_lines.max",
+      "description": "A rich text input min_lines above 100 must be rejected"
+    },
+    {
+      "id": "rich-text-input-max-lines-too-small",
+      "category": "out-of-range",
+      "constraint": "rich_text_input.max_lines.min",
+      "description": "A rich text input max_lines below 1 must be rejected"
+    },
+    {
+      "id": "rich-text-input-max-lines-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_input.max_lines.max",
+      "description": "A rich text input max_lines above 100 must be rejected"
+    },
+    {
+      "id": "multi-select-max-selected-items-too-small",
+      "category": "out-of-range",
+      "constraint": "multi_select.max_selected_items.min",
+      "description": "A multi-select max_selected_items below 1 must be rejected"
+    },
+    {
+      "id": "conversation-filter-include-empty",
+      "category": "length-exceeded",
+      "constraint": "conversation_filter.include.min_items",
+      "description": "A conversation filter with an empty include list must be rejected"
+    },
+    {
+      "id": "conversation-filter-unknown-include",
+      "category": "type-mismatch",
+      "constraint": "conversation_filter.include.values",
+      "description": "A conversation filter including a type other than im, mpim, private, or public must be rejected"
+    },
+    {
+      "id": "workflow-button-missing-action-id",
+      "category": "missing-required",
+      "constraint": "workflow_button.action_id.required",
+      "description": "A workflow button without an action_id must be rejected"
+    },
+    {
+      "id": "number-input-missing-decimal-flag",
+      "category": "missing-required",
+      "constraint": "number_input.is_decimal_allowed.required",
+      "description": "A number input without is_decimal_allowed must be rejected"
+    },
+    {
+      "id": "slack-icon-missing-name",
+      "category": "missing-required",
+      "constraint": "slack_icon.name.required",
+      "description": "A Slack icon without a name must be rejected"
+    },
+    {
+      "id": "slack-file-id-malformed",
+      "category": "type-mismatch",
+      "constraint": "slack_file.id.pattern",
+      "description": "A Slack file ID that does not match ^F[A-Z0-9]{8,}$ must be rejected"
+    },
+    {
+      "id": "image-element-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "image_element.image_url.max_length",
+      "description": "An image element URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "image-element-alt-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "image_element.alt_text.max_length",
+      "description": "Image element alternative text longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "image-block-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "image.title.max_length",
+      "description": "An image block title longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "image-block-url-and-slack-file",
+      "category": "mutually-exclusive",
+      "constraint": "image_block.source",
+      "description": "An image block with both image_url and slack_file must be rejected"
+    },
+    {
+      "id": "image-block-missing-source",
+      "category": "missing-required",
+      "constraint": "image_block.source.required",
+      "description": "An image block with neither image_url nor slack_file must be rejected"
+    },
+    {
+      "id": "container-no-child-blocks",
+      "category": "length-exceeded",
+      "constraint": "container.child_blocks.min_items",
+      "description": "A container with no child blocks must be rejected"
+    },
+    {
+      "id": "table-too-many-column-settings",
+      "category": "length-exceeded",
+      "constraint": "table.column_settings.max_items",
+      "description": "A table with more than 20 column settings must be rejected"
+    },
+    {
+      "id": "data-table-row-header-index-negative",
+      "category": "out-of-range",
+      "constraint": "data_table.row_header_column_index.min",
+      "description": "A data table row_header_column_index below 0 must be rejected"
+    },
+    {
+      "id": "data-table-total-content-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_table.total_content.max_length",
+      "description": "Data table cell text exceeding 20000 characters across a message must be rejected"
+    },
+    {
+      "id": "markdown-total-too-long",
+      "category": "length-exceeded",
+      "constraint": "markdown.total_text.max_length",
+      "description": "Markdown block text exceeding 12000 characters across a payload must be rejected"
+    },
+    {
+      "id": "plan-missing-tasks",
+      "category": "missing-required",
+      "constraint": "plan.tasks.required",
+      "description": "A plan block without tasks must be rejected"
+    },
+    {
+      "id": "plan-too-many-tasks",
+      "category": "length-exceeded",
+      "constraint": "plan.tasks.max_items",
+      "description": "A plan block with more than 50 tasks must be rejected"
+    },
+    {
+      "id": "plan-duplicate-task-ids",
+      "category": "invalid-usage",
+      "constraint": "plan.tasks.unique_task_id",
+      "description": "A plan block whose tasks share a task_id must be rejected"
+    },
+    {
+      "id": "task-card-missing-status",
+      "category": "missing-required",
+      "constraint": "task_card.status.required",
+      "description": "A task card without a status must be rejected"
+    },
+    {
+      "id": "task-card-pending-status",
+      "category": "type-mismatch",
+      "constraint": "task_card.status.standalone",
+      "description": "A standalone task card with pending status must be rejected; pending is only valid for plan tasks"
+    },
+    {
+      "id": "rich-text-list-indent-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.indent.min",
+      "description": "A rich text list indent below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-list-indent-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.indent.max",
+      "description": "A rich text list indent above 8 must be rejected"
+    },
+    {
+      "id": "rich-text-list-offset-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.offset.min",
+      "description": "A rich text list offset below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-list-border-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.border.min",
+      "description": "A rich text list border below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-list-border-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.border.max",
+      "description": "A rich text list border above 1 must be rejected"
+    },
+    {
+      "id": "rich-text-quote-border-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_quote.border.min",
+      "description": "A rich text quote border below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-quote-border-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_quote.border.max",
+      "description": "A rich text quote border above 1 must be rejected"
+    },
+    {
+      "id": "rich-text-preformatted-border-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_preformatted.border.min",
+      "description": "A preformatted rich text border below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-preformatted-border-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_preformatted.border.max",
+      "description": "A preformatted rich text border above 1 must be rejected"
+    },
+    {
+      "id": "video-thumbnail-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.thumbnail_url.max_length",
+      "description": "A video thumbnail URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "video-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.video_url.max_length",
+      "description": "A video URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "video-title-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.title_url.max_length",
+      "description": "A video title URL longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "video-provider-icon-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.provider_icon_url.max_length",
+      "description": "A video provider icon URL longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "view-external-id-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.external_id.max_length",
+      "description": "A view external_id longer than 255 characters must be rejected"
+    },
+    {
+      "id": "attachment-missing-blocks",
+      "category": "missing-required",
+      "constraint": "attachment.blocks.required",
+      "description": "An attachment without blocks must be rejected"
+    },
+    {
+      "id": "number-bound-inverted-large-integer",
+      "category": "out-of-range",
+      "constraint": "number_input.bounds.inverted_large_integer",
+      "description": "Number bound decimal contract rejects inverted-large-integer"
+    },
+    {
+      "id": "number-bound-inverted-long-fraction",
+      "category": "out-of-range",
+      "constraint": "number_input.bounds.inverted_long_fraction",
+      "description": "Number bound decimal contract rejects inverted-long-fraction"
+    },
+    {
+      "id": "number-bound-hex",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.hex",
+      "description": "Number bound decimal contract rejects hex"
+    },
+    {
+      "id": "number-bound-underscore",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.underscore",
+      "description": "Number bound decimal contract rejects underscore"
+    },
+    {
+      "id": "number-bound-leading-space",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.leading_space",
+      "description": "Number bound decimal contract rejects leading-space"
+    },
+    {
+      "id": "number-bound-trailing-space",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.trailing_space",
+      "description": "Number bound decimal contract rejects trailing-space"
+    },
+    {
+      "id": "number-bound-nan",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.nan",
+      "description": "Number bound decimal contract rejects nan"
+    },
+    {
+      "id": "number-bound-infinity",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.infinity",
+      "description": "Number bound decimal contract rejects infinity"
+    },
+    {
+      "id": "external-multi-focus-false",
+      "category": "invalid-usage",
+      "constraint": "external_multi_select.focus_on_load.unsupported.false",
+      "description": "External multi-select must omit focus_on_load, including explicit false"
+    },
+    {
+      "id": "external-multi-focus-true",
+      "category": "invalid-usage",
+      "constraint": "external_multi_select.focus_on_load.unsupported.true",
+      "description": "External multi-select must omit focus_on_load, including explicit true"
+    },
+    {
+      "id": "message-too-many-charts",
+      "category": "length-exceeded",
+      "constraint": "message.data_visualizations.max_items",
+      "description": "A message with three data visualization blocks must be rejected after native composition"
+    },
+    {
+      "id": "plain-text-input-inverted-range",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.ordered_bounds",
+      "description": "Supplied minimum input length cannot exceed the supplied maximum"
+    },
+    {
+      "id": "external-query-negative",
+      "category": "out-of-range",
+      "constraint": "select.min_query_length.min",
+      "description": "External query negative"
+    },
+    {
+      "id": "external-multi-query-negative",
+      "category": "out-of-range",
+      "constraint": "multi_external_select.nonnegative_query",
+      "description": "External multi query negative"
+    },
+    {
+      "id": "date-picker-invalid-format",
+      "category": "type-mismatch",
+      "constraint": "date_picker.initial_date.format",
+      "description": "Date picker invalid format"
+    },
+    {
+      "id": "time-picker-invalid-format",
+      "category": "type-mismatch",
+      "constraint": "time_picker.initial_time.format",
+      "description": "Time picker invalid format"
+    },
+    {
+      "id": "time-picker-invalid-range",
+      "category": "type-mismatch",
+      "constraint": "time_picker.initial_time.range",
+      "description": "Time picker invalid range"
+    },
+    {
+      "id": "static-select-empty-options",
+      "category": "length-exceeded",
+      "constraint": "select.options.min_items",
+      "description": "Static select empty options"
+    },
+    {
+      "id": "static-multi-select-empty-options",
+      "category": "length-exceeded",
+      "constraint": "multi_static_select.options.nonempty",
+      "description": "Static multi select empty options"
+    },
+    {
+      "id": "static-select-empty-groups",
+      "category": "length-exceeded",
+      "constraint": "select.option_groups.min_items",
+      "description": "Static select empty groups"
+    },
+    {
+      "id": "static-multi-select-empty-groups",
+      "category": "length-exceeded",
+      "constraint": "multi_static_select.option_groups.nonempty",
+      "description": "Static multi select empty groups"
+    },
+    {
+      "id": "button-agent-prompt-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.agent_prompt.max_length",
+      "description": "A button prompt longer than 4000 Unicode code points must be rejected"
+    },
+    {
+      "id": "button-agent-prompt-display-without-prompt",
+      "category": "missing-required",
+      "constraint": "button.agent_prompt.required_with_display",
+      "description": "A supplied prompt display, including an empty string, requires an agent prompt"
+    },
+    {
+      "id": "layout-label-empty",
+      "category": "length-exceeded",
+      "constraint": "layout.label.min_length",
+      "description": "Layout labels must not be empty"
+    },
+    {
+      "id": "layout-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "layout.label.max_length",
+      "description": "Layout labels cannot exceed 150 Unicode code points"
+    },
+    {
+      "id": "layout-rows-empty",
+      "category": "length-exceeded",
+      "constraint": "layout.rows.min_items",
+      "description": "A layout requires at least one row"
+    },
+    {
+      "id": "layout-too-many-rows",
+      "category": "length-exceeded",
+      "constraint": "layout.rows.max_items",
+      "description": "A layout cannot have more than five rows"
+    },
+    {
+      "id": "layout-items-empty",
+      "category": "length-exceeded",
+      "constraint": "layout.items.min_items",
+      "description": "A layout row requires at least one item"
+    },
+    {
+      "id": "layout-too-many-items",
+      "category": "length-exceeded",
+      "constraint": "layout.items.max_items",
+      "description": "A layout row cannot have more than three items"
+    },
+    {
+      "id": "layout-markdown-child",
+      "category": "type-mismatch",
+      "constraint": "layout.child.role",
+      "description": "Markdown is not a layout child"
+    },
+    {
+      "id": "layout-direct-child",
+      "category": "type-mismatch",
+      "constraint": "layout.child.nested_layout",
+      "description": "A layout cannot directly contain a layout"
+    },
+    {
+      "id": "layout-fallback-actions",
+      "category": "type-mismatch",
+      "constraint": "layout.fallback.role",
+      "description": "Actions are not a stable fallback block"
+    },
+    {
+      "id": "layout-wide-siblings",
+      "category": "invalid-usage",
+      "constraint": "layout.row.wide_blocks",
+      "description": "A row has at most one carousel, data table or data visualization"
+    },
+    {
+      "id": "layout-chart-half",
+      "category": "invalid-usage",
+      "constraint": "layout.row.chart_weight",
+      "description": "A chart requires strictly more than half the row weight"
+    },
+    {
+      "id": "layout-depth-three",
+      "category": "invalid-usage",
+      "constraint": "layout.depth",
+      "description": "Layout/container nesting cannot exceed two composite levels"
+    },
+    {
+      "id": "layout-message-alert",
+      "category": "type-mismatch",
+      "constraint": "layout.child.surface",
+      "description": "A layout preserves the receiving surface restriction of its children"
+    },
+    {
+      "id": "layout-modal-input-submit",
+      "category": "missing-required",
+      "constraint": "modal.input.submit",
+      "description": "An input nested in a modal layout still requires a submit label"
+    },
+    {
+      "id": "layout-three-charts",
+      "category": "length-exceeded",
+      "constraint": "layout.message.chart_total",
+      "description": "Nested layout charts count toward the existing two-chart message limit"
+    },
+    {
+      "id": "layout-message-budget",
+      "category": "length-exceeded",
+      "constraint": "layout.surface.message_blocks",
+      "description": "A message rejects 51 top-level layout blocks."
+    },
+    {
+      "id": "layout-view-budget",
+      "category": "length-exceeded",
+      "constraint": "layout.surface.view_blocks",
+      "description": "A view rejects 101 top-level layout blocks."
+    },
+    {
+      "id": "layout-home-alert",
+      "category": "type-mismatch",
+      "constraint": "layout.home.child_surface",
+      "description": "A layout must not hide a modal-only alert on Home."
+    },
+    {
+      "id": "layout-modal-fallback-table",
+      "category": "type-mismatch",
+      "constraint": "layout.fallback.surface",
+      "description": "A layout fallback preserves the receiving modal surface restriction on tables."
+    },
+    {
+      "id": "layout-chart-three-items",
+      "category": "invalid-usage",
+      "constraint": "layout.row.three_item_chart_weight",
+      "description": "A middle chart with omitted standard width has no strict majority over two standard siblings."
+    },
+    {
+      "id": "layout-nested-table-total",
+      "category": "length-exceeded",
+      "constraint": "layout.message.nested_table_total",
+      "description": "Data tables inside layouts inside a container still count toward the existing message aggregate text limit."
+    }
+  ]
+}

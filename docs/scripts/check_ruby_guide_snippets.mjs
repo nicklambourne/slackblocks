@@ -8,13 +8,16 @@ const scriptsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repository = path.resolve(scriptsDirectory, "../..");
 const rubyLib = path.join(repository, "ruby/lib");
 const ruby = process.env.RUBY_BIN ?? "ruby";
+const recipes = JSON.parse(await readFile(path.join(repository, "docs/examples/recipes/catalog.json"), "utf8"));
 const guides = [
+  ...recipes.map(({ id }) => `recipes/${id}.mdx`),
   "index.mdx",
   "quick-start.mdx",
   "usage/installation.mdx",
   "usage/using_blocks.mdx",
   "usage/sending_messages.mdx",
   "usage/cookbook.mdx",
+  "usage/agent-prompts.mdx",
   "usage/troubleshooting.mdx",
 ];
 const prelude = [
@@ -67,5 +70,5 @@ for (const guide of guides) {
     checked += runOtherSnippets(source);
   }
 }
-assert.equal(checked, 28, `only ${checked} Ruby guide snippets were exercised`);
+assert.equal(checked, 42, `only ${checked} Ruby guide snippets were exercised`);
 console.log(`Executed ${checked} Ruby guide snippets; block payloads match the documented JSON.`);

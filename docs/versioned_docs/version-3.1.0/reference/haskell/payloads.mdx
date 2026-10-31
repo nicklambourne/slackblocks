@@ -1,0 +1,811 @@
+---
+sidebar_position: 4
+---
+
+# Messages, attachments and views
+
+Signatures come from GHC; descriptions come from compiled Haddock comments. Import `Slackblocks` or the defining public module. Checked values encode with Aeson; field records must be built first.
+
+## Attachment {#slackblocks-models-attachment}
+
+A legacy message attachment containing blocks and an optional color bar.
+
+[https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments](https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments)
+ Only blocks supported in messages are accepted.
+
+```haskell
+type Slackblocks.Models.Attachment :: *
+```
+
+## AttachmentFields {#slackblocks-models-attachmentfields}
+
+Editable construction input. Call [`buildAttachment`](/reference/haskell/payloads#slackblocks-models-buildattachment) before encoding.
+
+```haskell
+Slackblocks.Models.AttachmentFields ::
+  [Slackblocks.Models.Block]
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.AttachmentFields
+
+type Slackblocks.Models.AttachmentFields :: *
+```
+
+## HomeTabView {#slackblocks-models-hometabview}
+
+The payload for publishing an App Home tab with views.publish.
+
+[https://docs.slack.dev/surfaces/app-home](https://docs.slack.dev/surfaces/app-home)
+ Only blocks supported on the App Home tab are accepted.
+
+```haskell
+type Slackblocks.Models.HomeTabView :: *
+```
+
+## HomeTabViewFields {#slackblocks-models-hometabviewfields}
+
+Editable construction input. Call [`buildHomeTabView`](/reference/haskell/payloads#slackblocks-models-buildhometabview) before encoding.
+
+```haskell
+Slackblocks.Models.HomeTabViewFields ::
+  [Slackblocks.Models.Block]
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.HomeTabViewFields
+
+type Slackblocks.Models.HomeTabViewFields :: *
+```
+
+## MessagePayload {#slackblocks-models-messagepayload}
+
+A complete payload for chat.postMessage and related Web API methods.
+
+[https://docs.slack.dev/reference/methods/chat.postMessage](https://docs.slack.dev/reference/methods/chat.postMessage)
+ Only blocks supported in messages are accepted.
+ Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+ At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
+
+```haskell
+type Slackblocks.Models.MessagePayload :: *
+```
+
+## MessagePayloadFields {#slackblocks-models-messagepayloadfields}
+
+Editable construction input. Call [`buildMessagePayload`](/reference/haskell/payloads#slackblocks-models-buildmessagepayload) before encoding.
+
+```haskell
+Slackblocks.Models.MessagePayloadFields ::
+  Data.Text.Text
+  -> Maybe [Slackblocks.Models.Block]
+  -> Maybe [Slackblocks.Models.Attachment]
+  -> Maybe Data.Text.Text
+  -> Maybe Bool
+  -> Maybe Bool
+  -> Maybe Bool
+  -> Maybe (Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value)
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.MessagePayloadFields
+
+type Slackblocks.Models.MessagePayloadFields :: *
+```
+
+## MessageResponse {#slackblocks-models-messageresponse}
+
+A response body for slash commands and interaction response URLs.
+
+[https://docs.slack.dev/interactivity/handling-user-interaction#message_responses](https://docs.slack.dev/interactivity/handling-user-interaction#message_responses)
+ Only blocks supported in messages are accepted.
+ Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+ At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
+
+```haskell
+type Slackblocks.Models.MessageResponse :: *
+```
+
+## MessageResponseFields {#slackblocks-models-messageresponsefields}
+
+Editable construction input. Call [`buildMessageResponse`](/reference/haskell/payloads#slackblocks-models-buildmessageresponse) before encoding.
+
+```haskell
+Slackblocks.Models.MessageResponseFields ::
+  Maybe [Slackblocks.Models.Block]
+  -> Maybe [Slackblocks.Models.Attachment]
+  -> Maybe Data.Text.Text
+  -> Maybe Bool
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.ResponseType
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.MessageResponseFields
+
+type Slackblocks.Models.MessageResponseFields :: *
+```
+
+## ModalView {#slackblocks-models-modalview}
+
+The view payload for views.open, views.push, and views.update.
+
+[https://docs.slack.dev/surfaces/modals](https://docs.slack.dev/surfaces/modals)
+ Only blocks supported in modals are accepted.
+ A modal that contains an input block must have a submit label.
+
+```haskell
+type Slackblocks.Models.ModalView :: *
+```
+
+## ModalViewFields {#slackblocks-models-modalviewfields}
+
+Editable construction input. Call [`buildModalView`](/reference/haskell/payloads#slackblocks-models-buildmodalview) before encoding.
+
+```haskell
+Slackblocks.Models.ModalViewFields ::
+  Slackblocks.Models.PlainText
+  -> [Slackblocks.Models.Block]
+  -> Maybe Slackblocks.Models.PlainText
+  -> Maybe Slackblocks.Models.PlainText
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Bool
+  -> Maybe Bool
+  -> Maybe Data.Text.Text
+  -> Maybe Bool
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ModalViewFields
+
+type Slackblocks.Models.ModalViewFields :: *
+```
+
+## WebhookMessage {#slackblocks-models-webhookmessage}
+
+A payload for incoming webhooks.
+
+[https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks)
+ Only blocks supported in messages are accepted.
+ Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+ At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
+
+```haskell
+type Slackblocks.Models.WebhookMessage :: *
+```
+
+## WebhookMessageFields {#slackblocks-models-webhookmessagefields}
+
+Editable construction input. Call [`buildWebhookMessage`](/reference/haskell/payloads#slackblocks-models-buildwebhookmessage) before encoding.
+
+```haskell
+Slackblocks.Models.WebhookMessageFields ::
+  Maybe [Slackblocks.Models.Block]
+  -> Maybe [Slackblocks.Models.Attachment]
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.ResponseType
+  -> Maybe Bool
+  -> Maybe Bool
+  -> Maybe Bool
+  -> Maybe Bool
+  -> Maybe (Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value)
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.WebhookMessageFields
+
+type Slackblocks.Models.WebhookMessageFields :: *
+```
+
+## attachment {#slackblocks-models-attachment}
+
+Start editable fields for Attachment; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildAttachment`](/reference/haskell/payloads#slackblocks-models-buildattachment) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.attachment ::
+  [Slackblocks.Models.Block] -> Slackblocks.Models.AttachmentFields
+```
+
+## attachmentBlocks {#slackblocks-models-attachmentblocks}
+
+Adds the attachment's blocks in display order. Required.
+
+```haskell
+Slackblocks.Models.attachmentBlocks ::
+  Slackblocks.Models.AttachmentFields -> [Slackblocks.Models.Block]
+```
+
+## attachmentColor {#slackblocks-models-attachmentcolor}
+
+Sets the attachment's left border color: a six-digit hex color or good, warning, or danger. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.attachmentColor ::
+  Slackblocks.Models.AttachmentFields -> Maybe Data.Text.Text
+```
+
+## attachmentExtensions {#slackblocks-models-attachmentextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.attachmentExtensions ::
+  Slackblocks.Models.AttachmentFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## attachmentFallback {#slackblocks-models-attachmentfallback}
+
+Sets plain-text summary shown in clients that cannot display attachments. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.attachmentFallback ::
+  Slackblocks.Models.AttachmentFields -> Maybe Data.Text.Text
+```
+
+## buildAttachment {#slackblocks-models-buildattachment}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked Attachment.
+
+```haskell
+Slackblocks.Models.buildAttachment ::
+  Slackblocks.Models.AttachmentFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.Attachment
+```
+
+## buildHomeTabView {#slackblocks-models-buildhometabview}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked HomeTabView.
+
+```haskell
+Slackblocks.Models.buildHomeTabView ::
+  Slackblocks.Models.HomeTabViewFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.HomeTabView
+```
+
+## buildMessagePayload {#slackblocks-models-buildmessagepayload}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked MessagePayload.
+
+```haskell
+Slackblocks.Models.buildMessagePayload ::
+  Slackblocks.Models.MessagePayloadFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.MessagePayload
+```
+
+## buildMessageResponse {#slackblocks-models-buildmessageresponse}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked MessageResponse.
+
+```haskell
+Slackblocks.Models.buildMessageResponse ::
+  Slackblocks.Models.MessageResponseFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.MessageResponse
+```
+
+## buildModalView {#slackblocks-models-buildmodalview}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ModalView.
+
+```haskell
+Slackblocks.Models.buildModalView ::
+  Slackblocks.Models.ModalViewFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.ModalView
+```
+
+## buildWebhookMessage {#slackblocks-models-buildwebhookmessage}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked WebhookMessage.
+
+```haskell
+Slackblocks.Models.buildWebhookMessage ::
+  Slackblocks.Models.WebhookMessageFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.WebhookMessage
+```
+
+## homeTabView {#slackblocks-models-hometabview}
+
+Start editable fields for HomeTabView; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildHomeTabView`](/reference/haskell/payloads#slackblocks-models-buildhometabview) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.homeTabView ::
+  [Slackblocks.Models.Block] -> Slackblocks.Models.HomeTabViewFields
+```
+
+## homeTabViewBlocks {#slackblocks-models-hometabviewblocks}
+
+Adds the blocks shown on the App Home tab, in display order. Required. Shared limit: `view.blocks`.
+
+```haskell
+Slackblocks.Models.homeTabViewBlocks ::
+  Slackblocks.Models.HomeTabViewFields -> [Slackblocks.Models.Block]
+```
+
+## homeTabViewCallbackId {#slackblocks-models-hometabviewcallbackid}
+
+Sets an identifier returned in view payloads so your app can recognize the view. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `view.callback_id`.
+
+```haskell
+Slackblocks.Models.homeTabViewCallbackId ::
+  Slackblocks.Models.HomeTabViewFields -> Maybe Data.Text.Text
+```
+
+## homeTabViewExtensions {#slackblocks-models-hometabviewextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.homeTabViewExtensions ::
+  Slackblocks.Models.HomeTabViewFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## homeTabViewExternalId {#slackblocks-models-hometabviewexternalid}
+
+Sets a workspace-unique identifier you can use to update the view later. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `view.external_id`.
+
+```haskell
+Slackblocks.Models.homeTabViewExternalId ::
+  Slackblocks.Models.HomeTabViewFields -> Maybe Data.Text.Text
+```
+
+## homeTabViewPrivateMetadata {#slackblocks-models-hometabviewprivatemetadata}
+
+Sets application-defined data returned in view payloads. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `view.private_metadata`.
+
+```haskell
+Slackblocks.Models.homeTabViewPrivateMetadata ::
+  Slackblocks.Models.HomeTabViewFields -> Maybe Data.Text.Text
+```
+
+## inspectAttachment {#slackblocks-models-inspectattachment}
+
+Inspect immutable construction fields. Rebuild edits with [`buildAttachment`](/reference/haskell/payloads#slackblocks-models-buildattachment) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectAttachment ::
+  Slackblocks.Models.Attachment
+  -> Slackblocks.Models.AttachmentFields
+```
+
+## inspectHomeTabView {#slackblocks-models-inspecthometabview}
+
+Inspect immutable construction fields. Rebuild edits with [`buildHomeTabView`](/reference/haskell/payloads#slackblocks-models-buildhometabview) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectHomeTabView ::
+  Slackblocks.Models.HomeTabView
+  -> Slackblocks.Models.HomeTabViewFields
+```
+
+## inspectMessagePayload {#slackblocks-models-inspectmessagepayload}
+
+Inspect immutable construction fields. Rebuild edits with [`buildMessagePayload`](/reference/haskell/payloads#slackblocks-models-buildmessagepayload) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectMessagePayload ::
+  Slackblocks.Models.MessagePayload
+  -> Slackblocks.Models.MessagePayloadFields
+```
+
+## inspectMessageResponse {#slackblocks-models-inspectmessageresponse}
+
+Inspect immutable construction fields. Rebuild edits with [`buildMessageResponse`](/reference/haskell/payloads#slackblocks-models-buildmessageresponse) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectMessageResponse ::
+  Slackblocks.Models.MessageResponse
+  -> Slackblocks.Models.MessageResponseFields
+```
+
+## inspectModalView {#slackblocks-models-inspectmodalview}
+
+Inspect immutable construction fields. Rebuild edits with [`buildModalView`](/reference/haskell/payloads#slackblocks-models-buildmodalview) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectModalView ::
+  Slackblocks.Models.ModalView -> Slackblocks.Models.ModalViewFields
+```
+
+## inspectWebhookMessage {#slackblocks-models-inspectwebhookmessage}
+
+Inspect immutable construction fields. Rebuild edits with [`buildWebhookMessage`](/reference/haskell/payloads#slackblocks-models-buildwebhookmessage) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectWebhookMessage ::
+  Slackblocks.Models.WebhookMessage
+  -> Slackblocks.Models.WebhookMessageFields
+```
+
+## messagePayload {#slackblocks-models-messagepayload}
+
+Start editable fields for MessagePayload; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildMessagePayload`](/reference/haskell/payloads#slackblocks-models-buildmessagepayload) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.messagePayload ::
+  Data.Text.Text -> Slackblocks.Models.MessagePayloadFields
+```
+
+## messagePayloadAttachments {#slackblocks-models-messagepayloadattachments}
+
+Adds legacy attachments in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `message.attachments`.
+
+```haskell
+Slackblocks.Models.messagePayloadAttachments ::
+  Slackblocks.Models.MessagePayloadFields
+  -> Maybe [Slackblocks.Models.Attachment]
+```
+
+## messagePayloadBlocks {#slackblocks-models-messagepayloadblocks}
+
+Adds the message blocks in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `message.blocks`.
+
+```haskell
+Slackblocks.Models.messagePayloadBlocks ::
+  Slackblocks.Models.MessagePayloadFields
+  -> Maybe [Slackblocks.Models.Block]
+```
+
+## messagePayloadChannel {#slackblocks-models-messagepayloadchannel}
+
+Sets the ID of the channel, private group, or conversation that receives the message. Required. Shared limit: `message.channel`.
+
+```haskell
+Slackblocks.Models.messagePayloadChannel ::
+  Slackblocks.Models.MessagePayloadFields -> Data.Text.Text
+```
+
+## messagePayloadExtensions {#slackblocks-models-messagepayloadextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.messagePayloadExtensions ::
+  Slackblocks.Models.MessagePayloadFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## messagePayloadMetadata {#slackblocks-models-messagepayloadmetadata}
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.messagePayloadMetadata ::
+  Slackblocks.Models.MessagePayloadFields
+  -> Maybe (Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value)
+```
+
+## messagePayloadMrkdwn {#slackblocks-models-messagepayloadmrkdwn}
+
+Sets whether Slack formats the top-level text as mrkdwn. Optional; Nothing omits the field. Factory default: `Just (True)`.
+
+```haskell
+Slackblocks.Models.messagePayloadMrkdwn ::
+  Slackblocks.Models.MessagePayloadFields -> Maybe Bool
+```
+
+## messagePayloadText {#slackblocks-models-messagepayloadtext}
+
+Sets the fallback text used in notifications and by clients that cannot display blocks. Optional; Nothing omits the field. Factory default: `Just ("")`.
+
+```haskell
+Slackblocks.Models.messagePayloadText ::
+  Slackblocks.Models.MessagePayloadFields -> Maybe Data.Text.Text
+```
+
+## messagePayloadUnfurlLinks {#slackblocks-models-messagepayloadunfurllinks}
+
+Sets whether Slack unfurls text-based links. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.messagePayloadUnfurlLinks ::
+  Slackblocks.Models.MessagePayloadFields -> Maybe Bool
+```
+
+## messagePayloadUnfurlMedia {#slackblocks-models-messagepayloadunfurlmedia}
+
+Sets whether Slack unfurls media links. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.messagePayloadUnfurlMedia ::
+  Slackblocks.Models.MessagePayloadFields -> Maybe Bool
+```
+
+## messageResponse {#slackblocks-models-messageresponse}
+
+Start editable fields for MessageResponse; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildMessageResponse`](/reference/haskell/payloads#slackblocks-models-buildmessageresponse) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.messageResponse ::
+  Slackblocks.Models.MessageResponseFields
+```
+
+## messageResponseAttachments {#slackblocks-models-messageresponseattachments}
+
+Adds legacy attachments in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `message.attachments`.
+
+```haskell
+Slackblocks.Models.messageResponseAttachments ::
+  Slackblocks.Models.MessageResponseFields
+  -> Maybe [Slackblocks.Models.Attachment]
+```
+
+## messageResponseBlocks {#slackblocks-models-messageresponseblocks}
+
+Adds the response blocks in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `message.blocks`.
+
+```haskell
+Slackblocks.Models.messageResponseBlocks ::
+  Slackblocks.Models.MessageResponseFields
+  -> Maybe [Slackblocks.Models.Block]
+```
+
+## messageResponseExtensions {#slackblocks-models-messageresponseextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.messageResponseExtensions ::
+  Slackblocks.Models.MessageResponseFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## messageResponseMrkdwn {#slackblocks-models-messageresponsemrkdwn}
+
+Sets whether Slack formats the top-level text as mrkdwn. Optional; Nothing omits the field. Factory default: `Just (True)`.
+
+```haskell
+Slackblocks.Models.messageResponseMrkdwn ::
+  Slackblocks.Models.MessageResponseFields -> Maybe Bool
+```
+
+## messageResponseReplaceOriginal {#slackblocks-models-messageresponsereplaceoriginal}
+
+Sets whether the response replaces the message that triggered it. Optional; Nothing omits the field. Factory default: `Just (False)`.
+
+```haskell
+Slackblocks.Models.messageResponseReplaceOriginal ::
+  Slackblocks.Models.MessageResponseFields -> Maybe Bool
+```
+
+## messageResponseResponseType {#slackblocks-models-messageresponseresponsetype}
+
+Sets who can see the response. Optional; Nothing omits the field. Factory default: `Just (ResponseTypeInChannel)`.
+
+```haskell
+Slackblocks.Models.messageResponseResponseType ::
+  Slackblocks.Models.MessageResponseFields
+  -> Maybe Slackblocks.Models.ResponseType
+```
+
+## messageResponseText {#slackblocks-models-messageresponsetext}
+
+Sets the fallback text used in notifications and by clients that cannot display blocks. Optional; Nothing omits the field. Factory default: `Just ("")`.
+
+```haskell
+Slackblocks.Models.messageResponseText ::
+  Slackblocks.Models.MessageResponseFields -> Maybe Data.Text.Text
+```
+
+## modalView {#slackblocks-models-modalview}
+
+Start editable fields for ModalView; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildModalView`](/reference/haskell/payloads#slackblocks-models-buildmodalview) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.modalView ::
+  Slackblocks.Models.PlainText
+  -> [Slackblocks.Models.Block] -> Slackblocks.Models.ModalViewFields
+```
+
+## modalViewBlocks {#slackblocks-models-modalviewblocks}
+
+Adds the blocks shown in the modal, in display order. Required. Shared limit: `view.blocks`.
+
+```haskell
+Slackblocks.Models.modalViewBlocks ::
+  Slackblocks.Models.ModalViewFields -> [Slackblocks.Models.Block]
+```
+
+## modalViewCallbackId {#slackblocks-models-modalviewcallbackid}
+
+Sets an identifier returned in view payloads so your app can recognize the view. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `view.callback_id`.
+
+```haskell
+Slackblocks.Models.modalViewCallbackId ::
+  Slackblocks.Models.ModalViewFields -> Maybe Data.Text.Text
+```
+
+## modalViewClearOnClose {#slackblocks-models-modalviewclearonclose}
+
+Sets whether closing this modal closes every view in its stack. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.modalViewClearOnClose ::
+  Slackblocks.Models.ModalViewFields -> Maybe Bool
+```
+
+## modalViewClose {#slackblocks-models-modalviewclose}
+
+Sets the label of the button that closes the modal. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `view.close`.
+
+```haskell
+Slackblocks.Models.modalViewClose ::
+  Slackblocks.Models.ModalViewFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## modalViewExtensions {#slackblocks-models-modalviewextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.modalViewExtensions ::
+  Slackblocks.Models.ModalViewFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## modalViewExternalId {#slackblocks-models-modalviewexternalid}
+
+Sets a workspace-unique identifier you can use to update the view later. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `view.external_id`.
+
+```haskell
+Slackblocks.Models.modalViewExternalId ::
+  Slackblocks.Models.ModalViewFields -> Maybe Data.Text.Text
+```
+
+## modalViewNotifyOnClose {#slackblocks-models-modalviewnotifyonclose}
+
+Sets whether Slack sends a view_closed event when the user closes the modal. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.modalViewNotifyOnClose ::
+  Slackblocks.Models.ModalViewFields -> Maybe Bool
+```
+
+## modalViewPrivateMetadata {#slackblocks-models-modalviewprivatemetadata}
+
+Sets application-defined data returned in view payloads. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `view.private_metadata`.
+
+```haskell
+Slackblocks.Models.modalViewPrivateMetadata ::
+  Slackblocks.Models.ModalViewFields -> Maybe Data.Text.Text
+```
+
+## modalViewSubmit {#slackblocks-models-modalviewsubmit}
+
+Sets the label of the button that submits the modal. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `view.submit`.
+
+```haskell
+Slackblocks.Models.modalViewSubmit ::
+  Slackblocks.Models.ModalViewFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## modalViewSubmitDisabled {#slackblocks-models-modalviewsubmitdisabled}
+
+Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.modalViewSubmitDisabled ::
+  Slackblocks.Models.ModalViewFields -> Maybe Bool
+```
+
+## modalViewTitle {#slackblocks-models-modalviewtitle}
+
+Sets the title in the modal's top bar. Required. Shared limit: `view.title`.
+
+```haskell
+Slackblocks.Models.modalViewTitle ::
+  Slackblocks.Models.ModalViewFields -> Slackblocks.Models.PlainText
+```
+
+## webhookMessage {#slackblocks-models-webhookmessage}
+
+Start editable fields for WebhookMessage; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildWebhookMessage`](/reference/haskell/payloads#slackblocks-models-buildwebhookmessage) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.webhookMessage ::
+  Slackblocks.Models.WebhookMessageFields
+```
+
+## webhookMessageAttachments {#slackblocks-models-webhookmessageattachments}
+
+Adds legacy attachments in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `message.attachments`.
+
+```haskell
+Slackblocks.Models.webhookMessageAttachments ::
+  Slackblocks.Models.WebhookMessageFields
+  -> Maybe [Slackblocks.Models.Attachment]
+```
+
+## webhookMessageBlocks {#slackblocks-models-webhookmessageblocks}
+
+Adds the message blocks in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `message.blocks`.
+
+```haskell
+Slackblocks.Models.webhookMessageBlocks ::
+  Slackblocks.Models.WebhookMessageFields
+  -> Maybe [Slackblocks.Models.Block]
+```
+
+## webhookMessageDeleteOriginal {#slackblocks-models-webhookmessagedeleteoriginal}
+
+Sets whether the response deletes the message that triggered it. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.webhookMessageDeleteOriginal ::
+  Slackblocks.Models.WebhookMessageFields -> Maybe Bool
+```
+
+## webhookMessageExtensions {#slackblocks-models-webhookmessageextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.webhookMessageExtensions ::
+  Slackblocks.Models.WebhookMessageFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## webhookMessageMetadata {#slackblocks-models-webhookmessagemetadata}
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.webhookMessageMetadata ::
+  Slackblocks.Models.WebhookMessageFields
+  -> Maybe (Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value)
+```
+
+## webhookMessageReplaceOriginal {#slackblocks-models-webhookmessagereplaceoriginal}
+
+Sets whether the response replaces the message that triggered it. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.webhookMessageReplaceOriginal ::
+  Slackblocks.Models.WebhookMessageFields -> Maybe Bool
+```
+
+## webhookMessageResponseType {#slackblocks-models-webhookmessageresponsetype}
+
+Sets who can see the response. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.webhookMessageResponseType ::
+  Slackblocks.Models.WebhookMessageFields
+  -> Maybe Slackblocks.Models.ResponseType
+```
+
+## webhookMessageText {#slackblocks-models-webhookmessagetext}
+
+Sets the fallback text used in notifications and by clients that cannot display blocks. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.webhookMessageText ::
+  Slackblocks.Models.WebhookMessageFields -> Maybe Data.Text.Text
+```
+
+## webhookMessageUnfurlLinks {#slackblocks-models-webhookmessageunfurllinks}
+
+Sets whether Slack unfurls text-based links. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.webhookMessageUnfurlLinks ::
+  Slackblocks.Models.WebhookMessageFields -> Maybe Bool
+```
+
+## webhookMessageUnfurlMedia {#slackblocks-models-webhookmessageunfurlmedia}
+
+Sets whether Slack unfurls media links. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.webhookMessageUnfurlMedia ::
+  Slackblocks.Models.WebhookMessageFields -> Maybe Bool
+```
+

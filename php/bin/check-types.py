@@ -17,6 +17,10 @@ base = [
 ]
 subprocess.run(base + [str(ROOT / "typecheck/positive.php")], cwd=ROOT, check=True)
 expected = {
+    "layout-child.php": "argument.type",
+    "layout-markdown.php": "argument.type",
+    "layout-fallback.php": "argument.type",
+    "layout-width.php": "argument.type",
     "keyword.php": "argument.unknown",
     "text.php": "argument.type",
     "enum.php": "argument.type",

@@ -10,7 +10,7 @@ namespace Slackblocks;
  * A labelled input that collects a value in a modal, App Home, or message.
  * @see https://docs.slack.dev/reference/block-kit/blocks/input-block
  */
-final readonly class InputBlock extends Value implements Block
+final readonly class InputBlock extends Value implements Block, LayoutChild
 {
     /** Sets the label shown above the input.
      * @var PlainText

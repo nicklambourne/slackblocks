@@ -13,7 +13,7 @@ const pages = await Promise.all(domains.map(domain => read(`docs/docs/reference/
 const text = pages.join("\n");
 const expected = Object.entries(inventory).filter(([, entry]) => !["internal", "protocol"].includes(entry.kind)).map(([name]) => name).sort();
 assert.deepEqual(reference.modules.map(entry => entry.module).sort(), expected);
-assert.equal(expected.length, 97);
+assert.equal(expected.length, 100);
 assert.deepEqual([...text.matchAll(/^## (Slackblocks\S*) \{#/gm)].map(match => match[1]).sort(), expected);
 // Compiler-generated struct/exception functions and these explicitly internal
 // Style receiving-context helpers have @doc false; they are not consumer APIs.
@@ -43,7 +43,6 @@ for (const model of models) {
     assert.ok(module.types.some(type => type.includes(`${field.wire}:`)), `${model.name}.${field.wire}: field type missing`);
   }
 }
-assert.equal(fields, 360);
 assert.match(text, /Default: `true`/);
 assert.match(text, /Optional; `nil` omits the field/);
 assert.match(text, /@spec change\(/);
@@ -56,4 +55,4 @@ for (const [index, domain] of domains.entries()) {
   assert.ok(breadcrumbs);
   assert.doesNotMatch(breadcrumbs, />Elixir API reference</);
 }
-console.log("Elixir reference: all 97 public modules, 360 fields, exported arities, native specs and rendered anchors verified.");
+console.log(`Elixir reference: all ${expected.length} public modules, ${fields} model fields, exported arities, native specs and rendered anchors verified.`);

@@ -19,7 +19,7 @@ const DEFAULT_SEARCH_OPTIONS = {
   forceIgnoreNoIndex: false,
 };
 
-const LANGUAGES = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir"];
+const LANGUAGES = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "haskell"];
 const LANGUAGE_INDEXES = Object.fromEntries(LANGUAGES.map((language) => {
   const others = LANGUAGES.filter((candidate) => candidate !== language);
   return [language, {
@@ -28,7 +28,7 @@ const LANGUAGE_INDEXES = Object.fromEntries(LANGUAGES.map((language) => {
     ignoredRoutes: [
       ...(language === "elixir" ? [] : [/^usage\/erlang$/]),
       new RegExp(`^reference/(?:${others.join("|")})(?:/|$)`),
-      ...(["python", "rust", "php", "elixir"].includes(language) ? [] : [/^usage\/(?:compatibility|migration)$/]),
+      ...(["python", "rust", "php", "elixir", "haskell"].includes(language) ? [] : [/^usage\/(?:compatibility|migration)$/]),
     ],
   }];
 }));

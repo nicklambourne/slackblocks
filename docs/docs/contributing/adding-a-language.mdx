@@ -12,7 +12,7 @@ shared contract, useful helpers, tested documentation, and working package and
 release integration. Passing the JSON fixtures is one part of that work.
 
 The maintained implementations are currently Python, TypeScript, Go, Java, C#,
-Ruby, Rust (introduced in 2.6.0), PHP (introduced in 2.7.0), and Elixir (introduced in 2.8.0). Recheck that list against the packages and coordinated release at the
+Ruby, Rust (introduced in 2.6.0), PHP (introduced in 2.7.0), Elixir (introduced in 2.8.0), and Haskell (introduced in 3.1.0). Recheck that list against the packages and coordinated release at the
 start of the project. A plan or an unfinished implementation does not add a
 language to the release set.
 
@@ -405,7 +405,7 @@ indexed and its counter is verified. Test aggregate arithmetic, a real zero,
 missing/malformed data and stale sources: an unavailable required source must
 make the aggregate unavailable, never silently contribute zero or a partial sum.
 After activation, verify the public endpoint and update the README badge's alt
-text and **Download statistics** definition to match the active source set.
+text and the [download statistics](/download-statistics) definition to match the active source set.
 
 The consumer in `projects/ndl_au/ui/src/lib/projects/downloads.ts` already reads
 this aggregate with a five-minute revalidation interval. New Slackblocks registry

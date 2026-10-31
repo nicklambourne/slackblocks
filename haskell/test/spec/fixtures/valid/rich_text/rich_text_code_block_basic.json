@@ -1,0 +1,10 @@
+{
+    "type": "rich_text_preformatted",
+    "elements": [
+        {
+            "type": "text",
+            "text": "\ndef hello_world():\n    print('hello, world')"
+        }
+    ],
+    "border": 0
+}

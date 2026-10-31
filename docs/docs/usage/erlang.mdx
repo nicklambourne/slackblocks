@@ -66,14 +66,15 @@ never converted to atoms during checked decoding.
 
 ## Rebar3 and Mix
 
-Build with compatible Elixir/OTP installed. This configuration installs version
-3.0.0 from Hex. The repository's `elixir/tools/erlang_check.py` also tests a locally
-built archive in a temporary consumer before publication.
+Build with compatible Elixir/OTP installed. This current source configuration
+targets the 3.2.0 release; the frozen [3.1.0 guide](/3.1.0/usage/erlang)
+remains available for that earlier version. The repository's `elixir/tools/erlang_check.py`
+tests a locally built archive in a temporary consumer before publication.
 
 ```erlang title="elixir/erlang/rebar.config"
 {erl_opts, [debug_info, warnings_as_errors]}.
 %% Pin direct dependencies too: rebar_mix 0.5.1 predates Mix's current lock tuples.
-{deps, [{slackblocks, "3.0.0"}, {jason, "1.4.5"}, {decimal, "3.2.0"}]}.
+{deps, [{slackblocks, "3.2.0"}, {jason, "1.4.5"}, {decimal, "3.2.0"}]}.
 {plugins, [{rebar_mix, "0.5.1"}]}.
 {provider_hooks, [{post, [{compile, {mix, consolidate_protocols}}]}]}.
 {relx, [

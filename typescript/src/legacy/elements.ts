@@ -437,6 +437,10 @@ function element<Type extends string>(
  * behavior, confirmation step, and accessibility text.
  */
 export interface ButtonInput {
+  /** Prompt sent to Slackbot if AI is available; the app still receives an interaction. Maximum 4000 characters. */
+  agentPrompt?: string;
+  /** Collapsed Slackbot message text; requires agentPrompt and defaults to button text when omitted. */
+  agentPromptDisplay?: string;
   /** Plain-text label displayed on the button. */
   text: TextLike;
   /** Identifier returned when the button is selected. */

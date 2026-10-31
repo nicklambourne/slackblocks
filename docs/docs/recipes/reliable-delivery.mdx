@@ -1,12 +1,13 @@
 ---
 title: Bounded delivery and uncertain writes
+slug: /usage/recipes/reliable-delivery
 ---
 
 # Bounded delivery and uncertain writes
 
 Deduplicating an incoming Slack event prevents one class of repeated work. It does not guarantee one outgoing message: a server can accept a write before the client loses the connection, or a process can die before saving the receipt. Retrying that write can create a duplicate.
 
-The [SQLite outbox example](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples/reliable-delivery) is an executable Python reference with native slackblocks messages, atomic event/operation enqueueing, immutable operation payloads, persisted attempt counts, and explicit uncertain-result reconciliation. It intentionally uses a small HTTP transport with no hidden retries. It is not nine native SDK clients, a production queue service, or an exactly-once guarantee.
+The [SQLite outbox example](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples/reliable-delivery) is an executable Python reference with native slackblocks messages, atomic event/operation enqueueing, immutable operation payloads, persisted attempt counts, and explicit uncertain-result reconciliation. It intentionally uses a small HTTP transport with no hidden retries. It is not ten native SDK clients, a production queue service, or an exactly-once guarantee.
 
 ```sh
 python -m pip install slackblocks
@@ -17,7 +18,7 @@ For a checkout use `PYTHONPATH=python`. The documentation build runs the suite w
 
 ## One component owns retries
 
-slackblocks builds payloads; your transport determines retry behavior. Verify the exact SDK version and configure it before layering another retry loop. For example, the [Python SDK](https://docs.slack.dev/tools/python-slack-sdk/web/) documents an enabled connection-error retry handler; supply `retry_handlers=[]` when your application owns this policy. The [Node SDK](https://docs.slack.dev/tools/node-slack-sdk/web-api/) exposes `retryConfig` and `rejectRateLimitedCalls`; configure and test them together. Go, Java, C#, Ruby, Rust, PHP and Elixir integrations may use different SDK/HTTP clients. Do not infer their redirect or retry policy from their slackblocks payload API.
+slackblocks builds payloads; your transport determines retry behavior. Verify the exact SDK version and configure it before layering another retry loop. For example, the [Python SDK](https://docs.slack.dev/tools/python-slack-sdk/web/) documents an enabled connection-error retry handler; supply `retry_handlers=[]` when your application owns this policy. The [Node SDK](https://docs.slack.dev/tools/node-slack-sdk/web-api/) exposes `retryConfig` and `rejectRateLimitedCalls`; configure and test them together. Go, Java, C#, Ruby, Rust, PHP, Elixir and Haskell integrations may use different SDK/HTTP clients. Do not infer their redirect or retry policy from their slackblocks payload API.
 
 The example's policy is deliberately conservative for a non-idempotent `chat.postMessage`:
 

@@ -18,7 +18,7 @@ See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-eleme
 Construct an immutable, validated value with keyword arguments. Required keywords: text.
 
 ```ruby
-def self.new: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
+def self.new: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?agent_prompt: (String)?, ?agent_prompt_display: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
 ```
 
 | Parameter | Description |
@@ -30,6 +30,8 @@ def self.new: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?,
 | `style` | Sets the button's emphasis. Omit it for the default neutral style. |
 | `confirm` | Sets a confirmation dialog shown before the action is sent. |
 | `accessibility_label` | Sets the label read by screen readers in place of the visible text. |
+| `agent_prompt` | Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds. |
+| `agent_prompt_display` | Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable. |
 | `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
 
 **Returns:** ButtonElement
@@ -45,7 +47,7 @@ def self.new: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?,
 Keyword-only alias for .new.
 
 ```ruby
-def self.[]: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
+def self.[]: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?agent_prompt: (String)?, ?agent_prompt_display: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
 ```
 
 **Returns:** ButtonElement
@@ -122,6 +124,26 @@ Sets the label read by screen readers in place of the visible text. Wire key: ac
 
 ```ruby
 def accessibility_label: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### agent_prompt
+
+Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds. Wire key: agent_prompt.
+
+```ruby
+def agent_prompt: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### agent_prompt_display
+
+Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable. Wire key: agent_prompt_display.
+
+```ruby
+def agent_prompt_display: () -> (String)?
 ```
 
 **Returns:** (String)?

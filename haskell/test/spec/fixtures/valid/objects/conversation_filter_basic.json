@@ -1,0 +1,7 @@
+{
+    "include": [
+        "public",
+        "mpim"
+    ],
+    "exclude_bot_users": true
+}

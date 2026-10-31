@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, Elixir, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, Elixir, Haskell, TypeScript } from '@site/src/components/LanguageContent';
 
 # Using Blocks
 
@@ -60,7 +60,138 @@ Construct readonly values using named arguments and typed children. `toJson()` s
 Use native immutable structs, keyword options and atom enums. Every example below runs unchanged in CI and is compared with its JSON tab. See [Blocks](/reference/elixir/blocks), [Elements](/reference/elixir/elements) and [Composition Objects](/reference/elixir/objects).
 
 </Elixir>
+
+<Haskell>
+
+Use checked immutable values and typed child roles. Each complete program below constructs its payload through the public API and runs unchanged against the JSON tab in CI. See [Blocks](/reference/haskell/blocks), [Elements](/reference/haskell/elements) and [composition objects](/reference/haskell/objects). No block ID is invented.
+
+</Haskell>
 </LanguageContent>
+
+## Ownership and edits
+
+<LanguageContent>
+<Python>
+
+Models are mutable. Collection coercion can retain the caller's list and nested model references, so changing a source list can change a later serialization. Build a fresh model, or copy application inputs, when personalizing a reusable template.
+
+</Python>
+<TypeScript>
+
+Fluent builders retain nested objects and builders until `build()`. Factory serialization produces a wire snapshot. Mutate inputs deliberately before building and keep built payloads as snapshots. Collection methods append; compose a new builder when replacing a collection.
+
+</TypeScript>
+<Go>
+
+Fluent builders are mutable and retain nested builders until `Build()`. Built modeled maps and lists are materialized afresh: changing a nested builder changes the next build while earlier modeled snapshots remain independent. Collection methods append, so rebuild from application data when replacing a collection. Arbitrary custom values passed through escape hatches need their own ownership review.
+
+</Go>
+<Java>
+
+Built values hold defensive snapshots and expose immutable collections; builders remain mutable. Compose the next value with native builders. Getter collections and the exported `toMap()` are not editable views of the model. See [conditional getters](troubleshooting#conditional-getters) when a valid alternative omits a field.
+
+</Java>
+<CSharp>
+
+Models copy collection inputs, expose read-only properties and export independent copies of JSON nodes. Construct a replacement value using its properties and changed arguments. Editing an exported JSON node does not edit the model. See [optional properties](troubleshooting#optional-properties) when a valid alternative omits a field.
+
+</CSharp>
+<Ruby>
+
+Native values freeze their copied nested content. Use `with` to create a changed value and retain the original for comparison. `as_json` exports a fresh representation. Component helpers return values or arrays rather than mutable fluent builders.
+
+</Ruby>
+<Rust>
+
+Models own their data and getters borrow values. `clone().into_builder()` starts an independent editable builder; clone first when the old value is still needed. Use checked construction or parsing for the new value.
+
+</Rust>
+<PHP>
+
+Readonly native values and immutable nested values retain constructor state. Use `with` or construct a new value instead of mutating properties. Exports are independent representations.
+
+</PHP>
+<Elixir>
+
+Structs, lists and maps are immutable. Model `change/2` validates a replacement and returns a tagged result; `change!/2` raises on failure. Keep the original value for reuse. Validate the complete receiving payload with `Slackblocks.to_map/1`; direct struct updates are rechecked at wire boundaries.
+
+</Elixir>
+<Haskell>
+
+Checked values are immutable and have hidden constructors. `inspect…` returns editable field records; `build…` checks a replacement and returns `Result`. Rebuild changes before encoding: field records have no `ToJSON` instance, and explicit role conversions preserve parent constraints. See [wire and value behavior](compatibility#wire-and-value-behavior) for checked JSON ingress and exact numbers.
+
+</Haskell>
+</LanguageContent>
+
+These guarantees concern modeled fields, not arbitrary foreign objects or unchecked
+extension values. Application state, callback revisions and database records remain
+application-owned.
+
+## Omission and defaults
+
+Leave an optional argument or setter unused to request omission. Required fields,
+defaults and normalization are field-specific; inspect the final wire payload
+when an explicit zero, false or empty collection matters.
+
+<LanguageContent>
+<Python>
+
+Omitted block IDs are generated. Some serializers retain legacy truthiness normalization: `DateTimePicker(initial_datetime=0)` omits `initial_date_time` even though the model attribute remains zero. Pin block IDs in tests and inspect serialized fields where zero or `False` matters.
+
+</Python>
+<TypeScript>
+
+Leave a setter unused to omit a field. On a fresh fluent builder, `.options([])` explicitly supplies an empty list and is rejected when built, as is `staticSelect({options: []})`. On a populated builder, `.options([])` appends nothing and leaves existing options intact. Other fields have their own empty-list behavior.
+
+</TypeScript>
+<Go>
+
+`NewPlainText().Text("Hi").Emoji(false)` preserves `emoji: false`; leaving `Emoji` uncalled omits it. A supplied empty enum is invalid. A typed nil nested builder is a type error, not an omission request.
+
+</Go>
+<Java>
+
+Varargs collection setters append. Zero arguments leave an unset field omitted and do not clear an existing collection. An explicit empty array supplied through `wireField` is validated as a supplied list. Optional getters commonly return `Optional`; check the field's generated signature rather than assuming every getter can represent absence.
+
+</Java>
+<CSharp>
+
+Optional properties use nullable types. Follow each constructor and generated property signature to distinguish omission from a supplied value. An omitted wire field is not an explicit JSON null; do not substitute an empty collection or `false` to remove a field.
+
+</CSharp>
+<Ruby>
+
+Optional native fields use `nil`. Follow the field signature and generated documentation: omission is not explicit JSON null, and supplying an empty collection or `false` is not a general way to remove a field.
+
+</Ruby>
+<Rust>
+
+Optional native fields use `Option`. Read the field signature and generated documentation when deciding whether to supply a value. An omitted wire field is not explicit JSON null; an empty collection, zero and `false` remain field-specific inputs.
+
+</Rust>
+<PHP>
+
+Optional native fields use `null`. Follow the named constructor and field documentation: an omitted wire field is not explicit JSON null, and an empty collection or `false` is not a general omission request.
+
+</PHP>
+<Elixir>
+
+Optional `nil` fields are omitted; explicit `false` and zero are retained when valid for the field. Model `change/2` replaces supplied fields atomically while leaving other fields unchanged. Use `Slackblocks.from_map/2` for checked wire input and `Slackblocks.to_map/1` for complete output validation.
+
+</Elixir>
+<Haskell>
+
+Optional `Nothing` omits a key; explicit false, zero and allowed empty values remain. No block ID is generated. Field-specific requiredness and defaults still apply. The [compatibility guide](compatibility#wire-and-value-behavior) covers parsing defaults and numeric representation.
+
+</Haskell>
+</LanguageContent>
+
+See [Validation boundaries](validation-boundary) for local checks and application-owned
+constraints. Existing defaults are retained for compatibility.
+
+## Layout grids
+
+See [Layouts](/usage/layouts) for rows, weighted widths, alignment, supported children, nesting and fallback behavior, with a diagram and a basic executable example in your selected language.
 
 ## Section Block
 
@@ -263,6 +394,28 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("This is a section block with a checkbox accessory."))
+  markdownTextValue2 <- buildMarkdownText (markdownText ("*Your Only Option*"))
+  selectOptionValue1 <- buildSelectOption (selectOption ((markdownTextAsText markdownTextValue2)) ("option_one"))
+  checkboxesElementValue1 <- buildCheckboxesElement ((checkboxesElement ([selectOptionValue1])) {checkboxesElementActionId = Just ("checkboxes-action")})
+  sectionBlockValue1 <- buildSectionBlock ((sectionBlock) {sectionBlockText = Just ((markdownTextAsText markdownTextValue1)), sectionBlockAccessory = Just ((checkboxesElementAsElement checkboxesElementValue1)), sectionBlockBlockId = Just ("fake_block_id")})
+  pure sectionBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -543,6 +696,28 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  richTextTextValue1 <- buildRichTextText ((richTextText ("You 'bout to witness hip-hop in its most purest\n")) {richTextTextStyle = Just ((richTextStyle {styleBold = Just True}))})
+  richTextTextValue2 <- buildRichTextText ((richTextText ("Most rawest form, flow almost flawless\n")) {richTextTextStyle = Just ((richTextStyle {styleStrike = Just True}))})
+  richTextTextValue3 <- buildRichTextText ((richTextText ("Most hardest, most honest known artist\n")) {richTextTextStyle = Just ((richTextStyle {styleItalic = Just True}))})
+  richTextSectionValue1 <- buildRichTextSection (richTextSection ([(richTextTextAsRichTextSectionElement richTextTextValue1), (richTextTextAsRichTextSectionElement richTextTextValue2), (richTextTextAsRichTextSectionElement richTextTextValue3)]))
+  richTextBlockValue1 <- buildRichTextBlock ((richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue1)])) {richTextBlockBlockId = Just ("fake_block_id")})
+  pure richTextBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -716,6 +891,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText (plainText ("This is a header block"))
+  headerBlockValue1 <- buildHeaderBlock ((headerBlock (plainTextValue1)) {headerBlockBlockId = Just ("fake_block_id")})
+  pure headerBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -868,6 +1062,24 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownBlockValue1 <- buildMarkdownBlock ((markdownBlock ("**Hello!** Markdown blocks support _GitHub-flavored_ syntax.")) {markdownBlockBlockId = Just ("fake_block_id")})
+  pure markdownBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1038,6 +1250,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText (plainText ("dog"))
+  imageBlockValue1 <- buildImageBlock ((imageBlock ("a beagle")) {imageBlockImageUrl = Just ("https://api.slack.com/img/blocks/bkb_template_images/beagle.png"), imageBlockTitle = Just (plainTextValue1), imageBlockBlockId = Just ("fake_block_id")})
+  pure imageBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1230,6 +1461,27 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText ((plainText ("Label")) {plainTextEmoji = Just (True)})
+  plainTextInputElementValue1 <- buildPlainTextInputElement ((plainTextInputElement) {plainTextInputElementActionId = Just ("action")})
+  plainTextValue2 <- buildPlainText ((plainText ("Hint")) {plainTextEmoji = Just (True)})
+  inputBlockValue1 <- buildInputBlock ((inputBlock (plainTextValue1) ((plainTextInputElementAsInputElement plainTextInputElementValue1))) {inputBlockBlockId = Just ("fake_block_id"), inputBlockHint = Just (plainTextValue2), inputBlockOptional = Just (True)})
+  pure inputBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1366,6 +1618,24 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  dividerBlockValue1 <- buildDividerBlock ((dividerBlock) {dividerBlockBlockId = Just ("fake_block_id")})
+  pure dividerBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1508,6 +1778,24 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  fileBlockValue1 <- buildFileBlock ((fileBlock ("external_id") ("remote")) {fileBlockBlockId = Just ("fake_block_id")})
+  pure fileBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1659,6 +1947,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("Hello, world!"))
+  contextBlockValue1 <- buildContextBlock ((contextBlock ([(markdownTextAsContextElement markdownTextValue1)])) {contextBlockBlockId = Just ("fake_block_id")})
+  pure contextBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1948,6 +2255,34 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("*a*"))
+  plainTextValue1 <- buildPlainText (plainText ("*a*"))
+  selectOptionValue1 <- buildSelectOption ((selectOption ((markdownTextAsText markdownTextValue1)) ("a")) {selectOptionDescription = Just ((plainTextAsText plainTextValue1))})
+  markdownTextValue2 <- buildMarkdownText (markdownText ("*b*"))
+  plainTextValue2 <- buildPlainText (plainText ("*b*"))
+  selectOptionValue2 <- buildSelectOption ((selectOption ((markdownTextAsText markdownTextValue2)) ("b")) {selectOptionDescription = Just ((plainTextAsText plainTextValue2))})
+  markdownTextValue3 <- buildMarkdownText (markdownText ("*c*"))
+  plainTextValue3 <- buildPlainText (plainText ("*c*"))
+  selectOptionValue3 <- buildSelectOption ((selectOption ((markdownTextAsText markdownTextValue3)) ("c")) {selectOptionDescription = Just ((plainTextAsText plainTextValue3))})
+  checkboxesElementValue1 <- buildCheckboxesElement ((checkboxesElement ([selectOptionValue1, selectOptionValue2, selectOptionValue3])) {checkboxesElementActionId = Just ("actionId-0")})
+  actionsBlockValue1 <- buildActionsBlock ((actionsBlock ([(checkboxesElementAsElement checkboxesElementValue1)])) {actionsBlockBlockId = Just ("fake_block_id")})
+  pure actionsBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -2422,6 +2757,36 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  richTextTextValue1 <- buildRichTextText ((richTextText ("Header 1")) {richTextTextStyle = Just ((richTextStyle {styleBold = Just True}))})
+  richTextSectionValue1 <- buildRichTextSection (richTextSection ([(richTextTextAsRichTextSectionElement richTextTextValue1)]))
+  richTextBlockValue1 <- buildRichTextBlock (richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue1)]))
+  richTextTextValue2 <- buildRichTextText ((richTextText ("Header 2")) {richTextTextStyle = Just ((richTextStyle {styleBold = Just True}))})
+  richTextSectionValue2 <- buildRichTextSection (richTextSection ([(richTextTextAsRichTextSectionElement richTextTextValue2)]))
+  richTextBlockValue2 <- buildRichTextBlock (richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue2)]))
+  rawTextValue1 <- buildRawText (rawText ("Datum 1"))
+  richTextLinkValue1 <- buildRichTextLink ((richTextLink ("https://slack.com")) {richTextLinkText = Just ("Datum 2")})
+  richTextSectionValue3 <- buildRichTextSection (richTextSection ([(richTextLinkAsRichTextSectionElement richTextLinkValue1)]))
+  richTextBlockValue3 <- buildRichTextBlock (richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue3)]))
+  columnSettingsValue1 <- buildColumnSettings ((columnSettings) {columnSettingsAlign = Just (ColumnAlignRight), columnSettingsIsWrapped = Just (True)})
+  columnSettingsValue2 <- buildColumnSettings ((columnSettings) {columnSettingsAlign = Just (ColumnAlignLeft)})
+  tableBlockValue1 <- buildTableBlock ((tableBlock ([[(richTextBlockAsTableCell richTextBlockValue1), (richTextBlockAsTableCell richTextBlockValue2)], [(rawTextAsTableCell rawTextValue1), (richTextBlockAsTableCell richTextBlockValue3)]])) {tableBlockColumnSettings = Just ([columnSettingsValue1, columnSettingsValue2]), tableBlockBlockId = Just ("fake_block_id")})
+  pure tableBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -2692,6 +3057,26 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText (plainText ("Use the Events API to create a dynamic App Home"))
+  plainTextValue2 <- buildPlainText (plainText ("Slack sure is nifty!"))
+  videoBlockValue1 <- buildVideoBlock ((videoBlock ("Use the Events API to create a dynamic App Home") ("https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg") (plainTextValue1) ("https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1")) {videoBlockBlockId = Just ("fake_block_id"), videoBlockDescription = Just (plainTextValue2), videoBlockTitleUrl = Just ("https://www.youtube.com/watch?v=8876OZV_Yy0")})
+  pure videoBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -2867,6 +3252,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("The deployment needs attention."))
+  alertBlockValue1 <- buildAlertBlock ((alertBlock ((markdownTextAsText markdownTextValue1))) {alertBlockLevel = Just (AlertLevelWarning), alertBlockBlockId = Just ("fake_block_id")})
+  pure alertBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3069,6 +3473,29 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("Build complete"))
+  markdownTextValue2 <- buildMarkdownText (markdownText ("Version 2.1.0 is ready to deploy."))
+  plainTextValue1 <- buildPlainText (plainText ("Open build"))
+  buttonElementValue1 <- buildButtonElement ((buttonElement (plainTextValue1)) {buttonElementActionId = Just ("open_build")})
+  slackIconValue1 <- buildSlackIcon (slackIcon ("rocket"))
+  cardBlockValue1 <- buildCardBlock ((cardBlock) {cardBlockTitle = Just ((markdownTextAsText markdownTextValue1)), cardBlockBody = Just ((markdownTextAsText markdownTextValue2)), cardBlockActions = Just ([buttonElementValue1]), cardBlockSlackIcon = Just (slackIconValue1), cardBlockBlockId = Just ("fake_block_id")})
+  pure cardBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3282,6 +3709,28 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("First result"))
+  cardBlockValue1 <- buildCardBlock ((cardBlock) {cardBlockTitle = Just ((markdownTextAsText markdownTextValue1)), cardBlockBlockId = Just ("card_1")})
+  markdownTextValue2 <- buildMarkdownText (markdownText ("Second result"))
+  cardBlockValue2 <- buildCardBlock ((cardBlock) {cardBlockTitle = Just ((markdownTextAsText markdownTextValue2)), cardBlockBlockId = Just ("card_2")})
+  carouselBlockValue1 <- buildCarouselBlock ((carouselBlock ([cardBlockValue1, cardBlockValue2])) {carouselBlockBlockId = Just ("fake_block_id")})
+  pure carouselBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3513,6 +3962,27 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("All systems operational."))
+  sectionBlockValue1 <- buildSectionBlock ((sectionBlock) {sectionBlockText = Just ((markdownTextAsText markdownTextValue1)), sectionBlockBlockId = Just ("child_1")})
+  plainTextValue1 <- buildPlainText (plainText ("Deployment summary"))
+  containerBlockValue1 <- buildContainerBlock ((containerBlock ([(sectionBlockAsBlock sectionBlockValue1)])) {containerBlockTitle = Just (plainTextValue1), containerBlockWidth = Just (ContainerWidthStandard), containerBlockIsCollapsible = Just (False), containerBlockDefaultCollapsed = Just (False), containerBlockHasHeaderDivider = Just (True), containerBlockBlockId = Just ("fake_block_id")})
+  pure containerBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3748,6 +4218,29 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText (plainText ("Good"))
+  feedbackButtonValue1 <- buildFeedbackButton (feedbackButton (plainTextValue1) ("positive"))
+  plainTextValue2 <- buildPlainText (plainText ("Bad"))
+  feedbackButtonValue2 <- buildFeedbackButton (feedbackButton (plainTextValue2) ("negative"))
+  feedbackButtonsElementValue1 <- buildFeedbackButtonsElement ((feedbackButtonsElement (feedbackButtonValue1) (feedbackButtonValue2)) {feedbackButtonsElementActionId = Just ("response_feedback")})
+  contextActionsBlockValue1 <- buildContextActionsBlock ((contextActionsBlock ([(feedbackButtonsElementAsContextActionsElement feedbackButtonsElementValue1)])) {contextActionsBlockBlockId = Just ("fake_block_id")})
+  pure contextActionsBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3827,6 +4320,9 @@ DataTableBlock()
   .build();
 ```
 
+The JavaScript `number` type is not an arbitrary-precision integer type. Check
+both the native input and serialized payload when large or exact values matter.
+
 </TypeScript>
 <Go>
 
@@ -3840,6 +4336,17 @@ block, err := slackblocks.NewDataTableBlock().
     BlockID("fake_block_id").
     Build()
 ```
+
+`RawNumberBuilder.Value(float64)` can round an integer such as `9007199254740993`
+before serialization. For exact JSON, import `encoding/json` and use
+`slackblocks.NewRawNumber().ValueNumber(json.Number("9007199254740993")).Text("9,007,199,254,740,993")`.
+The `slackblocks` import is `github.com/nicklambourne/slackblocks/go/v3`.
+
+`Build()` validates JSON number syntax, rejecting empty numbers, leading zeros,
+NaN and infinity. Integer, decimal and exponent lexemes stay numeric JSON values,
+not quoted strings; `Text` supplies the separate display label. This preserves
+emitted JSON, without promising arbitrary-precision sorting or rendering in Slack.
+Avoid a floating-point conversion earlier in an exact-value application path.
 
 </Go>
 <Java>
@@ -3973,6 +4480,28 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  rawTextValue1 <- buildRawText (rawText ("Name"))
+  rawTextValue2 <- buildRawText (rawText ("Score"))
+  rawTextValue3 <- buildRawText (rawText ("Alice"))
+  rawNumberValue1 <- buildRawNumber (rawNumber (42) ("42"))
+  dataTableBlockValue1 <- buildDataTableBlock ((dataTableBlock ([[(rawTextAsDataTableCell rawTextValue1), (rawTextAsDataTableCell rawTextValue2)], [(rawTextAsDataTableCell rawTextValue3), (rawNumberAsDataTableCell rawNumberValue1)]]) ("Team scores")) {dataTableBlockPageSize = Just (5), dataTableBlockRowHeaderColumnIndex = Just (0), dataTableBlockBlockId = Just ("fake_block_id")})
+  pure dataTableBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -4193,6 +4722,27 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  chartSegmentValue1 <- buildChartSegment (chartSegment ("High") (3))
+  chartSegmentValue2 <- buildChartSegment (chartSegment ("Low") (12))
+  pieChartValue1 <- buildPieChart (pieChart ([chartSegmentValue1, chartSegmentValue2]))
+  dataVisualizationBlockValue1 <- buildDataVisualizationBlock ((dataVisualizationBlock ("Incidents by severity") ((pieChartAsChart pieChartValue1))) {dataVisualizationBlockBlockId = Just ("fake_block_id")})
+  pure dataVisualizationBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -4389,6 +4939,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  urlSourceValue1 <- buildUrlSource (urlSource ("https://weather.com/") ("weather.com"))
+  taskCardBlockValue1 <- buildTaskCardBlock ((taskCardBlock ("weather_1") ("Fetch weather data") (TaskStatusComplete)) {taskCardBlockSources = Just ([urlSourceValue1]), taskCardBlockBlockId = Just ("fake_block_id")})
+  pure taskCardBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -4624,6 +5193,26 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  planTaskValue1 <- buildPlanTask (taskCardBlock ("test") ("Run the test suite") (TaskStatusComplete))
+  planTaskValue2 <- buildPlanTask (taskCardBlock ("deploy") ("Deploy the release") (TaskStatusPending))
+  planBlockValue1 <- buildPlanBlock ((planBlock ("Release plan") ([planTaskValue1, planTaskValue2])) {planBlockBlockId = Just ("fake_block_id")})
+  pure planBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -4664,7 +5253,8 @@ Slackblocks.to_map!(block)
 
 Compose ordinary Python block lists and `ContainerBlock` values for reusable
 layouts. Python does not currently expose the named `Paginator` and `Accordion`
-helpers shown for other languages. Use `block_kit_builder_url` for preview links;
+helpers. Keep paging state in the application. Use `block_kit_builder_url` for
+preview links;
 see [Utilities](../reference/python/builder) and [Blocks](../reference/python/blocks).
 
 </Python>
@@ -4747,7 +5337,8 @@ rule.
 
 ## Higher-Level Components
 
-Components expand to ordinary `slack.Block` values. Call `SlackBlocks()` and pass the
+`NewPaginator()` and `NewAccordionSection()` are fluent group builders. Components
+expand to ordinary `slack.Block` values. Call `SlackBlocks()` and pass the
 result straight to `slack.MsgOptionBlocks`; use `BuildMany()` only when composing a raw
 JSON payload.
 
@@ -4895,8 +5486,9 @@ Accordion sections use Slack-native collapsible containers and need no applicati
 
 ## Higher-Level Components
 
-Accordion sections render as collapsible containers. Pagination returns an array
-of ordinary blocks; the receiving message validates the expanded result.
+`AccordionSection.create(...)` returns a collapsible `ContainerBlock`;
+`Paginator.create(...)` returns an array of ordinary native blocks. The receiving
+message validates the expanded result.
 
 ```ruby
 require "slackblocks"
@@ -4914,7 +5506,7 @@ See [Components](../reference/ruby/components) for navigation labels and page op
 </Ruby>
 <Rust>
 
-The Rust API also provides `Accordion`, `AccordionSection`, `Paginator`, `Workflow::from_url`, attachment colors and `block_kit_builder_url`. See the [recipe book](cookbook) and [components reference](../reference/rust/components) for native examples.
+The Rust API also provides `Accordion`, `AccordionSection`, `Paginator`, `Workflow::from_url`, attachment colors and `block_kit_builder_url`. See the [recipe book](recipes) and [components reference](../reference/rust/components) for native examples.
 
 </Rust>
 <PHP>
@@ -4926,14 +5518,17 @@ The Rust API also provides `Accordion`, `AccordionSection`, `Paginator`, `Workfl
 Spread them into a payload to validate the total block count. Pagination uses
 one-based page numbers and emits `.previous`/`.next` action IDs and page values;
 your interaction handler chooses the next page. Accordion expansion is native
-to Slack. See the [recipe book](cookbook) and [components reference](../reference/php/components).
+to Slack. See the [recipe book](recipes) and [components reference](../reference/php/components).
 
 </PHP>
 <Elixir>
 
 ## Higher-Level Components
 
-Components return ordinary block lists; the application owns state and interaction routing.
+`Paginator.to_blocks/2` returns `{:ok, blocks}` or an error.
+`AccordionSection.new/1` returns a collapsible container in the same tagged form,
+and `Accordion.to_blocks/1` validates the list of sections. Bang variants return
+the value or raise. The application owns state and interaction routing.
 
 ```elixir
 alias Slackblocks.Blocks.Section
@@ -4959,4 +5554,40 @@ Put expanded blocks in the final payload so aggregate limits are checked.
 See [Components](/reference/elixir/components) for all options and defaults.
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result MessagePayload
+example = do
+  title <- buildPlainText (plainText "Details")
+  text <- buildMarkdownText (markdownText "Ready")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  container <- buildContainerBlock (accordionSection title [sectionBlockAsBlock section])
+  expanded <- accordion [container]
+  page <-
+    paginate
+      ((paginator "items") {paginatorPageSize = 1})
+      [sectionBlockAsBlock section, sectionBlockAsBlock section]
+  buildMessagePayload
+    ( (messagePayload "C1")
+        { messagePayloadText = Just "Items",
+          messagePayloadBlocks = Just (expanded <> page)
+        }
+    )
+```
+
+Helpers return ordinary checked blocks. The application owns interaction state and delivery.
+
+</Haskell>
 </LanguageContent>
+
+Component helpers compose blocks and controls. They do not store pagination state,
+process callbacks, schedule work or grant Slack permissions. Recompose each payload
+from application state and validate its receiving surface after expanding helpers.

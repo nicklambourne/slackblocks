@@ -17,6 +17,10 @@ USING_BLOCKS = REPO_ROOT / "docs/docs/usage/using_blocks.mdx"
 # have multiple examples rather than one block plus one JSON tab; other
 # implementations exercise their native helpers in their component tests.
 EXCLUDED_SECTIONS: set[str] = {"Higher-Level Components"}
+# Prose-only guidance is checked separately so adding an executable example
+# cannot silently bypass the block-example harness. Layout code lives in the
+# Recipe Book and is executed by docs/scripts/check_recipe_examples.py.
+NARRATIVE_SECTIONS = {"Ownership and edits", "Omission and defaults", "Layout grids"}
 
 PYTHON_FENCE = re.compile(r"```python\n(.*?)```", re.DOTALL)
 JSON_FENCE = re.compile(r"```json\n(.*?)```", re.DOTALL)
@@ -30,7 +34,7 @@ def block_sections() -> list[pytest.param]:
     sections = []
     for heading, next_heading in zip(headings, [*headings[1:], None], strict=True):
         title = heading.group(1)
-        if title in EXCLUDED_SECTIONS:
+        if title in EXCLUDED_SECTIONS | NARRATIVE_SECTIONS:
             continue
         body = text[heading.end() : next_heading.start() if next_heading else len(text)]
         code = PYTHON_FENCE.search(body)
@@ -62,10 +66,32 @@ def test_every_block_section_is_covered() -> None:
     """Every block section in the guide must be picked up by the harness."""
     titles = HEADING.findall(USING_BLOCKS.read_text(encoding="utf-8"))
     covered = {parameters.id for parameters in block_sections()}
-    assert covered == set(titles) - EXCLUDED_SECTIONS
+    assert covered == set(titles) - EXCLUDED_SECTIONS - NARRATIVE_SECTIONS
+
+
+def test_narrative_sections_do_not_hide_executable_examples() -> None:
+    text = USING_BLOCKS.read_text(encoding="utf-8")
+    headings = list(HEADING.finditer(text))
+    for heading, next_heading in zip(headings, [*headings[1:], None], strict=True):
+        if heading.group(1) not in NARRATIVE_SECTIONS:
+            continue
+        body = text[heading.end() : next_heading.start() if next_heading else len(text)]
+        assert PYTHON_FENCE.search(body) is None
+        assert JSON_FENCE.search(body) is None
 
 
 @pytest.mark.parametrize(("code", "expected"), block_sections())
 def test_block_section_matches_the_documented_json(code: str, expected: Any) -> None:
     block = evaluate_snippet(code)
     assert json.loads(repr(block)) == expected
+
+
+def test_button_prompt_example(capsys) -> None:
+    source = (REPO_ROOT / "docs/docs/usage/agent-prompts.mdx").read_text(encoding="utf-8")
+    code = PYTHON_FENCE.search(source)
+    assert code is not None
+    exec(compile(code.group(1), "<button-prompt-docs>", "exec"), {})
+    wire = json.loads(capsys.readouterr().out)
+    assert wire["agent_prompt"] == "Summarize this incident."
+    assert wire["agent_prompt_display"] == "Incident summary"
+    assert wire["action_id"] == "summarize_incident"

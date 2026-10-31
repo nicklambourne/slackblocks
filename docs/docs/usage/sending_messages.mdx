@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Sending Messages
 
@@ -1100,4 +1100,81 @@ that already compiled Jason before Decimal became available. Follow the
 [installation rebuild step](installation) for that existing-build case.
 
 </Elixir>
+<Haskell>
+
+## Native HTTP integration
+
+The core package only constructs and validates payloads. The separate
+[`haskell/integrations`](https://github.com/nicklambourne/slackblocks/tree/master/haskell/integrations)
+application uses `http-client`, `http-client-tls` and `http-types`, with locked,
+lower and latest dependency checks on the supported compiler endpoints.
+
+The community `slack-web` 2.3.0.0 client was reviewed for this integration. Its
+`PostMsgReq` omits message metadata, and its current revised bounds exclude the
+newest supported compiler's `base`. The native HTTP path therefore preserves the
+whole payload without lossy conversion. This is an integration choice, not a
+claim that no Haskell Slack clients exist.
+
+The following is the exact transport source exercised by the package's loopback
+HTTP tests. Pass a TLS manager created by `newManager tlsManagerSettings` for
+Slack HTTPS endpoints. Credentials and URLs come from application configuration;
+never log tokens or credential-bearing webhook/response URLs.
+
+```haskell title="Send.hs (integration-tested)"
+-- | Example application transport. The core slackblocks package has no HTTP
+-- dependency; applications own credentials, endpoints, retries and routing.
+module Send (ResponseKind (..), postPayload) where
+
+import Control.Monad (unless)
+import Data.Aeson (ToJSON, Value (..), eitherDecode, encode)
+import Data.Aeson.KeyMap qualified as KM
+import Data.ByteString qualified as B
+import Network.HTTP.Client
+import Network.HTTP.Types.Status (statusCode)
+
+data ResponseKind = SlackAPI | Webhook
+
+-- | Send an intact JSON object. API calls use a bearer token; webhook/response
+-- URLs use Nothing. Do not log either credentials or credential-bearing URLs.
+postPayload :: (ToJSON a) => Manager -> ResponseKind -> String -> Maybe B.ByteString -> a -> IO ()
+postPayload manager kind endpoint token payload = do
+  baseRequest <- parseRequest endpoint
+  let request =
+        baseRequest
+          { method = "POST",
+            requestHeaders =
+              [("Content-Type", "application/json; charset=utf-8")]
+                <> maybe [] (\value -> [("Authorization", "Bearer " <> value)]) token,
+            requestBody = RequestBodyLBS (encode payload),
+            redirectCount = 0,
+            checkResponse = \_ _ -> pure ()
+          }
+  response <- httpLbs request manager
+  let code = statusCode (responseStatus response)
+  unless (code >= 200 && code < 300) (fail ("Slack HTTP status " <> show code))
+  case kind of
+    Webhook -> unless (responseBody response == "ok") (fail "Unexpected webhook response")
+    SlackAPI -> case eitherDecode (responseBody response) of
+      Right (Object result) | KM.lookup "ok" result == Just (Bool True) -> pure ()
+      _ -> fail "Slack API did not confirm success"
+```
+
+Call `postPayload manager SlackAPI "https://slack.com/api/chat.postMessage"
+(Just token) payload` for a checked `MessagePayload`. Use `Webhook` and `Nothing`
+for an incoming-webhook URL; use `SlackAPI` for Web API envelopes such as
+`views.open` or `views.publish`. The runnable consumer includes message,
+webhook, response, modal and App Home examples with the correct envelopes.
+
+This transport makes one attempt: redirects and automatic retries are disabled.
+HTTP errors (including 429), malformed responses and Slack `ok: false` are
+failures. An application may implement bounded retries respecting `Retry-After`
+and idempotency, but this example does not silently resend a message. See
+[reliable delivery](/usage/recipes/reliable-delivery) for that application boundary.
+
+Run `python bin/http-check` from `haskell/` for actual request-byte, authentication,
+Unicode/metadata and error checks against an isolated local server. The archive
+checker repeats the integration from a fresh tarball consumer. These tests do
+not claim live Slack workspace acceptance or validate remote TLS configuration.
+
+</Haskell>
 </LanguageContent>

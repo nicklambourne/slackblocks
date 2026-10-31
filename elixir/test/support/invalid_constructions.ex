@@ -4,6 +4,408 @@ defmodule Slackblocks.Test.InvalidConstructions do
   # Explicit native attempts, maintained independently of the fixture JSON and API generator.
   def all do
     [
+      {"layout-home-alert",
+       fn ->
+         Views.Home.new!(
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block: Blocks.Alert.new!(text: Objects.PlainText.new!(text: "Modal only"))
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"layout-modal-fallback-table",
+       fn ->
+         Views.Modal.new!(
+           title: Objects.PlainText.new!(text: "Grid"),
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                 )
+               ],
+               fallback: [Blocks.Table.new!(rows: [[Objects.RawText.new!(text: "Cell")]])]
+             )
+           ]
+         )
+       end},
+      {"layout-chart-three-items",
+       fn ->
+         Objects.LayoutRow.new!(
+           items: [
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!()),
+             Objects.LayoutItem.new!(
+               block:
+                 Blocks.DataVisualization.new!(
+                   title: "Chart",
+                   chart:
+                     Objects.PieChart.new!(
+                       segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                     )
+                 )
+             ),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!())
+           ]
+         )
+       end},
+      {"layout-nested-table-total",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Container.new!(
+               title: Objects.PlainText.new!(text: "Group"),
+               child_blocks: [
+                 Blocks.Layout.new!(
+                   label: "Layout",
+                   rows: [
+                     Objects.LayoutRow.new!(
+                       items: [
+                         Objects.LayoutItem.new!(
+                           block:
+                             Blocks.DataTable.new!(
+                               rows: [
+                                 [Objects.RawText.new!(text: "H")],
+                                 [Objects.RawText.new!(text: String.duplicate("x", 10_000))]
+                               ],
+                               caption: "Data"
+                             )
+                         )
+                       ]
+                     )
+                   ]
+                 ),
+                 Blocks.Layout.new!(
+                   label: "Layout",
+                   rows: [
+                     Objects.LayoutRow.new!(
+                       items: [
+                         Objects.LayoutItem.new!(
+                           block:
+                             Blocks.DataTable.new!(
+                               rows: [
+                                 [Objects.RawText.new!(text: "H")],
+                                 [Objects.RawText.new!(text: String.duplicate("x", 10_000))]
+                               ],
+                               caption: "Data"
+                             )
+                         )
+                       ]
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"layout-message-budget",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks:
+             List.duplicate(
+               Blocks.Layout.new!(
+                 label: "Layout",
+                 rows: [
+                   Objects.LayoutRow.new!(
+                     items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                   )
+                 ]
+               ),
+               51
+             )
+         )
+       end},
+      {"layout-view-budget",
+       fn ->
+         Views.Home.new!(
+           blocks:
+             List.duplicate(
+               Blocks.Layout.new!(
+                 label: "Layout",
+                 rows: [
+                   Objects.LayoutRow.new!(
+                     items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                   )
+                 ]
+               ),
+               101
+             )
+         )
+       end},
+      {"layout-label-empty",
+       fn ->
+         Blocks.Layout.new!(
+           label: "",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             )
+           ]
+         )
+       end},
+      {"layout-label-too-long",
+       fn ->
+         Blocks.Layout.new!(
+           label: String.duplicate("😀", 151),
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             )
+           ]
+         )
+       end},
+      {"layout-rows-empty", fn -> Blocks.Layout.new!(label: "Layout", rows: []) end},
+      {"layout-too-many-rows",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             )
+           ]
+         )
+       end},
+      {"layout-items-empty", fn -> Objects.LayoutRow.new!(items: []) end},
+      {"layout-too-many-items",
+       fn ->
+         Objects.LayoutRow.new!(
+           items: [
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!()),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!()),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!()),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!())
+           ]
+         )
+       end},
+      {"layout-markdown-child",
+       fn -> Objects.LayoutItem.new!(block: Blocks.Markdown.new!(text: "No")) end},
+      {"layout-direct-child",
+       fn ->
+         Objects.LayoutItem.new!(
+           block:
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                 )
+               ]
+             )
+         )
+       end},
+      {"layout-fallback-actions",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             )
+           ],
+           fallback: [
+             Blocks.Actions.new!(
+               elements: [Elements.Button.new!(text: Objects.PlainText.new!(text: "Go"))]
+             )
+           ]
+         )
+       end},
+      {"layout-wide-siblings",
+       fn ->
+         Objects.LayoutRow.new!(
+           items: [
+             Objects.LayoutItem.new!(
+               block:
+                 Blocks.Carousel.new!(
+                   elements: [Blocks.Card.new!(title: Objects.PlainText.new!(text: "Card"))]
+                 )
+             ),
+             Objects.LayoutItem.new!(
+               block:
+                 Blocks.DataVisualization.new!(
+                   title: "Chart",
+                   chart:
+                     Objects.PieChart.new!(
+                       segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                     )
+                 )
+             )
+           ]
+         )
+       end},
+      {"layout-chart-half",
+       fn ->
+         Objects.LayoutRow.new!(
+           items: [
+             Objects.LayoutItem.new!(
+               block:
+                 Blocks.DataVisualization.new!(
+                   title: "Chart",
+                   chart:
+                     Objects.PieChart.new!(
+                       segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                     )
+                 )
+             ),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!())
+           ]
+         )
+       end},
+      {"layout-depth-three",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(
+                   block:
+                     Blocks.Container.new!(
+                       title: Objects.PlainText.new!(text: "Container"),
+                       child_blocks: [
+                         Blocks.Layout.new!(
+                           label: "Layout",
+                           rows: [
+                             Objects.LayoutRow.new!(
+                               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                             )
+                           ]
+                         )
+                       ]
+                     )
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"layout-message-alert",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block: Blocks.Alert.new!(text: Objects.PlainText.new!(text: "Modal only"))
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"layout-modal-input-submit",
+       fn ->
+         Views.Modal.new!(
+           title: Objects.PlainText.new!(text: "Input"),
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block:
+                         Blocks.Input.new!(
+                           label: Objects.PlainText.new!(text: "Name"),
+                           element: Elements.PlainTextInput.new!(action_id: "name")
+                         )
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"layout-three-charts",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block:
+                         Blocks.DataVisualization.new!(
+                           title: "Chart",
+                           chart:
+                             Objects.PieChart.new!(
+                               segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                             )
+                         )
+                     )
+                   ]
+                 ),
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block:
+                         Blocks.DataVisualization.new!(
+                           title: "Chart",
+                           chart:
+                             Objects.PieChart.new!(
+                               segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                             )
+                         )
+                     )
+                   ]
+                 ),
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block:
+                         Blocks.DataVisualization.new!(
+                           title: "Chart",
+                           chart:
+                             Objects.PieChart.new!(
+                               segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                             )
+                         )
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
       {"plain-text-input-inverted-range",
        fn -> Elements.PlainTextInput.new!(min_length: 20, max_length: 10) end},
       {"external-query-negative", fn -> Elements.ExternalSelect.new!(min_query_length: -1) end},
@@ -21,6 +423,10 @@ defmodule Slackblocks.Test.InvalidConstructions do
        fn -> Elements.StaticMultiSelect.new!(option_groups: []) end},
       {"text-empty", fn -> Objects.PlainText.new!(text: "") end},
       {"text-too-long", fn -> Objects.PlainText.new!(text: String.duplicate("x", 3_001)) end},
+      {"button-agent-prompt-too-long",
+       fn -> Elements.Button.new!(text: "A", agent_prompt: String.duplicate("😀", 4001)) end},
+      {"button-agent-prompt-display-without-prompt",
+       fn -> Elements.Button.new!(text: "A", agent_prompt_display: "") end},
       {"button-action-id-too-long",
        fn ->
          Elements.Button.new!(

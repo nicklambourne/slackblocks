@@ -33,6 +33,12 @@ module Slackblocks
   module RichTextSectionElement
   end
 
+  module LayoutChild
+  end
+
+  module LayoutFallback
+  end
+
   module AlertLevel
     DEFAULT = :default
     INFO = :info
@@ -80,9 +86,28 @@ module Slackblocks
     EPHEMERAL = :ephemeral
   end
 
+  module LayoutWidth
+    NARROW = :narrow
+    STANDARD = :standard
+    WIDE = :wide
+  end
+
+  module LayoutAlignment
+    START = :start
+    CENTER = :center
+    END_ = :end
+  end
+
+  module LayoutGridLines
+    NONE = :none
+    ROWS = :rows
+    OUTER = :outer
+  end
+
   class ActionsBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader :elements, :block_id, :additional_fields
   end
   ActionsBlock.const_set(:WIRE_TYPE, "actions")
@@ -93,6 +118,7 @@ module Slackblocks
   class AlertBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader :text, :level, :block_id, :additional_fields
   end
   AlertBlock.const_set(:WIRE_TYPE, "alert")
@@ -103,6 +129,7 @@ module Slackblocks
   class CardBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader :hero_image, :icon, :title, :subtitle, :body, :actions, :slack_icon, :subtext, :block_id, :additional_fields
   end
   CardBlock.const_set(:WIRE_TYPE, "card")
@@ -113,6 +140,7 @@ module Slackblocks
   class CarouselBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader :elements, :block_id, :additional_fields
   end
   CarouselBlock.const_set(:WIRE_TYPE, "carousel")
@@ -123,6 +151,7 @@ module Slackblocks
   class ContainerBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader :child_blocks, :title, :rich_text_title, :subtitle, :width, :icon, :is_collapsible, :default_collapsed, :has_header_divider, :block_id, :additional_fields
   end
   ContainerBlock.const_set(:WIRE_TYPE, "container")
@@ -143,6 +172,8 @@ module Slackblocks
   class ContextBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader :elements, :block_id, :additional_fields
   end
   ContextBlock.const_set(:WIRE_TYPE, "context")
@@ -153,6 +184,7 @@ module Slackblocks
   class DataTableBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader :rows, :caption, :page_size, :row_header_column_index, :block_id, :additional_fields
   end
   DataTableBlock.const_set(:WIRE_TYPE, "data_table")
@@ -163,6 +195,7 @@ module Slackblocks
   class DataVisualizationBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader :title, :chart, :block_id, :additional_fields
   end
   DataVisualizationBlock.const_set(:WIRE_TYPE, "data_visualization")
@@ -173,6 +206,8 @@ module Slackblocks
   class DividerBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader :block_id, :additional_fields
   end
   DividerBlock.const_set(:WIRE_TYPE, "divider")
@@ -183,6 +218,7 @@ module Slackblocks
   class FileBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader :external_id, :source, :block_id, :additional_fields
   end
   FileBlock.const_set(:WIRE_TYPE, "file")
@@ -193,6 +229,8 @@ module Slackblocks
   class HeaderBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader :text, :block_id, :additional_fields
   end
   HeaderBlock.const_set(:WIRE_TYPE, "header")
@@ -203,6 +241,8 @@ module Slackblocks
   class ImageBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader :image_url, :slack_file, :alt_text, :title, :block_id, :additional_fields
   end
   ImageBlock.const_set(:WIRE_TYPE, "image")
@@ -213,6 +253,7 @@ module Slackblocks
   class InputBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader :label, :element, :dispatch_action, :block_id, :hint, :optional, :additional_fields
   end
   InputBlock.const_set(:WIRE_TYPE, "input")
@@ -244,6 +285,8 @@ module Slackblocks
     include Value
     include Block
     include DataTableCell
+    include LayoutChild
+    include LayoutFallback
     include TableCell
     attr_reader :elements, :block_id, :additional_fields
   end
@@ -255,6 +298,8 @@ module Slackblocks
   class SectionBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader :text, :fields, :accessory, :block_id, :additional_fields
   end
   SectionBlock.const_set(:WIRE_TYPE, "section")
@@ -265,6 +310,8 @@ module Slackblocks
   class TableBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader :rows, :column_settings, :block_id, :additional_fields
   end
   TableBlock.const_set(:WIRE_TYPE, "table")
@@ -285,6 +332,8 @@ module Slackblocks
   class VideoBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader :alt_text, :thumbnail_url, :title, :video_url, :block_id, :author_name, :description, :provider_icon_url, :provider_name, :title_url, :additional_fields
   end
   VideoBlock.const_set(:WIRE_TYPE, "video")
@@ -295,10 +344,10 @@ module Slackblocks
   class ButtonElement
     include Value
     include Element
-    attr_reader :text, :action_id, :url, :value, :style, :confirm, :accessibility_label, :additional_fields
+    attr_reader :text, :action_id, :url, :value, :style, :confirm, :accessibility_label, :agent_prompt, :agent_prompt_display, :additional_fields
   end
   ButtonElement.const_set(:WIRE_TYPE, "button")
-  ButtonElement.const_set(:FIELD_SPECS, Value.deep_freeze([{"name" => "text", "wire" => "text", "kind" => "text", "target" => "PlainText", "coerce" => "plain_text", "flags" => nil, "limits" => "button.text", "required" => true}, {"name" => "action_id", "wire" => "action_id", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "action_id", "required" => false}, {"name" => "url", "wire" => "url", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "button.url", "required" => false}, {"name" => "value", "wire" => "value", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "button.value", "required" => false}, {"name" => "style", "wire" => "style", "kind" => "enum", "target" => "ButtonStyle", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "confirm", "wire" => "confirm", "kind" => "object", "target" => "Confirmation", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "accessibility_label", "wire" => "accessibility_label", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "button.accessibility_label", "required" => false}]))
+  ButtonElement.const_set(:FIELD_SPECS, Value.deep_freeze([{"name" => "text", "wire" => "text", "kind" => "text", "target" => "PlainText", "coerce" => "plain_text", "flags" => nil, "limits" => "button.text", "required" => true}, {"name" => "action_id", "wire" => "action_id", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "action_id", "required" => false}, {"name" => "url", "wire" => "url", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "button.url", "required" => false}, {"name" => "value", "wire" => "value", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "button.value", "required" => false}, {"name" => "style", "wire" => "style", "kind" => "enum", "target" => "ButtonStyle", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "confirm", "wire" => "confirm", "kind" => "object", "target" => "Confirmation", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "accessibility_label", "wire" => "accessibility_label", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "button.accessibility_label", "required" => false}, {"name" => "agent_prompt", "wire" => "agent_prompt", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "button.agent_prompt", "required" => false}, {"name" => "agent_prompt_display", "wire" => "agent_prompt_display", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}]))
   ButtonElement.const_set(:DEFAULTS, Value.deep_freeze({}))
   ButtonElement.singleton_class.prepend(KeywordOnly)
 
@@ -975,5 +1024,33 @@ module Slackblocks
   WebhookMessage.const_set(:FIELD_SPECS, Value.deep_freeze([{"name" => "blocks", "wire" => "blocks", "kind" => "list", "target" => "Block", "coerce" => nil, "flags" => nil, "limits" => "message.blocks", "required" => false}, {"name" => "attachments", "wire" => "attachments", "kind" => "list", "target" => "Attachment", "coerce" => nil, "flags" => nil, "limits" => "message.attachments", "required" => false}, {"name" => "text", "wire" => "text", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "response_type", "wire" => "response_type", "kind" => "enum", "target" => "ResponseType", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "replace_original", "wire" => "replace_original", "kind" => "boolean", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "delete_original", "wire" => "delete_original", "kind" => "boolean", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "unfurl_links", "wire" => "unfurl_links", "kind" => "boolean", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "unfurl_media", "wire" => "unfurl_media", "kind" => "boolean", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "metadata", "wire" => "metadata", "kind" => "map", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}]))
   WebhookMessage.const_set(:DEFAULTS, Value.deep_freeze({}))
   WebhookMessage.singleton_class.prepend(KeywordOnly)
+
+  class LayoutBlock
+    include Value
+    include Block
+    attr_reader :label, :rows, :is_label_visible, :grid_lines, :fallback, :block_id, :additional_fields
+  end
+  LayoutBlock.const_set(:WIRE_TYPE, "layout")
+  LayoutBlock.const_set(:FIELD_SPECS, Value.deep_freeze([{"name" => "label", "wire" => "label", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "layout.label", "required" => true}, {"name" => "rows", "wire" => "rows", "kind" => "list", "target" => "LayoutRow", "coerce" => nil, "flags" => nil, "limits" => "layout.rows", "required" => true}, {"name" => "is_label_visible", "wire" => "is_label_visible", "kind" => "boolean", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "grid_lines", "wire" => "grid_lines", "kind" => "enum", "target" => "LayoutGridLines", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "fallback", "wire" => "fallback", "kind" => "list", "target" => "LayoutFallback", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "block_id", "wire" => "block_id", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "block_id", "required" => false}]))
+  LayoutBlock.const_set(:DEFAULTS, Value.deep_freeze({}))
+  LayoutBlock.singleton_class.prepend(KeywordOnly)
+
+  class LayoutRow
+    include Value
+    attr_reader :items, :additional_fields
+  end
+  LayoutRow.const_set(:WIRE_TYPE, "")
+  LayoutRow.const_set(:FIELD_SPECS, Value.deep_freeze([{"name" => "items", "wire" => "items", "kind" => "list", "target" => "LayoutItem", "coerce" => nil, "flags" => nil, "limits" => "layout.items", "required" => true}]))
+  LayoutRow.const_set(:DEFAULTS, Value.deep_freeze({}))
+  LayoutRow.singleton_class.prepend(KeywordOnly)
+
+  class LayoutItem
+    include Value
+    attr_reader :block, :width, :horizontal_alignment, :additional_fields
+  end
+  LayoutItem.const_set(:WIRE_TYPE, "")
+  LayoutItem.const_set(:FIELD_SPECS, Value.deep_freeze([{"name" => "block", "wire" => "block", "kind" => "object", "target" => "LayoutChild", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => true}, {"name" => "width", "wire" => "width", "kind" => "enum", "target" => "LayoutWidth", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}, {"name" => "horizontal_alignment", "wire" => "horizontal_alignment", "kind" => "enum", "target" => "LayoutAlignment", "coerce" => nil, "flags" => nil, "limits" => nil, "required" => false}]))
+  LayoutItem.const_set(:DEFAULTS, Value.deep_freeze({}))
+  LayoutItem.singleton_class.prepend(KeywordOnly)
 
 end

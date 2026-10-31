@@ -3,7 +3,7 @@ sidebar_label: Welcome
 sidebar_position: 1
 ---
 
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -11,20 +11,20 @@ import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, Typ
   <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
 </p>
 
-`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir — without writing JSON by hand.
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, Elixir, and Haskell — without writing JSON by hand.
 
 It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
 
-- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir.
+- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, Elixir, and Haskell.
 - **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
 - **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
-- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, Ruby uses the default `json` gem, Rust depends only on Serde and serde_json, PHP needs only its built-in JSON and PCRE extensions, and Elixir uses Jason and Decimal.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, Ruby uses the default `json` gem, Rust depends only on Serde and serde_json, PHP needs only its built-in JSON and PCRE extensions, Elixir uses Jason and Decimal, and Haskell uses Aeson with native Text and exact numeric values.
 
 ## Quick Start
 
 Ready to build your first message? The [Quick Start guide](quick-start) takes you from installation to a validated Slack payload using the language selected in the top navigation.
 
-Find exact native names in the [current API reference index](/reference), or choose a working pattern from the [recipe index](/recipes). Both indexes cover the maintained implementation set.
+Find exact native names in the [current API reference index](/reference), or choose a working pattern from the [Recipe Book](/usage/recipes).
 
 ## Components
 
@@ -285,6 +285,28 @@ Choose a transport in [Sending Messages](usage/sending_messages); the same BEAM 
 are callable from [Erlang](usage/erlang).
 
 </Elixir>
+<Haskell>
+
+### Native values and checked construction
+
+Use `Slackblocks` for the public API, or import `Slackblocks.Models`, `.Helpers`,
+`.Style`, `.Json` and `.Validation` separately. Required arguments go to factories;
+optional record fields use `Maybe`. Complete values have hidden constructors and
+encode through Aeson only after validation.
+
+### Complete payloads and helpers
+
+The API covers all shared blocks, elements, composition objects, rich text,
+messages and views. `accordion`, `paginate`, `workflowFromURL`, color helpers and
+`blockKitBuilderURL` compose ordinary checked values. HTTP clients are separate.
+
+### Errors and editing
+
+`Result a` is `Either (NonEmpty ValidationError) a`. Inspect a value, edit the
+returned fields, and rebuild; the original stays immutable. `decode` checks raw
+JSON bytes, including duplicate keys. See the [native reference](/reference/haskell).
+
+</Haskell>
 </LanguageContent>
 
 ## Guides
@@ -295,7 +317,7 @@ are callable from [Erlang](usage/erlang).
 - [Installation](usage/installation)
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
-- [Recipe Book](usage/cookbook) — complete end-to-end recipes for common message patterns.
+- [Recipe Book](usage/recipes) — complete end-to-end recipes for common message patterns.
 - [Troubleshooting & FAQ](usage/troubleshooting)
 - [Migrating to 3.0.0](usage/migration) — breaking API changes and earlier migration guides.
 - [Contributing](contributing) — developing and contributing to `slackblocks` itself.
@@ -305,7 +327,7 @@ are callable from [Erlang](usage/erlang).
 
 - [Installation](usage/installation)
 - [Sending Messages](usage/sending_messages)
-- [Recipe Book](usage/cookbook) — complete end-to-end recipes for common message patterns.
+- [Recipe Book](usage/recipes) — complete end-to-end recipes for common message patterns.
 - [Contributing](contributing) — developing and contributing to `slackblocks` itself.
 
 </TypeScript>
@@ -314,7 +336,7 @@ are callable from [Erlang](usage/erlang).
 - [Installation](usage/installation)
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
-- [Recipe Book](usage/cookbook)
+- [Recipe Book](usage/recipes)
 - [Troubleshooting & FAQ](usage/troubleshooting)
 - [Contributing](contributing)
 
@@ -324,7 +346,7 @@ are callable from [Erlang](usage/erlang).
 - [Installation](usage/installation)
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
-- [Recipe Book](usage/cookbook)
+- [Recipe Book](usage/recipes)
 - [Troubleshooting & FAQ](usage/troubleshooting)
 - [Contributing](contributing)
 
@@ -334,7 +356,7 @@ are callable from [Erlang](usage/erlang).
 - [Installation](usage/installation)
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
-- [Recipe Book](usage/cookbook)
+- [Recipe Book](usage/recipes)
 - [Troubleshooting & FAQ](usage/troubleshooting)
 - [Contributing](contributing)
 
@@ -344,7 +366,7 @@ are callable from [Erlang](usage/erlang).
 - [Installation](usage/installation)
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
-- [Recipe Book](usage/cookbook)
+- [Recipe Book](usage/recipes)
 - [Troubleshooting & FAQ](usage/troubleshooting)
 - [Contributing](contributing)
 
@@ -354,7 +376,7 @@ are callable from [Erlang](usage/erlang).
 - [Installation](usage/installation)
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
-- [Recipe Book](usage/cookbook)
+- [Recipe Book](usage/recipes)
 - [Troubleshooting](usage/troubleshooting)
 - [Compatibility](usage/compatibility)
 - [Migration](usage/migration)
@@ -366,7 +388,7 @@ are callable from [Erlang](usage/erlang).
 - [Installation](usage/installation)
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
-- [Recipe Book](usage/cookbook)
+- [Recipe Book](usage/recipes)
 - [Troubleshooting](usage/troubleshooting)
 - [Compatibility](usage/compatibility)
 - [Migration](usage/migration)
@@ -378,7 +400,7 @@ are callable from [Erlang](usage/erlang).
 - [Installation](usage/installation)
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
-- [Recipe Book](usage/cookbook)
+- [Recipe Book](usage/recipes)
 - [Erlang integration](usage/erlang)
 - [Troubleshooting](usage/troubleshooting)
 - [Compatibility](usage/compatibility)
@@ -386,4 +408,16 @@ are callable from [Erlang](usage/erlang).
 - [Contributing](contributing)
 
 </Elixir>
+<Haskell>
+
+- [Install from Hackage or a source archive](/usage/installation).
+- [Build a first message](/quick-start).
+- [Compiler and dependency support](/usage/compatibility).
+- [Native blocks and their JSON](/usage/using_blocks).
+- [Recipe Book, editing and helpers](/usage/recipes).
+- [Native HTTP sending](/usage/sending_messages).
+- [Compiled API reference](/reference/haskell).
+- [Ownership and edits](/usage/using_blocks#ownership-and-edits).
+
+</Haskell>
 </LanguageContent>

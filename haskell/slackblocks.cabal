@@ -1,0 +1,112 @@
+cabal-version: 3.0
+name: slackblocks
+version: 3.2.0
+synopsis: Typed and validated Slack Block Kit composition
+description: Immutable Block Kit values, checked construction, and Aeson encoding.
+homepage: https://github.com/nicklambourne/slackblocks
+bug-reports: https://github.com/nicklambourne/slackblocks/issues
+license: MIT
+license-file: LICENSE
+author: Nicholas Lambourne
+maintainer: dev@ndl.au
+category: Web
+build-type: Simple
+tested-with: GHC ==9.6.7 || ==9.8.4 || ==9.10.3 || ==9.12.4 || ==9.14.1
+extra-doc-files: README.md CHANGELOG.md integrations/README.md
+data-files: test/spec/**/*.json
+extra-source-files: generator/*.py bin/check bin/sync-spec bin/api-audit bin/quality
+                    conformance/skiplist.txt conformance/public-api.json
+                    bin/package-check bin/http-check bin/dependency-check
+                    dependencies/*.json consumer/Main.hs
+                    integrations/transport.cabal integrations/src/*.hs
+
+source-repository head
+  type: git
+  location: https://github.com/nicklambourne/slackblocks.git
+  subdir: haskell
+
+common language
+  default-language: GHC2021
+  default-extensions: OverloadedStrings
+  ghc-options: -Wall -Wcompat
+
+library
+  import: language
+  hs-source-dirs: src
+  exposed-modules: Slackblocks Slackblocks.Validation Slackblocks.Models
+                   Slackblocks.Json Slackblocks.Style Slackblocks.Helpers
+  other-modules: Slackblocks.Internal.Wire Slackblocks.Internal.Rules
+                 Slackblocks.Internal.Schema Slackblocks.Internal.Decimal
+                 Slackblocks.Internal.JsonSyntax
+  build-depends:
+    base >=4.18 && <4.23,
+    aeson >=2.2 && <2.4,
+    bytestring >=0.11.5.4 && <0.13,
+    text >=2.0.2 && <2.2,
+    containers >=0.6.7 && <0.9,
+    scientific >=0.3.7 && <0.4,
+    vector >=0.13 && <0.14
+
+test-suite foundation
+  import: language
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Foundation.hs
+  build-depends:
+    base >=4.18 && <4.23,
+    slackblocks,
+    aeson >=2.2 && <2.4,
+    text >=2.0.2 && <2.2
+
+test-suite conformance
+  import: language
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Conformance.hs
+  other-modules: Constructions Paths_slackblocks
+  autogen-modules: Paths_slackblocks
+  build-depends:
+    base >=4.18 && <4.23,
+    slackblocks,
+    aeson >=2.2 && <2.4,
+    containers >=0.6.7 && <0.9,
+    text >=2.0.2 && <2.2
+
+test-suite boundaries
+  import: language
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Boundaries.hs
+  build-depends:
+    base >=4.18 && <4.23,
+    slackblocks,
+    aeson >=2.2 && <2.4,
+    containers >=0.6.7 && <0.9,
+    text >=2.0.2 && <2.2
+
+test-suite helpers
+  import: language
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Helpers.hs
+  build-depends:
+    base >=4.18 && <4.23,
+    slackblocks,
+    aeson >=2.2 && <2.4,
+    bytestring >=0.11.5.4 && <0.13,
+    containers >=0.6.7 && <0.9,
+    text >=2.0.2 && <2.2,
+    QuickCheck >=2.14.3 && <2.17
+
+test-suite adversarial
+  import: language
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Adversarial.hs
+  build-depends:
+    base >=4.18 && <4.23,
+    slackblocks,
+    aeson >=2.2 && <2.4,
+    bytestring >=0.11.5.4 && <0.13,
+    containers >=0.6.7 && <0.9,
+    text >=2.0.2 && <2.2

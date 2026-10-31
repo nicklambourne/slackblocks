@@ -1,0 +1,12 @@
+{
+    "type": "channel",
+    "channel_id": "C0261C65XNY",
+    "style": {
+        "bold": true,
+        "italic": false,
+        "strike": true,
+        "highlight": true,
+        "client_highlight": true,
+        "unlink": false
+    }
+}

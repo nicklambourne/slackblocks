@@ -1,0 +1,18 @@
+{
+    "type": "section",
+    "block_id": "fake_block_id",
+    "text": {
+        "type": "mrkdwn",
+        "text": "Test:"
+    },
+    "fields": [
+        {
+            "type": "plain_text",
+            "text": "foo"
+        },
+        {
+            "type": "mrkdwn",
+            "text": "bar"
+        }
+    ]
+}

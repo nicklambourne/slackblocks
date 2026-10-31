@@ -1,4 +1,4 @@
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Troubleshooting & FAQ
 
@@ -6,8 +6,8 @@ Practical answers to common questions, gotchas, and validation errors.
 
 See [Validation boundaries](validation-boundary) for the distinction between
 local checks, Slack structural validation and application-owned date rules.
-See [Language semantics](language-semantics) for ownership, omitted values, getter
-optionality, helper availability and exact numbers.
+See [Using Blocks](using_blocks#ownership-and-edits) for ownership, editing and
+omitted values, plus native helper and numeric examples.
 
 <LanguageContent>
 <Python>
@@ -369,6 +369,18 @@ Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 </Go>
 <Java>
 
+## Why does a getter throw for a valid value? {#conditional-getters}
+
+Some getters retain a required-field signature even when a valid alternative omits
+that field. A URL-only `ButtonElement` can omit `action_id`, so `getActionId()`
+throws `IllegalStateException`. An `ImageBlock` using a Slack file can omit
+`image_url`, so `getImageUrl()` throws. Choose the getter for the alternative you
+constructed, or check the immutable `toMap()` before calling a required getter.
+
+`SectionBlock.getText()` returns `Optional<Text>` and safely represents a fields-only
+section. These getter signatures do not make URL-only buttons or Slack-file images
+invalid.
+
 ## Why is Slack showing literal `*asterisks*`?
 
 `SectionBlock.builder().markdownText(...)` creates `mrkdwn`, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. Markdown syntax in those fields is intentionally literal.
@@ -439,6 +451,13 @@ Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 
 </Java>
 <CSharp>
+
+## Why is a property null on a valid value? {#optional-properties}
+
+A URL-only `ButtonElement` can omit `action_id`, and an `ImageBlock` using a Slack
+file can omit `image_url`. Their `ActionId` and `ImageUrl` properties are nullable.
+Read the properties for the alternative you constructed; absence does not make
+these models invalid.
 
 ## Why is Slack showing literal `*asterisks*`?
 
@@ -725,6 +744,48 @@ For missing modules or unconsolidated protocols in Rebar3 releases, use the
 [Erlang integration guide](erlang).
 
 </Elixir>
+<Haskell>
+
+## A field record has no ToJSON instance
+
+A factory such as `sectionBlock` returns construction fields. Complete it with
+`buildSectionBlock`, handle the `Result`, and encode the checked value. This
+prevents invalid intermediate records from escaping as payloads.
+
+## Expected TextObject, Element or Block
+
+Use the native role conversion: `markdownTextAsText`, `buttonElementAsElement`
+or `sectionBlockAsBlock`. A pending `PlanTask` belongs only in a plan. Do not
+replace a missing conversion with unchecked JSON.
+
+## decode is ambiguous
+
+Import only `encode` from `Data.Aeson`, and import `decode` from `Slackblocks`,
+or qualify one module. `Slackblocks.decode` rejects duplicates and validates
+modeled values; `Data.Aeson.decode` has a different error boundary.
+
+## Construction returned Left
+
+Inspect `errorCategory`, `errorPath` and `errorConstraint`. `renderPath` formats
+paths for logs; avoid depending on error-message prose. Validate a complete
+message/view after helpers expand its blocks, because surface limits belong to
+the receiving payload.
+
+## Cabal cannot find the package or solve dependencies
+
+Run `cabal update` and check your application's `build-depends` as shown in
+[Installation](/usage/installation). Check GHC and declared bounds against
+[Compatibility](/usage/compatibility); do not use `allow-newer` to hide an untested
+compiler or dependency. HTTP dependencies belong to the separate application
+example, not the core library.
+
+## A change to inspected fields did not affect the original
+
+Values are immutable. Rebuild the edited fields and use the returned value;
+keep handling validation failures. False and zero are meaningful, while `Nothing`
+clears an optional field.
+
+</Haskell>
 </LanguageContent>
 
 ## `submit_disabled` on ordinary modals

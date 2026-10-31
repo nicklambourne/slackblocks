@@ -939,6 +939,22 @@
           "readerType": "String",
           "required": false,
           "description": "Sets the label read by screen readers in place of the visible text."
+        },
+        {
+          "name": "agent_prompt",
+          "wire": "agent_prompt",
+          "type": "String",
+          "readerType": "String",
+          "required": false,
+          "description": "Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds."
+        },
+        {
+          "name": "agent_prompt_display",
+          "wire": "agent_prompt_display",
+          "type": "String",
+          "readerType": "String",
+          "required": false,
+          "description": "Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable."
         }
       ]
     },
@@ -3678,6 +3694,113 @@
           "readerType": "Hash[String, untyped]",
           "required": false,
           "description": "Sets message metadata as a JSON-compatible map, such as event_type and event_payload."
+        }
+      ]
+    },
+    {
+      "name": "LayoutBlock",
+      "package": "block",
+      "description": "A visual grid of one to five rows on messages, modals, and App Home. Supply fallback content for older clients.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "wireType": "layout",
+      "fields": [
+        {
+          "name": "label",
+          "wire": "label",
+          "type": "String",
+          "readerType": "String",
+          "required": true,
+          "description": "Describes the layout. A visible label is bold text, not a semantic heading."
+        },
+        {
+          "name": "rows",
+          "wire": "rows",
+          "type": "Array[LayoutRow]",
+          "readerType": "Array[LayoutRow]",
+          "required": true,
+          "description": "Adds one to five rows in source and reading order."
+        },
+        {
+          "name": "is_label_visible",
+          "wire": "is_label_visible",
+          "type": "bool",
+          "readerType": "bool",
+          "required": false,
+          "description": "Shows the label above the grid. Slack defaults to false; hidden labels are not exposed to screen readers."
+        },
+        {
+          "name": "grid_lines",
+          "wire": "grid_lines",
+          "type": ":none | :rows | :outer",
+          "readerType": ":none | :rows | :outer",
+          "required": false,
+          "description": "Sets outer borders and horizontal row dividers. Slack defaults to none; there are no vertical dividers."
+        },
+        {
+          "name": "fallback",
+          "wire": "fallback",
+          "type": "Array[LayoutFallback]",
+          "readerType": "Array[LayoutFallback]",
+          "required": false,
+          "description": "Adds stable blocks rendered in place of the layout on older clients. Omission is allowed; Slack normalizes it to an empty array and does not synthesize content."
+        },
+        {
+          "name": "block_id",
+          "wire": "block_id",
+          "type": "String",
+          "readerType": "String",
+          "required": false,
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again."
+        }
+      ]
+    },
+    {
+      "name": "LayoutRow",
+      "package": "object",
+      "description": "One to three layout items in reading order. A row has no alignment or discriminator.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "wireType": "",
+      "fields": [
+        {
+          "name": "items",
+          "wire": "items",
+          "type": "Array[LayoutItem]",
+          "readerType": "Array[LayoutItem]",
+          "required": true,
+          "description": "Adds one to three items in source order."
+        }
+      ]
+    },
+    {
+      "name": "LayoutItem",
+      "package": "object",
+      "description": "One supported child block with a proportional width and optional direction-aware alignment.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "wireType": "",
+      "fields": [
+        {
+          "name": "block",
+          "wire": "block",
+          "type": "LayoutChild",
+          "readerType": "LayoutChild",
+          "required": true,
+          "description": "Sets the child block. Direct nested layouts and markdown blocks are not supported."
+        },
+        {
+          "name": "width",
+          "wire": "width",
+          "type": ":narrow | :standard | :wide",
+          "readerType": ":narrow | :standard | :wide",
+          "required": false,
+          "description": "Sets the relative row weight: narrow 1, standard 2 (default), wide 3. Full is not supported."
+        },
+        {
+          "name": "horizontal_alignment",
+          "wire": "horizontal_alignment",
+          "type": ":start | :center | :end",
+          "readerType": ":start | :center | :end",
+          "required": false,
+          "description": "Aligns content within the cell. Omission fills the cell; start and end follow text direction."
         }
       ]
     }

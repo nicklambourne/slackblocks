@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.3.0",
+  "spec_version": "1.5.0",
   "fixtures": [
     {
       "id": "attachments/attachment_multi_block",
@@ -222,6 +222,30 @@
       "description": "Video Block Full",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
       "since": "1.0.0"
+    },
+    {
+      "id": "elements/button_agent_prompt",
+      "description": "Button with a prompt and no action ID",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+      "since": "1.4.0"
+    },
+    {
+      "id": "elements/button_agent_prompt_at_limit",
+      "description": "Button prompt at the Unicode code point limit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+      "since": "1.4.0"
+    },
+    {
+      "id": "elements/button_agent_prompt_display",
+      "description": "Button with a custom prompt display longer than its label limit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+      "since": "1.4.0"
+    },
+    {
+      "id": "elements/button_agent_prompt_empty",
+      "description": "Button preserves empty supplied prompt strings",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+      "since": "1.4.0"
     },
     {
       "id": "elements/button_basic",
@@ -654,6 +678,48 @@
       "description": "Message with the maximum two data visualization blocks",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/",
       "since": "1.3.0"
+    },
+    {
+      "id": "blocks/layout_block",
+      "description": "Minimal layout preserves omitted defaults",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "since": "1.5.0"
+    },
+    {
+      "id": "blocks/layout_styled",
+      "description": "Width ratios, directional alignment, visible label and explicit fallback",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "since": "1.5.0"
+    },
+    {
+      "id": "blocks/layout_empty_fallback",
+      "description": "False visibility and empty fallback remain explicit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "since": "1.5.0"
+    },
+    {
+      "id": "blocks/layout_limits",
+      "description": "Unicode label and five rows of three children at all boundaries",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "since": "1.5.0"
+    },
+    {
+      "id": "blocks/layout_container",
+      "description": "A layout can contain a container",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "since": "1.5.0"
+    },
+    {
+      "id": "blocks/container_layout",
+      "description": "A container can contain a layout",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "since": "1.5.0"
+    },
+    {
+      "id": "blocks/layout_chart_majority",
+      "description": "A chart has three fifths of the row weight",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "since": "1.5.0"
     }
   ]
 }

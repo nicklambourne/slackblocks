@@ -10,7 +10,7 @@ namespace Slackblocks;
  * A remote file previously added with the files.remote API.
  * @see https://docs.slack.dev/reference/block-kit/blocks/file-block
  */
-final readonly class FileBlock extends Value implements Block
+final readonly class FileBlock extends Value implements Block, LayoutChild
 {
     /** Sets the external identifier of a remote file previously added with the files.remote API.
      * @var string

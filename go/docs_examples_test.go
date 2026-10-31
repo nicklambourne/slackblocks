@@ -64,3 +64,33 @@ func TestResponseURLDocumentationExample(t *testing.T) {
 		t.Fatalf("response URL recipe wire mismatch: %s", actualData)
 	}
 }
+
+func TestButtonPromptDocumentation(t *testing.T) {
+	source, err := os.ReadFile(filepath.Join("..", "docs", "docs", "usage", "agent-prompts.mdx"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	snippet := goFencePattern.FindSubmatch(source)
+	if len(snippet) != 2 {
+		t.Fatal("missing Go prompt recipe")
+	}
+	directory, err := os.MkdirTemp("internal", "promptdocs-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.RemoveAll(directory) })
+	if err := os.WriteFile(filepath.Join(directory, "main.go"), snippet[1], 0o644); err != nil {
+		t.Fatal(err)
+	}
+	output, err := exec.Command("go", "run", "./"+directory).CombinedOutput()
+	if err != nil {
+		t.Fatalf("prompt example failed: %v %s", err, output)
+	}
+	var wire map[string]any
+	if err := json.Unmarshal(output, &wire); err != nil {
+		t.Fatal(err)
+	}
+	if wire["agent_prompt"] != "Summarize this incident." || wire["agent_prompt_display"] != "Incident summary" || wire["action_id"] != "summarize_incident" {
+		t.Fatalf("prompt example differs: %s", output)
+	}
+}

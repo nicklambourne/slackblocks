@@ -3,7 +3,7 @@ sidebar_label: Quick Start
 sidebar_position: 2
 ---
 
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Quick Start
 
@@ -120,7 +120,7 @@ Java 17 or newer is required. Add slackblocks and the official Slack Java SDK cl
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>3.0.0</version>
+  <version>3.2.0</version>
 </dependency>
 <dependency>
   <groupId>com.slack.api</groupId>
@@ -220,7 +220,7 @@ puts message.to_json
 Rust 1.85 or newer is required; the crate uses edition 2024.
 
 ```sh
-cargo add slackblocks@3.0.0
+cargo add slackblocks@3.2.0
 cargo add serde_json
 ```
 
@@ -322,9 +322,62 @@ Slackblocks.to_map!(message)
 
 Send the validated string-keyed map with the community Slack client or Req;
 see [Sending Messages](usage/sending_messages). Pattern matching, immutable edits
-and tagged errors are covered in the [Recipe Book](usage/cookbook).
+and tagged errors are covered in the [Recipe Book](usage/recipes).
 
 </Elixir>
+<Haskell>
+
+## Install
+
+Add `slackblocks >= 3.2 && < 3.3` to your application's Cabal `build-depends`,
+then run `cabal update` and `cabal build`. See [Installation](usage/installation).
+GHC 9.6.7 is the minimum tested compiler.
+
+## Build a message
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result MessagePayload
+example = do
+  title <- buildPlainText (plainText "Build #482 passed")
+  heading <- buildHeaderBlock (headerBlock title)
+  branch <- buildMarkdownText (markdownText "*Branch*\n`main`")
+  tests <- buildMarkdownText (markdownText "*Tests*\n1,247 passed")
+  details <-
+    buildSectionBlock
+      ( sectionBlock
+          { sectionBlockFields = Just (map markdownTextAsText [branch, tests])
+          }
+      )
+  label <- buildPlainText (plainText "View build")
+  button <-
+    buildButtonElement
+      ( (buttonElement label)
+          { buttonElementActionId = Just "view",
+            buttonElementUrl = Just "https://ci.example.com/482"
+          }
+      )
+  actions <- buildActionsBlock (actionsBlock [buttonElementAsElement button])
+  buildMessagePayload
+    ( (messagePayload "C0123456789")
+        { messagePayloadText = Just "Build #482 passed",
+          messagePayloadBlocks = Just [headerBlockAsBlock heading, sectionBlockAsBlock details, actionsBlockAsBlock actions]
+        }
+    )
+```
+
+Factories create editable field records. `build…` validates and returns `Either`
+with structured errors; the `do` block stops on the first failed construction.
+On `Right payload`, `Data.Aeson.encode payload` produces the complete wire JSON.
+Keep the fallback text useful for notifications and accessibility. Sending is
+application-owned; see [Sending Messages](usage/sending_messages).
+
+</Haskell>
 </LanguageContent>
 
 ## Where to go next

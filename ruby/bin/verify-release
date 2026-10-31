@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compatibility entry point for the shared nine-language release preflight."""
+"""Compatibility entry point for the shared ten-language release preflight."""
 
 import os
 import sys

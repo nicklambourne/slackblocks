@@ -682,7 +682,6 @@ def interface_source(model: Model, spec: dict) -> str:
     doc = [sentence(spec["description"]), "", "<p>Implemented by " + ", ".join(f"{{@link {n}}}" for n in names) + "."]
     if name == "Block":
         imports.add(f"{BASE_PACKAGE}.SlackObject")
-        imports.add("com.slack.api.model.block.LayoutBlock")
         imports.add("java.util.Objects")
         imports.add("org.jspecify.annotations.Nullable")
         body = """
@@ -707,9 +706,9 @@ def interface_source(model: Model, spec: dict) -> str:
     return (String) toMap().get("block_id");
   }
 """
-        declaration = "public interface Block extends LayoutBlock, SlackObject {" + body + "}"
+        declaration = "public interface Block extends com.slack.api.model.block.LayoutBlock, SlackObject {" + body + "}"
     else:
-        parent = "Element" if name == "InputElement" else "SlackObject"
+        parent = "Block" if name in {"LayoutChild", "LayoutFallback"} else "Element" if name == "InputElement" else "SlackObject"
         if parent == "SlackObject":
             imports.add(f"{BASE_PACKAGE}.SlackObject")
         declaration = f"public interface {name} extends {parent} {{}}"

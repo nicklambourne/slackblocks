@@ -10,7 +10,7 @@ namespace Slackblocks;
  * A simple table of raw text and rich text cells.
  * @see https://docs.slack.dev/reference/block-kit/blocks/table-block
  */
-final readonly class TableBlock extends Value implements Block
+final readonly class TableBlock extends Value implements Block, LayoutChild, LayoutFallback
 {
     /** Adds complete table rows in display order.
      * @var list<list<TableCell>>

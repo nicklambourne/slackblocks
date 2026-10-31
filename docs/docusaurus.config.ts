@@ -2,6 +2,7 @@ import type { Config } from "@docusaurus/types";
 import type { Options as ClassicPresetOptions } from "@docusaurus/preset-classic";
 import { themes as prismThemes } from "prism-react-renderer";
 import { readFileSync } from "node:fs";
+import sidebarItemsGenerator from "./plugins/recipe-book-sidebar";
 
 const pythonProject = readFileSync(
   new URL("../python/pyproject.toml", import.meta.url),
@@ -60,6 +61,10 @@ const elixirManifest = readFileSync(new URL("../elixir/mix.exs", import.meta.url
 const elixirVersion = elixirManifest.match(/version:\s*"([^"]+)"/)?.[1];
 if (!elixirVersion) throw new Error("Could not read the Elixir package version");
 
+const haskellManifest = readFileSync(new URL("../haskell/slackblocks.cabal", import.meta.url), "utf8");
+const haskellVersion = haskellManifest.match(/^version:\s*(\S+)/m)?.[1];
+if (!haskellVersion) throw new Error("Could not read the Haskell package version");
+
 const legacyManifest = JSON.parse(
   readFileSync(new URL("./legacy/manifest.json", import.meta.url), "utf8"),
 ) as {
@@ -94,6 +99,7 @@ function routePath(prefix: string, route: string): string {
 }
 
 function currentRoute(route: string): string {
+  if (route === "/usage/cookbook") return "/usage/recipes";
   if (!route.startsWith("/reference/")) return route;
   const page = route.slice("/reference/".length);
   return `/reference/python/${page === "utils" ? "builder" : page}`;
@@ -128,10 +134,11 @@ if (
   rubyVersion !== pythonVersion ||
   rustVersion !== pythonVersion ||
   phpVersion !== pythonVersion ||
-  elixirVersion !== pythonVersion
+  elixirVersion !== pythonVersion ||
+  haskellVersion !== pythonVersion
 ) {
   throw new Error(
-    `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}, Java is ${javaVersion}, C# is ${csharpVersion}, Ruby is ${rubyVersion}, Rust is ${rustVersion}, PHP is ${phpVersion}, Elixir is ${elixirVersion}`,
+    `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}, Java is ${javaVersion}, C# is ${csharpVersion}, Ruby is ${rubyVersion}, Rust is ${rustVersion}, PHP is ${phpVersion}, Elixir is ${elixirVersion}, Haskell is ${haskellVersion}`,
   );
 }
 
@@ -247,6 +254,8 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
+          sidebarItemsGenerator,
+          beforeDefaultRemarkPlugins: [require("./plugins/recipe-book-links.cjs")],
           showLastUpdateTime: true,
           lastVersion: "current",
           versions: {
@@ -323,7 +332,14 @@ const config: Config = {
       "@docusaurus/plugin-client-redirects",
       {
         redirects: [
+          { from: "/usage/language-semantics", to: "/usage/using_blocks" },
           ...currentAliasRedirects,
+          { from: "/usage/cookbook", to: "/usage/recipes" },
+          { from: "/recipes", to: "/usage/recipes" },
+          ...["multiselect-compatibility", "workflow-state", "reliable-delivery", "live-prerequisites"].map((recipe) => ({
+            from: `/recipes/${recipe}`,
+            to: `/usage/recipes/${recipe}`,
+          })),
           ...(legacyManifest.migration.aliases_enabled
             ? historicalAliasRedirects()
             : []),
@@ -363,7 +379,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.vsDark,
-      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "erlang", "json", "toml"],
+      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "erlang", "haskell", "json", "toml"],
     },
     navbar: {
       title: "slackblocks",

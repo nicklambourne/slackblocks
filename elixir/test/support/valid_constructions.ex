@@ -4,6 +4,185 @@ defmodule Slackblocks.Test.ValidConstructions do
   # Explicit native attempts, maintained independently of the fixture JSON and API generator.
   def all do
     [
+      {"blocks/layout_chart_majority",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Chart summary",
+           block_id: "layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(
+                   block:
+                     Blocks.DataVisualization.new!(
+                       title: "Chart",
+                       block_id: "chart",
+                       chart:
+                         Objects.PieChart.new!(
+                           segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                         )
+                     ),
+                   width: :wide
+                 ),
+                 Objects.LayoutItem.new!(
+                   block: Blocks.Divider.new!(block_id: "child"),
+                   width: :standard
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"blocks/layout_block",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child"))]
+             )
+           ],
+           block_id: "layout"
+         )
+       end},
+      {"blocks/layout_styled",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Status",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(
+                   block: Blocks.Divider.new!(block_id: "0"),
+                   width: :narrow,
+                   horizontal_alignment: :start
+                 ),
+                 Objects.LayoutItem.new!(
+                   block: Blocks.Divider.new!(block_id: "1"),
+                   width: :standard,
+                   horizontal_alignment: :center
+                 ),
+                 Objects.LayoutItem.new!(
+                   block: Blocks.Divider.new!(block_id: "2"),
+                   width: :wide,
+                   horizontal_alignment: :end
+                 )
+               ]
+             )
+           ],
+           block_id: "layout",
+           is_label_visible: true,
+           grid_lines: :rows,
+           fallback: [Blocks.Divider.new!(block_id: "fallback")]
+         )
+       end},
+      {"blocks/layout_empty_fallback",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child"))]
+             )
+           ],
+           block_id: "layout",
+           is_label_visible: false,
+           grid_lines: :none,
+           fallback: []
+         )
+       end},
+      {"blocks/layout_limits",
+       fn ->
+         Blocks.Layout.new!(
+           label: String.duplicate("😀", 150),
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_0_0")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_0_1")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_0_2"))
+               ]
+             ),
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_1_0")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_1_1")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_1_2"))
+               ]
+             ),
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_2_0")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_2_1")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_2_2"))
+               ]
+             ),
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_3_0")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_3_1")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_3_2"))
+               ]
+             ),
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_4_0")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_4_1")),
+                 Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child_4_2"))
+               ]
+             )
+           ],
+           block_id: "layout",
+           grid_lines: :outer
+         )
+       end},
+      {"blocks/layout_container",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(
+                   block:
+                     Blocks.Container.new!(
+                       title: Objects.PlainText.new!(text: "Container"),
+                       child_blocks: [Blocks.Divider.new!(block_id: "child")],
+                       width: :standard,
+                       is_collapsible: false,
+                       default_collapsed: false,
+                       has_header_divider: false,
+                       block_id: "container"
+                     )
+                 )
+               ]
+             )
+           ],
+           block_id: "layout"
+         )
+       end},
+      {"blocks/container_layout",
+       fn ->
+         Blocks.Container.new!(
+           title: Objects.PlainText.new!(text: "Container"),
+           child_blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!(block_id: "child"))]
+                 )
+               ],
+               block_id: "layout"
+             )
+           ],
+           width: :standard,
+           is_collapsible: false,
+           default_collapsed: false,
+           has_header_divider: false,
+           block_id: "container"
+         )
+       end},
       {"attachments/attachment_multi_block",
        fn ->
          Slackblocks.Attachment.new!(
@@ -554,6 +733,25 @@ defmodule Slackblocks.Test.ValidConstructions do
            provider_name: "YouTube",
            title_url: "https://example.com"
          )
+       end},
+      {"elements/button_agent_prompt",
+       fn -> Elements.Button.new!(text: "Summarize", agent_prompt: "Summarize this incident.") end},
+      {"elements/button_agent_prompt_display",
+       fn ->
+         Elements.Button.new!(
+           text: "Summarize",
+           action_id: "summarize",
+           agent_prompt: "Summarize this incident.",
+           agent_prompt_display: String.duplicate("x", 80)
+         )
+       end},
+      {"elements/button_agent_prompt_at_limit",
+       fn ->
+         Elements.Button.new!(text: "Summarize", agent_prompt: String.duplicate("😀", 4000))
+       end},
+      {"elements/button_agent_prompt_empty",
+       fn ->
+         Elements.Button.new!(text: "Summarize", agent_prompt: "", agent_prompt_display: "")
        end},
       {"elements/button_basic",
        fn ->

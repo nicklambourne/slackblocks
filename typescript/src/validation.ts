@@ -1,3 +1,5 @@
+import { compositeDescendants } from "./layout.js";
+import { validateLayoutBlock, validateCompositeDepth } from "./layout.js";
 import limits from "../../spec/limits.json" with { type: "json" };
 
 import { validateConversationFilter, validateSlackFile, validateFeedbackButton } from "./composition.js";
@@ -255,6 +257,7 @@ const REQUIRED_FIELDS: Record<string, readonly string[]> = {
   channel: ["channel_id"],
   checkboxes: ["options"],
   container: ["child_blocks"],
+  layout: ["label", "rows"],
   context: ["elements"],
   context_actions: ["elements"],
   data_table: ["rows", "caption"],
@@ -580,6 +583,19 @@ function validateKnownObject(
       break;
     case "button":
     case "workflow_button": {
+      if (type === "button") {
+        for (const field of ["agent_prompt", "agent_prompt_display"] as const) {
+          if (object[field] !== undefined && typeof object[field] !== "string") {
+            throw new TypeMismatchError(child(path, field), "expected a string");
+          }
+        }
+        if (typeof object.agent_prompt === "string") {
+          length(object.agent_prompt, child(path, "agent_prompt"), undefined, limits.button.agent_prompt.max_length);
+        }
+        if (object.agent_prompt_display !== undefined && object.agent_prompt === undefined) {
+          throw new MissingRequiredError(child(path, "agent_prompt"), "required when agent_prompt_display is supplied");
+        }
+      }
       const labelLimits = type === "workflow_button" ? limits.workflow_button : limits.button;
       length(
         textValue(object.text),
@@ -895,7 +911,11 @@ function validateKnownObject(
         }
       });
       break;
+    case "layout":
+      validateLayoutBlock(object, path);
+      break;
     case "container": {
+      validateCompositeDepth(object, path);
       if (object.title === undefined && object.rich_text_title === undefined) {
         throw new MissingRequiredError(path, "expected title or rich_text_title");
       }
@@ -925,7 +945,7 @@ function validateKnownObject(
         limits.container.child_blocks.max_items,
       );
       const allowed = new Set([
-        "actions", "context", "divider", "file", "header", "image", "input",
+        "actions", "context", "divider", "file", "header", "image", "input", "layout",
         "rich_text", "section", "table", "video",
       ]);
       object.child_blocks.forEach((block, index) => {
@@ -1224,7 +1244,7 @@ function validateKnownObject(
       if (type === "modal") {
         if (
           object.submit === undefined &&
-          object.blocks.some(
+          compositeDescendants(object.blocks).some(
             (block) =>
               block !== null &&
               !Array.isArray(block) &&

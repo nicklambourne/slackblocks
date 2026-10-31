@@ -66,7 +66,8 @@ func TestBlockBuilderSendsDirectlyThroughSlackGo(t *testing.T) {
 
 	section := slackblocks.NewSectionBlock().
 		Text("Hello, world!").
-		BlockID("greeting")
+		BlockID("greeting").
+		Accessory(slackblocks.NewButton().Text("Ask").AgentPrompt("Ask Slackbot").AgentPromptDisplay("Summary"))
 	table := slackblocks.NewTableBlock().Rows(
 		[]slackblocks.TableCell{slackblocks.NewRawText().Text("Name")},
 		[]slackblocks.TableCell{slackblocks.NewRawText().Text("Ada")},
@@ -109,6 +110,10 @@ func TestBlockBuilderSendsDirectlyThroughSlackGo(t *testing.T) {
 	}
 	if blocks[1]["type"] != "table" || blocks[1]["rows"] == nil {
 		t.Fatalf("newer table block was not preserved: %#v", blocks[1])
+	}
+	prompt := blocks[0]["accessory"].(map[string]any)
+	if prompt["agent_prompt"] != "Ask Slackbot" || prompt["agent_prompt_display"] != "Summary" {
+		t.Fatalf("SDK dropped prompt fields: %#v", prompt)
 	}
 	if section.BlockType() != slackapi.MessageBlockType("section") || section.ID() != "greeting" {
 		t.Fatalf("section identity = (%q, %q)", section.BlockType(), section.ID())

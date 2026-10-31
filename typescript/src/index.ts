@@ -5,4 +5,4 @@ export * from "./validation.js";
 export * from "./fluent/index.js";
 export * from "./legacy/index.js";
 
-export const specVersion = "1.3.0";
+export const specVersion = "1.5.0";

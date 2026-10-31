@@ -1,0 +1,197 @@
+---
+sidebar_position: 5
+---
+
+# Components and Utilities
+
+Generated from compiled Elixir documentation and native typespecs. Values are immutable; constructors and changes use keyword options.
+
+## Slackblocks.Color {#slackblocks-color}
+
+Attachment color conveniences. Returned binaries can be passed to `Slackblocks.Attachment`.
+
+```elixir
+iex> Slackblocks.Color.hex!("A0B1c2")
+"#A0B1c2"
+```
+
+```elixir
+iex> Slackblocks.Color.rgb!(0, 128, 255)
+"#0080ff"
+```
+
+
+### hex/1 {#slackblocks-color-hex-1}
+
+Validates six hex digits, with an optional # prefix; preserves letter case.
+
+```elixir
+hex(value)
+```
+
+```elixir
+@spec hex(binary()) :: {:ok, binary()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### hex!/1 {#slackblocks-color-hex-bang-1}
+
+Like `hex/1`, raising on invalid input.
+
+```elixir
+hex!(value)
+```
+
+```elixir
+@spec hex!(binary()) :: binary()
+```
+
+### named/1 {#slackblocks-color-named-1}
+
+Resolves a semantic or named color atom: good, warning, danger, red, blue, yellow, green, orange, purple or black.
+
+```elixir
+named(name)
+```
+
+```elixir
+@spec named(atom()) :: {:ok, binary()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### named!/1 {#slackblocks-color-named-bang-1}
+
+Like `named/1`, raising on invalid input.
+
+```elixir
+named!(name)
+```
+
+```elixir
+@spec named!(atom()) :: binary()
+```
+
+### rgb/3 {#slackblocks-color-rgb-3}
+
+Converts three integer channels in 0..255 to a lowercase hexadecimal color.
+
+```elixir
+rgb(red, green, blue)
+```
+
+```elixir
+@spec rgb(integer(), integer(), integer()) ::
+  {:ok, binary()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### rgb!/3 {#slackblocks-color-rgb-bang-3}
+
+Like `rgb/3`, raising on invalid input.
+
+```elixir
+rgb!(red, green, blue)
+```
+
+```elixir
+@spec rgb!(integer(), integer(), integer()) :: binary()
+```
+
+## Slackblocks.Components.Accordion {#slackblocks-components-accordion}
+
+Expands collapsible sections into ordinary blocks in display order.
+
+### to_blocks/1 {#slackblocks-components-accordion-to_blocks-1}
+
+Checks a nonempty list of collapsible containers before returning its blocks.
+
+```elixir
+to_blocks(sections)
+```
+
+```elixir
+@spec to_blocks([Slackblocks.Blocks.Container.t()]) ::
+  {:ok, [Slackblocks.Blocks.Container.t()]} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### to_blocks!/1 {#slackblocks-components-accordion-to_blocks-bang-1}
+
+Like `to_blocks/1`, raising on failure.
+
+```elixir
+to_blocks!(sections)
+```
+
+```elixir
+@spec to_blocks!([Slackblocks.Blocks.Container.t()]) :: [Slackblocks.Blocks.Container.t()]
+```
+
+## Slackblocks.Components.AccordionSection {#slackblocks-components-accordionsection}
+
+Creates a collapsible container suitable for an accordion.
+
+### new/1 {#slackblocks-components-accordionsection-new-1}
+
+Builds a section from `title`, `blocks`, and optional container presentation keywords.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) ::
+  {:ok, Slackblocks.Blocks.Container.t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-components-accordionsection-new-bang-1}
+
+Like `new/1`, raising on failure.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: Slackblocks.Blocks.Container.t()
+```
+
+## Slackblocks.Components.Paginator {#slackblocks-components-paginator}
+
+Pure pagination into ordinary blocks. Interaction routing and state belong to your application.
+
+### to_blocks/2 {#slackblocks-components-paginator-to_blocks-2}
+
+Selects a page from a nonempty block list and appends navigation when needed.
+
+Requires `action_id_prefix`. Options are `page` (1), `page_size` (5),
+`previous_text` ("Previous"), `next_text` ("Next"), `show_page_indicator` (true)
+and the navigation `block_id` (nil). Buttons use `.previous`/`.next` suffixes
+and decimal page numbers as values. Page numbers start at one.
+
+Controls are additional blocks. Put the expanded list in a message or view to
+validate that surface's total block count. No IDs are generated implicitly.
+
+
+```elixir
+to_blocks(blocks, options)
+```
+
+```elixir
+@spec to_blocks(
+  [Slackblocks.Types.block()],
+  keyword()
+) :: {:ok, [Slackblocks.Types.block()]} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### to_blocks!/2 {#slackblocks-components-paginator-to_blocks-bang-2}
+
+Like `to_blocks/2`, raising on invalid input.
+
+```elixir
+to_blocks!(blocks, options)
+```
+
+```elixir
+@spec to_blocks!(
+  [Slackblocks.Types.block()],
+  keyword()
+) :: [Slackblocks.Types.block()]
+```
+

@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+"""Run the package checks, including public compilation boundaries."""
+import argparse
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def run(*args, **kwargs):
+    return subprocess.run(args, cwd=ROOT, check=True, **kwargs)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--ci-native', action='store_true', help='Native/archive lane; dedicated same-commit jobs own quality and additional dependency/transport profiles')
+    args = parser.parse_args()
+    scratch = os.environ.get("RUNNER_TEMP")
+    if Path("/Volumes/Repos").is_dir():
+        for volume in ("Repos", "Cache", "Scratch"):
+            if not Path("/Volumes", volume).is_mount():
+                raise SystemExit(f"Required external volume is unavailable: {volume}")
+        scratch = "/Volumes/Scratch"
+        os.environ.setdefault("CABAL_DIR", "/Volumes/Cache/slackblocks-haskell/cabal")
+        os.environ.setdefault("SLACKBLOCKS_HASKELL_BUILD", "/Volumes/Cache/slackblocks-haskell/build-native")
+        os.environ.setdefault("SLACKBLOCKS_HASKELL_COVERAGE", "/Volumes/Cache/slackblocks-haskell/build-coverage")
+    build = os.environ.get("SLACKBLOCKS_HASKELL_BUILD", "dist-newstyle")
+    cabal = ["cabal", f"--builddir={build}"]
+    if args.ci_native and os.environ.get('GITHUB_ACTIONS') != 'true':
+        raise SystemExit('--ci-native is reserved for the workflow with its dedicated quality job')
+    run(sys.executable, "generator/test_generate.py")
+    run(sys.executable, "bin/sync-spec", "--check")
+    if (ROOT / "conformance/skiplist.txt").read_text(encoding="utf-8").strip():
+        raise SystemExit("Haskell conformance skip list must be empty")
+    run(*cabal, "test", "all", "--test-show-details=direct")
+    if not args.ci_native:
+        run(sys.executable, "bin/quality")
+    run("cabal", "check")
+    with tempfile.TemporaryDirectory(prefix="slackblocks-haskell-", dir=scratch) as tmp:
+        for name, source, expected in [
+            ("pass", "import Slackblocks\nmain = print (buildPlainText (plainText mempty))\n", None),
+            ("unchecked", "import Slackblocks\nimport Data.Aeson\nmain = print (encode (plainText mempty))\n", "ToJSON PlainTextFields"),
+            ("private", "import Slackblocks\nmain = print (CheckedPlainText (plainText mempty))\n", "CheckedPlainText"),
+            ("wrong-role", "import Slackblocks\nf = buttonElement (markdownText mempty)\nmain = pure ()\n", "PlainText"),
+            ("context-invalid-element", "import Slackblocks\nf :: ButtonElement -> ContextBlockFields\nf button = contextBlock [buttonElementAsElement button]\nmain = pure ()\n", "ContextElement"),
+            ("input-invalid-element", "import Slackblocks\nf label block = inputBlock label (dividerBlockAsBlock block)\nmain = pure ()\n", "InputElement"),
+            ("workflow-button-missing-action-id", "import Slackblocks\nf label workflow = buildWorkflowButtonElement (workflowButtonElement label workflow)\nmain = pure ()\n", "WorkflowButtonElementFields"),
+            ("number-input-missing-decimal-flag", "import Slackblocks\nf = buildNumberInputElement numberInputElement\nmain = pure ()\n", "NumberInputElementFields"),
+            ("slack-icon-missing-name", "import Slackblocks\nf = buildSlackIcon slackIcon\nmain = pure ()\n", "SlackIconFields"),
+            ("plan-missing-tasks", "import Slackblocks\nf title = buildPlanBlock (planBlock title)\nmain = pure ()\n", "PlanBlockFields"),
+            ("task-card-missing-status", "import Slackblocks\nf identifier title = buildTaskCardBlock (taskCardBlock identifier title)\nmain = pure ()\n", "TaskCardBlockFields"),
+            ("attachment-missing-blocks", "import Slackblocks\nf = buildAttachment attachment\nmain = pure ()\n", "AttachmentFields"),
+            ("layout-direct-child", "import Slackblocks\nf :: LayoutBlock -> LayoutItemFields\nf b = layoutItem (layoutBlockAsBlock b)\nmain = pure ()\n", "LayoutChild"),
+            ("layout-markdown-child", "import Slackblocks\nf :: MarkdownBlock -> LayoutItemFields\nf b = layoutItem (markdownBlockAsBlock b)\nmain = pure ()\n", "LayoutChild"),
+            ("layout-actions-fallback", "import Slackblocks\nf :: ActionsBlock -> LayoutBlockFields -> LayoutBlockFields\nf b f = f {layoutBlockFallback = Just [actionsBlockAsBlock b]}\nmain = pure ()\n", "LayoutFallback"),
+            ("layout-full-width", "import Slackblocks\nf x = x {layoutItemWidth = Just ContainerWidthFull}\nmain = pure ()\n", "LayoutWidth"),
+            ("plan-task-as-block", "import Slackblocks\nf :: PlanTask -> Block\nf = taskCardBlockAsBlock\nmain = pure ()\n", "PlanTask"),
+        ]:
+            path = Path(tmp, name + ".hs")
+            path.write_text(source)
+            result = subprocess.run([*cabal, "exec", "--", "ghc", "-fno-code", "-package", "slackblocks", str(path)], cwd=ROOT, text=True, capture_output=True)
+            if expected is None:
+                if result.returncode:
+                    raise SystemExit(result.stdout + result.stderr)
+            elif not result.returncode or expected not in result.stderr:
+                raise SystemExit(f"Unexpected compiler result for {name}:\n{result.stdout}{result.stderr}")
+    run(sys.executable, 'bin/package-check')
+    if not args.ci_native:
+        compiler = subprocess.check_output(['ghc', '--numeric-version'], text=True).strip()
+        if compiler in ('9.6.7', '9.14.1'):
+            run(sys.executable, 'bin/dependency-check', 'locked')
+        if compiler == '9.6.7':
+            run(sys.executable, 'bin/dependency-check', 'lower')
+        run(sys.executable, 'bin/dependency-check', 'latest')
+        run(sys.executable, 'bin/dependency-check', 'latest', '--unordered-keymap')
+        for profile in ('locked', 'lower', 'latest') if compiler == '9.6.7' else ('latest',):
+            run(sys.executable, 'bin/http-check', '--profile', profile)
+    print("Package and public compilation boundaries passed.")
+
+
+if __name__ == "__main__":
+    main()

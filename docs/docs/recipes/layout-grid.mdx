@@ -1,0 +1,1028 @@
+---
+title: Weighted layout grid
+slug: /usage/recipes/layout-grid
+sidebar_position: 15
+---
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "python": {
+    "type": "layout",
+    "block_id": "service-layout",
+    "label": "Service status",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "block_id": "api",
+              "text": {
+                "type": "plain_text",
+                "text": "API"
+              }
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "block_id": "api-status",
+              "text": {
+                "type": "plain_text",
+                "text": "Healthy"
+              }
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "block_id": "worker",
+              "text": {
+                "type": "plain_text",
+                "text": "Worker"
+              }
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "block_id": "worker-status",
+              "text": {
+                "type": "plain_text",
+                "text": "Delayed"
+              }
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      }
+    ],
+    "is_label_visible": true,
+    "grid_lines": "rows",
+    "fallback": [
+      {
+        "type": "section",
+        "block_id": "status-fallback",
+        "text": {
+          "type": "plain_text",
+          "text": "API: Healthy; Worker: Delayed"
+        }
+      }
+    ]
+  },
+  "typescript": {
+    "label": "Service status",
+    "block_id": "service-layout",
+    "is_label_visible": true,
+    "grid_lines": "rows",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "text": {
+                "text": "API",
+                "type": "plain_text"
+              },
+              "block_id": "api",
+              "type": "section"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "text": {
+                "text": "Healthy",
+                "type": "plain_text"
+              },
+              "block_id": "api-status",
+              "type": "section"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "text": {
+                "text": "Worker",
+                "type": "plain_text"
+              },
+              "block_id": "worker",
+              "type": "section"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "text": {
+                "text": "Delayed",
+                "type": "plain_text"
+              },
+              "block_id": "worker-status",
+              "type": "section"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      }
+    ],
+    "fallback": [
+      {
+        "text": {
+          "text": "API: Healthy; Worker: Delayed",
+          "type": "plain_text"
+        },
+        "block_id": "status-fallback",
+        "type": "section"
+      }
+    ],
+    "type": "layout"
+  },
+  "go": {
+    "block_id": "service-layout",
+    "fallback": [
+      {
+        "block_id": "status-fallback",
+        "text": {
+          "text": "API: Healthy; Worker: Delayed",
+          "type": "plain_text"
+        },
+        "type": "section"
+      }
+    ],
+    "grid_lines": "rows",
+    "is_label_visible": true,
+    "label": "Service status",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "block_id": "api",
+              "text": {
+                "text": "API",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "block_id": "api-status",
+              "text": {
+                "text": "Healthy",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "horizontal_alignment": "end",
+            "width": "narrow"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "block_id": "worker",
+              "text": {
+                "text": "Worker",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "block_id": "worker-status",
+              "text": {
+                "text": "Delayed",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "horizontal_alignment": "end",
+            "width": "narrow"
+          }
+        ]
+      }
+    ],
+    "type": "layout"
+  },
+  "java": {
+    "type": "layout",
+    "label": "Service status",
+    "block_id": "service-layout",
+    "is_label_visible": true,
+    "grid_lines": "rows",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "API"
+              },
+              "block_id": "api"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Healthy"
+              },
+              "block_id": "api-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Worker"
+              },
+              "block_id": "worker"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Delayed"
+              },
+              "block_id": "worker-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      }
+    ],
+    "fallback": [
+      {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "API: Healthy; Worker: Delayed"
+        },
+        "block_id": "status-fallback"
+      }
+    ]
+  },
+  "csharp": {
+    "type": "layout",
+    "label": "Service status",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "API"
+              },
+              "block_id": "api"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Healthy"
+              },
+              "block_id": "api-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Worker"
+              },
+              "block_id": "worker"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Delayed"
+              },
+              "block_id": "worker-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      }
+    ],
+    "is_label_visible": true,
+    "grid_lines": "rows",
+    "fallback": [
+      {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "API: Healthy; Worker: Delayed"
+        },
+        "block_id": "status-fallback"
+      }
+    ],
+    "block_id": "service-layout"
+  },
+  "ruby": {
+    "type": "layout",
+    "label": "Service status",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "API"
+              },
+              "block_id": "api"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Healthy"
+              },
+              "block_id": "api-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Worker"
+              },
+              "block_id": "worker"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Delayed"
+              },
+              "block_id": "worker-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      }
+    ],
+    "is_label_visible": true,
+    "grid_lines": "rows",
+    "fallback": [
+      {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "API: Healthy; Worker: Delayed"
+        },
+        "block_id": "status-fallback"
+      }
+    ],
+    "block_id": "service-layout"
+  },
+  "rust": {
+    "type": "layout",
+    "label": "Service status",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "API"
+              },
+              "block_id": "api"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Healthy"
+              },
+              "block_id": "api-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Worker"
+              },
+              "block_id": "worker"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Delayed"
+              },
+              "block_id": "worker-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      }
+    ],
+    "is_label_visible": true,
+    "grid_lines": "rows",
+    "fallback": [
+      {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "API: Healthy; Worker: Delayed"
+        },
+        "block_id": "status-fallback"
+      }
+    ],
+    "block_id": "service-layout"
+  },
+  "php": {
+    "type": "layout",
+    "label": "Service status",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "API"
+              },
+              "block_id": "api"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Healthy"
+              },
+              "block_id": "api-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Worker"
+              },
+              "block_id": "worker"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "type": "section",
+              "text": {
+                "type": "plain_text",
+                "text": "Delayed"
+              },
+              "block_id": "worker-status"
+            },
+            "width": "narrow",
+            "horizontal_alignment": "end"
+          }
+        ]
+      }
+    ],
+    "is_label_visible": true,
+    "grid_lines": "rows",
+    "fallback": [
+      {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "API: Healthy; Worker: Delayed"
+        },
+        "block_id": "status-fallback"
+      }
+    ],
+    "block_id": "service-layout"
+  },
+  "elixir": {
+    "block_id": "service-layout",
+    "fallback": [
+      {
+        "block_id": "status-fallback",
+        "text": {
+          "text": "API: Healthy; Worker: Delayed",
+          "type": "plain_text"
+        },
+        "type": "section"
+      }
+    ],
+    "grid_lines": "rows",
+    "is_label_visible": true,
+    "label": "Service status",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "block_id": "api",
+              "text": {
+                "text": "API",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "block_id": "api-status",
+              "text": {
+                "text": "Healthy",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "horizontal_alignment": "end",
+            "width": "narrow"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "block_id": "worker",
+              "text": {
+                "text": "Worker",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "block_id": "worker-status",
+              "text": {
+                "text": "Delayed",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "horizontal_alignment": "end",
+            "width": "narrow"
+          }
+        ]
+      }
+    ],
+    "type": "layout"
+  },
+  "haskell": {
+    "block_id": "service-layout",
+    "fallback": [
+      {
+        "block_id": "status-fallback",
+        "text": {
+          "text": "API: Healthy; Worker: Delayed",
+          "type": "plain_text"
+        },
+        "type": "section"
+      }
+    ],
+    "grid_lines": "rows",
+    "is_label_visible": true,
+    "label": "Service status",
+    "rows": [
+      {
+        "items": [
+          {
+            "block": {
+              "block_id": "api",
+              "text": {
+                "text": "API",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "block_id": "api-status",
+              "text": {
+                "text": "Healthy",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "horizontal_alignment": "end",
+            "width": "narrow"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "block": {
+              "block_id": "worker",
+              "text": {
+                "text": "Worker",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "width": "wide"
+          },
+          {
+            "block": {
+              "block_id": "worker-status",
+              "text": {
+                "text": "Delayed",
+                "type": "plain_text"
+              },
+              "type": "section"
+            },
+            "horizontal_alignment": "end",
+            "width": "narrow"
+          }
+        ]
+      }
+    ],
+    "type": "layout"
+  }
+};
+
+# Weighted layout grid
+
+Available from Slackblocks **3.2.0**. Arrange service names and status text in two rows, using a 3:1 width ratio and an explicit linear fallback. The label is shown as bold text, not a heading. These examples construct a block; they do not send a message.
+
+<RecipeOutput recipe="layout-grid" outputs={recipeOutputs} />
+
+<LanguageContent>
+
+<Python>
+
+```python
+from slackblocks import LayoutBlock, LayoutRow, LayoutItem, PlainText, SectionBlock
+
+
+def section(text, identifier):
+    return SectionBlock(text=PlainText(text), block_id=identifier)
+
+
+layout = LayoutBlock(
+    label="Service status", block_id="service-layout", is_label_visible=True,
+    grid_lines="rows",
+    rows=[
+        LayoutRow(items=[
+            LayoutItem(block=section("API", "api"), width="wide"),
+            LayoutItem(block=section("Healthy", "api-status"), width="narrow", horizontal_alignment="end"),
+        ]),
+        LayoutRow(items=[
+            LayoutItem(block=section("Worker", "worker"), width="wide"),
+            LayoutItem(block=section("Delayed", "worker-status"), width="narrow", horizontal_alignment="end"),
+        ]),
+    ],
+    fallback=[section("API: Healthy; Worker: Delayed", "status-fallback")],
+)
+print(layout)
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const section = (text: string, id: string) => S.SectionBlock()
+  .text(S.PlainText().text(text)).blockId(id);
+const row = (service: string, status: string, id: string) => S.LayoutRow().items([
+  S.LayoutItem().block(section(service, id)).width("wide"),
+  S.LayoutItem().block(section(status, `${id}-status`)).width("narrow").horizontalAlignment("end"),
+]);
+const layout = S.LayoutBlock().label("Service status").blockId("service-layout")
+  .isLabelVisible(true).gridLines("rows")
+  .rows([row("API", "Healthy", "api"), row("Worker", "Delayed", "worker")])
+  .fallback([section("API: Healthy; Worker: Delayed", "status-fallback")]).build();
+console.log(JSON.stringify(layout));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "os"
+    s "github.com/nicklambourne/slackblocks/go/v3"
+)
+
+func section(text, id string) *s.SectionBlockBuilder {
+    return s.NewSectionBlock().TextObject(s.NewPlainText().Text(text)).BlockID(id)
+}
+func row(service, status, id string) *s.LayoutRowBuilder {
+    return s.NewLayoutRow().Items(
+        s.NewLayoutItem().Block(section(service, id)).Width(s.LayoutWidthWide),
+        s.NewLayoutItem().Block(section(status, id+"-status")).Width(s.LayoutWidthNarrow).HorizontalAlignment(s.LayoutAlignmentEnd),
+    )
+}
+func main() {
+    layout, err := s.NewLayoutBlock().Label("Service status").BlockID("service-layout").
+        IsLabelVisible(true).GridLines(s.LayoutGridLinesRows).
+        Rows(row("API", "Healthy", "api"), row("Worker", "Delayed", "worker")).
+        Fallback(section("API: Healthy; Worker: Delayed", "status-fallback")).Build()
+    if err != nil { panic(err) }
+    if err := json.NewEncoder(os.Stdout).Encode(layout); err != nil { panic(err) }
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.object.*;
+
+public final class Recipe {
+  static SectionBlock section(String text, String id) {
+    return SectionBlock.builder().text(PlainText.of(text)).blockId(id).build();
+  }
+  static LayoutRow row(String service, String status, String id) {
+    return LayoutRow.builder().items(
+        LayoutItem.builder().block(section(service, id)).width(LayoutWidth.WIDE).build(),
+        LayoutItem.builder().block(section(status, id + "-status"))
+            .width(LayoutWidth.NARROW).horizontalAlignment(LayoutAlignment.END).build()).build();
+  }
+  public static void main(String[] args) {
+    var layout = io.github.nicklambourne.slackblocks.block.LayoutBlock.builder().label("Service status").blockId("service-layout")
+        .isLabelVisible(true).gridLines(LayoutGridLines.ROWS)
+        .rows(row("API", "Healthy", "api"), row("Worker", "Delayed", "worker"))
+        .fallback(section("API: Healthy; Worker: Delayed", "status-fallback")).build();
+    System.out.println(layout.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using Slackblocks.Blocks;
+using Slackblocks.Objects;
+
+SectionBlock Section(string text, string id) => new(text: new PlainText(text), blockId: id);
+LayoutRow Row(string service, string status, string id) => new([
+    new LayoutItem(Section(service, id), width: LayoutWidth.Wide),
+    new LayoutItem(Section(status, id + "-status"), width: LayoutWidth.Narrow,
+        horizontalAlignment: LayoutAlignment.End),
+]);
+var layout = new LayoutBlock("Service status", [Row("API", "Healthy", "api"), Row("Worker", "Delayed", "worker")],
+    blockId: "service-layout", isLabelVisible: true, gridLines: LayoutGridLines.Rows,
+    fallback: [Section("API: Healthy; Worker: Delayed", "status-fallback")]);
+Console.WriteLine(layout.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+def section(text, id)
+  SectionBlock.new(text: PlainText.new(text: text), block_id: id)
+end
+
+def row(service, status, id)
+  LayoutRow.new(items: [
+    LayoutItem.new(block: section(service, id), width: :wide),
+    LayoutItem.new(block: section(status, "#{id}-status"), width: :narrow, horizontal_alignment: :end)
+  ])
+end
+
+layout = LayoutBlock.new(label: "Service status", block_id: "service-layout",
+  is_label_visible: true, grid_lines: :rows,
+  rows: [row("API", "Healthy", "api"), row("Worker", "Delayed", "worker")],
+  fallback: [section("API: Healthy; Worker: Delayed", "status-fallback")])
+puts layout.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn section(text: &str, id: &str) -> Result<SectionBlock, ValidationError> {
+    SectionBlock::builder().text(PlainText::new(text)?).block_id(id).build()
+}
+fn row(service: &str, status: &str, id: &str) -> Result<LayoutRow, ValidationError> {
+    LayoutRow::builder().items([
+        LayoutItem::builder().block(section(service, id)?).width(LayoutWidth::Wide).build()?,
+        LayoutItem::builder().block(section(status, &format!("{id}-status"))?)
+            .width(LayoutWidth::Narrow).horizontal_alignment(LayoutAlignment::End).build()?,
+    ]).build()
+}
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let layout = LayoutBlock::builder().label("Service status").block_id("service-layout")
+        .is_label_visible(true).grid_lines(LayoutGridLines::Rows)
+        .rows([row("API", "Healthy", "api")?, row("Worker", "Delayed", "worker")?])
+        .fallback([LayoutFallback::from(section("API: Healthy; Worker: Delayed", "status-fallback")?)])
+        .build()?;
+    println!("{}", serde_json::to_string(&layout)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+require 'vendor/autoload.php';
+use Slackblocks as S;
+
+function section(string $text, string $id): S\SectionBlock {
+    return new S\SectionBlock(text: new S\PlainText($text), blockId: $id);
+}
+function row(string $service, string $status, string $id): S\LayoutRow {
+    return new S\LayoutRow(items: [
+        new S\LayoutItem(section($service, $id), width: S\LayoutWidth::Wide),
+        new S\LayoutItem(section($status, $id . '-status'), width: S\LayoutWidth::Narrow,
+            horizontalAlignment: S\LayoutAlignment::End),
+    ]);
+}
+$layout = new S\LayoutBlock('Service status', [row('API', 'Healthy', 'api'), row('Worker', 'Delayed', 'worker')],
+    blockId: 'service-layout', isLabelVisible: true, gridLines: S\LayoutGridLines::Rows,
+    fallback: [section('API: Healthy; Worker: Delayed', 'status-fallback')]);
+echo $layout->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.Blocks.{Layout, Section}
+alias Slackblocks.Objects.{LayoutItem, LayoutRow, PlainText}
+
+section = fn text, id -> Section.new!(text: PlainText.new!(text: text), block_id: id) end
+row = fn service, status, id ->
+  LayoutRow.new!(items: [
+    LayoutItem.new!(block: section.(service, id), width: :wide),
+    LayoutItem.new!(block: section.(status, id <> "-status"), width: :narrow, horizontal_alignment: :end)
+  ])
+end
+Layout.new!(label: "Service status", block_id: "service-layout", is_label_visible: true, grid_lines: :rows,
+  rows: [row.("API", "Healthy", "api"), row.("Worker", "Delayed", "worker")],
+  fallback: [section.("API: Healthy; Worker: Delayed", "status-fallback")])
+|> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import Data.Text (Text)
+import Slackblocks
+
+section :: Text -> Text -> Result SectionBlock
+section text identifier = do
+  content <- buildPlainText (plainText text)
+  buildSectionBlock sectionBlock {sectionBlockText = Just (plainTextAsText content), sectionBlockBlockId = Just identifier}
+
+row :: Text -> Text -> Text -> Result LayoutRow
+row service status identifier = do
+  name <- section service identifier
+  state <- section status (identifier <> "-status")
+  left <- buildLayoutItem (layoutItem (sectionBlockAsLayoutChild name)) {layoutItemWidth = Just LayoutWidthWide}
+  right <- buildLayoutItem (layoutItem (sectionBlockAsLayoutChild state))
+    {layoutItemWidth = Just LayoutWidthNarrow, layoutItemHorizontalAlignment = Just LayoutAlignmentEnd}
+  buildLayoutRow (layoutRow [left, right])
+
+example :: Result LayoutBlock
+example = do
+  api <- row "API" "Healthy" "api"
+  worker <- row "Worker" "Delayed" "worker"
+  fallback <- section "API: Healthy; Worker: Delayed" "status-fallback"
+  buildLayoutBlock (layoutBlock "Service status" [api, worker])
+    {layoutBlockBlockId = Just "service-layout", layoutBlockIsLabelVisible = Just True,
+     layoutBlockGridLines = Just LayoutGridLinesRows, layoutBlockFallback = Just [sectionBlockAsLayoutFallback fallback]}
+```
+
+</Haskell>
+
+</LanguageContent>
+
+## Layout and fallback behavior
+
+- Rows contain one to three items; a layout has one to five rows. `narrow`, `standard` and `wide` have weights 1, 2 and 3. An omitted width is standard; omitted alignment fills the cell.
+- `rows` draws the outer border and horizontal row separators. `outer` draws only the border; `none` draws neither. There are no vertical grid lines.
+- Fallback is a separate linear representation for clients that cannot render layouts. The library preserves omission and explicit empty arrays; it does not invent a fallback. Put essential information in the message's top-level text too.
+- Hidden labels are not accessible names. Preserve meaningful source order, do not convey status through colour alone, and test your app with assistive technology. Slack may wrap cells on narrow clients; this local preview is illustrative.
+
+See [Layouts](/usage/layouts) and [validation boundaries](/usage/validation-boundary#layout-accounting) before composing larger grids. Older-client fallback and mobile/screen-reader behavior are documented contracts, not guarantees established by this preview.

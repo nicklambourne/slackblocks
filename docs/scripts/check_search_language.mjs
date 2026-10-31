@@ -143,11 +143,43 @@ assert.doesNotMatch(rustText, /Python 3\.10 or newer is required/);
 assert.ok(rustDocuments.some(({u}) => u.includes("/reference/rust")));
 assert.ok(rustDocuments.some(({u}) => u.endsWith("/usage/compatibility")));
 
-const allLanguages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir"];
+const allLanguages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "haskell"];
+const nativeGuidance = {
+  python: "Collection coercion can retain the caller's list",
+  typescript: "Factory serialization produces a wire snapshot",
+  go: "A typed nil nested builder is a type error",
+  java: "Varargs collection setters append",
+  csharp: "Optional properties use nullable types",
+  ruby: "Native values freeze their copied nested content",
+  rust: "clone().into_builder()",
+  php: "Readonly native values",
+  elixir: "Model change/2 replaces supplied fields atomically",
+  haskell: "Field records have no ToJSON",
+};
 for (const language of allLanguages) {
   const documents = await readDocuments(language);
+  const blockGuide = documents
+    .filter(({ u }) => u === "/slackblocks/usage/using_blocks")
+    .map(({ t }) => t).join(" ").replace(/\s+/g, " ");
+  for (const [owner, guidance] of Object.entries(nativeGuidance)) {
+    assert.equal(blockGuide.toLowerCase().includes(guidance.toLowerCase()), owner === language,
+      `${language} search has incorrect visibility for ${owner} value guidance`);
+  }
+  assert.equal(documents.some(({ u }) => u === "/slackblocks/usage/language-semantics"), false,
+    `${language} still indexes the retired cross-language semantics page`);
   for (const other of allLanguages.filter((candidate) => candidate !== language)) {
     assert.equal(documents.some(({ u }) => u.includes(`/reference/${other}`)), false, `${language} leaked ${other} reference`);
+  }
+  const parseGuide = documents.filter(({ u }) => u === "/slackblocks/usage/recipes/parse-json").map(({ t }) => t).join(" ");
+  assert.equal(parseGuide.includes("Layout (3.2.0+)"), language === "python", `${language}: incorrect visibility for Python layout parsing limitation`);
+  const validationGuide = documents.filter(({ u }) => u === "/slackblocks/usage/validation-boundary").map(({ t }) => t).join(" ");
+  const pythonPath = "blocks[1].rows[1].items[1].block in the message";
+  const typescriptPath = "blocks[1].rows[1].items[1].block.type in error.path";
+  assert.equal(validationGuide.includes(pythonPath), language === "python", `${language}: incorrect Python nested-path guidance`);
+  assert.equal(validationGuide.includes(typescriptPath), language === "typescript", `${language}: incorrect TypeScript nested-path guidance`);
+  const referenceText = documents.filter(({ u }) => u.startsWith(`/slackblocks/reference/${language}/`)).map(({ t }) => t).join(" ");
+  for (const symbol of language === "elixir" ? ["Slackblocks.Blocks.Layout", "Slackblocks.Objects.LayoutRow", "Slackblocks.Objects.LayoutItem"] : ["LayoutBlock", "LayoutRow", "LayoutItem"]) {
+    assert.ok(referenceText.includes(symbol), `${language}: ${symbol} absent from the indexed native reference`);
   }
   if (language === "elixir") {
     const text = documents.map(({ t }) => t).join("\n");
@@ -165,3 +197,12 @@ for (const language of allLanguages) {
     assert.ok(documents.some(({ u }) => u.includes("/reference/php/blocks")));
   }
 }
+
+const haskellDocuments = await readDocuments("haskell");
+const haskellText = haskellDocuments.map(({ t }) => t).join("\n");
+assert.match(haskellText, /minimum is GHC 9\.6\.7/);
+assert.match(haskellText, /buildSectionBlock/);
+assert.ok(haskellDocuments.some(({ u }) => u.includes("/reference/haskell/blocks")));
+assert.ok(haskellDocuments.some(({ u }) => u.endsWith("/usage/compatibility")));
+assert.doesNotMatch(haskellText, /PHP 8\.2 or newer is required/);
+assert.doesNotMatch(haskellText, /Elixir 1\.16\.3 or newer/);

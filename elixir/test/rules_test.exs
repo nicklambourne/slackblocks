@@ -3,7 +3,7 @@ defmodule Slackblocks.RulesTest do
   alias Slackblocks.Blocks.{Alert, DataTable, Divider, Markdown}
   alias Slackblocks.Internal.Schema
   alias Slackblocks.Objects.{AxisConfig, PlainText, RawText, SlackIcon}
-  alias Slackblocks.Test.Samples
+  alias Slackblocks.Test.{InvalidConstructions, Samples}
   alias Slackblocks.ValidationError
   @root Path.expand("../..", __DIR__)
   @contract Jason.decode!(File.read!(Path.join(@root, "spec/model.json")))
@@ -73,8 +73,23 @@ defmodule Slackblocks.RulesTest do
              })
   end
 
+  defp invalid_layout(id) do
+    {_id, build} =
+      Enum.find(InvalidConstructions.all(), fn {name, _} -> name == id end)
+
+    build.()
+  end
+
   defp cases do
     [
+      {"ContainerBlock", 1, fn -> invalid_layout("layout-depth-three") end, :invalid_usage},
+      {"LayoutBlock", 0, fn -> invalid_layout("layout-message-alert") end, :type_mismatch},
+      {"LayoutBlock", 1, fn -> invalid_layout("layout-depth-three") end, :invalid_usage},
+      {"LayoutBlock", 2, fn -> invalid_layout("layout-message-budget") end, :length_exceeded},
+      {"LayoutRow", 0, fn -> invalid_layout("layout-wide-siblings") end, :invalid_usage},
+      {"LayoutRow", 1, fn -> invalid_layout("layout-chart-half") end, :invalid_usage},
+      {"ButtonElement", 0, fn -> change("ButtonElement", agent_prompt_display: "") end,
+       :missing_required},
       {"ExternalMultiSelectElement", 0,
        fn -> change("ExternalMultiSelectElement", focus_on_load: false) end, :invalid_usage},
       {"CardBlock", 0,

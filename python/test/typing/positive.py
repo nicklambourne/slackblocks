@@ -2,6 +2,9 @@ from slackblocks import (
     Attachment,
     Button,
     ConfirmationDialogue,
+    LayoutBlock,
+    LayoutItem,
+    LayoutRow,
     Message,
     MessageResponse,
     PlainText,
@@ -25,3 +28,11 @@ emoji = RichTextEmoji("wave", skin_tone=6)
 workflow_button = WorkflowButton(
     "Run", workflow=Workflow.from_url("https://slack.com/shortcuts/example"), confirm=confirmation
 )
+
+layout = LayoutBlock(
+    "Grid",
+    [LayoutRow([LayoutItem(section, width="wide", horizontal_alignment="end")])],
+    fallback=[section],
+    is_label_visible=False,
+)
+Message("C123", blocks=[layout])

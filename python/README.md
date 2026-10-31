@@ -86,14 +86,14 @@ The `**` operator unpacks `slackblocks` `Message` objects directly into the SDK 
 
 | Surface             | Status |
 |---------------------|:------:|
-| Blocks              | ✅ All current block types, including Alert, Card, Carousel, Container, Context Actions, Data Table, Data Visualization, Plan, and Task Card |
+| Blocks              | ✅ All current block types, including Alert, Card, Carousel, Container, Layout (3.2.0+), Context Actions, Data Table, Data Visualization, Plan, and Task Card |
 | Elements            | ✅ Buttons, all select menus, date/time pickers, checkboxes, radio groups, all input types, overflow menus, workflow buttons |
 | Composition Objects | ✅ Text (+ `PlainText` / `Markdown` aliases), Option, Confirm, Conversation/Dispatch filters, Workflow, Trigger |
 | Rich Text           | ✅ Sections, lists, quotes, code blocks, inline links/users/channels/emoji |
 | Modals & Home Tabs  | ✅ Full views API |
 | Messages            | ✅ `chat.postMessage`, webhook messages, slash-command/interaction responses, threaded replies, ephemeral messages |
 | Attachments         | ⚠️ Supported but [deprecated by Slack](https://api.slack.com/reference/messaging/attachments) |
-| Round-tripping      | ✅ `Block.from_dict(data)` and per-class `from_dict` for parsing incoming Slack JSON back into objects |
+| Round-tripping      | ⚠️ Partial `Block.from_dict(data)` parsing; composite blocks including Layout raise `NotImplementedError`. See the [support table](https://nicklambourne.github.io/slackblocks/usage/migration#round-tripping-incoming-slack-json-with-from_dict) |
 
 ## What's new in 2.0
 
@@ -103,7 +103,7 @@ The `**` operator unpacks `slackblocks` `Message` objects directly into the SDK 
 - **`PlainText` and `Markdown`** thin aliases for `Text(type_=...)`.
 - **`block_kit_builder_url(payload)`** — turn any block, message, or view into a [Block Kit Builder](https://app.slack.com/block-kit-builder) URL for browser preview.
 - **`Workflow.from_url(url, **params)`** — one-line workflow construction.
-- **`Block.from_dict(data)`** + per-class `from_dict` parsers — round-trip incoming Slack JSON back into `slackblocks` objects.
+- **`Block.from_dict(data)`** + per-class `from_dict` parsers — parse the supported subset of incoming Slack JSON into `slackblocks` objects.
 - **Typed exception subclasses** of `InvalidUsageError` (`LengthError`, `RangeError`, `TypeMismatchError`, `MutualExclusivityError`, `MissingRequiredError`) — existing `except InvalidUsageError` blocks continue to work.
 - **Tighter type signatures**: `Literal` narrowing on `Button.style`, `ColumnSettings.align`, `ConversationFilter.include`; `@overload` on `Text.to_text` so the return type narrows on `allow_none`.
 - **Modern annotation syntax** (`list[X]`, `X | Y`) throughout.
@@ -117,7 +117,7 @@ Existing 1.x code continues to work unchanged; see the [Migration Guide](https:/
 - [Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility) — which Python versions each release line supports.
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every block type with code, JSON, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
-- [Cookbook](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end recipes for build notifications, approval requests, modals, and more.
+- [Cookbook](https://nicklambourne.github.io/slackblocks/usage/recipes) — end-to-end recipes for build notifications, approval requests, modals, and more.
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) — upgrade guide for `1.x` users.
 - [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
 - [Changelog](https://github.com/nicklambourne/slackblocks/blob/master/python/CHANGELOG.md)

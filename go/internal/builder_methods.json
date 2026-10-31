@@ -40,7 +40,9 @@
 		"Value",
 		"Style",
 		"Confirm",
-		"AccessibilityLabel"
+		"AccessibilityLabel",
+		"AgentPrompt",
+		"AgentPromptDisplay"
 	],
 	"NewCardBlock": [
 		"HeroImage",
@@ -265,6 +267,22 @@
 	"NewInputParameter": [
 		"Name",
 		"Value"
+	],
+	"NewLayoutBlock": [
+		"Label",
+		"Rows",
+		"IsLabelVisible",
+		"GridLines",
+		"Fallback",
+		"BlockID"
+	],
+	"NewLayoutItem": [
+		"Block",
+		"Width",
+		"HorizontalAlignment"
+	],
+	"NewLayoutRow": [
+		"Items"
 	],
 	"NewLineChart": [
 		"Series",

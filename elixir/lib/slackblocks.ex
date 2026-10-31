@@ -21,7 +21,7 @@ defmodule Slackblocks do
   def version, do: @version
   @doc "The shared Slack Block Kit contract version implemented by this package."
   @spec spec_version() :: String.t()
-  def spec_version, do: "1.3.0"
+  def spec_version, do: "1.5.0"
 
   @doc "Checks the complete value, including receiving context and payload totals."
   @spec validate(struct()) :: :ok | {:error, Slackblocks.ValidationError.t()}

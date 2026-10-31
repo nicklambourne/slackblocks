@@ -1,0 +1,22 @@
+{
+  "type": "data_visualization",
+  "block_id": "fake_block_id",
+  "title": "Daily Active Users",
+  "chart": {
+    "type": "area",
+    "series": [
+      {
+        "name": "Free Tier",
+        "data": [
+          { "label": "Mon", "value": 12000 },
+          { "label": "Tue", "value": 13500 }
+        ]
+      }
+    ],
+    "axis_config": {
+      "categories": ["Mon", "Tue"],
+      "x_label": "Day",
+      "y_label": "Users"
+    }
+  }
+}

@@ -31,7 +31,7 @@ import java.util.Optional;
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/card-block">Slack reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class CardBlock implements Block {
+public final class CardBlock implements Block, LayoutChild {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

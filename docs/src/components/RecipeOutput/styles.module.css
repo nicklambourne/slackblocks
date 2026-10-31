@@ -1,0 +1,30 @@
+.output { margin: 1.5rem 0 2rem; }
+.caption, .context { color: var(--ifm-color-emphasis-700); font-size: .875rem; }
+.preview { border: 1px solid var(--ifm-color-emphasis-300); border-radius: .5rem; padding: 1.25rem; background: var(--ifm-background-surface-color); white-space: pre-wrap; overflow-wrap: anywhere; }
+.header { margin: 0 0 .75rem; font-size: 1.2rem; }
+.section { margin: .75rem 0; }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.context { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0 0; }
+.button { border: 1px solid var(--ifm-color-emphasis-500); border-radius: .25rem; padding: .4rem .85rem; font: inherit; font-weight: 600; color: var(--ifm-font-color-base); background: var(--ifm-background-surface-color); opacity: 1; }
+.button[data-style="primary"] { color: white; background: #087a5a; border-color: #087a5a; }
+.button[data-style="danger"] { color: #c9374c; border-color: #c9374c; }
+.alert { border-left: .25rem solid #d49b18; background: var(--ifm-color-emphasis-100); padding: .75rem 1rem; }
+.input { display: grid; gap: .5rem; font-weight: 600; margin: .75rem 0; }
+.input input { padding: .6rem; border: 1px solid var(--ifm-color-emphasis-500); border-radius: .25rem; font: inherit; background: var(--ifm-background-surface-color); }
+.modal { max-width: 32rem; margin: auto; }
+.table { margin: .75rem 0; display: block; max-width: 100%; overflow-x: auto; }
+.attachment { border-left: .25rem solid; padding-left: 1rem; margin: .75rem 0; }
+.container { border: 1px solid var(--ifm-color-emphasis-300); border-radius: .25rem; padding: .6rem .9rem; }
+@media (max-width: 480px) { .fields { grid-template-columns: 1fr; } .preview { padding: .75rem; } }
+
+.layoutLabel { margin: 0 0 .5rem; }
+.layoutGrid[data-grid="outer"], .layoutGrid[data-grid="rows"] { border: 1px solid var(--ifm-color-emphasis-300); border-radius: .25rem; }
+.layoutRow { display: grid; grid-template-columns: var(--layout-columns); gap: 1rem; padding: .5rem .75rem; }
+.layoutGrid[data-grid="rows"] .layoutRow + .layoutRow { border-top: 1px solid var(--ifm-color-emphasis-300); }
+.layoutCell { display: flex; min-width: 0; align-items: center; }
+.layoutCell[data-alignment="fill"] > div { width: 100%; }
+.layoutCell[data-alignment="center"] { justify-content: center; }
+.layoutCell[data-alignment="end"] { justify-content: flex-end; }
+.layoutFallback { margin-top: 1rem; }
+@media (max-width: 480px) { .layoutRow { grid-template-columns: 1fr; gap: 0; } }

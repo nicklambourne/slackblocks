@@ -94,7 +94,13 @@ def generate(model, limits, vocab, spec_version):
     output = {}
     for interface in model["interfaces"]:
         name = interface["name"]
-        parent = "Element" if name == "InputElement" else "\\JsonSerializable"
+        parent = (
+            "Block"
+            if name in {"LayoutChild", "LayoutFallback"}
+            else "Element"
+            if name == "InputElement"
+            else "\\JsonSerializable"
+        )
         description = interface["description"].replace(
             " accepted directly by Slack's official Java SDK", ""
         )
@@ -158,6 +164,9 @@ def generate(model, limits, vocab, spec_version):
             ]
         )
         for f in ordered:
+            # Preserve the pre-prompt positional extensions argument on buttons.
+            if name == "ButtonElement" and f["wire"] == "agent_prompt":
+                lines.append("        ?JsonObject $extensions = null,")
             default = ""
             if f["wire"] in defaults:
                 val = defaults[f["wire"]]
@@ -177,7 +186,9 @@ def generate(model, limits, vocab, spec_version):
             elif not f.get("required"):
                 default = " = null"
             lines.append(f"        {signature(f, True)} ${f['method']}{default},")
-        lines += ["        ?JsonObject $extensions = null,", "    ) {"]
+        if name != "ButtonElement":
+            lines.append("        ?JsonObject $extensions = null,")
+        lines.append("    ) {")
         for f in fields:
             key = f["method"]
             val = "$" + key

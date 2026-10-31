@@ -1,0 +1,459 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+
+# Installation
+
+Choose a language from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
+
+These instructions target coordinated release 3.1.0 across all ten implementations. Frozen [3.0.0 documentation](/3.0.0/usage/installation) remains available.
+
+<LanguageContent>
+<Python>
+
+Install the Python package from [PyPI](https://pypi.org/project/slackblocks/):
+
+<Tabs>
+<TabItem value="pip" label="pip">
+
+```bash
+pip install slackblocks
+```
+
+</TabItem>
+<TabItem value="poetry" label="Poetry">
+
+```bash
+poetry add slackblocks
+```
+
+</TabItem>
+<TabItem value="pipenv" label="Pipenv">
+
+```bash
+pipenv install slackblocks
+```
+
+</TabItem>
+<TabItem value="uv" label="uv">
+
+```bash
+uv add slackblocks
+```
+
+</TabItem>
+</Tabs>
+
+Python 3.x requires Python 3.10 or newer and has no runtime dependencies. See [Compatibility](compatibility) for the support matrix and 1.x migration guidance.
+
+Verify the installation:
+
+```python
+from slackblocks import Message, SectionBlock
+
+print(Message(channel="#general", blocks=SectionBlock("Hello, world!")).json())
+```
+
+Pin the current major release with `slackblocks~=3.0`, and uninstall with `pip uninstall slackblocks` (or the equivalent command for your package manager).
+
+</Python>
+<TypeScript>
+
+Install the ESM package from npm:
+
+<Tabs>
+<TabItem value="pnpm" label="pnpm">
+
+```bash
+pnpm add @nicklambourne/slackblocks
+```
+
+</TabItem>
+<TabItem value="npm" label="npm">
+
+```bash
+npm install @nicklambourne/slackblocks
+```
+
+</TabItem>
+<TabItem value="yarn" label="Yarn">
+
+```bash
+yarn add @nicklambourne/slackblocks
+```
+
+</TabItem>
+</Tabs>
+
+The package requires Node 20.19 or newer, is ESM-only, and emits no runtime imports beyond your own code.
+
+Verify the installation in `hello.mjs`:
+
+```ts
+import { Message, SectionBlock } from "@nicklambourne/slackblocks";
+
+console.log(
+  Message()
+    .channel("C0123456")
+    .blocks(SectionBlock().text("Hello, world!"))
+    .build(),
+);
+```
+
+Run it with `node hello.mjs`. Stay on the 3.x release line with `@nicklambourne/slackblocks@^3.1.0`, and uninstall with `pnpm remove @nicklambourne/slackblocks` (or your package manager's equivalent).
+
+</TypeScript>
+<Go>
+
+From an existing Go module, install the v3 Go module directly from GitHub:
+
+```bash
+go get github.com/nicklambourne/slackblocks/go/v3
+```
+
+Go 1.22 or newer is required. Block builders implement `slack.Block` directly using the Go 1.22-compatible `github.com/slack-go/slack` release; `go get` installs that dependency automatically. See the [Go support matrix](compatibility?language=go) for tested SDK versions and how to opt into a newer SDK without changing the library’s minimum Go version.
+
+Verify the installation in `main.go`:
+
+```go
+package main
+
+import (
+    "fmt"
+
+    slackblocks "github.com/nicklambourne/slackblocks/go/v3"
+)
+
+func main() {
+    payload, err := slackblocks.NewMessage().
+        Channel("C0123456").
+        Blocks(slackblocks.NewSectionBlock().Text("Hello, world!")).
+        Build()
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(payload)
+}
+```
+
+Run it with `go run .`. The `/v3` suffix is part of the module path under Go's semantic import versioning; update within the current major line with `go get -u github.com/nicklambourne/slackblocks/go/v3`.
+
+</Go>
+<Java>
+
+Install the Java artifact from Maven Central. Java 17 or newer is required.
+
+<Tabs>
+<TabItem value="maven" label="Maven">
+
+```xml
+<dependency>
+  <groupId>io.github.nicklambourne</groupId>
+  <artifactId>slackblocks</artifactId>
+  <version>3.1.0</version>
+</dependency>
+```
+
+</TabItem>
+<TabItem value="gradle-kotlin" label="Gradle (Kotlin)">
+
+```kotlin
+implementation("io.github.nicklambourne:slackblocks:3.1.0")
+```
+
+</TabItem>
+<TabItem value="gradle-groovy" label="Gradle (Groovy)">
+
+```groovy
+implementation 'io.github.nicklambourne:slackblocks:3.1.0'
+```
+
+</TabItem>
+</Tabs>
+
+The core artifact includes the official Slack Block Kit model interfaces so completed blocks can be passed directly to the Slack Java SDK. Add `com.slack.api:slack-api-client` separately when your application sends messages; keeping the transport client optional avoids pulling HTTP dependencies into applications that only construct payloads.
+
+Verify the installation:
+
+```java
+import io.github.nicklambourne.slackblocks.SlackblocksJson;
+import io.github.nicklambourne.slackblocks.block.SectionBlock;
+
+public final class HelloSlackblocks {
+  public static void main(String[] args) {
+    var block = SectionBlock.builder().markdownText("Hello, world!").build();
+    System.out.println(SlackblocksJson.write(block));
+  }
+}
+```
+
+### Import slackblocks types by name
+
+Several slackblocks class names, such as `SectionBlock`, `HeaderBlock`, and `ButtonElement`, also exist in the Slack SDK's `com.slack.api.model.block` packages. Import slackblocks classes individually, as the examples on this site do. A file that combines `import com.slack.api.model.block.*;` with a slackblocks wildcard import fails to compile with a "reference to SectionBlock is ambiguous" error.
+
+Pin compatible 3.x updates with Maven's dependency-management facilities or your usual version catalog. slackblocks' Java artifact uses the same release number as every other language package.
+
+</Java>
+<CSharp>
+
+Install the NuGet package. .NET 8 or newer is required.
+
+<Tabs>
+<TabItem value="dotnet-cli" label=".NET CLI">
+
+```bash
+dotnet add package Slackblocks
+```
+
+</TabItem>
+<TabItem value="package-reference" label="PackageReference">
+
+```xml
+<PackageReference Include="Slackblocks" Version="3.1.0" />
+```
+
+</TabItem>
+</Tabs>
+
+The package depends on nothing beyond .NET itself. It builds and validates payloads and leaves delivery to `HttpClient` or the Slack client library you already use.
+
+Verify the installation:
+
+```csharp
+using Slackblocks.Blocks;
+
+var block = new SectionBlock(text: "Hello, world!");
+Console.WriteLine(block.ToJson());
+```
+
+### Alias a namespace when combining Slack libraries
+
+Some slackblocks type names, such as `SectionBlock` and `ButtonElement`, also exist in .NET Slack client libraries such as SlackNet. A file that imports both namespaces fails to compile with an ambiguous reference error. Import only the namespaces a file needs, or alias one of them:
+
+```csharp
+using Blocks = Slackblocks.Blocks;
+
+var block = new Blocks.SectionBlock(text: "Hello, world!");
+```
+
+The NuGet package version moves in lockstep with every other language package. A floating version such as `3.*` accepts compatible 3.x updates.
+
+</CSharp>
+<Ruby>
+
+Install the gem from RubyGems. MRI Ruby 3.3 or newer is required.
+
+```bash
+gem install slackblocks
+```
+
+Or add it to your `Gemfile`:
+
+```ruby
+gem "slackblocks", "~> 3.0"
+```
+
+The runtime uses Ruby and the default `json` gem. It does not install a Slack transport client.
+
+Verify the installation:
+
+```ruby
+require "slackblocks"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "C01234567",
+  text: "Hello, world!",
+  blocks: [Slackblocks::SectionBlock.new(text: "Hello, world!")]
+)
+puts message.to_json
+```
+
+Uninstall with `gem uninstall slackblocks`.
+
+</Ruby>
+<Rust>
+
+## Install from crates.io
+
+Rust 1.85 or newer is required. The crate uses edition 2024, Serde and serde_json.
+Rust support begins with coordinated version 2.6.0.
+
+```sh
+cargo add slackblocks@3.1.0
+cargo add serde_json
+```
+
+The equivalent dependency is `slackblocks = "3.1.0"`. The package includes
+generated sources; application builds do not require Python or the shared
+specification directory. Use `cargo update` within your normal Cargo version policy.
+
+## Verify construction and serialization
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let message = MessagePayload::builder("C01234567")
+        .text("Hello from slackblocks!")
+        .block(SectionBlock::builder().text("Hello, world!").build()?)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+Run the example with `cargo run`. Remove the dependency with `cargo remove slackblocks`.
+See [Compatibility](compatibility) for the MSRV and [Migration](migration) for
+Rust naming and editing conventions. HTTP clients are application dependencies.
+
+
+</Rust>
+<PHP>
+
+## Install with Composer
+
+PHP 8.2 or newer is required, on a 64-bit build with the JSON and PCRE extensions.
+The core has no third-party runtime dependencies. Composer 2 handles PSR-4 autoloading.
+
+PHP support begins with coordinated version 2.7.0. Install the
+[Packagist package](https://packagist.org/packages/nicklambourne/slackblocks):
+
+```sh
+composer require nicklambourne/slackblocks:^3.0
+```
+
+Stable installs download a PHP-only archive. Composer's `--prefer-source` option
+checks out the monorepo and is required for unreleased development branches.
+Keep `vendor/autoload.php` in your application's entry point and use
+`declare(strict_types=1)` in your calling PHP files. PHP 8.2's named arguments,
+readonly classes and backed enums are the public API; named parameter spelling
+is part of compatibility.
+
+## Verify construction and serialization
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(
+    channel: 'C0123456789',
+    text: 'Build #482 passed',
+    blocks: [
+        new S\HeaderBlock('Build #482 passed'),
+        new S\SectionBlock(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+        new S\ActionsBlock(elements: [
+            new S\ButtonElement(text: 'View build', actionId: 'view', url: 'https://ci.example.com/482'),
+        ]),
+    ],
+);
+echo $message->toJson();
+```
+
+</PHP>
+<Elixir>
+
+Elixir support begins with **2.8.0**, published on [Hex](https://hex.pm/packages/slackblocks).
+Elixir 1.16.3+ (below 2.0), compatible OTP 26.2+, and a 64-bit runtime are required.
+Jason and Decimal are runtime dependencies; HTTP clients are optional.
+
+Add the package to the dependency list in your application's `mix.exs`:
+
+```elixir
+{:slackblocks, "~> 3.0"}
+```
+
+Then fetch and compile dependencies:
+
+```sh
+mix deps.get
+mix compile
+```
+
+**Existing Jason builds:** if Jason was compiled before Decimal was installed,
+run `mix deps.compile jason --force` in each build environment (including
+`MIX_ENV=prod`), then rebuild your application and releases. Jason chooses its
+optional Decimal decoder at compile time. Checked slackblocks decoding returns
+an actionable tagged error until that integration is rebuilt. Fresh dependency
+builds include Decimal normally.
+
+Verify construction and serialization:
+
+```elixir
+alias Slackblocks.Blocks.Section
+section = Section.new!(text: "Hello, *world*!")
+Slackblocks.to_map!(section)
+```
+
+Use `mix deps.update slackblocks` to update within your declared version range.
+Commit your application's `mix.lock`. To uninstall, remove the dependency entry
+and run `mix deps.clean slackblocks --unlock`. The library starts no processes
+and needs no supervision-tree entry. For Rebar3 projects, see [Erlang integration](erlang).
+
+</Elixir>
+<Haskell>
+
+## Haskell availability and toolchain
+
+Haskell joins coordinated **3.1.0** on
+[Hackage](https://hackage.haskell.org/package/slackblocks).
+
+GHC 9.6.7+ within the [tested compiler series](/usage/compatibility) is required.
+Development uses Cabal 3.16.1.0; the package declares Cabal syntax 3.0 and GHC2021.
+
+Declare `slackblocks >= 3.1 && < 3.2`, `aeson` and `base` in your application's
+`build-depends`. Run `cabal update`, then `cabal build` or `cabal run` from the
+application. Cabal resolves the package from Hackage; do not use `cabal install`
+to add a library into an application's dependency graph.
+
+To develop against a source checkout instead, build an actual distributable:
+
+```sh
+cd haskell
+cabal build lib:slackblocks
+cabal sdist --output-directory=dist
+```
+
+In a separate application's `cabal.project`, list its package and the local
+archive, replacing the absolute path with your archive location:
+
+```cabal
+packages: . /absolute/path/slackblocks-3.1.0.tar.gz
+```
+
+Keep the same `build-depends`. Remove the archive from `packages` to return to
+registry resolution.
+
+The core depends on Aeson, text, bytestring, containers, scientific and vector.
+It does not depend on an HTTP client or Slack SDK. Development dependency locks
+are not imposed on applications. `OverloadedStrings` makes text literals usable
+without repetitive `Text.pack` calls.
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result MessagePayload
+example = do
+  text <- buildMarkdownText (markdownText "Hello, *Haskell*!")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  buildMessagePayload
+    ( (messagePayload "C0123456789")
+        { messagePayloadText = Just "Hello, Haskell!",
+          messagePayloadBlocks = Just [sectionBlockAsBlock section]
+        }
+    )
+```
+
+Handle `Left errors`; on `Right payload`, encode with Aeson. The [sending guide](/usage/sending_messages)
+shows the separately resolved HTTP integration.
+
+</Haskell>
+</LanguageContent>

@@ -100,7 +100,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild"
         ],
         "properties": {
             "elements": {
@@ -151,7 +152,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild"
         ],
         "properties": {
             "text": {
@@ -583,6 +585,14 @@
             "accessibilityLabel": {
                 "type": "?string",
                 "readonly": true
+            },
+            "agentPrompt": {
+                "type": "?string",
+                "readonly": true
+            },
+            "agentPromptDisplay": {
+                "type": "?string",
+                "readonly": true
             }
         },
         "methods": {
@@ -648,6 +658,22 @@
                     },
                     "extensions": {
                         "type": "?Slackblocks\\JsonObject",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "agentPrompt": {
+                        "type": "?string",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "agentPromptDisplay": {
+                        "type": "?string",
                         "optional": true,
                         "variadic": false,
                         "byReference": false,
@@ -722,7 +748,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild"
         ],
         "properties": {
             "heroImage": {
@@ -858,7 +885,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild"
         ],
         "properties": {
             "elements": {
@@ -1498,7 +1526,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild"
         ],
         "properties": {
             "childBlocks": {
@@ -1779,7 +1808,9 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild",
+            "Slackblocks\\LayoutFallback"
         ],
         "properties": {
             "elements": {
@@ -2264,7 +2295,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild"
         ],
         "properties": {
             "rows": {
@@ -2373,7 +2405,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild"
         ],
         "properties": {
             "title": {
@@ -2640,7 +2673,9 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild",
+            "Slackblocks\\LayoutFallback"
         ],
         "properties": {
             "blockId": {
@@ -3192,7 +3227,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild"
         ],
         "properties": {
             "externalId": {
@@ -3320,7 +3356,9 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild",
+            "Slackblocks\\LayoutFallback"
         ],
         "properties": {
             "text": {
@@ -3617,7 +3655,9 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild",
+            "Slackblocks\\LayoutFallback"
         ],
         "properties": {
             "imageUrl": {
@@ -3768,7 +3808,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild"
         ],
         "properties": {
             "label": {
@@ -3978,6 +4019,429 @@
             }
         },
         "constants": []
+    },
+    "LayoutAlignment": {
+        "kind": "enum",
+        "readonly": false,
+        "interfaces": [
+            "BackedEnum",
+            "UnitEnum"
+        ],
+        "properties": {
+            "name": {
+                "type": "string",
+                "readonly": true
+            },
+            "value": {
+                "type": "string",
+                "readonly": true
+            }
+        },
+        "methods": {
+            "cases": {
+                "static": true,
+                "return": "array",
+                "byReference": false,
+                "parameters": []
+            },
+            "from": {
+                "static": true,
+                "return": "static",
+                "byReference": false,
+                "parameters": {
+                    "value": {
+                        "type": "string|int",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    }
+                }
+            },
+            "tryFrom": {
+                "static": true,
+                "return": "?static",
+                "byReference": false,
+                "parameters": {
+                    "value": {
+                        "type": "string|int",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    }
+                }
+            }
+        },
+        "constants": {
+            "Start": "start",
+            "Center": "center",
+            "End": "end"
+        }
+    },
+    "LayoutBlock": {
+        "kind": "class",
+        "readonly": true,
+        "interfaces": [
+            "JsonSerializable",
+            "Slackblocks\\Block"
+        ],
+        "properties": {
+            "label": {
+                "type": "string",
+                "readonly": true
+            },
+            "rows": {
+                "type": "array",
+                "readonly": true
+            },
+            "isLabelVisible": {
+                "type": "?bool",
+                "readonly": true
+            },
+            "gridLines": {
+                "type": "?Slackblocks\\LayoutGridLines",
+                "readonly": true
+            },
+            "fallback": {
+                "type": "?array",
+                "readonly": true
+            },
+            "blockId": {
+                "type": "?string",
+                "readonly": true
+            }
+        },
+        "methods": {
+            "__construct": {
+                "static": false,
+                "return": "",
+                "byReference": false,
+                "parameters": {
+                    "label": {
+                        "type": "string",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    },
+                    "rows": {
+                        "type": "array",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    },
+                    "isLabelVisible": {
+                        "type": "?bool",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "gridLines": {
+                        "type": "?Slackblocks\\LayoutGridLines",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "fallback": {
+                        "type": "?array",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "blockId": {
+                        "type": "?string",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "extensions": {
+                        "type": "?Slackblocks\\JsonObject",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    }
+                }
+            }
+        },
+        "constants": []
+    },
+    "LayoutChild": {
+        "kind": "interface",
+        "readonly": false,
+        "interfaces": [
+            "JsonSerializable",
+            "Slackblocks\\Block"
+        ],
+        "properties": [],
+        "methods": {
+            "toArray": {
+                "static": false,
+                "return": "array",
+                "byReference": false,
+                "parameters": []
+            },
+            "toJson": {
+                "static": false,
+                "return": "string",
+                "byReference": false,
+                "parameters": []
+            }
+        },
+        "constants": []
+    },
+    "LayoutFallback": {
+        "kind": "interface",
+        "readonly": false,
+        "interfaces": [
+            "JsonSerializable",
+            "Slackblocks\\Block"
+        ],
+        "properties": [],
+        "methods": {
+            "toArray": {
+                "static": false,
+                "return": "array",
+                "byReference": false,
+                "parameters": []
+            },
+            "toJson": {
+                "static": false,
+                "return": "string",
+                "byReference": false,
+                "parameters": []
+            }
+        },
+        "constants": []
+    },
+    "LayoutGridLines": {
+        "kind": "enum",
+        "readonly": false,
+        "interfaces": [
+            "BackedEnum",
+            "UnitEnum"
+        ],
+        "properties": {
+            "name": {
+                "type": "string",
+                "readonly": true
+            },
+            "value": {
+                "type": "string",
+                "readonly": true
+            }
+        },
+        "methods": {
+            "cases": {
+                "static": true,
+                "return": "array",
+                "byReference": false,
+                "parameters": []
+            },
+            "from": {
+                "static": true,
+                "return": "static",
+                "byReference": false,
+                "parameters": {
+                    "value": {
+                        "type": "string|int",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    }
+                }
+            },
+            "tryFrom": {
+                "static": true,
+                "return": "?static",
+                "byReference": false,
+                "parameters": {
+                    "value": {
+                        "type": "string|int",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    }
+                }
+            }
+        },
+        "constants": {
+            "None": "none",
+            "Rows": "rows",
+            "Outer": "outer"
+        }
+    },
+    "LayoutItem": {
+        "kind": "class",
+        "readonly": true,
+        "interfaces": [
+            "JsonSerializable"
+        ],
+        "properties": {
+            "block": {
+                "type": "Slackblocks\\LayoutChild",
+                "readonly": true
+            },
+            "width": {
+                "type": "?Slackblocks\\LayoutWidth",
+                "readonly": true
+            },
+            "horizontalAlignment": {
+                "type": "?Slackblocks\\LayoutAlignment",
+                "readonly": true
+            }
+        },
+        "methods": {
+            "__construct": {
+                "static": false,
+                "return": "",
+                "byReference": false,
+                "parameters": {
+                    "block": {
+                        "type": "Slackblocks\\LayoutChild",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    },
+                    "width": {
+                        "type": "?Slackblocks\\LayoutWidth",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "horizontalAlignment": {
+                        "type": "?Slackblocks\\LayoutAlignment",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "extensions": {
+                        "type": "?Slackblocks\\JsonObject",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    }
+                }
+            }
+        },
+        "constants": []
+    },
+    "LayoutRow": {
+        "kind": "class",
+        "readonly": true,
+        "interfaces": [
+            "JsonSerializable"
+        ],
+        "properties": {
+            "items": {
+                "type": "array",
+                "readonly": true
+            }
+        },
+        "methods": {
+            "__construct": {
+                "static": false,
+                "return": "",
+                "byReference": false,
+                "parameters": {
+                    "items": {
+                        "type": "array",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    },
+                    "extensions": {
+                        "type": "?Slackblocks\\JsonObject",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    }
+                }
+            }
+        },
+        "constants": []
+    },
+    "LayoutWidth": {
+        "kind": "enum",
+        "readonly": false,
+        "interfaces": [
+            "BackedEnum",
+            "UnitEnum"
+        ],
+        "properties": {
+            "name": {
+                "type": "string",
+                "readonly": true
+            },
+            "value": {
+                "type": "string",
+                "readonly": true
+            }
+        },
+        "methods": {
+            "cases": {
+                "static": true,
+                "return": "array",
+                "byReference": false,
+                "parameters": []
+            },
+            "from": {
+                "static": true,
+                "return": "static",
+                "byReference": false,
+                "parameters": {
+                    "value": {
+                        "type": "string|int",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    }
+                }
+            },
+            "tryFrom": {
+                "static": true,
+                "return": "?static",
+                "byReference": false,
+                "parameters": {
+                    "value": {
+                        "type": "string|int",
+                        "optional": false,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": false
+                    }
+                }
+            }
+        },
+        "constants": {
+            "Narrow": "narrow",
+            "Standard": "standard",
+            "Wide": "wide"
+        }
     },
     "LineChart": {
         "kind": "class",
@@ -5421,6 +5885,8 @@
             "JsonSerializable",
             "Slackblocks\\Block",
             "Slackblocks\\DataTableCell",
+            "Slackblocks\\LayoutChild",
+            "Slackblocks\\LayoutFallback",
             "Slackblocks\\TableCell"
         ],
         "properties": {
@@ -6354,7 +6820,9 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild",
+            "Slackblocks\\LayoutFallback"
         ],
         "properties": {
             "text": {
@@ -6757,7 +7225,9 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild",
+            "Slackblocks\\LayoutFallback"
         ],
         "properties": {
             "rows": {
@@ -7647,8 +8117,8 @@
         "properties": [],
         "methods": [],
         "constants": {
-            "PACKAGE": "3.0.0",
-            "SPEC": "1.3.0"
+            "PACKAGE": "3.2.0",
+            "SPEC": "1.5.0"
         }
     },
     "VideoBlock": {
@@ -7656,7 +8126,9 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\Block"
+            "Slackblocks\\Block",
+            "Slackblocks\\LayoutChild",
+            "Slackblocks\\LayoutFallback"
         ],
         "properties": {
             "altText": {

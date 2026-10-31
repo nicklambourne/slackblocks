@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Compatibility
 
@@ -254,4 +254,58 @@ Erlang can call the same modules using binary strings and keyword tuples;
 see the tested [Rebar3 and standalone release configuration](erlang).
 
 </Elixir>
+<Haskell>
+
+## Haskell compiler support
+
+Haskell support begins with release 3.1.0. The minimum is GHC 9.6.7.
+The package uses GHC2021 and a bounded `base` dependency; an untested future GHC
+series is not implicitly supported.
+
+| GHC series | CI patch | Platforms | Validation |
+| --- | --- | --- | --- |
+| 9.6 | 9.6.7 (minimum) | Linux, macOS, Windows | Full native suites, source archive and external consumers |
+| 9.8 | 9.8.4 | Linux | Full native suites |
+| 9.10 | 9.10.3 | Linux | Full native suites |
+| 9.12 | 9.12.4 | Linux | Full native suites |
+| 9.14 | 9.14.1 | Linux, macOS, Windows | Full native suites, source archive and external consumers |
+
+Linux checks independent exact-lower, locked and latest-within-bounds dependency
+resolutions. Both Aeson ordered and unordered KeyMap modes run native suites.
+Lower bounds include Aeson 2.2.0.0, bytestring 0.11.5.4, text 2.0.2, containers
+0.6.7, scientific 0.3.7.0 and vector 0.13.0.0. QuickCheck, HLint and Ormolu are
+test/development tools, not consumer dependencies. The HTTP example resolves its
+own `http-client`, `http-client-tls` and `http-types` graph on minimum/current GHC.
+
+### Version bounds and source compatibility
+
+Use a range such as `slackblocks >= 3.2 && < 3.3`. Haskell follows the coordinated
+package release number; it does not use an independent 0.x numbering scheme.
+The [Haskell Package Versioning Policy](https://pvp.haskell.org/) explains why
+bounds matter when constructors and exported names evolve. A new closed enum or
+role member can affect exhaustive matches; prefer the supplied `match…` helpers
+and review release notes before widening the range. Raising the compiler floor
+requires an explicit compatibility decision, not a dependency update shortcut.
+
+### Wire and value behavior
+
+Optional `Nothing` and parsed null omit a field; explicit `Just False`, zero and
+allowed empty values are retained. Block IDs are never generated. Factories set
+only documented shared defaults; parsing does not invent absent defaults.
+`Integer` and `Scientific` avoid binary floating-point loss. Number-input bounds
+are decimal text; `decimalText` converts a `Scientific` value exactly.
+
+Checked values are immutable. Field records cannot be encoded directly. JSON
+ingress validates nested roles and contextual limits; `decode` additionally
+rejects duplicate keys, invalid UTF-8, trailing data and numeric exponents that
+overflow Aeson’s `Scientific` representation. Checked native values and JSON
+ingress also reject numbers whose normalized encoding cannot round-trip,
+including numbers in metadata and extensions. Bounded integer fields are
+range-checked before expanding exponents. Decimal bounds supplied as strings
+retain arbitrary-exponent support. Already parsed
+Aeson values cannot recover duplicate keys or exponents an earlier parser lost.
+Application metadata remains opaque JSON. See [ownership and edits](using_blocks#ownership-and-edits)
+for the native inspect-and-rebuild workflow.
+
+</Haskell>
 </LanguageContent>

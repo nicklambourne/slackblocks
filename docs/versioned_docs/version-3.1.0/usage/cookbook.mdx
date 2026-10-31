@@ -1,0 +1,42 @@
+---
+title: Recipe Book
+slug: /usage/recipes
+---
+
+import RecipeBookRedirect from '@site/src/components/RecipeBookRedirect';
+
+<RecipeBookRedirect />
+
+# Recipe Book
+
+Choose a recipe, then select your language. Every recipe has native code for all ten implementations and an output preview generated from its tested example. Message construction and rendering do not implement callbacks or send Slack requests.
+
+| Recipe | Result |
+| --- | --- |
+| [Build status notification](/usage/recipes/build-notification) | Build summary with fields and a footer |
+| [Approval request with action buttons](/usage/recipes/approval-request) | Approve/reject buttons with callback identifiers |
+| [Rich-formatted alert](/usage/recipes/rich-alert) | Styled rich text |
+| [Confirmation modal](/usage/recipes/confirmation-modal) | An input view for an interaction trigger |
+| [Threaded reply](/usage/recipes/threaded-reply) | A reply tied to a parent timestamp |
+| [Ephemeral slash-command response](/usage/recipes/ephemeral-response) | A response visible to the invoking user |
+| [Multi-column status report](/usage/recipes/status-table) | A compact service table |
+| [Colored-bar attachment](/usage/recipes/colored-attachment) | A legacy colored attachment |
+| [Preview in Block Kit Builder](/usage/recipes/builder-preview) | A locally generated Builder URL |
+| [Parse incoming modeled JSON](/usage/recipes/parse-json) | Checked input or an explicitly scoped adapter |
+| [Workflow button](/usage/recipes/workflow-button) | A parameterized workflow trigger |
+| [Typed validation error handling](/usage/recipes/validation-errors) | A categorized validation failure |
+| [Accordion and pagination](/usage/recipes/accordion-pagination) | Collapsible detail and paged content |
+| [Metadata and safe edits](/usage/recipes/metadata) | Application metadata and ownership-aware edits |
+
+## Operational guides
+
+These longer guides cover application behavior around the payloads. Their coverage is stated explicitly.
+
+| Guide | Coverage |
+| --- | --- |
+| [Multi-select compatibility](/usage/recipes/multiselect-compatibility) | Ten native consumers; 15 payloads per language |
+| [Workflow state and effects](/usage/recipes/workflow-state) | Tested Python reference application; portable acceptance criteria |
+| [Bounded delivery](/usage/recipes/reliable-delivery) | Tested Python SQLite/HTTP application; no exactly-once claim |
+| [Live prerequisites](/usage/recipes/live-prerequisites) | Offline readiness inventory; no automatic live-pass claim |
+
+See [Sending messages](/usage/sending_messages) for SDK/HTTP handoff and [API reference](/reference) for signatures. Live tests additionally require an authorized app, genuine resources and interaction receipts.

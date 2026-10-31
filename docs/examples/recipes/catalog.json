@@ -1,0 +1,121 @@
+[
+  {
+    "id": "build-notification",
+    "title": "Build status notification",
+    "anchors": [
+      "build-status-notification"
+    ]
+  },
+  {
+    "id": "approval-request",
+    "title": "Approval request with action buttons",
+    "anchors": [
+      "approval-request-with-action-buttons"
+    ]
+  },
+  {
+    "id": "rich-alert",
+    "title": "Rich-formatted alert",
+    "anchors": [
+      "rich-formatted-alert"
+    ]
+  },
+  {
+    "id": "confirmation-modal",
+    "title": "Confirmation modal",
+    "anchors": [
+      "confirmation-modal"
+    ]
+  },
+  {
+    "id": "threaded-reply",
+    "title": "Threaded reply",
+    "anchors": [
+      "threaded-reply"
+    ]
+  },
+  {
+    "id": "ephemeral-response",
+    "title": "Ephemeral slash-command response",
+    "anchors": [
+      "ephemeral-slash-command-response",
+      "ephemeral-interaction-response"
+    ]
+  },
+  {
+    "id": "status-table",
+    "title": "Multi-column status report",
+    "anchors": [
+      "multi-column-status-report-table",
+      "multi-column-status-report"
+    ]
+  },
+  {
+    "id": "colored-attachment",
+    "title": "Colored-bar attachment",
+    "anchors": [
+      "deprecated-colored-bar-attachment",
+      "colored-bar-attachment",
+      "colored-attachment"
+    ]
+  },
+  {
+    "id": "builder-preview",
+    "title": "Preview in Block Kit Builder",
+    "anchors": [
+      "preview-a-message-in-the-browser",
+      "preview-a-message",
+      "preview-in-block-kit-builder"
+    ]
+  },
+  {
+    "id": "parse-json",
+    "title": "Parse incoming modeled JSON",
+    "anchors": [
+      "parse-incoming-slack-json",
+      "parse-modeled-block-kit-json",
+      "parse-incoming-modeled-json",
+      "checked-json-and-immutable-edits"
+    ]
+  },
+  {
+    "id": "workflow-button",
+    "title": "Workflow button",
+    "anchors": [
+      "one-line-workflow-trigger",
+      "workflow-trigger-shortcut",
+      "workflow-button"
+    ]
+  },
+  {
+    "id": "validation-errors",
+    "title": "Typed validation error handling",
+    "anchors": [
+      "typed-exception-handling"
+    ]
+  },
+  {
+    "id": "accordion-pagination",
+    "title": "Accordion and pagination",
+    "anchors": [
+      "reusable-accordion-and-pagination",
+      "accordion-and-pagination",
+      "accordion-and-paginator"
+    ]
+  },
+  {
+    "id": "metadata",
+    "title": "Metadata and safe edits",
+    "anchors": [
+      "opaque-metadata-and-safe-edits",
+      "opaque-metadata-preserves-json-values"
+    ]
+  },
+  {
+    "id": "layout-grid",
+    "title": "Weighted layout grid",
+    "anchors": [
+      "weighted-layout-grid"
+    ]
+  }
+]

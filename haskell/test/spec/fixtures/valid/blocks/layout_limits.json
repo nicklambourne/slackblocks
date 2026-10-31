@@ -1,0 +1,118 @@
+{
+  "type": "layout",
+  "label": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+  "rows": [
+    {
+      "items": [
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_0_0"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_0_1"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_0_2"
+          }
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_1_0"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_1_1"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_1_2"
+          }
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_2_0"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_2_1"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_2_2"
+          }
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_3_0"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_3_1"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_3_2"
+          }
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_4_0"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_4_1"
+          }
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child_4_2"
+          }
+        }
+      ]
+    }
+  ],
+  "block_id": "layout",
+  "grid_lines": "outer"
+}

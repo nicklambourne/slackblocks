@@ -24,7 +24,9 @@ export default function LanguageContent({ children }: PropsWithChildren) {
                       ? "php"
                       : child.type === Elixir
                         ? "elixir"
-                        : null;
+                        : child.type === Haskell
+                          ? "haskell"
+                          : null;
     if (!childLanguage) return null;
 
     return (
@@ -74,5 +76,9 @@ export function PHP({ children }: PropsWithChildren) {
 }
 
 export function Elixir({ children }: PropsWithChildren) {
+  return <>{children}</>;
+}
+
+export function Haskell({ children }: PropsWithChildren) {
   return <>{children}</>;
 }

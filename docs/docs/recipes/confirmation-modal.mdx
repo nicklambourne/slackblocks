@@ -1,0 +1,521 @@
+---
+title: Confirmation modal
+slug: /usage/recipes/confirmation-modal
+sidebar_position: 4
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "blocks": [
+      {
+        "block_id": "reason",
+        "element": {
+          "action_id": "reason_input",
+          "type": "plain_text_input"
+        },
+        "label": {
+          "text": "Reason",
+          "type": "plain_text"
+        },
+        "type": "input"
+      }
+    ],
+    "callback_id": "deploy",
+    "submit": {
+      "text": "Deploy",
+      "type": "plain_text"
+    },
+    "title": {
+      "text": "Confirm deployment",
+      "type": "plain_text"
+    },
+    "type": "modal"
+  },
+  "java": {
+    "type": "modal",
+    "title": {
+      "type": "plain_text",
+      "text": "Confirm deployment"
+    },
+    "submit": {
+      "type": "plain_text",
+      "text": "Deploy"
+    },
+    "callback_id": "deploy",
+    "blocks": [
+      {
+        "type": "input",
+        "label": {
+          "type": "plain_text",
+          "text": "Reason"
+        },
+        "block_id": "reason",
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "reason_input"
+        }
+      }
+    ]
+  },
+  "go": {
+    "blocks": [
+      {
+        "block_id": "reason",
+        "element": {
+          "action_id": "reason_input",
+          "type": "plain_text_input"
+        },
+        "label": {
+          "text": "Reason",
+          "type": "plain_text"
+        },
+        "type": "input"
+      }
+    ],
+    "callback_id": "deploy",
+    "submit": {
+      "text": "Deploy",
+      "type": "plain_text"
+    },
+    "title": {
+      "text": "Confirm deployment",
+      "type": "plain_text"
+    },
+    "type": "modal"
+  },
+  "ruby": {
+    "type": "modal",
+    "title": {
+      "type": "plain_text",
+      "text": "Confirm deployment"
+    },
+    "blocks": [
+      {
+        "type": "input",
+        "label": {
+          "type": "plain_text",
+          "text": "Reason"
+        },
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "reason_input"
+        },
+        "block_id": "reason"
+      }
+    ],
+    "submit": {
+      "type": "plain_text",
+      "text": "Deploy"
+    },
+    "callback_id": "deploy"
+  },
+  "csharp": {
+    "type": "modal",
+    "title": {
+      "type": "plain_text",
+      "text": "Confirm deployment"
+    },
+    "blocks": [
+      {
+        "type": "input",
+        "label": {
+          "type": "plain_text",
+          "text": "Reason"
+        },
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "reason_input"
+        },
+        "block_id": "reason"
+      }
+    ],
+    "submit": {
+      "type": "plain_text",
+      "text": "Deploy"
+    },
+    "callback_id": "deploy"
+  },
+  "php": {
+    "type": "modal",
+    "title": {
+      "type": "plain_text",
+      "text": "Confirm deployment"
+    },
+    "blocks": [
+      {
+        "type": "input",
+        "label": {
+          "type": "plain_text",
+          "text": "Reason"
+        },
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "reason_input"
+        },
+        "block_id": "reason"
+      }
+    ],
+    "submit": {
+      "type": "plain_text",
+      "text": "Deploy"
+    },
+    "callback_id": "deploy"
+  },
+  "rust": {
+    "type": "modal",
+    "title": {
+      "type": "plain_text",
+      "text": "Approval"
+    },
+    "blocks": [
+      {
+        "type": "input",
+        "label": {
+          "type": "plain_text",
+          "text": "Reason"
+        },
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "reason"
+        }
+      }
+    ],
+    "close": {
+      "type": "plain_text",
+      "text": "Cancel"
+    },
+    "submit": {
+      "type": "plain_text",
+      "text": "Approve"
+    }
+  },
+  "haskell": {
+    "blocks": [
+      {
+        "block_id": "reason",
+        "element": {
+          "action_id": "reason_input",
+          "type": "plain_text_input"
+        },
+        "label": {
+          "text": "Reason",
+          "type": "plain_text"
+        },
+        "type": "input"
+      }
+    ],
+    "callback_id": "deploy",
+    "submit": {
+      "text": "Deploy",
+      "type": "plain_text"
+    },
+    "title": {
+      "text": "Confirm deployment",
+      "type": "plain_text"
+    },
+    "type": "modal"
+  },
+  "typescript": {
+    "title": {
+      "text": "Confirm deployment",
+      "type": "plain_text"
+    },
+    "submit": {
+      "text": "Deploy",
+      "type": "plain_text"
+    },
+    "callback_id": "deploy",
+    "blocks": [
+      {
+        "label": {
+          "text": "Reason",
+          "type": "plain_text"
+        },
+        "block_id": "reason",
+        "element": {
+          "action_id": "reason_input",
+          "type": "plain_text_input"
+        },
+        "type": "input"
+      }
+    ],
+    "type": "modal"
+  },
+  "python": {
+    "type": "modal",
+    "blocks": [
+      {
+        "type": "section",
+        "block_id": "<generated-block-id>",
+        "text": {
+          "type": "mrkdwn",
+          "text": ":warning: This will permanently delete *production*."
+        }
+      },
+      {
+        "type": "input",
+        "block_id": "confirmation",
+        "label": {
+          "type": "plain_text",
+          "text": "Type the name to confirm"
+        },
+        "element": {
+          "type": "plain_text_input",
+          "action_id": "confirmation_text",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "production"
+          }
+        }
+      }
+    ],
+    "private_metadata": "production",
+    "callback_id": "confirm_delete",
+    "title": {
+      "type": "plain_text",
+      "text": "Confirm deletion"
+    },
+    "close": {
+      "type": "plain_text",
+      "text": "Cancel"
+    },
+    "submit": {
+      "type": "plain_text",
+      "text": "Delete"
+    }
+  }
+};
+
+# Confirmation modal
+
+Construct a view with an input and submit button. Opening it requires a genuine interaction trigger ID; processing the submission belongs to your application.
+
+<RecipeOutput recipe="confirmation-modal" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+Pass the constructed modal to `views.open` with an interaction trigger ID. The example only constructs the view; it makes no Slack request.
+
+```python
+from slackblocks import (
+    InputBlock,
+    Modal,
+    PlainTextInput,
+    SectionBlock,
+)
+
+
+def confirmation_modal(target: str) -> Modal:
+    modal = Modal(
+        title="Confirm deletion",
+        submit="Delete",
+        close="Cancel",
+        callback_id="confirm_delete",
+        private_metadata=target,  # round-tripped back to your handler on submit
+        blocks=[
+            SectionBlock(f":warning: This will permanently delete *{target}*."),
+            InputBlock(
+                label="Type the name to confirm",
+                element=PlainTextInput(
+                    action_id="confirmation_text",
+                    placeholder=target,
+                ),
+                block_id="confirmation",
+            ),
+        ],
+    )
+
+    return modal
+
+print(confirmation_modal("production").json())
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const view = S.Modal().title("Confirm deployment").submit("Deploy").callbackId("deploy").blocks(
+  S.InputBlock().label("Reason").blockId("reason").element(S.PlainTextInput().actionId("reason_input")),
+).build();
+console.log(JSON.stringify(view));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	value, err := s.NewModal().Title("Confirm deployment").Submit("Deploy").CallbackID("deploy").Blocks(
+		s.NewInputBlock().Label("Reason").BlockID("reason").Element(s.NewPlainTextInput().ActionID("reason_input")),
+	).Build()
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var value = ModalView.builder().title("Confirm deployment").submit("Deploy").callbackId("deploy").blocks(
+    InputBlock.builder().label("Reason").blockId("reason").element(
+    PlainTextInputElement.builder().actionId("reason_input").build()).build()).build();
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var value = new ModalView("Confirm deployment", submit: "Deploy", callbackId: "deploy", blocks: [
+    new InputBlock("Reason", new PlainTextInputElement(actionId: "reason_input"), blockId: "reason"),
+]);
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+value = ModalView.new(title: "Confirm deployment", submit: "Deploy", callback_id: "deploy", blocks: [
+  InputBlock.new(label: "Reason", block_id: "reason", element: PlainTextInputElement.new(action_id: "reason_input"))
+])
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let modal = ModalView::builder()
+        .title("Approval")
+        .submit("Approve")
+        .close("Cancel")
+        .block(
+            InputBlock::builder()
+                .label("Reason")
+                .element(
+                    PlainTextInputElement::builder()
+                        .action_id("reason")
+                        .build()?,
+                )
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&modal)?);
+    Ok(())
+}
+```
+
+Input blocks require a modal submit label. Put this view in a `views.open`
+request alongside the interaction's trigger ID.
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$view = new S\ModalView(title: 'Confirm deployment', submit: 'Deploy', callbackId: 'deploy', blocks: [
+    new S\InputBlock(label: 'Reason', blockId: 'reason', element: new S\PlainTextInputElement(actionId: 'reason_input')),
+]);
+echo $view->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.{Blocks.Input, Elements.PlainTextInput, Views.Modal}
+Modal.new!(title: "Confirm deployment", submit: "Deploy", callback_id: "deploy", blocks: [
+  Input.new!(label: "Reason", block_id: "reason", element: PlainTextInput.new!(action_id: "reason_input"))
+]) |> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  title <- buildPlainText (plainText "Confirm deployment")
+  submit <- buildPlainText (plainText "Deploy")
+  label <- buildPlainText (plainText "Reason")
+  field <- buildPlainTextInputElement (plainTextInputElement {plainTextInputElementActionId = Just "reason_input"})
+  input <- buildInputBlock ((inputBlock label (plainTextInputElementAsInputElement field)) {inputBlockBlockId = Just "reason"})
+  buildModalView ((modalView title [inputBlockAsBlock input]) {modalViewSubmit = Just submit, modalViewCallbackId = Just "deploy"})
+```
+
+</Haskell>
+
+</LanguageContent>

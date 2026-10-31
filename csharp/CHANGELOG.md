@@ -3,7 +3,19 @@
 All notable changes to the C# package are documented here. C# versions move in
 lockstep with the Python, TypeScript, Go, and Java packages.
 
-## [3.0.0] — 2026-10-22
+## [3.2.0] — 2026-10-31
+
+- Add native layout blocks, rows and items with typed widths/alignment, closed child and fallback roles, checked nesting and receiving-surface validation (spec 1.5.0).
+- Preserve confirmed top-level message/view block counting, supported runtime minimums, legacy container-only behavior, and existing chart/text limits. No unconfirmed recursive block budget is imposed.
+- Add a runnable ten-language layout recipe and rendered preview; preserve outgoing 3.1.0 documentation.
+
+## [3.1.0] — 2026-10-28
+
+- Coordinate this release with the new Haskell implementation and ten-language documentation. Existing runtime support remains unchanged.
+
+## [3.0.0] — 2026-10-24
+
+- Add native button `agent_prompt` and `agent_prompt_display` fields, Unicode prompt-length validation and the display/prompt dependency (spec 1.4.0). Document interaction acknowledgement regardless of Slackbot AI availability. Existing button calls remain compatible.
 
 - Release the coordinated 3.0.0 API across all nine implementations; supported language/runtime minimums remain unchanged.
 - Breaking: number-input bounds are strings in stored values and getters; numeric construction conveniences remain. See the migration guide before upgrading.

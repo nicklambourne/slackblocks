@@ -10,7 +10,7 @@ namespace Slackblocks;
  * A block that holds interactive elements such as buttons and menus.
  * @see https://docs.slack.dev/reference/block-kit/blocks/actions-block
  */
-final readonly class ActionsBlock extends Value implements Block
+final readonly class ActionsBlock extends Value implements Block, LayoutChild
 {
     /** Adds interactive elements in display order.
      * @var list<Element>

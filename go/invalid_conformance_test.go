@@ -98,10 +98,71 @@ func copies[T any](count int, factory func(int) T) []T {
 
 func invalidConstruction(id string) error {
 	switch id {
+	case "layout-home-alert":
+		return buildError(slackblocks.NewHomeTab().Blocks(slackblocks.NewLayoutBlock().Label("Layout").Rows(slackblocks.NewLayoutRow().Items(slackblocks.NewLayoutItem().Block(slackblocks.NewAlertBlock().Text("Modal only"))))))
+	case "layout-modal-fallback-table":
+		return buildError(slackblocks.NewModal().Title("Grid").Blocks(layoutGrid().Fallback(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText("Cell")}))))
+	case "layout-chart-three-items":
+		return buildError(slackblocks.NewLayoutRow().Items(
+			slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock()),
+			slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments(slackblocks.NewChartSegment().Label("One").Value(1)))),
+			slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock()),
+		))
+	case "layout-nested-table-total":
+		nested := func() slackblocks.Block {
+			return slackblocks.NewLayoutBlock().Label("Layout").Rows(slackblocks.NewLayoutRow().Items(slackblocks.NewLayoutItem().Block(
+				slackblocks.NewDataTableBlock().Caption("Data").Rows([]slackblocks.DataTableCell{rawText("H")}, []slackblocks.DataTableCell{rawText(strings.Repeat("x", 10000))}),
+			)))
+		}
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(slackblocks.NewContainerBlock().Title("Group").ChildBlocks(nested(), nested())))
+
+	case "layout-message-budget":
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(copies(51, func(int) slackblocks.Block {
+			return slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...)
+		})...))
+	case "layout-view-budget":
+		return buildError(slackblocks.NewHomeTab().Blocks(copies(101, func(int) slackblocks.Block {
+			return slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...)
+		})...))
+	case "layout-label-empty":
+		return buildError(slackblocks.NewLayoutBlock().Label("").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...))
+	case "layout-label-too-long":
+		return buildError(slackblocks.NewLayoutBlock().Label(strings.Repeat("😀", 151)).Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...))
+	case "layout-rows-empty":
+		return buildError(slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{}...))
+	case "layout-too-many-rows":
+		return buildError(slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...))
+	case "layout-items-empty":
+		return buildError(slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{}...))
+	case "layout-too-many-items":
+		return buildError(slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock()), slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock()), slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock()), slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...))
+	case "layout-markdown-child":
+		return buildError(slackblocks.NewLayoutItem().Set("block", slackblocks.NewMarkdownBlock().Text("No")))
+	case "layout-direct-child":
+		return buildError(slackblocks.NewLayoutItem().Set("block", slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...)))
+	case "layout-fallback-actions":
+		return buildError(slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...).Set("fallback", []any{slackblocks.NewActionsBlock().Elements([]slackblocks.Element{slackblocks.NewButton().Text("Go")}...)}))
+	case "layout-wide-siblings":
+		return buildError(slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewCarouselBlock().Elements([]*slackblocks.CardBlockBuilder{slackblocks.NewCardBlock().Title("Card")}...)), slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...))
+	case "layout-chart-half":
+		return buildError(slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...))), slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...))
+	case "layout-depth-three":
+		return buildError(slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewContainerBlock().Title("Container").ChildBlocks([]slackblocks.Block{slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...)}...))}...)}...))
+	case "layout-message-alert":
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks([]slackblocks.Block{slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewAlertBlock().Text("Modal only"))}...)}...)}...))
+	case "layout-modal-input-submit":
+		return buildError(slackblocks.NewModal().Title("Input").Blocks([]slackblocks.Block{slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewInputBlock().Label("Name").Element(slackblocks.NewPlainTextInput().ActionID("name")))}...)}...)}...))
+	case "layout-three-charts":
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks([]slackblocks.Block{slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...)}...)}...))
+
 	case "text-empty":
 		return buildError(slackblocks.NewPlainText().Text(""))
 	case "text-too-long":
 		return buildError(slackblocks.NewPlainText().Text(repeated("x", 3001)))
+	case "button-agent-prompt-too-long":
+		return buildError(slackblocks.NewButton().Text("A").AgentPrompt(strings.Repeat("😀", 4001)))
+	case "button-agent-prompt-display-without-prompt":
+		return buildError(slackblocks.NewButton().Text("A").AgentPromptDisplay(""))
 	case "button-action-id-too-long":
 		return buildError(slackblocks.NewButton().Text("A").ActionID(repeated("x", 256)))
 	case "button-text-too-long":

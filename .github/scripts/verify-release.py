@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only, shared preflight for the nine-language release train (Python 3.11+)."""
+"""Read-only, shared preflight for the ten-language release train (Python 3.11+)."""
 
 import argparse
 import datetime
@@ -14,7 +14,8 @@ from pathlib import Path
 import tomllib
 
 _php_spec = importlib.util.spec_from_file_location(
-    "php_package_manifest", Path(__file__).resolve().parents[2] / "php/bin/package_manifest.py"
+    "php_package_manifest",
+    Path(__file__).resolve().parents[2] / "php/bin/package_manifest.py",
 )
 php_manifest = importlib.util.module_from_spec(_php_spec)
 _php_spec.loader.exec_module(php_manifest)
@@ -29,6 +30,7 @@ LANGUAGES = {
     "rust": "rust",
     "php": "php",
     "elixir": "elixir",
+    "haskell": "haskell",
 }
 
 
@@ -80,6 +82,15 @@ def validate(root, requested=None, strict=False):
         "PHP": match(root / "php/src/Version.php", r"PACKAGE = '([^']+)'"),
     }
     versions["Elixir"] = match(root / "elixir/mix.exs", r'version:\s*"([^"]+)"')
+    versions["Haskell"] = match(
+        root / "haskell/slackblocks.cabal", r"^version:\s*(\S+)$"
+    )
+    versions["Haskell HTTP consumer"] = match(
+        root / "haskell/integrations/transport.cabal", r"^\s*slackblocks ==([^,\s]+),?$"
+    )
+    versions["PHP public API inventory"] = json.loads(
+        (root / "php/conformance/api-inventory.json").read_text()
+    )["Version"]["constants"]["PACKAGE"]
     version = requested or versions["Rust"]
     require(re.fullmatch(r"\d+\.\d+\.\d+", version), "Use a stable X.Y.Z version")
     require(
@@ -90,6 +101,11 @@ def validate(root, requested=None, strict=False):
         ("Python", "python/uv.lock", "package"),
         ("Rust", "rust/Cargo.lock", "package"),
         ("Rust integrations", "rust/integrations/Cargo.lock", "package"),
+        (
+            "Rust documentation consumer",
+            "docs/examples/multiselect-compat/rust/Cargo.lock",
+            "package",
+        ),
     ):
         own = [
             package["version"]
@@ -157,11 +173,16 @@ def validate(root, requested=None, strict=False):
         "Elixir publication requires explicit api-key authentication and Hex identity",
     )
     require(
-        match(root / "elixir/integrations/mix.exs", r'\{:slackblocks, "== ([^"]+)", path: "\.\."\}') == version,
+        match(
+            root / "elixir/integrations/mix.exs",
+            r'\{:slackblocks, "== ([^"]+)", path: "\.\."\}',
+        )
+        == version,
         "Elixir integration requirement must match package version",
     )
     require(
-        match(root / "elixir/erlang/rebar.config", r'\{slackblocks, "([^"]+)"\}') == version,
+        match(root / "elixir/erlang/rebar.config", r'\{slackblocks, "([^"]+)"\}')
+        == version,
         "Erlang consumer requirement must match Elixir version",
     )
     require(
@@ -170,13 +191,57 @@ def validate(root, requested=None, strict=False):
         "Elixir spec version differs from the shared manifest",
     )
     require(
-        not any(line.strip() and not line.lstrip().startswith("#") for line in
-                (root / "elixir/conformance/skiplist.txt").read_text().splitlines()),
+        not any(
+            line.strip() and not line.lstrip().startswith("#")
+            for line in (root / "elixir/conformance/skiplist.txt")
+            .read_text()
+            .splitlines()
+        ),
         "Elixir release skip list must be empty",
     )
     if strict:
-        require(elixir["enabled"], "Elixir publication is disabled; complete the train and Hex readiness before releasing any language")
-        require(isinstance(elixir.get("owner"), str) and re.fullmatch(r"[a-zA-Z0-9_-]+", elixir["owner"]), "Elixir release requires the verified Hex owner username")
+        require(
+            elixir["enabled"],
+            "Elixir publication is disabled; complete the train and Hex readiness before releasing any language",
+        )
+        require(
+            isinstance(elixir.get("owner"), str)
+            and re.fullmatch(r"[a-zA-Z0-9_-]+", elixir["owner"]),
+            "Elixir release requires the verified Hex owner username",
+        )
+    haskell = json.loads((root / "haskell/release.json").read_text())
+    require(
+        type(haskell.get("enabled")) is bool
+        and type(haskell.get("first_publication")) is bool,
+        "Haskell activation and first-publication flags must be boolean",
+    )
+    require(
+        haskell.get("auth_mode") == "api-token"
+        and haskell.get("package") == "slackblocks"
+        and haskell.get("environment") == "hackage"
+        and match(root / "haskell/slackblocks.cabal", r"^name:\s*(\S+)$")
+        == "slackblocks",
+        "Haskell publication requires explicit Hackage identity and API-token authentication",
+    )
+    require(
+        match(root / "haskell/src/Slackblocks/Models.hs", r'^specVersion = "([^"]+)"$')
+        == json.loads((root / "spec/manifest.json").read_text())["spec_version"],
+        "Haskell spec version differs from the shared manifest",
+    )
+    require(
+        not (root / "haskell/conformance/skiplist.txt").read_text().strip(),
+        "Haskell release skip list must be empty",
+    )
+    if strict:
+        require(
+            haskell["enabled"],
+            "Haskell publication is disabled; verify Hackage owner, token and protected environment before releasing any language",
+        )
+        require(
+            isinstance(haskell.get("owner"), str)
+            and re.fullmatch(r"[a-zA-Z0-9_-]+", haskell["owner"]),
+            "Haskell release requires the verified Hackage owner username",
+        )
     major = version.split(".")[0]
     require(
         match(root / "go/go.mod", r"^module (.+)$")
@@ -259,10 +324,15 @@ def tag_state(root, version, head):
         f"Partial coordinated tag set: {existing}/{len(tags)}; recover without moving public tags",
     )
     composer_tag = f"refs/tags/v{version}"
-    present = subprocess.run(["git", "show-ref", "--verify", "--quiet", composer_tag], cwd=root)
+    present = subprocess.run(
+        ["git", "show-ref", "--verify", "--quiet", composer_tag], cwd=root
+    )
     require(present.returncode in (0, 1), "Cannot inspect Composer version tag")
     if present.returncode == 0:
-        require(existing == len(tags), "Composer version tag must follow all coordinated tags")
+        require(
+            existing == len(tags),
+            "Composer version tag must follow all coordinated tags",
+        )
         require(
             git(root, "cat-file", "-t", composer_tag) == "tag",
             "Composer version tag must be annotated",
@@ -324,7 +394,7 @@ def publisher(root, language, ref):
     )
     require(
         tag_state(root, version, head) == len(LANGUAGES),
-        "Create the complete nine-tag set before publishing",
+        "Create the complete ten-tag set before publishing",
     )
     return version
 
@@ -352,7 +422,7 @@ def main():
         if output := os.environ.get("GITHUB_OUTPUT"):
             with open(output, "a") as stream:
                 stream.write(f"version={version}\n")
-        print(f"Verified nine-language {args.command} preflight for {version}")
+        print(f"Verified ten-language {args.command} preflight for {version}")
     except (ReleaseError, subprocess.CalledProcessError) as error:
         raise SystemExit(str(error)) from error
 

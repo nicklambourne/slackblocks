@@ -6,7 +6,8 @@
     "text": { "max_length": 75 },
     "url": { "max_length": 3000 },
     "value": { "max_length": 2000 },
-    "accessibility_label": { "max_length": 75 }
+    "accessibility_label": { "max_length": 75 },
+    "agent_prompt": { "max_length": 4000 }
   },
   "confirmation": {
     "title": { "max_length": 100 },
@@ -167,5 +168,10 @@
     "title": { "max_length": 24 },
     "close": { "max_length": 24 },
     "submit": { "max_length": 24 }
+  },
+  "layout": {
+    "label": { "min_length": 1, "max_length": 150 },
+    "rows": { "min_items": 1, "max_items": 5 },
+    "items": { "min_items": 1, "max_items": 3 }
   }
 }

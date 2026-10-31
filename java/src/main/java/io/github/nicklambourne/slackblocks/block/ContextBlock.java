@@ -25,7 +25,7 @@ import java.util.Map;
  *     reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class ContextBlock implements Block {
+public final class ContextBlock implements Block, LayoutChild, LayoutFallback {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

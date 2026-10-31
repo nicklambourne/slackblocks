@@ -19,6 +19,7 @@ var requiredFields = map[string][]string{
 	"channel":                {"channel_id"},
 	"checkboxes":             {"options"},
 	"container":              {"child_blocks"},
+	"layout":                 {"label", "rows"},
 	"context":                {"elements"},
 	"context_actions":        {"elements"},
 	"data_table":             {"rows", "caption"},
@@ -123,9 +124,9 @@ var (
 )
 
 var surfaceBlocks = map[string]map[string]bool{
-	"message": stringSet("actions", "card", "carousel", "container", "context", "context_actions", "data_table", "data_visualization", "divider", "file", "header", "image", "input", "markdown", "plan", "rich_text", "section", "table", "task_card", "video"),
-	"modal":   stringSet("actions", "alert", "card", "context", "divider", "header", "image", "input", "rich_text", "section", "video"),
-	"home":    stringSet("actions", "card", "carousel", "container", "context", "data_table", "data_visualization", "divider", "header", "image", "input", "rich_text", "section", "table", "video"),
+	"message": stringSet("layout", "actions", "card", "carousel", "container", "context", "context_actions", "data_table", "data_visualization", "divider", "file", "header", "image", "input", "markdown", "plan", "rich_text", "section", "table", "task_card", "video"),
+	"modal":   stringSet("layout", "actions", "alert", "card", "context", "divider", "header", "image", "input", "rich_text", "section", "video"),
+	"home":    stringSet("layout", "actions", "card", "carousel", "container", "context", "data_table", "data_visualization", "divider", "header", "image", "input", "rich_text", "section", "table", "video"),
 }
 
 func stringSet(values ...string) map[string]bool {
@@ -141,6 +142,10 @@ func Validate(object Object) error { return validateObject(object, "") }
 
 func validateBuilder(name string, object Object) error {
 	switch name {
+	case "LayoutRow":
+		return validateLayoutRow(object, name)
+	case "LayoutItem":
+		return validateLayoutItem(object, name)
 	case "Confirmation":
 		return validateConfirmation(object, name)
 	case "ColumnSettings":
@@ -451,6 +456,25 @@ func validateObject(object Object, path string) error {
 	case "header":
 		return textLength(object["text"], child(path, "text.text"), 0, limitHeaderTextMaxLength)
 	case "button", "workflow_button":
+		if typeName == "button" {
+			for _, field := range []string{"agent_prompt", "agent_prompt_display"} {
+				if value, present := object[field]; present {
+					if _, ok := value.(string); !ok {
+						return validationError(TypeMismatch, child(path, field), "expected a string")
+					}
+				}
+			}
+			if prompt, ok := object["agent_prompt"].(string); ok {
+				if err := stringLength(prompt, child(path, "agent_prompt"), 0, limitButtonAgentPromptMaxLength); err != nil {
+					return err
+				}
+			}
+			if _, display := object["agent_prompt_display"]; display {
+				if _, prompt := object["agent_prompt"]; !prompt {
+					return validationError(MissingRequired, child(path, "agent_prompt"), "required when agent_prompt_display is supplied")
+				}
+			}
+		}
 		textMaximum, labelMaximum := limitButtonTextMaxLength, limitButtonAccessibilityLabelMaxLength
 		if typeName == "workflow_button" {
 			textMaximum, labelMaximum = limitWorkflowButtonTextMaxLength, limitWorkflowButtonAccessibilityLabelMaxLength
@@ -726,7 +750,14 @@ func validateObject(object Object, path string) error {
 				return validationError(TypeMismatch, fmt.Sprintf("%s[%d]", child(path, "elements"), index), "expected a card")
 			}
 		}
+	case "layout":
+		if err := validateLayout(object, path); err != nil {
+			return err
+		}
 	case "container":
+		if err := validateCompositeDepth(object, path, 0, false); err != nil {
+			return err
+		}
 		_, title := object["title"]
 		_, richTitle := object["rich_text_title"]
 		if !title && !richTitle {
@@ -891,7 +922,7 @@ func validateObject(object Object, path string) error {
 		if typeName == "modal" {
 			if _, submit := object["submit"]; !submit {
 				for _, raw := range blocks {
-					if block, ok := raw.(Object); ok && objectType(block) == "input" {
+					if block, ok := raw.(Object); ok && containsInput(block) {
 						return validationError(MissingRequired, child(path, "submit"), "required when the modal contains an input block")
 					}
 				}
@@ -1238,8 +1269,8 @@ func chartCount(value any) int {
 		if objectType(v) == "data_visualization" {
 			return 1
 		}
-		if objectType(v) == "container" {
-			return chartCount(v["child_blocks"])
+		if objectType(v) == "container" || objectType(v) == "layout" {
+			return chartCount(compositeSurfaceChildren(v))
 		}
 	case []any:
 		total := 0
@@ -1262,8 +1293,8 @@ func messageTotals(value any) (markdown, tableContent int) {
 		case "data_table":
 			return 0, textCharacterCount(typed["rows"])
 		}
-		if objectType(typed) == "container" {
-			return messageTotals(typed["child_blocks"])
+		if objectType(typed) == "container" || objectType(typed) == "layout" {
+			return messageTotals(compositeSurfaceChildren(typed))
 		}
 	case []any:
 		for _, nested := range typed {
@@ -1351,7 +1382,16 @@ func validateSurface(blocks []any, surface, path string) error {
 		if err != nil {
 			return err
 		}
+		if err := validateSurface(compositeChildren(block), surface, fmt.Sprintf("%s[%d].children", path, index)); err != nil {
+			return err
+		}
 		blockType := objectType(block)
+		if blockType == "layout" {
+			fallback, _ := block["fallback"].([]any)
+			if err := validateSurface(fallback, surface, fmt.Sprintf("%s[%d].fallback", path, index)); err != nil {
+				return err
+			}
+		}
 		if !allowed[blockType] {
 			return validationError(TypeMismatch, fmt.Sprintf("%s[%d].type", path, index), "block type %s is not supported on %s surfaces", blockType, surface)
 		}

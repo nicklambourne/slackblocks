@@ -1,0 +1,1339 @@
+---
+sidebar_position: 6
+---
+
+# JSON and public types
+
+Signatures come from GHC; descriptions come from compiled Haddock comments. Import `Slackblocks` or the defining public module. Checked values encode with Aeson; field records must be built first.
+
+## FromSlackJSON {#slackblocks-json-fromslackjson}
+
+Validate an Aeson value as a supported modeled type. It is not an arbitrary Slack event parser.
+
+```haskell
+type Slackblocks.Json.FromSlackJSON :: * -> Constraint
+```
+
+## decimalText {#slackblocks-json-decimaltext}
+
+Exact numeric convenience for a number-input bound. No binary floating-point
+ conversion is performed; the wire representation remains a decimal string.
+
+```haskell
+Slackblocks.Json.decimalText ::
+  Data.Scientific.Scientific -> Data.Text.Text
+```
+
+## decode {#slackblocks-json-decode}
+
+Decode UTF-8 JSON bytes, rejecting duplicate keys, trailing input, numeric
+ exponent overflow in Aeson's Scientific representation and invalid modeled values.
+
+```haskell
+Slackblocks.Json.decode ::
+  Slackblocks.Json.FromSlackJSON a =>
+  Data.ByteString.Lazy.ByteString -> Slackblocks.Validation.Result a
+```
+
+## fromSlackJSON {#slackblocks-json-fromslackjson}
+
+Check nested fields and receiving context; return structured validation errors.
+
+```haskell
+Slackblocks.Json.fromSlackJSON ::
+  Slackblocks.Json.FromSlackJSON a =>
+  Data.Aeson.Value -> Slackblocks.Validation.Result a
+```
+
+## fromValue {#slackblocks-json-fromvalue}
+
+Validate an already parsed value. Use decode to retain duplicate-key and UTF-8 checks on raw bytes.
+
+```haskell
+Slackblocks.Json.fromValue ::
+  Slackblocks.Json.FromSlackJSON a =>
+  Data.Aeson.Value -> Slackblocks.Validation.Result a
+```
+
+## AlertLevel {#slackblocks-models-alertlevel}
+
+Severity levels supported by alert blocks.
+
+```haskell
+type Slackblocks.Models.AlertLevel :: *
+```
+
+## AlertLevelDefault {#slackblocks-models-alertleveldefault}
+
+Slack wire value: `default`.
+
+```haskell
+Slackblocks.Models.AlertLevelDefault ::
+  Slackblocks.Models.AlertLevel
+```
+
+## AlertLevelError {#slackblocks-models-alertlevelerror}
+
+Slack wire value: `error`.
+
+```haskell
+Slackblocks.Models.AlertLevelError :: Slackblocks.Models.AlertLevel
+```
+
+## AlertLevelInfo {#slackblocks-models-alertlevelinfo}
+
+Slack wire value: `info`.
+
+```haskell
+Slackblocks.Models.AlertLevelInfo :: Slackblocks.Models.AlertLevel
+```
+
+## AlertLevelSuccess {#slackblocks-models-alertlevelsuccess}
+
+Slack wire value: `success`.
+
+```haskell
+Slackblocks.Models.AlertLevelSuccess ::
+  Slackblocks.Models.AlertLevel
+```
+
+## AlertLevelWarning {#slackblocks-models-alertlevelwarning}
+
+Slack wire value: `warning`.
+
+```haskell
+Slackblocks.Models.AlertLevelWarning ::
+  Slackblocks.Models.AlertLevel
+```
+
+## Block {#slackblocks-models-block}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.Block :: *
+```
+
+## ButtonStyle {#slackblocks-models-buttonstyle}
+
+Visual emphasis for buttons and confirmation dialogs.
+
+```haskell
+type Slackblocks.Models.ButtonStyle :: *
+```
+
+## ButtonStyleDanger {#slackblocks-models-buttonstyledanger}
+
+Slack wire value: `danger`.
+
+```haskell
+Slackblocks.Models.ButtonStyleDanger ::
+  Slackblocks.Models.ButtonStyle
+```
+
+## ButtonStylePrimary {#slackblocks-models-buttonstyleprimary}
+
+Slack wire value: `primary`.
+
+```haskell
+Slackblocks.Models.ButtonStylePrimary ::
+  Slackblocks.Models.ButtonStyle
+```
+
+## Chart {#slackblocks-models-chart}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.Chart :: *
+```
+
+## ColumnAlign {#slackblocks-models-columnalign}
+
+Horizontal alignment for table columns.
+
+```haskell
+type Slackblocks.Models.ColumnAlign :: *
+```
+
+## ColumnAlignCenter {#slackblocks-models-columnaligncenter}
+
+Slack wire value: `center`.
+
+```haskell
+Slackblocks.Models.ColumnAlignCenter ::
+  Slackblocks.Models.ColumnAlign
+```
+
+## ColumnAlignLeft {#slackblocks-models-columnalignleft}
+
+Slack wire value: `left`.
+
+```haskell
+Slackblocks.Models.ColumnAlignLeft ::
+  Slackblocks.Models.ColumnAlign
+```
+
+## ColumnAlignRight {#slackblocks-models-columnalignright}
+
+Slack wire value: `right`.
+
+```haskell
+Slackblocks.Models.ColumnAlignRight ::
+  Slackblocks.Models.ColumnAlign
+```
+
+## ContainerWidth {#slackblocks-models-containerwidth}
+
+Widths supported by Slack container blocks.
+
+```haskell
+type Slackblocks.Models.ContainerWidth :: *
+```
+
+## ContainerWidthFull {#slackblocks-models-containerwidthfull}
+
+Slack wire value: `full`.
+
+```haskell
+Slackblocks.Models.ContainerWidthFull ::
+  Slackblocks.Models.ContainerWidth
+```
+
+## ContainerWidthNarrow {#slackblocks-models-containerwidthnarrow}
+
+Slack wire value: `narrow`.
+
+```haskell
+Slackblocks.Models.ContainerWidthNarrow ::
+  Slackblocks.Models.ContainerWidth
+```
+
+## ContainerWidthStandard {#slackblocks-models-containerwidthstandard}
+
+Slack wire value: `standard`.
+
+```haskell
+Slackblocks.Models.ContainerWidthStandard ::
+  Slackblocks.Models.ContainerWidth
+```
+
+## ContainerWidthWide {#slackblocks-models-containerwidthwide}
+
+Slack wire value: `wide`.
+
+```haskell
+Slackblocks.Models.ContainerWidthWide ::
+  Slackblocks.Models.ContainerWidth
+```
+
+## ContextActionsElement {#slackblocks-models-contextactionselement}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.ContextActionsElement :: *
+```
+
+## ContextElement {#slackblocks-models-contextelement}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.ContextElement :: *
+```
+
+## DataTableCell {#slackblocks-models-datatablecell}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.DataTableCell :: *
+```
+
+## Element {#slackblocks-models-element}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.Element :: *
+```
+
+## IconButtonIcon {#slackblocks-models-iconbuttonicon}
+
+Icons supported by icon buttons.
+
+```haskell
+type Slackblocks.Models.IconButtonIcon :: *
+```
+
+## IconButtonIconTrash {#slackblocks-models-iconbuttonicontrash}
+
+Slack wire value: `trash`.
+
+```haskell
+Slackblocks.Models.IconButtonIconTrash ::
+  Slackblocks.Models.IconButtonIcon
+```
+
+## InputElement {#slackblocks-models-inputelement}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.InputElement :: *
+```
+
+## PlanTask {#slackblocks-models-plantask}
+
+A task in a plan. Unlike a standalone task card, it may be pending.
+
+```haskell
+type Slackblocks.Models.PlanTask :: *
+```
+
+## ResponseType {#slackblocks-models-responsetype}
+
+Visibility of a slash-command or interaction response.
+
+```haskell
+type Slackblocks.Models.ResponseType :: *
+```
+
+## ResponseTypeEphemeral {#slackblocks-models-responsetypeephemeral}
+
+Slack wire value: `ephemeral`.
+
+```haskell
+Slackblocks.Models.ResponseTypeEphemeral ::
+  Slackblocks.Models.ResponseType
+```
+
+## ResponseTypeInChannel {#slackblocks-models-responsetypeinchannel}
+
+Slack wire value: `in_channel`.
+
+```haskell
+Slackblocks.Models.ResponseTypeInChannel ::
+  Slackblocks.Models.ResponseType
+```
+
+## TableCell {#slackblocks-models-tablecell}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.TableCell :: *
+```
+
+## TaskStatus {#slackblocks-models-taskstatus}
+
+States supported by task card blocks.
+
+```haskell
+type Slackblocks.Models.TaskStatus :: *
+```
+
+## TaskStatusComplete {#slackblocks-models-taskstatuscomplete}
+
+Slack wire value: `complete`.
+
+```haskell
+Slackblocks.Models.TaskStatusComplete ::
+  Slackblocks.Models.TaskStatus
+```
+
+## TaskStatusError {#slackblocks-models-taskstatuserror}
+
+Slack wire value: `error`.
+
+```haskell
+Slackblocks.Models.TaskStatusError :: Slackblocks.Models.TaskStatus
+```
+
+## TaskStatusInProgress {#slackblocks-models-taskstatusinprogress}
+
+Slack wire value: `in_progress`.
+
+```haskell
+Slackblocks.Models.TaskStatusInProgress ::
+  Slackblocks.Models.TaskStatus
+```
+
+## TaskStatusPending {#slackblocks-models-taskstatuspending}
+
+Slack wire value: `pending`.
+
+```haskell
+Slackblocks.Models.TaskStatusPending ::
+  Slackblocks.Models.TaskStatus
+```
+
+## TextObject {#slackblocks-models-textobject}
+
+Closed role: only checked members may enter this position.
+
+```haskell
+type Slackblocks.Models.TextObject :: *
+```
+
+## buildPlanTask {#slackblocks-models-buildplantask}
+
+Check a task for a plan, where pending is allowed. This value cannot enter the Block role.
+
+```haskell
+Slackblocks.Models.buildPlanTask ::
+  Slackblocks.Models.TaskCardBlockFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.PlanTask
+```
+
+## inspectPlanTask {#slackblocks-models-inspectplantask}
+
+Inspect a plan task; call buildPlanTask after editing its fields.
+
+```haskell
+Slackblocks.Models.inspectPlanTask ::
+  Slackblocks.Models.PlanTask
+  -> Slackblocks.Models.TaskCardBlockFields
+```
+
+## matchBlockActionsBlock {#slackblocks-models-matchblockactionsblock}
+
+Return the ActionsBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockActionsBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.ActionsBlock
+```
+
+## matchBlockAlertBlock {#slackblocks-models-matchblockalertblock}
+
+Return the AlertBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockAlertBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.AlertBlock
+```
+
+## matchBlockCardBlock {#slackblocks-models-matchblockcardblock}
+
+Return the CardBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockCardBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.CardBlock
+```
+
+## matchBlockCarouselBlock {#slackblocks-models-matchblockcarouselblock}
+
+Return the CarouselBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockCarouselBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.CarouselBlock
+```
+
+## matchBlockContainerBlock {#slackblocks-models-matchblockcontainerblock}
+
+Return the ContainerBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockContainerBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.ContainerBlock
+```
+
+## matchBlockContextActionsBlock {#slackblocks-models-matchblockcontextactionsblock}
+
+Return the ContextActionsBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockContextActionsBlock ::
+  Slackblocks.Models.Block
+  -> Maybe Slackblocks.Models.ContextActionsBlock
+```
+
+## matchBlockContextBlock {#slackblocks-models-matchblockcontextblock}
+
+Return the ContextBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockContextBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.ContextBlock
+```
+
+## matchBlockDataTableBlock {#slackblocks-models-matchblockdatatableblock}
+
+Return the DataTableBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockDataTableBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.DataTableBlock
+```
+
+## matchBlockDataVisualizationBlock {#slackblocks-models-matchblockdatavisualizationblock}
+
+Return the DataVisualizationBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockDataVisualizationBlock ::
+  Slackblocks.Models.Block
+  -> Maybe Slackblocks.Models.DataVisualizationBlock
+```
+
+## matchBlockDividerBlock {#slackblocks-models-matchblockdividerblock}
+
+Return the DividerBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockDividerBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.DividerBlock
+```
+
+## matchBlockFileBlock {#slackblocks-models-matchblockfileblock}
+
+Return the FileBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockFileBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.FileBlock
+```
+
+## matchBlockHeaderBlock {#slackblocks-models-matchblockheaderblock}
+
+Return the HeaderBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockHeaderBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.HeaderBlock
+```
+
+## matchBlockImageBlock {#slackblocks-models-matchblockimageblock}
+
+Return the ImageBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockImageBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.ImageBlock
+```
+
+## matchBlockInputBlock {#slackblocks-models-matchblockinputblock}
+
+Return the InputBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockInputBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.InputBlock
+```
+
+## matchBlockMarkdownBlock {#slackblocks-models-matchblockmarkdownblock}
+
+Return the MarkdownBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockMarkdownBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.MarkdownBlock
+```
+
+## matchBlockPlanBlock {#slackblocks-models-matchblockplanblock}
+
+Return the PlanBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockPlanBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.PlanBlock
+```
+
+## matchBlockRichTextBlock {#slackblocks-models-matchblockrichtextblock}
+
+Return the RichTextBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockRichTextBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.RichTextBlock
+```
+
+## matchBlockSectionBlock {#slackblocks-models-matchblocksectionblock}
+
+Return the SectionBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockSectionBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.SectionBlock
+```
+
+## matchBlockTableBlock {#slackblocks-models-matchblocktableblock}
+
+Return the TableBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockTableBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.TableBlock
+```
+
+## matchBlockTaskCardBlock {#slackblocks-models-matchblocktaskcardblock}
+
+Return the TaskCardBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockTaskCardBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.TaskCardBlock
+```
+
+## matchBlockVideoBlock {#slackblocks-models-matchblockvideoblock}
+
+Return the VideoBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchBlockVideoBlock ::
+  Slackblocks.Models.Block -> Maybe Slackblocks.Models.VideoBlock
+```
+
+## matchChartAreaChart {#slackblocks-models-matchchartareachart}
+
+Return the AreaChart member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchChartAreaChart ::
+  Slackblocks.Models.Chart -> Maybe Slackblocks.Models.AreaChart
+```
+
+## matchChartBarChart {#slackblocks-models-matchchartbarchart}
+
+Return the BarChart member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchChartBarChart ::
+  Slackblocks.Models.Chart -> Maybe Slackblocks.Models.BarChart
+```
+
+## matchChartLineChart {#slackblocks-models-matchchartlinechart}
+
+Return the LineChart member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchChartLineChart ::
+  Slackblocks.Models.Chart -> Maybe Slackblocks.Models.LineChart
+```
+
+## matchChartPieChart {#slackblocks-models-matchchartpiechart}
+
+Return the PieChart member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchChartPieChart ::
+  Slackblocks.Models.Chart -> Maybe Slackblocks.Models.PieChart
+```
+
+## matchContextActionsElementFeedbackButtonsElement {#slackblocks-models-matchcontextactionselementfeedbackbuttonselement}
+
+Return the FeedbackButtonsElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchContextActionsElementFeedbackButtonsElement ::
+  Slackblocks.Models.ContextActionsElement
+  -> Maybe Slackblocks.Models.FeedbackButtonsElement
+```
+
+## matchContextActionsElementIconButtonElement {#slackblocks-models-matchcontextactionselementiconbuttonelement}
+
+Return the IconButtonElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchContextActionsElementIconButtonElement ::
+  Slackblocks.Models.ContextActionsElement
+  -> Maybe Slackblocks.Models.IconButtonElement
+```
+
+## matchContextElementImageElement {#slackblocks-models-matchcontextelementimageelement}
+
+Return the ImageElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchContextElementImageElement ::
+  Slackblocks.Models.ContextElement
+  -> Maybe Slackblocks.Models.ImageElement
+```
+
+## matchContextElementMarkdownText {#slackblocks-models-matchcontextelementmarkdowntext}
+
+Return the MarkdownText member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchContextElementMarkdownText ::
+  Slackblocks.Models.ContextElement
+  -> Maybe Slackblocks.Models.MarkdownText
+```
+
+## matchContextElementPlainText {#slackblocks-models-matchcontextelementplaintext}
+
+Return the PlainText member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchContextElementPlainText ::
+  Slackblocks.Models.ContextElement
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## matchDataTableCellRawNumber {#slackblocks-models-matchdatatablecellrawnumber}
+
+Return the RawNumber member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchDataTableCellRawNumber ::
+  Slackblocks.Models.DataTableCell
+  -> Maybe Slackblocks.Models.RawNumber
+```
+
+## matchDataTableCellRawText {#slackblocks-models-matchdatatablecellrawtext}
+
+Return the RawText member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchDataTableCellRawText ::
+  Slackblocks.Models.DataTableCell
+  -> Maybe Slackblocks.Models.RawText
+```
+
+## matchDataTableCellRichTextBlock {#slackblocks-models-matchdatatablecellrichtextblock}
+
+Return the RichTextBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchDataTableCellRichTextBlock ::
+  Slackblocks.Models.DataTableCell
+  -> Maybe Slackblocks.Models.RichTextBlock
+```
+
+## matchElementButtonElement {#slackblocks-models-matchelementbuttonelement}
+
+Return the ButtonElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementButtonElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.ButtonElement
+```
+
+## matchElementChannelMultiSelectElement {#slackblocks-models-matchelementchannelmultiselectelement}
+
+Return the ChannelMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementChannelMultiSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.ChannelMultiSelectElement
+```
+
+## matchElementChannelSelectElement {#slackblocks-models-matchelementchannelselectelement}
+
+Return the ChannelSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementChannelSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.ChannelSelectElement
+```
+
+## matchElementCheckboxesElement {#slackblocks-models-matchelementcheckboxeselement}
+
+Return the CheckboxesElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementCheckboxesElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.CheckboxesElement
+```
+
+## matchElementConversationMultiSelectElement {#slackblocks-models-matchelementconversationmultiselectelement}
+
+Return the ConversationMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementConversationMultiSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.ConversationMultiSelectElement
+```
+
+## matchElementConversationSelectElement {#slackblocks-models-matchelementconversationselectelement}
+
+Return the ConversationSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementConversationSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.ConversationSelectElement
+```
+
+## matchElementDatePickerElement {#slackblocks-models-matchelementdatepickerelement}
+
+Return the DatePickerElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementDatePickerElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.DatePickerElement
+```
+
+## matchElementDateTimePickerElement {#slackblocks-models-matchelementdatetimepickerelement}
+
+Return the DateTimePickerElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementDateTimePickerElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.DateTimePickerElement
+```
+
+## matchElementEmailInputElement {#slackblocks-models-matchelementemailinputelement}
+
+Return the EmailInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementEmailInputElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.EmailInputElement
+```
+
+## matchElementExternalMultiSelectElement {#slackblocks-models-matchelementexternalmultiselectelement}
+
+Return the ExternalMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementExternalMultiSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.ExternalMultiSelectElement
+```
+
+## matchElementExternalSelectElement {#slackblocks-models-matchelementexternalselectelement}
+
+Return the ExternalSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementExternalSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.ExternalSelectElement
+```
+
+## matchElementFeedbackButtonsElement {#slackblocks-models-matchelementfeedbackbuttonselement}
+
+Return the FeedbackButtonsElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementFeedbackButtonsElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.FeedbackButtonsElement
+```
+
+## matchElementFileInputElement {#slackblocks-models-matchelementfileinputelement}
+
+Return the FileInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementFileInputElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.FileInputElement
+```
+
+## matchElementIconButtonElement {#slackblocks-models-matchelementiconbuttonelement}
+
+Return the IconButtonElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementIconButtonElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.IconButtonElement
+```
+
+## matchElementImageElement {#slackblocks-models-matchelementimageelement}
+
+Return the ImageElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementImageElement ::
+  Slackblocks.Models.Element -> Maybe Slackblocks.Models.ImageElement
+```
+
+## matchElementNumberInputElement {#slackblocks-models-matchelementnumberinputelement}
+
+Return the NumberInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementNumberInputElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.NumberInputElement
+```
+
+## matchElementOverflowElement {#slackblocks-models-matchelementoverflowelement}
+
+Return the OverflowElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementOverflowElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.OverflowElement
+```
+
+## matchElementPlainTextInputElement {#slackblocks-models-matchelementplaintextinputelement}
+
+Return the PlainTextInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementPlainTextInputElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.PlainTextInputElement
+```
+
+## matchElementRadioButtonsElement {#slackblocks-models-matchelementradiobuttonselement}
+
+Return the RadioButtonsElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementRadioButtonsElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.RadioButtonsElement
+```
+
+## matchElementRichTextInputElement {#slackblocks-models-matchelementrichtextinputelement}
+
+Return the RichTextInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementRichTextInputElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.RichTextInputElement
+```
+
+## matchElementStaticMultiSelectElement {#slackblocks-models-matchelementstaticmultiselectelement}
+
+Return the StaticMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementStaticMultiSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.StaticMultiSelectElement
+```
+
+## matchElementStaticSelectElement {#slackblocks-models-matchelementstaticselectelement}
+
+Return the StaticSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementStaticSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.StaticSelectElement
+```
+
+## matchElementTimePickerElement {#slackblocks-models-matchelementtimepickerelement}
+
+Return the TimePickerElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementTimePickerElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.TimePickerElement
+```
+
+## matchElementUrlInputElement {#slackblocks-models-matchelementurlinputelement}
+
+Return the UrlInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementUrlInputElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.UrlInputElement
+```
+
+## matchElementUserMultiSelectElement {#slackblocks-models-matchelementusermultiselectelement}
+
+Return the UserMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementUserMultiSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.UserMultiSelectElement
+```
+
+## matchElementUserSelectElement {#slackblocks-models-matchelementuserselectelement}
+
+Return the UserSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementUserSelectElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.UserSelectElement
+```
+
+## matchElementWorkflowButtonElement {#slackblocks-models-matchelementworkflowbuttonelement}
+
+Return the WorkflowButtonElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchElementWorkflowButtonElement ::
+  Slackblocks.Models.Element
+  -> Maybe Slackblocks.Models.WorkflowButtonElement
+```
+
+## matchInputElementChannelMultiSelectElement {#slackblocks-models-matchinputelementchannelmultiselectelement}
+
+Return the ChannelMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementChannelMultiSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.ChannelMultiSelectElement
+```
+
+## matchInputElementChannelSelectElement {#slackblocks-models-matchinputelementchannelselectelement}
+
+Return the ChannelSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementChannelSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.ChannelSelectElement
+```
+
+## matchInputElementCheckboxesElement {#slackblocks-models-matchinputelementcheckboxeselement}
+
+Return the CheckboxesElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementCheckboxesElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.CheckboxesElement
+```
+
+## matchInputElementConversationMultiSelectElement {#slackblocks-models-matchinputelementconversationmultiselectelement}
+
+Return the ConversationMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementConversationMultiSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.ConversationMultiSelectElement
+```
+
+## matchInputElementConversationSelectElement {#slackblocks-models-matchinputelementconversationselectelement}
+
+Return the ConversationSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementConversationSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.ConversationSelectElement
+```
+
+## matchInputElementDatePickerElement {#slackblocks-models-matchinputelementdatepickerelement}
+
+Return the DatePickerElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementDatePickerElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.DatePickerElement
+```
+
+## matchInputElementDateTimePickerElement {#slackblocks-models-matchinputelementdatetimepickerelement}
+
+Return the DateTimePickerElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementDateTimePickerElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.DateTimePickerElement
+```
+
+## matchInputElementEmailInputElement {#slackblocks-models-matchinputelementemailinputelement}
+
+Return the EmailInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementEmailInputElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.EmailInputElement
+```
+
+## matchInputElementExternalMultiSelectElement {#slackblocks-models-matchinputelementexternalmultiselectelement}
+
+Return the ExternalMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementExternalMultiSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.ExternalMultiSelectElement
+```
+
+## matchInputElementExternalSelectElement {#slackblocks-models-matchinputelementexternalselectelement}
+
+Return the ExternalSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementExternalSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.ExternalSelectElement
+```
+
+## matchInputElementFileInputElement {#slackblocks-models-matchinputelementfileinputelement}
+
+Return the FileInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementFileInputElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.FileInputElement
+```
+
+## matchInputElementNumberInputElement {#slackblocks-models-matchinputelementnumberinputelement}
+
+Return the NumberInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementNumberInputElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.NumberInputElement
+```
+
+## matchInputElementPlainTextInputElement {#slackblocks-models-matchinputelementplaintextinputelement}
+
+Return the PlainTextInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementPlainTextInputElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.PlainTextInputElement
+```
+
+## matchInputElementRadioButtonsElement {#slackblocks-models-matchinputelementradiobuttonselement}
+
+Return the RadioButtonsElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementRadioButtonsElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.RadioButtonsElement
+```
+
+## matchInputElementRichTextInputElement {#slackblocks-models-matchinputelementrichtextinputelement}
+
+Return the RichTextInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementRichTextInputElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.RichTextInputElement
+```
+
+## matchInputElementStaticMultiSelectElement {#slackblocks-models-matchinputelementstaticmultiselectelement}
+
+Return the StaticMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementStaticMultiSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.StaticMultiSelectElement
+```
+
+## matchInputElementStaticSelectElement {#slackblocks-models-matchinputelementstaticselectelement}
+
+Return the StaticSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementStaticSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.StaticSelectElement
+```
+
+## matchInputElementTimePickerElement {#slackblocks-models-matchinputelementtimepickerelement}
+
+Return the TimePickerElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementTimePickerElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.TimePickerElement
+```
+
+## matchInputElementUrlInputElement {#slackblocks-models-matchinputelementurlinputelement}
+
+Return the UrlInputElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementUrlInputElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.UrlInputElement
+```
+
+## matchInputElementUserMultiSelectElement {#slackblocks-models-matchinputelementusermultiselectelement}
+
+Return the UserMultiSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementUserMultiSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.UserMultiSelectElement
+```
+
+## matchInputElementUserSelectElement {#slackblocks-models-matchinputelementuserselectelement}
+
+Return the UserSelectElement member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchInputElementUserSelectElement ::
+  Slackblocks.Models.InputElement
+  -> Maybe Slackblocks.Models.UserSelectElement
+```
+
+## matchRichTextBlockElementRichTextCodeBlock {#slackblocks-models-matchrichtextblockelementrichtextcodeblock}
+
+Return the RichTextCodeBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextBlockElementRichTextCodeBlock ::
+  Slackblocks.Models.RichTextBlockElement
+  -> Maybe Slackblocks.Models.RichTextCodeBlock
+```
+
+## matchRichTextBlockElementRichTextList {#slackblocks-models-matchrichtextblockelementrichtextlist}
+
+Return the RichTextList member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextBlockElementRichTextList ::
+  Slackblocks.Models.RichTextBlockElement
+  -> Maybe Slackblocks.Models.RichTextList
+```
+
+## matchRichTextBlockElementRichTextQuote {#slackblocks-models-matchrichtextblockelementrichtextquote}
+
+Return the RichTextQuote member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextBlockElementRichTextQuote ::
+  Slackblocks.Models.RichTextBlockElement
+  -> Maybe Slackblocks.Models.RichTextQuote
+```
+
+## matchRichTextBlockElementRichTextSection {#slackblocks-models-matchrichtextblockelementrichtextsection}
+
+Return the RichTextSection member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextBlockElementRichTextSection ::
+  Slackblocks.Models.RichTextBlockElement
+  -> Maybe Slackblocks.Models.RichTextSection
+```
+
+## matchRichTextSectionElementRichTextChannel {#slackblocks-models-matchrichtextsectionelementrichtextchannel}
+
+Return the RichTextChannel member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextSectionElementRichTextChannel ::
+  Slackblocks.Models.RichTextSectionElement
+  -> Maybe Slackblocks.Models.RichTextChannel
+```
+
+## matchRichTextSectionElementRichTextEmoji {#slackblocks-models-matchrichtextsectionelementrichtextemoji}
+
+Return the RichTextEmoji member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextSectionElementRichTextEmoji ::
+  Slackblocks.Models.RichTextSectionElement
+  -> Maybe Slackblocks.Models.RichTextEmoji
+```
+
+## matchRichTextSectionElementRichTextLink {#slackblocks-models-matchrichtextsectionelementrichtextlink}
+
+Return the RichTextLink member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextSectionElementRichTextLink ::
+  Slackblocks.Models.RichTextSectionElement
+  -> Maybe Slackblocks.Models.RichTextLink
+```
+
+## matchRichTextSectionElementRichTextText {#slackblocks-models-matchrichtextsectionelementrichtexttext}
+
+Return the RichTextText member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextSectionElementRichTextText ::
+  Slackblocks.Models.RichTextSectionElement
+  -> Maybe Slackblocks.Models.RichTextText
+```
+
+## matchRichTextSectionElementRichTextUser {#slackblocks-models-matchrichtextsectionelementrichtextuser}
+
+Return the RichTextUser member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextSectionElementRichTextUser ::
+  Slackblocks.Models.RichTextSectionElement
+  -> Maybe Slackblocks.Models.RichTextUser
+```
+
+## matchRichTextSectionElementRichTextUserGroup {#slackblocks-models-matchrichtextsectionelementrichtextusergroup}
+
+Return the RichTextUserGroup member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchRichTextSectionElementRichTextUserGroup ::
+  Slackblocks.Models.RichTextSectionElement
+  -> Maybe Slackblocks.Models.RichTextUserGroup
+```
+
+## matchTableCellRawText {#slackblocks-models-matchtablecellrawtext}
+
+Return the RawText member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchTableCellRawText ::
+  Slackblocks.Models.TableCell -> Maybe Slackblocks.Models.RawText
+```
+
+## matchTableCellRichTextBlock {#slackblocks-models-matchtablecellrichtextblock}
+
+Return the RichTextBlock member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchTableCellRichTextBlock ::
+  Slackblocks.Models.TableCell
+  -> Maybe Slackblocks.Models.RichTextBlock
+```
+
+## matchTextObjectMarkdownText {#slackblocks-models-matchtextobjectmarkdowntext}
+
+Return the MarkdownText member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchTextObjectMarkdownText ::
+  Slackblocks.Models.TextObject
+  -> Maybe Slackblocks.Models.MarkdownText
+```
+
+## matchTextObjectPlainText {#slackblocks-models-matchtextobjectplaintext}
+
+Return the PlainText member when present, otherwise Nothing; no unchecked cast.
+
+```haskell
+Slackblocks.Models.matchTextObjectPlainText ::
+  Slackblocks.Models.TextObject -> Maybe Slackblocks.Models.PlainText
+```
+
+## packageVersion {#slackblocks-models-packageversion}
+
+Coordinated package version, distinct from the shared contract.
+
+```haskell
+Slackblocks.Models.packageVersion :: Data.Text.Text
+```
+
+## specVersion {#slackblocks-models-specversion}
+
+Shared Block Kit contract version implemented by this package.
+
+```haskell
+Slackblocks.Models.specVersion :: Data.Text.Text
+```
+
