@@ -162,7 +162,7 @@ See the [Elixir package guide](elixir/README.md).
 <details>
 <summary>Haskell (GHC 9.6.7+, tested through 9.14)</summary>
 
-Add `slackblocks >= 3.1 && < 3.2` to your application's Cabal
+Add `slackblocks >= 3.2 && < 3.3` to your application's Cabal
 `build-depends`, run `cabal update`, then `cabal build`. Haskell joins the
 coordinated 3.1.0 release on [Hackage](https://hackage.haskell.org/package/slackblocks). See the
 [package guide](haskell/README.md) and [installation and compiler policy](https://nicklambourne.github.io/slackblocks/usage/installation).
