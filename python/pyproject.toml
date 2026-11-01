@@ -58,7 +58,7 @@ docs = [
 ]
 
 [build-system]
-requires = ["hatchling<1.33"]
+requires = ["hatchling<1.34"]
 build-backend = "hatchling.build"
 
 [tool.ruff]
