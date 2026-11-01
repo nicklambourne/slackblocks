@@ -46,7 +46,7 @@ jobs:
       - name: Verify ten-language activation, tags and commit
         if: github.event_name != 'pull_request'
         run: python3 .github/scripts/verify-release.py publisher --language haskell
-      - uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+      - uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2
         if: steps.scope.outputs.relevant == 'true'
         with:
           ghc-version: "9.6.7"
@@ -84,7 +84,7 @@ jobs:
           persist-credentials: false
       - name: Recheck activation and exact tag before credentials
         run: python3 .github/scripts/verify-release.py publisher --language haskell
-      - uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+      - uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2
         with:
           ghc-version: "9.6.7"
           cabal-version: "3.16.1.0"
@@ -108,7 +108,7 @@ jobs:
         ghc: ["9.6.7", "9.14.1"]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+      - uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2
         with:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: "3.16.1.0"
@@ -126,7 +126,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-      - uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+      - uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2
         with:
           ghc-version: "9.6.7"
           cabal-version: "3.16.1.0"
