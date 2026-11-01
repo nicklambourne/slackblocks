@@ -87,7 +87,7 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install uv and Python
-        uses: astral-sh/setup-uv@v10.3.2
+        uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: false
           cache-dependency-glob: python/uv.lock
@@ -165,7 +165,7 @@ jobs:
           mix deps.get --check-locked
 
       - name: Install Haskell for compiled reference and executable examples
-        uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+        uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2
         with:
           ghc-version: "9.6.7"
           cabal-version: "3.16.1.0"
