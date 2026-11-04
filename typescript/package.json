@@ -45,15 +45,15 @@
   ],
   "slackblocksSpecVersion": "1.5.0",
   "dependencies": {
-    "@slack/types": "^3.2.0"
+    "@slack/types": "^3.3.0"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
-    "@slack/web-api": "8.2.0",
-    "@types/node": "^26.6.5",
+    "@slack/web-api": "8.3.0",
+    "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.0.5",
     "publint": "^0.3.25",
-    "tsdown": "^0.23.3",
+    "tsdown": "^0.23.4",
     "typedoc": "^0.28.20",
     "typescript": "^5.9.3",
     "vitest": "^5.0.5"
