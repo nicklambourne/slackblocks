@@ -29,7 +29,7 @@ function freeze(value) {
   return value;
 }
 
-function render(payload) {
+export function render(payload) {
   const before = JSON.stringify(payload);
   const html = renderToStaticMarkup(React.createElement(exports.default, {
     recipe: "card-actions", outputs: { python: freeze(payload) },
@@ -73,16 +73,38 @@ for (const actions of [undefined, [], [primary], [danger], [normal], [button("Fi
 }
 // Card grouping must not leak into ordinary Actions blocks.
 assert.deepEqual(labels(render({ type: "actions", elements: [primary, danger, normal] })), ["Approve", "Reject", "Details"]);
-const richCard = render({ ...card(), subtitle: "Subtitle", body: "Body", subtext: "Small print", hero_image: { image_url: "https://example.com/hero.png", alt_text: "Hero" }, icon: { image_url: "https://example.com/icon.png", alt_text: "Icon" } });
+const plain = (text) => ({ type: "plain_text", text });
+const richCard = render({ ...card(), subtitle: plain("Subtitle"), body: plain("Body"), subtext: plain("Small print"), hero_image: { type: "image", image_url: "https://example.com/hero.png", alt_text: "Hero" }, icon: { type: "image", image_url: "https://example.com/icon.png", alt_text: "Icon" } });
 for (const expected of ["Subtitle", "Body", "Small print", 'alt="Hero"', 'alt="Icon"']) assert.ok(richCard.includes(expected));
+for (const url of ["https://example.com/hero.png", "https://example.com/icon.png"]) assert.ok(richCard.includes(`src="${url}"`));
 assert.ok(render({ ...card(), slack_icon: { name: "calendar" } }).includes("Slack icon: calendar"));
 
+const literal = "Literal *stars* and `code` <safe>";
+for (const field of ["title", "subtitle", "body", "subtext"]) {
+  const plain = render({ ...card(), [field]: { type: "plain_text", text: literal } });
+  assert.ok(plain.includes("Literal *stars* and `code` &lt;safe&gt;"), field);
+  const markdown = render({ ...card(), [field]: { type: "mrkdwn", text: literal } });
+  assert.ok(markdown.includes("<strong>stars</strong> and <code>code</code> &lt;safe&gt;"), field);
+}
+assert.ok(render({ ...card(), title: { ...plain(":calendar: *literal*"), emoji: false } }).includes(":calendar: *literal*"));
+assert.deepEqual(labels(render(card([button(literal)]))), ["Literal *stars* and `code` &lt;safe&gt;"]);
+assert.ok(render(card([{ ...button("Short"), accessibility_label: "Full action description" }])).includes('aria-label="Full action description"'));
+for (const field of ["hero_image", "icon"]) {
+  for (const slack_file of [{ id: "F01234567" }, { url: "https://files.slack.com/files-pri/T123-F123/image.png" }]) {
+    const html = render({ ...card(), [field]: { type: "image", slack_file, alt_text: "Private <image>" } });
+    assert.ok(!html.includes("<img"), `${field} must not emit a broken or private image request`);
+    assert.ok(!html.includes("files.slack.com"));
+    assert.ok(html.includes('role="img" aria-label="Private &lt;image&gt;"'));
+    assert.ok(html.includes("Slack image"));
+  }
+}
+
 const recipe = await readFile(new URL("../docs/recipes/card-actions.mdx", import.meta.url), "utf8");
-const outputs = JSON.parse(recipe.match(/export const recipeOutputs = (.*?);\n/s)[1]);
+export const outputs = JSON.parse(recipe.match(/export const recipeOutputs = (.*?);\n/s)[1]);
 assert.equal(Object.keys(outputs).length, 10);
 for (const [language, payload] of Object.entries(outputs)) {
   const html = render(payload);
   assert.deepEqual(labels(html), ["Reject", "Approve", "Reject", "Details", "Approve"], language);
   assert.equal((html.match(/data-card-actions="left"/g) ?? []).length, 1, language);
 }
-console.log("Card preview: all native outputs, action permutations, empty/single/default cases, input immutability and ordinary Actions passed.");
+console.log("Card preview: all native outputs, action permutations, input immutability, text types, accessible labels, public/private images and ordinary Actions passed.");

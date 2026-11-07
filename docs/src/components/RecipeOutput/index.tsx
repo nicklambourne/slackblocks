@@ -13,10 +13,23 @@ const text = (value: Json | undefined): string => {
 };
 
 function Inline({ value }: { value: Json | undefined }) {
+  if (object(value).type === "plain_text") return <>{text(value)}</>;
   const content = text(value).replace(/:white_check_mark:/g, "✅").replace(/:warning:/g, "⚠️").replace(/:hand:/g, "✋").replace(/:calendar:/g, "📅").replace(/:mag:/g, "🔎");
   return <>{content.split(/(\*[^*]+\*|`[^`]+`)/g).map((part, index) =>
     part.startsWith("*") ? <strong key={index}>{part.slice(1, -1)}</strong> :
       part.startsWith("`") ? <code key={index}>{part.slice(1, -1)}</code> : part)}</>;
+}
+
+function CardImage({ value, icon = false }: { value: Json; icon?: boolean }) {
+  const image = object(value);
+  const className = icon ? styles.cardIcon : styles.cardHero;
+  const alt = text(image.alt_text);
+  const url = text(image.image_url);
+  if (url) return <img className={className} src={url} alt={alt} />;
+  // Slack files need workspace access; a public docs preview cannot load them.
+  return <span role="img" aria-label={alt} title="Slack image" className={`${className} ${styles.cardImagePlaceholder}`}>
+    <span aria-hidden="true">{icon ? "▧" : "Slack image"}</span>
+  </span>;
 }
 
 function Rich({ value }: { value: Json }) {
@@ -56,9 +69,9 @@ function Block({ value }: { value: Json }) {
       const left = splitDanger ? actions.filter((item) => object(item).style === "danger") : [];
       const right = splitDanger ? actions.filter((item) => object(item).style !== "danger") : actions;
       return <div className={styles.card} data-card-id={text(block.block_id)}>
-        {block.hero_image && <img className={styles.cardHero} src={text(object(block.hero_image).image_url)} alt={text(object(block.hero_image).alt_text)} />}
+        {block.hero_image && <CardImage value={block.hero_image} />}
         <div className={styles.cardContent}>
-          {block.icon && <img className={styles.cardIcon} src={text(object(block.icon).image_url)} alt={text(object(block.icon).alt_text)} />}
+          {block.icon && <CardImage value={block.icon} icon />}
           {block.slack_icon && <span className={styles.cardIconLabel}>Slack icon: {text(object(block.slack_icon).name)}</span>}
           {block.title && <div className={styles.cardTitle}><Inline value={block.title} /></div>}
           {block.subtitle && <div className={styles.cardSubtitle}><Inline value={block.subtitle} /></div>}
@@ -72,7 +85,7 @@ function Block({ value }: { value: Json }) {
       </div>;
     }
     case "button":
-    case "workflow_button": return <button type="button" disabled className={styles.button} data-style={text(block.style)}><Inline value={block.text} /></button>;
+    case "workflow_button": return <button type="button" disabled className={styles.button} data-style={text(block.style)} aria-label={text(block.accessibility_label) || text(block.text)}><Inline value={block.text} /></button>;
     case "rich_text": return <div className={styles.section}><Rich value={value} /></div>;
     case "alert": return <div className={styles.alert}><Inline value={block.text} /></div>;
     case "input": return <label className={styles.input}><Inline value={block.label} /><input disabled placeholder={text(object(block.element).placeholder)} /></label>;
