@@ -46,6 +46,31 @@ function Block({ value }: { value: Json }) {
     </div>;
     case "context": return <div className={styles.context}>{list(block.elements).map((element, index) => <span key={index}><Inline value={element} /></span>)}</div>;
     case "actions": return <div className={styles.actions}>{list(block.elements).map((element, index) => <Block key={index} value={element} />)}</div>;
+    case "card": {
+      // Sort a copy for the preview; serialized payloads retain the caller's order.
+      const actions = [...list(block.actions)].sort((a, b) => {
+        const rank = (item: Json) => object(item).style === "danger" ? -1 : object(item).style === "primary" ? 1 : 0;
+        return rank(a) - rank(b);
+      });
+      const splitDanger = actions.length === 3;
+      const left = splitDanger ? actions.filter((item) => object(item).style === "danger") : [];
+      const right = splitDanger ? actions.filter((item) => object(item).style !== "danger") : actions;
+      return <div className={styles.card} data-card-id={text(block.block_id)}>
+        {block.hero_image && <img className={styles.cardHero} src={text(object(block.hero_image).image_url)} alt={text(object(block.hero_image).alt_text)} />}
+        <div className={styles.cardContent}>
+          {block.icon && <img className={styles.cardIcon} src={text(object(block.icon).image_url)} alt={text(object(block.icon).alt_text)} />}
+          {block.slack_icon && <span className={styles.cardIconLabel}>Slack icon: {text(object(block.slack_icon).name)}</span>}
+          {block.title && <div className={styles.cardTitle}><Inline value={block.title} /></div>}
+          {block.subtitle && <div className={styles.cardSubtitle}><Inline value={block.subtitle} /></div>}
+          {block.body && <div className={styles.section}><Inline value={block.body} /></div>}
+          {block.subtext && <div className={styles.cardSubtitle}><Inline value={block.subtext} /></div>}
+          {actions.length > 0 && <div className={styles.cardActions}>
+            {left.length > 0 && <div data-card-actions="left" className={styles.cardActionGroup}><Blocks values={left} /></div>}
+            <div data-card-actions="right" className={styles.cardActionGroup}><Blocks values={right} /></div>
+          </div>}
+        </div>
+      </div>;
+    }
     case "button":
     case "workflow_button": return <button type="button" disabled className={styles.button} data-style={text(block.style)}><Inline value={block.text} /></button>;
     case "rich_text": return <div className={styles.section}><Rich value={value} /></div>;

@@ -77,7 +77,11 @@ export interface CardBlockInput {
   subtitle?: TextLike;
   /** Main card copy, up to 200 characters. */
   body?: TextLike;
-  /** Up to three button actions. */
+  /**
+   * Up to three buttons, serialized in the supplied order. Slack right-aligns
+   * buttons with primary last. Danger precedes the other button in a two-button
+   * group, or sits at the card's far left when there are three buttons.
+   */
   actions?: JsonObject[];
   /** Slack-hosted icon created with `slackIcon`. */
   slackIcon?: JsonObject;

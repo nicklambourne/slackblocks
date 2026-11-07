@@ -12,7 +12,7 @@ defmodule Slackblocks.Blocks.Card do
   * `title` — Sets the card title. Optional; `nil` omits the field.
   * `subtitle` — Sets the supporting text shown below the title. Optional; `nil` omits the field.
   * `body` — Sets the main body text of the card. Optional; `nil` omits the field.
-  * `actions` — Adds buttons displayed at the bottom of the card, in display order. Optional; `nil` omits the field.
+  * `actions` — Adds up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons. Optional; `nil` omits the field.
   * `slack_icon` — Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon. Optional; `nil` omits the field.
   * `subtext` — Sets the small print shown at the bottom of the card. Optional; `nil` omits the field.
   * `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.

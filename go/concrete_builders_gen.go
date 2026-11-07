@@ -824,8 +824,10 @@ func (b *CardBlockBuilder) BodyObject(value TextObject) *CardBlockBuilder {
 	return b
 }
 
-// Actions adds buttons displayed at the bottom of the card, in display order. Slack allows at
-// most 3 items. Each call appends to any values already added.
+// Actions adds up to three buttons in serialization order. Slack controls their visual
+// placement: buttons are right-aligned with primary last; a danger button precedes the other
+// button in a two-button group, or sits at the card's far left with three buttons. Slack allows
+// at most 3 items. Each call appends to any values already added.
 func (b *CardBlockBuilder) Actions(values ...*ButtonBuilder) *CardBlockBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {

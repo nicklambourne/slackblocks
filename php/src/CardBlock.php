@@ -39,7 +39,7 @@ final readonly class CardBlock extends Value implements Block, LayoutChild
      */
     public Text|null $body;
 
-    /** Adds buttons displayed at the bottom of the card, in display order.
+    /** Adds up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons.
      * @var list<ButtonElement>|null
      */
     public array|null $actions;
@@ -65,7 +65,7 @@ final readonly class CardBlock extends Value implements Block, LayoutChild
      * @param Text|string|null $title Sets the card title.
      * @param Text|string|null $subtitle Sets the supporting text shown below the title.
      * @param Text|string|null $body Sets the main body text of the card.
-     * @param list<ButtonElement>|null $actions Adds buttons displayed at the bottom of the card, in display order.
+     * @param list<ButtonElement>|null $actions Adds up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons.
      * @param SlackIcon|null $slackIcon Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon.
      * @param Text|string|null $subtext Sets the small print shown at the bottom of the card.
      * @param string|null $blockId Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
