@@ -1137,7 +1137,7 @@ data CardBlockFields = CardBlockFields
     cardBlockSubtitle :: Maybe (TextObject),
     -- | Sets the main body text of the card. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @card.body@.
     cardBlockBody :: Maybe (TextObject),
-    -- | Adds buttons displayed at the bottom of the card, in display order. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @card.actions@.
+    -- | Adds up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @card.actions@.
     cardBlockActions :: Maybe ([ButtonElement]),
     -- | Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon. Optional; Nothing omits the field. Factory default: @Nothing@.
     cardBlockSlackIcon :: Maybe (SlackIcon),

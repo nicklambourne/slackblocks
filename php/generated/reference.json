@@ -140,7 +140,7 @@
           "wire": "actions",
           "kind": "list",
           "type": "ButtonElement",
-          "description": "Adds buttons displayed at the bottom of the card, in display order.",
+          "description": "Adds up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons.",
           "limits": "card.actions"
         },
         {

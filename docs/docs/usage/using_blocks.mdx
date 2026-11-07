@@ -3300,6 +3300,12 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 Cards combine text, images, Slack-provided icons, and up to three buttons in a compact panel.
 
+Slack controls action placement: buttons align right with primary last. With two
+buttons, danger stays in that group before the other button; with three, it sits
+at the far left of the card. Slackblocks preserves the supplied array order.
+See [Card actions](/usage/recipes/card-actions) for tested code and rendered
+two- and three-button examples.
+
 Provide at least one of `hero_image`, `title`, `actions`, or `body`. An image `icon` and a `slack_icon` cannot be combined.
 
 <Tabs>

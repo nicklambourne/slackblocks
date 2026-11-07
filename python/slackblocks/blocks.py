@@ -1098,7 +1098,10 @@ class CardBlock(Block):
         title: the card's title (max 150 chars). Can be a string or `Text` object.
         subtitle: the card's subtitle (max 150 chars). Can be a string or `Text` object.
         body: the card's body text (max 200 chars). Can be a string or `Text` object.
-        actions: up to three `Button` elements presented as card actions.
+        actions: up to three `Button` elements, serialized in the supplied order.
+            Slack right-aligns buttons with primary last. With two buttons,
+            danger precedes the other button in that group; with three,
+            danger sits at the card's far left.
         slack_icon: a `SlackIcon` naming a Slack-provided icon. Cannot be
             combined with `icon`.
         subtext: additional text displayed at the bottom of the card

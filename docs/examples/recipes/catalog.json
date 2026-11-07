@@ -117,5 +117,10 @@
     "anchors": [
       "weighted-layout-grid"
     ]
+  },
+  {
+    "id": "card-actions",
+    "title": "Card actions",
+    "anchors": ["card-actions"]
   }
 ]

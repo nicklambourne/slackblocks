@@ -1,0 +1,1114 @@
+---
+title: Card actions
+slug: /usage/recipes/card-actions
+sidebar_position: 16
+---
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "python": {
+    "channel": "C1",
+    "mrkdwn": true,
+    "blocks": [
+      {
+        "type": "card",
+        "block_id": "card_two",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Two buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "style": "primary",
+            "value": "release-42"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "style": "danger",
+            "value": "release-42"
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "block_id": "card_three",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Three buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "style": "primary",
+            "value": "release-42"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "style": "danger",
+            "value": "release-42"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "value": "release-42"
+          }
+        ]
+      }
+    ],
+    "text": "Card actions"
+  },
+  "typescript": {
+    "mrkdwn": true,
+    "text": "Card actions",
+    "channel": "C1",
+    "blocks": [
+      {
+        "title": {
+          "text": "Two buttons",
+          "type": "mrkdwn"
+        },
+        "body": {
+          "text": "Review release-42.",
+          "type": "mrkdwn"
+        },
+        "actions": [
+          {
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary",
+            "type": "button"
+          },
+          {
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger",
+            "type": "button"
+          }
+        ],
+        "block_id": "card_two",
+        "type": "card"
+      },
+      {
+        "title": {
+          "text": "Three buttons",
+          "type": "mrkdwn"
+        },
+        "body": {
+          "text": "Review release-42.",
+          "type": "mrkdwn"
+        },
+        "actions": [
+          {
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary",
+            "type": "button"
+          },
+          {
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger",
+            "type": "button"
+          },
+          {
+            "text": {
+              "text": "Details",
+              "type": "plain_text"
+            },
+            "action_id": "details",
+            "value": "release-42",
+            "type": "button"
+          }
+        ],
+        "block_id": "card_three",
+        "type": "card"
+      }
+    ]
+  },
+  "go": {
+    "blocks": [
+      {
+        "actions": [
+          {
+            "action_id": "approve",
+            "style": "primary",
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "reject",
+            "style": "danger",
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_two",
+        "body": {
+          "text": "Review release-42.",
+          "type": "mrkdwn"
+        },
+        "title": {
+          "text": "Two buttons",
+          "type": "mrkdwn"
+        },
+        "type": "card"
+      },
+      {
+        "actions": [
+          {
+            "action_id": "approve",
+            "style": "primary",
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "reject",
+            "style": "danger",
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "details",
+            "text": {
+              "text": "Details",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_three",
+        "body": {
+          "text": "Review release-42.",
+          "type": "mrkdwn"
+        },
+        "title": {
+          "text": "Three buttons",
+          "type": "mrkdwn"
+        },
+        "type": "card"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Card actions"
+  },
+  "java": {
+    "mrkdwn": true,
+    "text": "Card actions",
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Two buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          }
+        ],
+        "block_id": "card_two"
+      },
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Three buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_three"
+      }
+    ]
+  },
+  "csharp": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Two buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          }
+        ],
+        "block_id": "card_two"
+      },
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Three buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_three"
+      }
+    ],
+    "text": "Card actions",
+    "mrkdwn": true
+  },
+  "ruby": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Two buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          }
+        ],
+        "block_id": "card_two"
+      },
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Three buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_three"
+      }
+    ],
+    "text": "Card actions",
+    "mrkdwn": true
+  },
+  "rust": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Two buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          }
+        ],
+        "block_id": "card_two"
+      },
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Three buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_three"
+      }
+    ],
+    "text": "Card actions",
+    "mrkdwn": true
+  },
+  "php": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Two buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          }
+        ],
+        "block_id": "card_two"
+      },
+      {
+        "type": "card",
+        "title": {
+          "type": "mrkdwn",
+          "text": "Three buttons"
+        },
+        "body": {
+          "type": "mrkdwn",
+          "text": "Review release-42."
+        },
+        "actions": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_three"
+      }
+    ],
+    "text": "Card actions",
+    "mrkdwn": true
+  },
+  "elixir": {
+    "blocks": [
+      {
+        "actions": [
+          {
+            "action_id": "approve",
+            "style": "primary",
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "reject",
+            "style": "danger",
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_two",
+        "body": {
+          "text": "Review release-42.",
+          "type": "mrkdwn"
+        },
+        "title": {
+          "text": "Two buttons",
+          "type": "mrkdwn"
+        },
+        "type": "card"
+      },
+      {
+        "actions": [
+          {
+            "action_id": "approve",
+            "style": "primary",
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "reject",
+            "style": "danger",
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "details",
+            "text": {
+              "text": "Details",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_three",
+        "body": {
+          "text": "Review release-42.",
+          "type": "mrkdwn"
+        },
+        "title": {
+          "text": "Three buttons",
+          "type": "mrkdwn"
+        },
+        "type": "card"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Card actions"
+  },
+  "haskell": {
+    "blocks": [
+      {
+        "actions": [
+          {
+            "action_id": "approve",
+            "style": "primary",
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "reject",
+            "style": "danger",
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_two",
+        "body": {
+          "text": "Review release-42.",
+          "type": "mrkdwn"
+        },
+        "title": {
+          "text": "Two buttons",
+          "type": "mrkdwn"
+        },
+        "type": "card"
+      },
+      {
+        "actions": [
+          {
+            "action_id": "approve",
+            "style": "primary",
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "reject",
+            "style": "danger",
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "details",
+            "text": {
+              "text": "Details",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          }
+        ],
+        "block_id": "card_three",
+        "body": {
+          "text": "Review release-42.",
+          "type": "mrkdwn"
+        },
+        "title": {
+          "text": "Three buttons",
+          "type": "mrkdwn"
+        },
+        "type": "card"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Card actions"
+  }
+};
+
+# Card actions
+
+A card combines text with up to three buttons. These examples build two cards with
+the same approval and rejection actions; the second adds a Details button.
+
+Slackblocks preserves the order supplied to `actions` in the serialized payload.
+Slack controls the visual arrangement, so array order is not a positioning API:
+
+| Card | Visual arrangement |
+| --- | --- |
+| Two buttons | Reject and Approve form a group on the right, with Reject first. |
+| Three buttons | Reject sits at the far left; Details and Approve form a group on the right. |
+
+Primary buttons appear furthest right. Adding the third button moves the danger
+button across the card. This card-specific rule does not change an ordinary
+[Actions block](/usage/recipes/approval-request).
+
+The [official card reference](https://docs.slack.dev/reference/block-kit/blocks/card-block/)
+contains this clarification, first observed on 6 November 2026. The two- and three-button arrangements
+were also verified in the Slack stress workspace on 7 November 2026, including
+all six input orders for one primary, one danger, and one default button.
+This is a documentation clarification, with no new field or caller migration.
+
+<RecipeOutput recipe="card-actions" outputs={recipeOutputs} />
+
+## Build the cards
+
+The code deliberately supplies Approve before Reject. Expand **Serialized output**
+above to compare that array with the preview's visual arrangement. Each button
+retains its action ID and request value. Your application still needs to handle
+and acknowledge interactions; constructing these messages does not send them.
+
+<LanguageContent>
+
+<Python>
+
+```python
+from slackblocks import Button, CardBlock, Message
+
+approve = Button("Approve", action_id="approve", value="release-42", style="primary")
+reject = Button("Reject", action_id="reject", value="release-42", style="danger")
+details = Button("Details", action_id="details", value="release-42")
+message = Message(channel="C1", text="Card actions", blocks=[
+    CardBlock(title="Two buttons", body="Review release-42.",
+              actions=[approve, reject], block_id="card_two"),
+    CardBlock(title="Three buttons", body="Review release-42.",
+              actions=[approve, reject, details], block_id="card_three"),
+])
+print(message.json())
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const approve = S.Button().text("Approve").actionId("approve").value("release-42").style("primary");
+const reject = S.Button().text("Reject").actionId("reject").value("release-42").style("danger");
+const details = S.Button().text("Details").actionId("details").value("release-42");
+const message = S.Message().channel("C1").text("Card actions").blocks(
+  S.CardBlock().title("Two buttons").body("Review release-42.")
+    .actions(approve, reject).blockId("card_two"),
+  S.CardBlock().title("Three buttons").body("Review release-42.")
+    .actions(approve, reject, details).blockId("card_three"),
+).build();
+console.log(JSON.stringify(message));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "os"
+    s "github.com/nicklambourne/slackblocks/go/v3"
+)
+
+func main() {
+    approve := s.NewButton().Text("Approve").ActionID("approve").Value("release-42").Style("primary")
+    reject := s.NewButton().Text("Reject").ActionID("reject").Value("release-42").Style("danger")
+    details := s.NewButton().Text("Details").ActionID("details").Value("release-42")
+    message, err := s.NewMessage().Channel("C1").Text("Card actions").Blocks(
+        s.NewCardBlock().Title("Two buttons").Body("Review release-42.").
+            Actions(approve, reject).BlockID("card_two"),
+        s.NewCardBlock().Title("Three buttons").Body("Review release-42.").
+            Actions(approve, reject, details).BlockID("card_three"),
+    ).Build()
+    if err != nil { panic(err) }
+    if err := json.NewEncoder(os.Stdout).Encode(message); err != nil { panic(err) }
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.block.CardBlock;
+import io.github.nicklambourne.slackblocks.element.ButtonElement;
+import io.github.nicklambourne.slackblocks.element.ButtonStyle;
+import io.github.nicklambourne.slackblocks.payload.MessagePayload;
+
+public final class Recipe {
+  public static void main(String[] args) {
+    var approve = ButtonElement.builder().text("Approve").actionId("approve")
+        .value("release-42").style(ButtonStyle.PRIMARY).build();
+    var reject = ButtonElement.builder().text("Reject").actionId("reject")
+        .value("release-42").style(ButtonStyle.DANGER).build();
+    var details = ButtonElement.builder().text("Details").actionId("details").value("release-42").build();
+    var message = MessagePayload.builder().channel("C1").text("Card actions").blocks(
+        CardBlock.builder().title("Two buttons").body("Review release-42.")
+            .actions(approve, reject).blockId("card_two").build(),
+        CardBlock.builder().title("Three buttons").body("Review release-42.")
+            .actions(approve, reject, details).blockId("card_three").build()
+    ).build();
+    System.out.println(message.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Elements;
+using Slackblocks.Payloads;
+
+var approve = new ButtonElement("Approve", actionId: "approve", value: "release-42", style: ButtonStyle.Primary);
+var reject = new ButtonElement("Reject", actionId: "reject", value: "release-42", style: ButtonStyle.Danger);
+var details = new ButtonElement("Details", actionId: "details", value: "release-42");
+var message = new MessagePayload("C1", text: "Card actions", blocks: [
+    new CardBlock(title: "Two buttons", body: "Review release-42.",
+        actions: [approve, reject], blockId: "card_two"),
+    new CardBlock(title: "Three buttons", body: "Review release-42.",
+        actions: [approve, reject, details], blockId: "card_three"),
+]);
+Console.WriteLine(message.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+approve = ButtonElement.new(text: "Approve", action_id: "approve", value: "release-42", style: ButtonStyle::PRIMARY)
+reject = ButtonElement.new(text: "Reject", action_id: "reject", value: "release-42", style: ButtonStyle::DANGER)
+details = ButtonElement.new(text: "Details", action_id: "details", value: "release-42")
+message = MessagePayload.new(channel: "C1", text: "Card actions", blocks: [
+  CardBlock.new(title: "Two buttons", body: "Review release-42.",
+    actions: [approve, reject], block_id: "card_two"),
+  CardBlock.new(title: "Three buttons", body: "Review release-42.",
+    actions: [approve, reject, details], block_id: "card_three")
+])
+puts message.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let approve = ButtonElement::builder().text("Approve").action_id("approve")
+        .value("release-42").style(ButtonStyle::Primary).build()?;
+    let reject = ButtonElement::builder().text("Reject").action_id("reject")
+        .value("release-42").style(ButtonStyle::Danger).build()?;
+    let details = ButtonElement::builder().text("Details").action_id("details")
+        .value("release-42").build()?;
+    let two = CardBlock::builder().title("Two buttons").body("Review release-42.")
+        .action(approve.clone()).action(reject.clone()).block_id("card_two").build()?;
+    let three = CardBlock::builder().title("Three buttons").body("Review release-42.")
+        .action(approve).action(reject).action(details).block_id("card_three").build()?;
+    let message = MessagePayload::builder("C1").text("Card actions").block(two).block(three).build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+require 'vendor/autoload.php';
+use Slackblocks as S;
+
+$approve = new S\ButtonElement(text: 'Approve', actionId: 'approve', value: 'release-42', style: S\ButtonStyle::Primary);
+$reject = new S\ButtonElement(text: 'Reject', actionId: 'reject', value: 'release-42', style: S\ButtonStyle::Danger);
+$details = new S\ButtonElement(text: 'Details', actionId: 'details', value: 'release-42');
+$message = new S\MessagePayload(channel: 'C1', text: 'Card actions', blocks: [
+    new S\CardBlock(title: 'Two buttons', body: 'Review release-42.',
+        actions: [$approve, $reject], blockId: 'card_two'),
+    new S\CardBlock(title: 'Three buttons', body: 'Review release-42.',
+        actions: [$approve, $reject, $details], blockId: 'card_three'),
+]);
+echo $message->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.{Message, Blocks.Card, Elements.Button}
+
+approve = Button.new!(text: "Approve", action_id: "approve", value: "release-42", style: :primary)
+reject = Button.new!(text: "Reject", action_id: "reject", value: "release-42", style: :danger)
+details = Button.new!(text: "Details", action_id: "details", value: "release-42")
+Message.new!(channel: "C1", text: "Card actions", blocks: [
+  Card.new!(title: "Two buttons", body: "Review release-42.",
+    actions: [approve, reject], block_id: "card_two"),
+  Card.new!(title: "Three buttons", body: "Review release-42.",
+    actions: [approve, reject, details], block_id: "card_three")
+]) |> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import Slackblocks
+
+example = do
+  yes <- buildPlainText (plainText "Approve")
+  no <- buildPlainText (plainText "Reject")
+  more <- buildPlainText (plainText "Details")
+  approve <- buildButtonElement ((buttonElement yes) {buttonElementActionId = Just "approve", buttonElementValue = Just "release-42", buttonElementStyle = Just ButtonStylePrimary})
+  reject <- buildButtonElement ((buttonElement no) {buttonElementActionId = Just "reject", buttonElementValue = Just "release-42", buttonElementStyle = Just ButtonStyleDanger})
+  details <- buildButtonElement ((buttonElement more) {buttonElementActionId = Just "details", buttonElementValue = Just "release-42"})
+  twoTitle <- buildMarkdownText (markdownText "Two buttons")
+  threeTitle <- buildMarkdownText (markdownText "Three buttons")
+  body <- buildMarkdownText (markdownText "Review release-42.")
+  two <- buildCardBlock (cardBlock {cardBlockTitle = Just (markdownTextAsText twoTitle), cardBlockBody = Just (markdownTextAsText body), cardBlockActions = Just [approve, reject], cardBlockBlockId = Just "card_two"})
+  three <- buildCardBlock (cardBlock {cardBlockTitle = Just (markdownTextAsText threeTitle), cardBlockBody = Just (markdownTextAsText body), cardBlockActions = Just [approve, reject, details], cardBlockBlockId = Just "card_three"})
+  buildMessagePayload ((messagePayload "C1") {messagePayloadText = Just "Card actions", messagePayloadBlocks = Just [cardBlockAsBlock two, cardBlockAsBlock three]})
+```
+
+</Haskell>
+
+</LanguageContent>
