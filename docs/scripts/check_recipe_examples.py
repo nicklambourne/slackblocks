@@ -133,16 +133,20 @@ def check_result(recipe, value, language):
         cards = value["blocks"]
         assert len(cards) == 2
         assert [card["block_id"] for card in cards] == ["card_two", "card_three"]
-        for card, count, label in zip(cards, (2, 3), ("Two buttons", "Three buttons")):
+        for card, count, label in zip(cards, (2, 3), ("Two buttons", "Three buttons"), strict=True):
             assert card["type"] == "card" and card["title"]["text"] == label
             assert card["body"]["text"] == "Review release-42."
             actions = card["actions"]
             assert len(actions) == count
             assert [item["type"] for item in actions] == ["button"] * count
             # Deliberately differs from Slack's visual order. Do not sort the wire array.
-            assert [item["action_id"] for item in actions] == ["approve", "reject", "details"][:count]
+            assert [item["action_id"] for item in actions] == ["approve", "reject", "details"][
+                :count
+            ]
             assert [item.get("style") for item in actions] == ["primary", "danger", None][:count]
-            assert [item["text"]["text"] for item in actions] == ["Approve", "Reject", "Details"][:count]
+            assert [item["text"]["text"] for item in actions] == ["Approve", "Reject", "Details"][
+                :count
+            ]
             assert all(item["value"] == "release-42" for item in actions)
 
 
