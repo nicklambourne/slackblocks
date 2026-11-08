@@ -57,6 +57,19 @@ pnpm --filter @nicklambourne/slackblocks check:package
 NODE_OPTIONS=--max-old-space-size=8192 pnpm --filter @slackblocks/docs build
 ```
 
+Recipe preview changes also require the Chromium checks. They render the actual
+component and CSS at desktop and narrow widths, check action placement and
+accessible labels, and block external requests:
+
+```bash
+pnpm --filter @slackblocks/docs exec playwright install --only-shell chromium
+pnpm --filter @slackblocks/docs check:recipe-browser
+```
+
+On Linux, add `--with-deps` to the install command for browser system libraries.
+Set `PLAYWRIGHT_BROWSERS_PATH` before both commands if you keep browser downloads
+in a custom cache directory.
+
 From `go/`:
 
 ```bash

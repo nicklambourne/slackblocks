@@ -16,6 +16,19 @@
 .table { margin: .75rem 0; display: block; max-width: 100%; overflow-x: auto; }
 .attachment { border-left: .25rem solid; padding-left: 1rem; margin: .75rem 0; }
 .container { border: 1px solid var(--ifm-color-emphasis-300); border-radius: .25rem; padding: .6rem .9rem; }
+.card { max-width: 22rem; border: 1px solid var(--ifm-color-emphasis-300); border-radius: .75rem; overflow: hidden; margin: .75rem 0; }
+.cardContent { padding: .75rem; }
+.cardTitle { font-weight: 600; }
+.cardSubtitle, .cardIconLabel { color: var(--ifm-color-emphasis-700); font-size: .875rem; }
+.cardHero { display: block; width: 100%; }
+.cardIcon { width: 2rem; height: 2rem; object-fit: contain; float: left; margin-right: .5rem; }
+.cardImagePlaceholder { display: inline-flex; align-items: center; justify-content: center; background: var(--ifm-color-emphasis-100); color: var(--ifm-color-emphasis-700); font-size: .875rem; }
+.cardHero.cardImagePlaceholder { min-height: 6rem; }
+.cardActions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .75rem; clear: both; }
+.cardActionGroup { display: flex; gap: .5rem; min-width: 0; }
+.cardActionGroup[data-card-actions="left"] { margin-right: auto; }
+.cardActions .button { min-width: 0; padding: .25rem .5rem; font-size: .875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cardActions .button[data-style="danger"] { color: white; background: #c9374c; }
 @media (max-width: 480px) { .fields { grid-template-columns: 1fr; } .preview { padding: .75rem; } }
 
 .layoutLabel { margin: 0 0 .5rem; }

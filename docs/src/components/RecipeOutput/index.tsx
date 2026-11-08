@@ -13,10 +13,23 @@ const text = (value: Json | undefined): string => {
 };
 
 function Inline({ value }: { value: Json | undefined }) {
+  if (object(value).type === "plain_text") return <>{text(value)}</>;
   const content = text(value).replace(/:white_check_mark:/g, "✅").replace(/:warning:/g, "⚠️").replace(/:hand:/g, "✋").replace(/:calendar:/g, "📅").replace(/:mag:/g, "🔎");
   return <>{content.split(/(\*[^*]+\*|`[^`]+`)/g).map((part, index) =>
     part.startsWith("*") ? <strong key={index}>{part.slice(1, -1)}</strong> :
       part.startsWith("`") ? <code key={index}>{part.slice(1, -1)}</code> : part)}</>;
+}
+
+function CardImage({ value, icon = false }: { value: Json; icon?: boolean }) {
+  const image = object(value);
+  const className = icon ? styles.cardIcon : styles.cardHero;
+  const alt = text(image.alt_text);
+  const url = text(image.image_url);
+  if (url) return <img className={className} src={url} alt={alt} />;
+  // Slack files need workspace access; a public docs preview cannot load them.
+  return <span role="img" aria-label={alt} title="Slack image" className={`${className} ${styles.cardImagePlaceholder}`}>
+    <span aria-hidden="true">{icon ? "▧" : "Slack image"}</span>
+  </span>;
 }
 
 function Rich({ value }: { value: Json }) {
@@ -46,8 +59,33 @@ function Block({ value }: { value: Json }) {
     </div>;
     case "context": return <div className={styles.context}>{list(block.elements).map((element, index) => <span key={index}><Inline value={element} /></span>)}</div>;
     case "actions": return <div className={styles.actions}>{list(block.elements).map((element, index) => <Block key={index} value={element} />)}</div>;
+    case "card": {
+      // Sort a copy for the preview; serialized payloads retain the caller's order.
+      const actions = [...list(block.actions)].sort((a, b) => {
+        const rank = (item: Json) => object(item).style === "danger" ? -1 : object(item).style === "primary" ? 1 : 0;
+        return rank(a) - rank(b);
+      });
+      const splitDanger = actions.length === 3;
+      const left = splitDanger ? actions.filter((item) => object(item).style === "danger") : [];
+      const right = splitDanger ? actions.filter((item) => object(item).style !== "danger") : actions;
+      return <div className={styles.card} data-card-id={text(block.block_id)}>
+        {block.hero_image && <CardImage value={block.hero_image} />}
+        <div className={styles.cardContent}>
+          {block.icon && <CardImage value={block.icon} icon />}
+          {block.slack_icon && <span className={styles.cardIconLabel}>Slack icon: {text(object(block.slack_icon).name)}</span>}
+          {block.title && <div className={styles.cardTitle}><Inline value={block.title} /></div>}
+          {block.subtitle && <div className={styles.cardSubtitle}><Inline value={block.subtitle} /></div>}
+          {block.body && <div className={styles.section}><Inline value={block.body} /></div>}
+          {block.subtext && <div className={styles.cardSubtitle}><Inline value={block.subtext} /></div>}
+          {actions.length > 0 && <div className={styles.cardActions}>
+            {left.length > 0 && <div data-card-actions="left" className={styles.cardActionGroup}><Blocks values={left} /></div>}
+            <div data-card-actions="right" className={styles.cardActionGroup}><Blocks values={right} /></div>
+          </div>}
+        </div>
+      </div>;
+    }
     case "button":
-    case "workflow_button": return <button type="button" disabled className={styles.button} data-style={text(block.style)}><Inline value={block.text} /></button>;
+    case "workflow_button": return <button type="button" disabled className={styles.button} data-style={text(block.style)} aria-label={text(block.accessibility_label) || text(block.text)}><Inline value={block.text} /></button>;
     case "rich_text": return <div className={styles.section}><Rich value={value} /></div>;
     case "alert": return <div className={styles.alert}><Inline value={block.text} /></div>;
     case "input": return <label className={styles.input}><Inline value={block.label} /><input disabled placeholder={text(object(block.element).placeholder)} /></label>;

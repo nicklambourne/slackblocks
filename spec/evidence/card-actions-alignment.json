@@ -1,0 +1,317 @@
+{
+  "checked_at": "2026-11-07",
+  "source": "https://docs.slack.dev/reference/block-kit/blocks/card-block/",
+  "scope": "Synthetic messages in the existing authorized Slack stress workspace. Native Python construction, chat.postMessage acceptance and read-only browser DOM/screenshot inspection. No callbacks, app changes, or new credentials.",
+  "cards_accepted": 16,
+  "action_wire_order_and_values_preserved": true,
+  "observations": {
+    "Two buttons": [
+      {
+        "button": "Reject",
+        "group": "card_actions_right",
+        "x": 621.4765625,
+        "width": 52.21875
+      },
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Three buttons": [
+      {
+        "button": "Reject",
+        "group": "card_actions_left",
+        "x": 433,
+        "width": 52.21875
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 615.3359375,
+        "width": 58.359375
+      },
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Permutation 1": [
+      {
+        "button": "Reject",
+        "group": "card_actions_left",
+        "x": 433,
+        "width": 52.21875
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 615.3359375,
+        "width": 58.359375
+      },
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Permutation 2": [
+      {
+        "button": "Reject",
+        "group": "card_actions_left",
+        "x": 433,
+        "width": 52.21875
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 615.3359375,
+        "width": 58.359375
+      },
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Permutation 3": [
+      {
+        "button": "Reject",
+        "group": "card_actions_left",
+        "x": 433,
+        "width": 52.21875
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 615.3359375,
+        "width": 58.359375
+      },
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Permutation 4": [
+      {
+        "button": "Reject",
+        "group": "card_actions_left",
+        "x": 433,
+        "width": 52.21875
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 615.3359375,
+        "width": 58.359375
+      },
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Permutation 5": [
+      {
+        "button": "Reject",
+        "group": "card_actions_left",
+        "x": 433,
+        "width": 52.21875
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 615.3359375,
+        "width": 58.359375
+      },
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Permutation 6": [
+      {
+        "button": "Reject",
+        "group": "card_actions_left",
+        "x": 433,
+        "width": 52.21875
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 615.3359375,
+        "width": 58.359375
+      },
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Two reversed": [
+      {
+        "button": "Reject",
+        "group": "card_actions_right",
+        "x": 621.4765625,
+        "width": 52.21875
+      },
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Single danger": [
+      {
+        "button": "Reject",
+        "group": "card_actions_right",
+        "x": 694.78125,
+        "width": 52.21875
+      }
+    ],
+    "Single primary": [
+      {
+        "button": "Approve",
+        "group": "card_actions_right",
+        "x": 681.6953125,
+        "width": 65.3046875
+      }
+    ],
+    "Single default": [
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 688.640625,
+        "width": 58.359375
+      }
+    ],
+    "Two default": [
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 622.28125,
+        "width": 58.359375
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 688.640625,
+        "width": 58.359375
+      }
+    ],
+    "Default danger": [
+      {
+        "button": "Reject",
+        "group": "card_actions_right",
+        "x": 628.421875,
+        "width": 52.21875
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 688.640625,
+        "width": 58.359375
+      }
+    ],
+    "Three default": [
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 555.921875,
+        "width": 58.359375
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 622.28125,
+        "width": 58.359375
+      },
+      {
+        "button": "Details",
+        "group": "card_actions_right",
+        "x": 688.640625,
+        "width": 58.359375
+      }
+    ]
+  },
+  "limitations": [
+    "Desktop web client only; no claim about mobile appearance or interaction callbacks.",
+    "Documentation observation date is not an announcement or effective date."
+  ],
+  "compatibility": "Prose and documentation preview only; no wire, validation, runtime-floor or spec-version change.",
+  "native_recipe_acceptance": [
+    {
+      "language": "python",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    },
+    {
+      "language": "typescript",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    },
+    {
+      "language": "go",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    },
+    {
+      "language": "java",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    },
+    {
+      "language": "csharp",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    },
+    {
+      "language": "ruby",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    },
+    {
+      "language": "rust",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    },
+    {
+      "language": "php",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    },
+    {
+      "language": "elixir",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    },
+    {
+      "language": "haskell",
+      "ok": true,
+      "blocks_match_native_output": true,
+      "payload_sha256": "eac8510009310aa1d0666751005138d9975b644bb76cdbdec902291559448ae8"
+    }
+  ],
+  "native_recipe_transport": "Exact compiled native payloads sent through one shared HTTP probe; this is not a test of ten native HTTP clients. Only the channel, fallback text and thread routing were changed."
+}

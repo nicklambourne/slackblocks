@@ -171,6 +171,8 @@ for (const language of allLanguages) {
     assert.equal(documents.some(({ u }) => u.includes(`/reference/${other}`)), false, `${language} leaked ${other} reference`);
   }
   const parseGuide = documents.filter(({ u }) => u === "/slackblocks/usage/recipes/parse-json").map(({ t }) => t).join(" ");
+  const cardGuide = documents.filter(({ u }) => u === "/slackblocks/usage/recipes/card-actions").map(({ t }) => t).join(" ");
+  assert.ok(cardGuide.includes("Slack controls the visual arrangement"), `${language}: card action placement guidance absent from search`);
   assert.equal(parseGuide.includes("Layout (3.2.0+)"), language === "python", `${language}: incorrect visibility for Python layout parsing limitation`);
   const validationGuide = documents.filter(({ u }) => u === "/slackblocks/usage/validation-boundary").map(({ t }) => t).join(" ");
   const pythonPath = "blocks[1].rows[1].items[1].block in the message";

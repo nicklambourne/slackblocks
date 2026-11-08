@@ -267,7 +267,7 @@ def self.new: (?hero_image: (ImageElement)?, ?icon: (ImageElement)?, ?title: (St
 | `title` | Sets the card title. |
 | `subtitle` | Sets the supporting text shown below the title. |
 | `body` | Sets the main body text of the card. |
-| `actions` | Adds buttons displayed at the bottom of the card, in display order. |
+| `actions` | Adds up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons. |
 | `slack_icon` | Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon. |
 | `subtext` | Sets the small print shown at the bottom of the card. |
 | `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
@@ -355,7 +355,7 @@ def body: () -> (Text)?
 
 ### actions
 
-Adds buttons displayed at the bottom of the card, in display order. Wire key: actions.
+Adds up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons. Wire key: actions.
 
 ```ruby
 def actions: () -> (Array[ButtonElement])?

@@ -23,7 +23,7 @@ public sealed partial class CardBlock : global::Slackblocks.SlackObject, global:
     /// <param name="title">The card title. Slack allows at most 150 characters. A string is sent as a <c>mrkdwn</c> text object.</param>
     /// <param name="subtitle">The supporting text shown below the title. Slack allows at most 150 characters. A string is sent as a <c>mrkdwn</c> text object.</param>
     /// <param name="body">The main body text of the card. Slack allows at most 200 characters. A string is sent as a <c>mrkdwn</c> text object.</param>
-    /// <param name="actions">Buttons displayed at the bottom of the card, in display order. Slack allows at most 3 items.</param>
+    /// <param name="actions">Up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons. Slack allows at most 3 items.</param>
     /// <param name="slackIcon">A Slack-provided icon displayed beside the title. Cannot be combined with an image icon.</param>
     /// <param name="subtext">The small print shown at the bottom of the card. Slack allows at most 200 characters. A string is sent as a <c>mrkdwn</c> text object.</param>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>
@@ -75,7 +75,7 @@ public sealed partial class CardBlock : global::Slackblocks.SlackObject, global:
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
     public global::Slackblocks.Objects.Text? Body { get; }
 
-    /// <summary>Gets buttons displayed at the bottom of the card, in display order.</summary>
+    /// <summary>Gets up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons.</summary>
     /// <value>The values in order, or an empty list when none were set.</value>
     public global::System.Collections.Generic.IReadOnlyList<global::Slackblocks.Elements.ButtonElement> Actions { get; }
 

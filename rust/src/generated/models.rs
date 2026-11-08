@@ -2695,7 +2695,7 @@ impl CardBlock {
     pub fn body(&self) -> Option<&Text> {
         self.body.as_ref()
     }
-    /// Borrows or copies `actions`. Adds buttons displayed at the bottom of the card, in display order.
+    /// Borrows or copies `actions`. Adds up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons.
     pub fn actions(&self) -> Option<&[ButtonElement]> {
         self.actions.as_deref()
     }
@@ -2802,7 +2802,7 @@ impl CardBlockBuilder {
         self.body = None;
         self
     }
-    /// Adds buttons displayed at the bottom of the card, in display order.
+    /// Adds up to three buttons in serialization order. Slack controls their visual placement: buttons are right-aligned with primary last; a danger button precedes the other button in a two-button group, or sits at the card's far left with three buttons.
     /// Replaces the collection; order is preserved.
     pub fn actions<I, T>(mut self, values: I) -> Self
     where

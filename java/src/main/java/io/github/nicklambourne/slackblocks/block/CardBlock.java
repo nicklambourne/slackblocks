@@ -107,7 +107,9 @@ public final class CardBlock implements Block, LayoutChild {
   }
 
   /**
-   * Returns buttons displayed at the bottom of the card, in display order.
+   * Returns up to three buttons in serialization order. Slack controls their visual placement:
+   * buttons are right-aligned with primary last; a danger button precedes the other button in a
+   * two-button group, or sits at the card's far left with three buttons.
    *
    * @return the values in order, or an empty list when none were set
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
@@ -272,7 +274,9 @@ public final class CardBlock implements Block, LayoutChild {
     }
 
     /**
-     * Adds buttons displayed at the bottom of the card, in display order.
+     * Adds up to three buttons in serialization order. Slack controls their visual placement:
+     * buttons are right-aligned with primary last; a danger button precedes the other button in a
+     * two-button group, or sits at the card's far left with three buttons.
      *
      * <p>Slack allows at most 3 items. Each call appends to any values already added.
      *

@@ -55,6 +55,9 @@ export function AlertBlock(): FluentBuilder<
  * Creates a fluent compact card containing text, images, and up to three button
  * actions. A card may stand alone or appear in a {@link CarouselBlock}; at least
  * one visible content field must be set before calling `.build()`.
+ * Actions retain their serialization order. Slack right-aligns buttons with
+ * primary last; danger precedes the other button in a two-button group, or sits
+ * at the card's far left with three buttons.
  *
  * See: <https://docs.slack.dev/reference/block-kit/blocks/card-block>.
  */

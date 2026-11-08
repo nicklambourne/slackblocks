@@ -129,6 +129,25 @@ def check_result(recipe, value, language):
         else:
             assert any(item is None for item in fields.values())
         assert value["text"] in {"Updated", "Complete"}
+    elif recipe == "card-actions":
+        cards = value["blocks"]
+        assert len(cards) == 2
+        assert [card["block_id"] for card in cards] == ["card_two", "card_three"]
+        for card, count, label in zip(cards, (2, 3), ("Two buttons", "Three buttons"), strict=True):
+            assert card["type"] == "card" and card["title"]["text"] == label
+            assert card["body"]["text"] == "Review release-42."
+            actions = card["actions"]
+            assert len(actions) == count
+            assert [item["type"] for item in actions] == ["button"] * count
+            # Deliberately differs from Slack's visual order. Do not sort the wire array.
+            assert [item["action_id"] for item in actions] == ["approve", "reject", "details"][
+                :count
+            ]
+            assert [item.get("style") for item in actions] == ["primary", "danger", None][:count]
+            assert [item["text"]["text"] for item in actions] == ["Approve", "Reject", "Details"][
+                :count
+            ]
+            assert all(item["value"] == "release-42" for item in actions)
 
 
 def sources():
@@ -148,7 +167,7 @@ def sources():
             snippets = re.findall(rf"^```{fence}\n(.*?)\n```", regions[0], re.S | re.M)
             assert len(snippets) == 1, (name, language, "expected one complete program")
             result[language][name] = snippets[0]
-    assert len(catalog) == 15, "Review the complete recipe catalogue when changing it"
+    assert len(catalog) == 16, "Review the complete recipe catalogue when changing it"
     layout = (ROOT / "docs/docs/usage/layouts.mdx").read_text()
     for language, fence in LANGUAGES.items():
         regions = re.findall(f"<{language}>(.*?)</{language}>", layout, re.S)

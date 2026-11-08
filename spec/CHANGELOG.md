@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Clarify card action placement in shared/native documentation: Slack keeps a danger button in the right-hand group with two actions and moves it to the far left with three. Preserve the caller's serialized order, existing three-button limit and spec 1.5.0. Native recipe outputs and the local preview are checked separately; real Slack desktop rendering was verified on 2026-11-07 (see `evidence/card-actions-alignment.json`). No wire or validation change.
+
 - Add layout blocks, untagged rows/items, dedicated width/alignment/grid vocabularies and closed child/fallback roles in all ten implementations (spec 1.5.0). Enforce documented dimensions, receiving-surface gating, two-level layout/container nesting and wide-content/chart allocation. Retain omitted optional fields and explicit false/empty values. Native examples, boundary tests, typed API/SDK consumers and compiler controls accompany the new shared fixtures.
 - Retain the confirmed top-level 50-message/100-view block counting policy for layouts. Slack documents nested accounting without a formula, while the live message endpoint accepts 50 layouts with children. Do not impose an unconfirmed nested or fallback block budget. Existing field, chart and text limits remain unchanged. See `evidence/layout-block.json` for the discrepancy and sanitized receiving/schema evidence.
 
