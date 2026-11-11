@@ -33,7 +33,7 @@ jobs:
         run: python3 .github/scripts/verify-release.py publisher --language ruby
 
       - name: Install Ruby 3.4
-        uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1
         with:
           ruby-version: "3.4"
           bundler-cache: true
@@ -86,12 +86,12 @@ jobs:
           path: dist
 
       - name: Install Ruby 3.4
-        uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1
         with:
           ruby-version: "3.4"
 
       - name: Configure RubyGems trusted publishing credentials
-        uses: rubygems/configure-rubygems-credentials@a3462e5c07dc676007e359eddef1949756fd3102
+        uses: rubygems/configure-rubygems-credentials@17e51a8c9fcf6d5f709e04cc612fd105f9273170
 
       - name: Publish to RubyGems
         run: gem push "dist/slackblocks-${GITHUB_REF_NAME#ruby/v}.gem"
