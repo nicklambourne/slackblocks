@@ -127,12 +127,12 @@ jobs:
           cache-dependency-path: java/pom.xml
 
       - name: Install .NET for the C# API reference
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@v6.1.0
         with:
           dotnet-version: "10.0.x"
 
       - name: Install Ruby for executable guide examples
-        uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1
         with:
           ruby-version: "3.4"
 
