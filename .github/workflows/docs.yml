@@ -127,7 +127,7 @@ jobs:
           cache-dependency-path: java/pom.xml
 
       - name: Install .NET for the C# API reference
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@v6.1.0
         with:
           dotnet-version: "10.0.x"
 
