@@ -91,7 +91,7 @@ jobs:
       - name: Install .NET
         if: needs.changes.outputs.relevant == 'true'
         id: dotnet
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@v6.1.0
         with:
           dotnet-version: ${{ matrix.sdk }}
 
@@ -150,7 +150,7 @@ jobs:
 
       - name: Install .NET
         if: needs.changes.outputs.relevant == 'true'
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@v6.1.0
         with:
           dotnet-version: "10.0.x"
 
