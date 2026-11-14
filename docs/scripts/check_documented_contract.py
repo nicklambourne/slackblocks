@@ -6,8 +6,9 @@ Uses Python 3.11+ (the documentation CI runtime); it does not change package flo
 
 import json
 import re
-import tomllib
 from pathlib import Path
+
+import tomllib
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs/docs"
@@ -20,8 +21,7 @@ def read(path):
 def main():
     compatibility = read("usage/compatibility.mdx").split("</Python>")[0]
     configs = [
-        tomllib.loads(code)
-        for code in re.findall(r"```toml\n(.*?)```", compatibility, re.S)
+        tomllib.loads(code) for code in re.findall(r"```toml\n(.*?)```", compatibility, re.S)
     ]
     assert len(configs) == 2
     assert configs[0]["tool"]["poetry"]["dependencies"]["slackblocks"] == "^3"
@@ -38,22 +38,15 @@ def main():
             re.I,
         )
 
-    engines = json.loads((ROOT / "typescript/package.json").read_text())["engines"][
-        "node"
-    ]
+    engines = json.loads((ROOT / "typescript/package.json").read_text())["engines"]["node"]
     for page in [
         "quick-start.mdx",
         "usage/installation.mdx",
         "usage/compatibility.mdx",
     ]:
-        assert engines in read(page), (
-            f"{page} must state the package's exact Node range"
-        )
+        assert engines in read(page), f"{page} must state the package's exact Node range"
 
-    model = {
-        t["name"]: t
-        for t in json.loads((ROOT / "spec/model.json").read_text())["types"]
-    }
+    model = {t["name"]: t for t in json.loads((ROOT / "spec/model.json").read_text())["types"]}
     guide = read("usage/using_blocks.mdx")
     for title, name in [
         ("Task Card Block", "TaskCardBlock"),
@@ -84,16 +77,11 @@ def main():
             "Haskell",
         ]:
             panel = re.search(rf"<{language}>(.*?)</{language}>", source, re.S)[1]
-            assert len(panel.split()) >= 45, (
-                f"{page}: {language} lacks substantive guidance"
-            )
+            assert len(panel.split()) >= 45, f"{page}: {language} lacks substantive guidance"
     assert "Plain tables allow rows of different lengths" in guide
     assert "column_settings` may describe only the leading columns" in guide
     for filename in ["messages.py", "objects.py"]:
-        assert (
-            "InvalidUsageException"
-            not in (ROOT / "python/slackblocks" / filename).read_text()
-        )
+        assert "InvalidUsageException" not in (ROOT / "python/slackblocks" / filename).read_text()
     print(
         "Copyable TOML, exact Node engines, required fields and ten-language guide coverage passed."
     )

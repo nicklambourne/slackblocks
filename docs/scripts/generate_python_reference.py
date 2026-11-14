@@ -100,9 +100,7 @@ def method_signature(value: Any) -> str:
         parsed = inspect.signature(value)
     except (TypeError, ValueError):
         return ""
-    parameters = [
-        parameter for name, parameter in parsed.parameters.items() if name != "self"
-    ]
+    parameters = [parameter for name, parameter in parsed.parameters.items() if name != "self"]
     return str(parsed.replace(parameters=parameters))
 
 
@@ -132,9 +130,7 @@ def markdown_cell(value: Any) -> str:
 def markdown_table(headers: tuple[str, ...], rows: list[tuple[Any, ...]]) -> str:
     header = "| " + " | ".join(headers) + " |"
     separator = "| " + " | ".join("---" for _ in headers) + " |"
-    body = [
-        "| " + " | ".join(markdown_cell(cell) for cell in row) + " |" for row in rows
-    ]
+    body = ["| " + " | ".join(markdown_cell(cell) for cell in row) + " |" for row in rows]
     return "\n".join([header, separator, *body])
 
 
@@ -169,9 +165,7 @@ def render_docstring(doc: str, parent: Any = None) -> str:
     # Griffe follows the Google convention of calling exception sections "Raises".
     # Keep supporting the project's historical "Throws" heading as an alias.
     doc = re.sub(r"^Throws:$", "Raises:", doc, flags=re.MULTILINE)
-    sections = griffe.Docstring(doc, parent=parent).parse(
-        griffe.Parser.google, warnings=False
-    )
+    sections = griffe.Docstring(doc, parent=parent).parse(griffe.Parser.google, warnings=False)
     rendered: list[str] = []
 
     for section in sections:
@@ -193,27 +187,15 @@ def render_docstring(doc: str, parent: Any = None) -> str:
                 ]
             )
         elif isinstance(section, griffe.DocstringSectionRaises):
-            rows = [
-                (render_type(error.annotation), error.description)
-                for error in section.value
-            ]
-            rendered.extend(
-                ["<h3>Errors</h3>", markdown_table(("Error", "When"), rows)]
-            )
+            rows = [(render_type(error.annotation), error.description) for error in section.value]
+            rendered.extend(["<h3>Errors</h3>", markdown_table(("Error", "When"), rows)])
         elif isinstance(section, griffe.DocstringSectionReturns):
-            rows = [
-                (render_type(item.annotation), item.description)
-                for item in section.value
-            ]
-            rendered.extend(
-                ["### Returns", markdown_table(("Type", "Description"), rows)]
-            )
+            rows = [(render_type(item.annotation), item.description) for item in section.value]
+            rendered.extend(["### Returns", markdown_table(("Type", "Description"), rows)])
         elif isinstance(section, griffe.DocstringSectionExamples):
             rendered.extend(["### Examples", *(value for _, value in section.value)])
         elif isinstance(section, griffe.DocstringSectionAdmonition):
-            rendered.append(
-                f"**{section.value.annotation.title()}:** {section.value.description}"
-            )
+            rendered.append(f"**{section.value.annotation.title()}:** {section.value.description}")
 
     return "\n\n".join(rendered)
 
@@ -263,11 +245,7 @@ def render_symbol(name: str, value: Any, parent: Any = None) -> str:
         if callable(value)
         else name
     )
-    doc = (
-        alias[1]
-        if alias
-        else inspect.getdoc(value) or "No public documentation is available."
-    )
+    doc = alias[1] if alias else inspect.getdoc(value) or "No public documentation is available."
     doc = render_docstring(doc, parent)
     rendered = [
         f"## {name}",
@@ -324,10 +302,7 @@ def main() -> None:
         # Typing aliases (Literal/Union) report __module__ "typing", so fall
         # back to the declared set for names whose value carries no
         # slackblocks module of its own.
-        and (
-            getattr(value, "__module__", "").startswith("slackblocks")
-            or name in declared
-        )
+        and (getattr(value, "__module__", "").startswith("slackblocks") or name in declared)
     }
     if declared != runtime:
         raise RuntimeError(
@@ -381,10 +356,7 @@ def main() -> None:
         title = CATEGORIES[category]
         index.append(f"- [{title}](/reference/python/{category})")
         page = [f"# {title}", ""]
-        page.extend(
-            render_symbol(name, value, parent)
-            for name, value, parent in grouped[category]
-        )
+        page.extend(render_symbol(name, value, parent) for name, value, parent in grouped[category])
         rendered_symbols += len(grouped[category])
         (OUTPUT_ROOT / f"{category}.mdx").write_text("\n".join(page))
     (OUTPUT_ROOT / "index.mdx").write_text("\n".join(index) + "\n")
