@@ -20,8 +20,11 @@ import urllib.parse
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / ".github/scripts"))
-import release_availability as availability
+availability_spec = importlib.util.spec_from_file_location(
+    "release_availability", ROOT / ".github/scripts/release_availability.py"
+)
+availability = importlib.util.module_from_spec(availability_spec)
+availability_spec.loader.exec_module(availability)
 spec = importlib.util.spec_from_file_location(
     "preflight", ROOT / ".github/scripts/verify-release.py"
 )
