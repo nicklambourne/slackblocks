@@ -7,8 +7,8 @@ import importlib.util
 import json
 import os
 import shutil
-import sys
 import subprocess
+import sys
 import tempfile
 import time
 import urllib.error
@@ -17,8 +17,11 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / ".github/scripts"))
-import release_availability as availability
+availability_spec = importlib.util.spec_from_file_location(
+    "release_availability", ROOT / ".github/scripts/release_availability.py"
+)
+availability = importlib.util.module_from_spec(availability_spec)
+availability_spec.loader.exec_module(availability)
 _spec = importlib.util.spec_from_file_location(
     "release_preflight", ROOT / ".github/scripts/verify-release.py"
 )
@@ -181,7 +184,10 @@ def consumer(root, directory, registry=False, source=False):
             ]
         (project / "composer.json").write_text(json.dumps(manifest))
         env = {k: v for k, v in os.environ.items() if k not in ("COMPOSER_AUTH", "COMPOSER")}
-        env.update(COMPOSER_HOME=str(project / "composer-home"), COMPOSER_CACHE_DIR=str(project / "composer-cache"))
+        env.update(
+            COMPOSER_HOME=str(project / "composer-home"),
+            COMPOSER_CACHE_DIR=str(project / "composer-cache"),
+        )
         run(
             "composer",
             "install",
@@ -477,17 +483,30 @@ def main():
         if args.command == "verify-registry":
             record = verify(ROOT, args.directory)
             receipt = args.receipt or args.directory / "registry-receipt.json"
-            identity = {"language": "php", "version": record["version"], "source": record["source_commit"]}
-            availability.wait(lambda: availability.packagist(record["version"], record["source_commit"]),
-                              receipt, identity, timeout=args.wait_seconds)
+            identity = {
+                "language": "php",
+                "version": record["version"],
+                "source": record["source_commit"],
+            }
+            availability.wait(
+                lambda: availability.packagist(record["version"], record["source_commit"]),
+                receipt,
+                identity,
+                timeout=args.wait_seconds,
+            )
             try:
                 result = consumer(ROOT, args.directory, registry=True)
                 consumer(ROOT, args.directory, registry=True, source=True)
             except Exception as error:
                 availability.finish(receipt, state="failed", passed=False, error=str(error))
                 raise
-            availability.finish(receipt, state="verified", passed=True,
-                                archive_sha256=record["sha256"], transports=["dist", "source"])
+            availability.finish(
+                receipt,
+                state="verified",
+                passed=True,
+                archive_sha256=record["sha256"],
+                transports=["dist", "source"],
+            )
         else:
             result = publish(ROOT, args.directory, args.apply)
     print(json.dumps(result, indent=2))
