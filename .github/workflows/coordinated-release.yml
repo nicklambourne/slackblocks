@@ -235,7 +235,7 @@ jobs:
 
   publish:
     name: Publish ${{ matrix.language }}
-    if: github.event_name == 'workflow_dispatch'
+    if: always() && github.event_name == 'workflow_dispatch' && needs.validate.result == 'success' && needs.create-tags.result == 'success'
     needs:
       - validate
       - create-tags
