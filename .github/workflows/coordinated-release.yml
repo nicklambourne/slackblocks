@@ -302,3 +302,51 @@ jobs:
           name: publisher-record-${{ matrix.language }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/publisher-record/
           if-no-files-found: error
+
+  public-verification:
+    name: Verify public packages across all ten languages
+    if: github.event_name == 'workflow_dispatch'
+    needs: [validate, publish]
+    uses: ./.github/workflows/verify-public-release.yml
+    with:
+      version: ${{ needs.validate.outputs.version }}
+      source: ${{ needs.validate.outputs.source }}
+
+  complete:
+    name: Record coordinated release completion
+    if: always() && github.event_name == 'workflow_dispatch'
+    needs: [validate, publish, public-verification]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Require publishers and public verification to finish successfully
+        env:
+          PUBLISHERS: ${{ needs.publish.result }}
+          PUBLIC: ${{ needs.public-verification.result }}
+        run: test "$PUBLISHERS" = success && test "$PUBLIC" = success
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          pattern: publisher-record-*-${{ github.run_attempt }}
+          path: evidence/publishers
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          pattern: public-release-consumer-*-${{ github.run_attempt }}
+          path: evidence/consumers
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: public-release-identity-${{ github.run_attempt }}
+          path: evidence/identity
+      - name: Reconcile immutable source, publisher runs and all ten consumers
+        env:
+          VERSION: ${{ needs.validate.outputs.version }}
+          SOURCE: ${{ needs.validate.outputs.source }}
+        run: |
+          python3 .github/scripts/release_evidence.py --complete --version "$VERSION" --source "$SOURCE" --directory evidence
+          echo "Coordinated release $VERSION verified across all ten public packages." >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: release-completion-${{ github.run_attempt }}
+          path: evidence/release-completion.json
+          if-no-files-found: error

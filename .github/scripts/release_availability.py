@@ -57,15 +57,19 @@ def finish(path, **updates):
     save(path, receipt)
 
 
-def json_response(url):
+def open_response(url):
     request = urllib.request.Request(url, headers={"User-Agent": "slackblocks-release-verifier"})
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
-            return json.load(response)
+        return urllib.request.urlopen(request, timeout=30)
     except urllib.error.HTTPError as error:
         if error.code in (404, 429, 502, 503, 504):
             raise Pending(f"Registry HTTP {error.code}: {url}") from error
         raise
+
+
+def json_response(url):
+    with open_response(url) as response:
+        return json.load(response)
 
 
 def packagist(version, commit):
