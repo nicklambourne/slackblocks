@@ -113,7 +113,14 @@ jobs:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: "3.16.1.0"
       - name: Independently install public registry package and execute consumer
-        run: python3 haskell/bin/release.py consumer
+        run: python3 haskell/bin/release.py consumer --receipt "$RUNNER_TEMP/hackage-registry/receipt.json"
+      - name: Preserve registry availability and consumer evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: hackage-public-consumer-${{ matrix.ghc }}
+          path: ${{ runner.temp }}/hackage-registry/
+          if-no-files-found: error
 
   github-release:
     name: Create Haskell GitHub Release

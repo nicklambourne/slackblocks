@@ -8,6 +8,9 @@ from pathlib import Path
 import re
 import subprocess
 import time
+import sys
+
+import release_availability as availability
 
 SOURCE = "https://api.nuget.org/v3/index.json"
 PROGRAM = '''using System.Text.Json;
@@ -67,7 +70,8 @@ def main():
     parser.add_argument("--version", required=True)
     parser.add_argument("--workdir", type=Path, required=True, help="New disposable directory, outside the checkout")
     parser.add_argument("--dotnet", default="dotnet")
-    parser.add_argument("--attempts", type=int, default=1, choices=range(1, 7), help="Bounded indexing-delay retries")
+    parser.add_argument("--attempts", type=int, default=1, choices=range(1, 32), help="Bounded indexing-delay retries")
+    parser.add_argument("--interval", type=int, default=10, choices=range(1, 61))
     args = parser.parse_args()
     root = args.workdir.resolve()
     checkout = Path(__file__).resolve().parents[2]
@@ -80,7 +84,7 @@ def main():
     env.update(DOTNET_CLI_TELEMETRY_OPTOUT="1", DOTNET_NOLOGO="1", DOTNET_SKIP_FIRST_TIME_EXPERIENCE="1",
                DOTNET_CLI_HOME=str(root / "dotnet-home"), NUGET_HTTP_CACHE_PATH=str(root / "http-cache"),
                NUGET_PLUGINS_CACHE_PATH=str(root / "plugins"), NUGET_FALLBACK_PACKAGES="")
-    receipt = {"version": args.version, "source": SOURCE, "attempts": [], "passed": False}
+    receipt = {"version": args.version, "source": SOURCE, "attempts": [], "passed": False, "state": "failed"}
     try:
         for attempt in range(1, args.attempts + 1):
             work = root / f"attempt-{attempt}"
@@ -94,11 +98,14 @@ def main():
             receipt["attempts"].append({"number": attempt, "restore_exit_code": restore.returncode})
             if restore.returncode:
                 # Only a missing version can be an indexing delay; auth/network/build errors fail immediately.
-                errors = set(re.findall(r"error (NU\d+|MSB\d+|NETSDK\d+)", restore.stdout))
-                if errors == {"NU1102"} and attempt < args.attempts:
-                    time.sleep(10)
-                    continue
+                if availability.missing_nuget_version(restore.stdout):
+                    receipt["state"] = "awaiting_availability"
+                    if attempt < args.attempts:
+                        time.sleep(args.interval)
+                        continue
+                    raise availability.Pending(f"NuGet has not exposed {args.version}; inspect {work / 'restore.log'}")
                 raise RuntimeError(f"Restore failed; inspect {work / 'restore.log'}")
+            receipt["state"] = "failed"
             receipt["sha256"] = verify_assets(work, args.version)
             result = subprocess.run([args.dotnet, "run", "--project", "Consumer.csproj", "--no-restore",
                                      "--configuration", "Release", *props], cwd=work, env=env,
@@ -106,7 +113,7 @@ def main():
             (work / "consumer.log").write_text(result.stdout)
             if result.returncode or "native-consumer-ok" not in result.stdout:
                 raise RuntimeError(f"Native consumer failed; inspect {work / 'consumer.log'}")
-            receipt.update(passed=True, native_consumer="constructor, serialization, validation")
+            receipt.update(passed=True, state="verified", native_consumer="constructor, serialization, validation")
             break
     finally:
         (root / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
@@ -114,4 +121,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except availability.Pending as error:
+        print(error, file=sys.stderr)
+        sys.exit(75)

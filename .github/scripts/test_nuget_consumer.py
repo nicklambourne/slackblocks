@@ -16,7 +16,7 @@ class ExactConsumer(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(dir=os.environ.get("TEST_TMPDIR"))
         self.addCleanup(self.tmp.cleanup)
-        self.root = Path(self.tmp.name) / "consumer"
+        self.root = Path(self.tmp.name).resolve() / "consumer"
 
     def test_exact_version_and_public_only_source(self):
         consumer.prepare(self.root, "2.7.0")
@@ -66,7 +66,7 @@ class ExactConsumer(unittest.TestCase):
             self.assertNotIn("NUGET_API_KEY", kwargs["env"])
             self.assertEqual(kwargs["env"]["NUGET_PACKAGES"], str(self.root / "attempt-1/packages"))
             self.assertIn("--configfile", args[0])
-            return subprocess.CompletedProcess(args[0], 1, "error NU1102: Unable to find package Slackblocks")
+            return subprocess.CompletedProcess(args[0], 1, "error NU1102: Unable to find package Slackblocks with version (= 2.7.0)")
 
         def restore_success(*args, **kwargs):
             self.assertEqual(kwargs["env"]["NUGET_PACKAGES"], str(self.root / "attempt-2/packages"))
@@ -94,8 +94,8 @@ class ExactConsumer(unittest.TestCase):
         self.assertFalse(json.loads((self.root / "receipt.json").read_text())["passed"])
 
     def test_missing_version_stops_at_attempt_bound(self):
-        failure = subprocess.CompletedProcess([], 1, "error NU1102: Unable to find package Slackblocks")
-        with self.assertRaisesRegex(RuntimeError, "Restore failed"):
+        failure = subprocess.CompletedProcess([], 1, "error NU1102: Unable to find package Slackblocks with version (= 2.7.0)")
+        with self.assertRaises(consumer.availability.Pending):
             self.run_consumer([failure] * 6, attempts=6)
         receipt = json.loads((self.root / "receipt.json").read_text())
         self.assertEqual(len(receipt["attempts"]), 6)
@@ -123,8 +123,8 @@ class ExactConsumer(unittest.TestCase):
         workflow = (Path(__file__).resolve().parents[1] / "workflows/publish-nuget.yml").read_text()
         self.assertLess(workflow.index('dotnet nuget push'), workflow.index('verify-nuget-consumer.py'))
         self.assertLess(workflow.index('verify-nuget-consumer.py'), workflow.index('  github-release:'))
-        self.assertIn('    needs: publish', workflow)
-        self.assertIn('--attempts 6', workflow)
+        self.assertIn('    needs: verify-registry', workflow)
+        self.assertIn('--attempts 31 --interval 30', workflow)
 
 
 if __name__ == "__main__":
