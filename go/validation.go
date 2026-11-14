@@ -1490,24 +1490,19 @@ func number(value any) (float64, bool) {
 func textCharacterCount(value any) int {
 	switch typed := value.(type) {
 	case Object:
-		total := 0
-		for key, nested := range typed {
-			if key == "text" {
-				if text, ok := nested.(string); ok {
-					total += utf8.RuneCountInString(text)
-					continue
-				}
-			}
-			total += textCharacterCount(nested)
+		switch objectType(typed) {
+		case "raw_text", "raw_number", "text", "link":
+			text, _ := typed["text"].(string)
+			return utf8.RuneCountInString(text)
+		case "rich_text", "rich_text_section", "rich_text_list", "rich_text_quote", "rich_text_preformatted":
+			return textCharacterCount(typed["elements"])
 		}
-		return total
 	case []any:
 		total := 0
 		for _, nested := range typed {
 			total += textCharacterCount(nested)
 		}
 		return total
-	default:
-		return 0
 	}
+	return 0
 }

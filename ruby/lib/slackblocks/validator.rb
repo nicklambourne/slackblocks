@@ -287,8 +287,14 @@ module Slackblocks
       when Array
         node.sum { |child| characters(child) }
       when Hash
-        node.sum do |key, child|
-          (key == "text" && child.is_a?(String)) ? child.length : characters(child)
+        case node["type"]
+        when "raw_text", "raw_number", "text", "link"
+          text = node["text"]
+          text.is_a?(String) ? text.length : 0
+        when "rich_text", "rich_text_section", "rich_text_list", "rich_text_quote", "rich_text_preformatted"
+          characters(node["elements"])
+        else
+          0
         end
       else
         0

@@ -1312,15 +1312,18 @@ public final class Validator {
 
   private static int textCharacterCount(@Nullable Object value) {
     if (value instanceof Map<?, ?>) {
-      int total = 0;
-      for (Map.Entry<String, Object> entry : objectAt(value, "").entrySet()) {
-        if (entry.getKey().equals("text") && entry.getValue() instanceof String text) {
-          total += text.codePointCount(0, text.length());
-        } else {
-          total += textCharacterCount(entry.getValue());
-        }
-      }
-      return total;
+      Map<String, Object> object = objectAt(value, "");
+      return switch (objectType(object)) {
+        case "raw_text", "raw_number", "text", "link" ->
+            object.get("text") instanceof String text ? text.codePointCount(0, text.length()) : 0;
+        case "rich_text",
+            "rich_text_section",
+            "rich_text_list",
+            "rich_text_quote",
+            "rich_text_preformatted" ->
+            textCharacterCount(object.get("elements"));
+        default -> 0;
+      };
     }
     if (value instanceof List<?> list) {
       int total = 0;

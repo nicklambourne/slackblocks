@@ -1332,28 +1332,22 @@ internal static partial class Validator
 
     private static int TextCharacterCount(JsonNode? value)
     {
-        var total = 0;
-        switch (value)
+        if (value is JsonObject obj)
         {
-            case JsonObject obj:
-                foreach (var (key, nested) in obj)
-                {
-                    total += key == "text" && JsonValues.IsString(nested, out var text)
-                        ? JsonValues.CodePoints(text)
-                        : TextCharacterCount(nested);
-                }
-
-                break;
-            case JsonArray array:
-                foreach (var item in array)
-                {
-                    total += TextCharacterCount(item);
-                }
-
-                break;
+            return ObjectType(obj) switch
+            {
+                "raw_text" or "raw_number" or "text" or "link" => JsonValues.IsString(obj["text"], out var text) ? JsonValues.CodePoints(text) : 0,
+                "rich_text" or "rich_text_section" or "rich_text_list" or "rich_text_quote" or "rich_text_preformatted" => TextCharacterCount(obj["elements"]),
+                _ => 0,
+            };
         }
-
-        return total;
+        if (value is JsonArray array)
+        {
+            var total = 0;
+            foreach (var item in array) total += TextCharacterCount(item);
+            return total;
+        }
+        return 0;
     }
 
     private static void CheckOptionalString(JsonObject value, string field, string path, int maximum)

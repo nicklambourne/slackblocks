@@ -22,6 +22,16 @@ import org.junit.jupiter.api.Test;
 
 final class ValidationContractTest {
   @Test
+  void tableBudgetsIgnoreOpaqueCellExtensions() {
+    var hidden = Map.of("text", "x".repeat(10001));
+    var cell = RawText.builder().text("cell").wireField("audit", hidden).build();
+    var table =
+        io.github.nicklambourne.slackblocks.block.TableBlock.builder().rows(List.of(cell)).build();
+    var message = WebhookMessage.builder().blocks(table).build();
+    assertEquals(List.of(table.toMap()), message.toMap().get("blocks"));
+  }
+
+  @Test
   void pathsStartWithTheJavaTypeBeingBuilt() {
     ValidationException mutuallyExclusive =
         assertThrows(

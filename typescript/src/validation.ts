@@ -101,17 +101,17 @@ function textCharacterCount(value: JsonValue): number {
     return value.reduce<number>((total, item) => total + textCharacterCount(item), 0);
   }
   if (value !== null && typeof value === "object") {
-    return Object.entries(value).reduce<number>(
-      (total, [key, nested]) =>
-        total +
-        (key === "text" && typeof nested === "string"
-          ? codePointLength(nested)
-          : textCharacterCount(nested)),
-      0,
-    );
+    switch (value.type) {
+      case "raw_text": case "raw_number": case "text": case "link":
+        return typeof value.text === "string" ? codePointLength(value.text) : 0;
+      case "rich_text": case "rich_text_section": case "rich_text_list":
+      case "rich_text_quote": case "rich_text_preformatted":
+        return textCharacterCount(value.elements ?? []);
+    }
   }
   return 0;
 }
+
 
 function validateSeriesChart(object: JsonObject, path: string): void {
   if (!Array.isArray(object.series)) {

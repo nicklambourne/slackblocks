@@ -191,6 +191,16 @@ public sealed class ApiTests
     }
 
     [Fact]
+    public void TableBudgetsIgnoreOpaqueCellExtensions()
+    {
+        var hidden = new Dictionary<string, object?> { ["text"] = new string('x', 10001) };
+        var cell = new RawNumber(42, "42", additionalFields: new Dictionary<string, object?> { ["audit"] = hidden });
+        var table = new TableBlock([[cell]]);
+        var message = new WebhookMessage(blocks: [table]);
+        Assert.Contains(new string('x', 10001), message.ToJson());
+    }
+
+    [Fact]
     public void AdditionalFieldsAreSentAndValidated()
     {
         var block = new DividerBlock(additionalFields: new Dictionary<string, object?>

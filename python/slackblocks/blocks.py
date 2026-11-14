@@ -1452,12 +1452,18 @@ class DataTableBlock(Block):
 
 def _text_character_count(value: Any) -> int:
     if isinstance(value, dict):
-        return sum(
-            len(nested)
-            if key == "text" and isinstance(nested, str)
-            else _text_character_count(nested)
-            for key, nested in value.items()
-        )
+        if value.get("type") in {"raw_text", "raw_number", "text", "link"}:
+            text = value.get("text")
+            return len(text) if isinstance(text, str) else 0
+        if value.get("type") in {
+            "rich_text",
+            "rich_text_section",
+            "rich_text_list",
+            "rich_text_quote",
+            "rich_text_preformatted",
+        }:
+            return _text_character_count(value.get("elements", []))
+        return 0
     if isinstance(value, list):
         return sum(_text_character_count(item) for item in value)
     return 0

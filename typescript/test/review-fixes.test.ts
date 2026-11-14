@@ -641,3 +641,13 @@ describe("raw JSON validation aligned with Slack's blocks.validate", () => {
     expect(slackblocks.homeTab({ blocks: [chart] }).type).toBe("home");
   });
 });
+
+
+describe("plain-table extension text", () => {
+  it("keeps opaque fields outside table and message budgets", () => {
+    const cell = { type: "raw_number", value: 42, text: "42", audit: { text: "x".repeat(10001) } };
+    const table = { type: "table", rows: [[cell]] };
+    expect(() => assertValid(table)).not.toThrow();
+    expect(() => assertValid({ blocks: [table] })).not.toThrow();
+  });
+});
