@@ -52,7 +52,7 @@ def candidates(runs, tag, source, workflow):
 
 
 def verify_jobs(jobs):
-    if not jobs or any(j["status"] != "completed" for j in jobs):
+    if not jobs or not any(j["conclusion"] == "success" for j in jobs) or any(j["status"] != "completed" for j in jobs):
         raise ValueError("Official jobs have not completed")
     for job in jobs:
         if job["conclusion"] == "skipped":
@@ -61,6 +61,8 @@ def verify_jobs(jobs):
             raise ValueError("Publisher did not execute on an authorized hosted runner")
         if any(s["status"] != "completed" for s in job["steps"]):
             raise ValueError("Publisher steps have not completed")
+        if job["conclusion"] == "success" and any(s["conclusion"] not in ("success", "skipped") for s in job["steps"]):
+            raise ValueError("A green job contains an unsuccessful step")
 
 
 def retryable(language, jobs, receipts, version):
@@ -76,8 +78,20 @@ def retryable(language, jobs, receipts, version):
     return len(pending) == len(failed) and all(r.get("state") in ("verified", "awaiting_availability") for r in receipts)
 
 
+def latest_jobs(history):
+    """A failed-job rerun retains successful uploads from an earlier attempt."""
+    groups = {}
+    for job in history:
+        groups.setdefault(job["name"], {})[job["id"]] = job
+    result = []
+    for versions in groups.values():
+        ordered = sorted(versions.values(), key=lambda job: (job.get("run_attempt", 0), job["id"]))
+        result.append({**ordered[-1], "previous_attempts": ordered[:-1]})
+    return result
+
+
 def collect(repo, run, directory, language):
-    jobs = pages(f"repos/{repo}/actions/runs/{run['id']}/attempts/{run['run_attempt']}/jobs?per_page=100", "jobs")
+    jobs = latest_jobs(pages(f"repos/{repo}/actions/runs/{run['id']}/jobs?filter=all&per_page=100", "jobs"))
     verify_jobs(jobs)
     artifacts = pages(f"repos/{repo}/actions/runs/{run['id']}/artifacts?per_page=100", "artifacts")
     receipts = []

@@ -37,6 +37,17 @@ class ResumeTests(unittest.TestCase):
                 c.verify_jobs(jobs)
         c.verify_jobs([job()])
 
+    def test_rerun_reconciles_successful_earlier_upload_and_new_consumer(self):
+        upload = {**job("publish"), "id": 1, "run_attempt": 1}
+        failed = {**job("consumer", "failure"), "id": 2, "run_attempt": 1}
+        passed = {**job("consumer"), "id": 3, "run_attempt": 2}
+        latest = c.latest_jobs([passed, upload, failed])
+        self.assertEqual({j["id"] for j in latest}, {1, 3})
+        self.assertEqual(next(j for j in latest if j["id"] == 3)["previous_attempts"], [failed])
+        c.verify_jobs(latest)
+        with self.assertRaises(ValueError):
+            c.verify_jobs([{**upload, "steps": [{"status": "completed", "conclusion": "failure"}]}])
+
     def test_only_proven_pending_consumers_can_retry(self):
         jobs = [job("Publish PHP archive and Composer version tag"), job("Verify public Packagist installations", "failure")]
         receipt = dict(version="4.0.0", state="awaiting_availability", passed=False)
