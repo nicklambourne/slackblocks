@@ -452,7 +452,11 @@ class ElixirWorkflowTests(unittest.TestCase):
                         "-c",
                         'python3() { printf "%s\\n" "$GITHUB_REF"; }\n' + command,
                     ],
-                    env={**os.environ, "GITHUB_REF": "refs/heads/master", "RELEASE_TAG": tag},
+                    env={
+                        **os.environ,
+                        "GITHUB_REF": "refs/heads/master",
+                        "RELEASE_TAG": tag,
+                    },
                     text=True,
                 ).strip()
                 self.assertEqual(observed, "refs/tags/" + tag)
