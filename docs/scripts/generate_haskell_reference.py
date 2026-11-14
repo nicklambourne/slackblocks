@@ -20,7 +20,9 @@ DOMAINS = {
     "core": "JSON and public types",
     "errors": "Validation errors",
 }
-SYMBOL = re.compile(r"^(?:type )?(Slackblocks(?:\.[A-Za-z][A-Za-z0-9_\']*)+)\s*::", re.M)
+SYMBOL = re.compile(
+    r"^(?:type )?(Slackblocks(?:\.[A-Za-z][A-Za-z0-9_\']*)+)\s*::", re.M
+)
 
 
 def anchor(name):
@@ -51,12 +53,16 @@ def prose(doc, links):
     if tag == "DocIdentifier":
         name = qualified(doc["name"])
         return (
-            f"[`{name.rsplit('.', 1)[-1]}`]({links[name]})" if name in links else "`" + name + "`"
+            f"[`{name.rsplit('.', 1)[-1]}`]({links[name]})"
+            if name in links
+            else "`" + name + "`"
         )
     if tag == "DocHyperlink":
         link = doc["hyperlink"]
         label = (
-            prose(link["hyperlinkLabel"], links) if link["hyperlinkLabel"] else link["hyperlinkUrl"]
+            prose(link["hyperlinkLabel"], links)
+            if link["hyperlinkLabel"]
+            else link["hyperlinkUrl"]
         )
         return f"[{label}]({link['hyperlinkUrl']})"
     raise ValueError(f"Unhandled native Haddock document: {doc!r}")
@@ -68,11 +74,16 @@ def describe_limits(text, limits):
         value = limits
         for part in key.split("."):
             value = value[part]
-        bounds = ", ".join(f"{name.replace('_', ' ')}: {bound}" for name, bound in value.items())
+        bounds = ", ".join(
+            f"{name.replace('_', ' ')}: {bound}" for name, bound in value.items()
+        )
         return f"Shared limit: `{key}` ({bounds})."
+
     text = re.sub(r"Shared limit: `([^`]+)`\.", replace, text)
     # Some native comments contain literal URLs rather than Haddock hyperlinks.
-    return re.sub(r"(?<![\[(])(https://docs\.slack\.dev/[^\s<>]+)", r"[Slack reference](\1)", text)
+    return re.sub(
+        r"(?<![\[(])(https://docs\.slack\.dev/[^\s<>]+)", r"[Slack reference](\1)", text
+    )
 
 
 def main():
@@ -88,7 +99,9 @@ def main():
     )
     # Cabal list-bin does not name a library's Haddock interface. Restrict discovery
     # to this build tree, package version and actual compiler's output.
-    version = re.search(r"^version:\s*(\S+)", (PACKAGE / "slackblocks.cabal").read_text(), re.M)[1]
+    version = re.search(
+        r"^version:\s*(\S+)", (PACKAGE / "slackblocks.cabal").read_text(), re.M
+    )[1]
     compiler = subprocess.check_output(["ghc", "--numeric-version"], text=True).strip()
     tree = Path(build) if Path(build).is_absolute() else PACKAGE / build
     interfaces = list(
@@ -143,7 +156,9 @@ def main():
         capture_output=True,
     )
     if result.returncode or "error:" in result.stderr.lower():
-        raise ValueError("GHC reference discovery failed:\n" + result.stdout + result.stderr)
+        raise ValueError(
+            "GHC reference discovery failed:\n" + result.stdout + result.stderr
+        )
     chunks = re.split(r"^REFERENCE_MODULE:(\S+)\s*$", result.stdout, flags=re.M)
     signatures = {}
     for index in range(1, len(chunks), 2):
@@ -205,7 +220,9 @@ def main():
                 return model_domains[model]
         return "core"
 
-    links = {name: f"/reference/haskell/{domain(name)}#{anchor(name)}" for name in signatures}
+    links = {
+        name: f"/reference/haskell/{domain(name)}#{anchor(name)}" for name in signatures
+    }
     limits = json.loads((ROOT / "spec/limits.json").read_text())
     entries = [
         {
@@ -223,18 +240,37 @@ def main():
     if directory.exists():
         shutil.rmtree(directory)
     directory.mkdir(parents=True)
+
     def family(entry):
         name = entry["name"].rsplit(".", 1)[-1]
         for model in sorted(model_domains, key=len, reverse=True):
-            if name.startswith((model, model[0].lower() + model[1:], "build" + model, "inspect" + model)):
+            if name.startswith(
+                (
+                    model,
+                    model[0].lower() + model[1:],
+                    "build" + model,
+                    "inspect" + model,
+                )
+            ):
                 return (model.lower(), 0 if name == model else 1, name.lower())
         return (name.lower(), 0, name.lower())
 
     for position, (slug, title) in enumerate(DOMAINS.items(), 1):
         text = f"---\nsidebar_position: {position}\n---\n\n# {title}\n\nSignatures come from GHC; descriptions come from compiled Haddock comments. Import `Slackblocks` or the defining public module. Checked values encode with Aeson; field records must be built first.\n\n"
-        selected = sorted((entry for entry in entries if entry["domain"] == slug), key=family)
+        selected = sorted(
+            (entry for entry in entries if entry["domain"] == slug), key=family
+        )
         text += "import ReferenceIndex from '@site/src/components/ReferenceIndex';\n\n"
-        text += "<ReferenceIndex entries={" + json.dumps([{"name": e["name"].rsplit(".", 1)[-1], "href": "#" + e["anchor"]} for e in selected]) + "} />\n\n"
+        text += (
+            "<ReferenceIndex entries={"
+            + json.dumps(
+                [
+                    {"name": e["name"].rsplit(".", 1)[-1], "href": "#" + e["anchor"]}
+                    for e in selected
+                ]
+            )
+            + "} />\n\n"
+        )
         for entry in selected:
             text += (
                 f"## {entry['name'].rsplit('.', 1)[-1]} {{#{entry['anchor']}}}\n\n{entry['doc']}\n\n```haskell\n"
@@ -244,7 +280,9 @@ def main():
         (directory / f"{slug}.mdx").write_text(text, encoding="utf-8")
     (directory / "index.mdx").write_text(
         "---\nsidebar_position: 0\n---\n\n# Haskell API reference\n\nIntroduced in the coordinated 3.1.0 release. See [installation](/usage/installation) and the [compiler support table](/usage/compatibility). These pages cover every compiled public type, constructor, field, role conversion and helper.\n\n"
-        + "\n".join(f"- [{title}](/reference/haskell/{slug})" for slug, title in DOMAINS.items())
+        + "\n".join(
+            f"- [{title}](/reference/haskell/{slug})" for slug, title in DOMAINS.items()
+        )
         + "\n",
         encoding="utf-8",
     )
