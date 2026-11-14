@@ -1,4 +1,5 @@
 name: Coordinated Release
+run-name: Coordinated release ${{ inputs.version || github.ref_name }}${{ inputs.resume && ' (resume)' || '' }}
 
 on:
   pull_request:
