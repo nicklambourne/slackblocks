@@ -1,0 +1,28 @@
+---
+sidebar_position: 7
+toc_max_heading_level: 3
+---
+
+# Validation And Errors
+
+This page documents the Ruby API for validation and errors. Values use keyword-only construction, validate before freezing, and serialize to Slack JSON.
+
+## ValidationError
+
+Raised when a Slack rule fails. category is one of six stable wire names; path identifies the offending value.
+
+### category
+
+Validation category, such as length-exceeded or type-mismatch.
+
+```ruby
+def category: () -> String
+```
+
+### path
+
+Root value type followed by wire field names and array indexes.
+
+```ruby
+def path: () -> String
+```

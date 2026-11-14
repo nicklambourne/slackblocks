@@ -80,9 +80,18 @@ class ReleaseTests(unittest.TestCase):
         ]:
             target = self.root / name
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(
-                (ROOT / name).read_text().replace(SOURCE_VERSION, VERSION)
-            )
+            source = (ROOT / name).read_text()
+            if name == "java/pom.xml":
+                # Maven's schema/model version is also 4.0.0; only rewrite the
+                # project's package version when constructing the release fixture.
+                source = source.replace(
+                    f"<version>{SOURCE_VERSION}</version>",
+                    f"<version>{VERSION}</version>",
+                    1,
+                )
+            else:
+                source = source.replace(SOURCE_VERSION, VERSION)
+            target.write_text(source)
         go_module = self.root / "go/go.mod"
         go_module.write_text(
             go_module.read_text().replace(

@@ -2356,14 +2356,14 @@ For example, `[null, {"align": "left"}]` leaves the first column at Slack’s de
 
 Slack documents null entries, but the stress workspace’s `blocks.validate` endpoint rejected them on 2026-11-14. Slackblocks preserves the documented wire form consistently across all ten languages. Until the receiving path supports it, use `{}` (a default `ColumnSettings` value) instead of `null` to retain a skipped position; live rendering of sparse settings has not been verified.
 
-:::note Shared contract 1.6.0 (unreleased)
+:::note Shared contract 1.6.0 (Slackblocks 4.0.0)
 All ten native APIs accept `RawNumber` cells with both a numeric `value` and displayed `text`. The example below displays `42 items` while preserving the numeric value `42`. Numeric display labels must be non-empty in both plain and data tables. Numeric values must be finite JSON numbers.
 
-Sparse settings use `None` in Python, `null` in TypeScript/Java/C#/PHP, `nil` in Go/Ruby/Elixir, `Option<ColumnSettings>` in Rust and `Maybe ColumnSettings` in Haskell. Haskell callers updating this development branch must wrap existing entries in `Just`; Rust getters now expose optional entries, while setters still accept ordinary settings.
+Sparse settings use `None` in Python, `null` in TypeScript/Java/C#/PHP, `nil` in Go/Ruby/Elixir, `Option<ColumnSettings>` in Rust and `Maybe ColumnSettings` in Haskell. Haskell callers upgrading from 3.x must wrap existing entries in `Just`; Rust getters now expose optional entries, while setters still accept ordinary settings.
 
 Displayed cell text is limited to 10,000 Unicode code points per table and across plain tables in a message, including attachments, containers and layout fallbacks. This counts rich-text text/link labels and numeric display text; sorting values, URLs and message metadata do not consume the budget. Data-table and Markdown budgets are separate. Previously accepted oversized tables now fail local validation.
 
-Slack’s [table reference](https://docs.slack.dev/reference/block-kit/blocks/table-block/) specifies these limits. Structural checks on 2026-11-14 accepted 10,001-character inputs; the library follows the stricter published contract. Those checks establish neither message delivery nor rendering. This support is on the development branch and is not in the published 3.2.0 packages.
+Slack’s [table reference](https://docs.slack.dev/reference/block-kit/blocks/table-block/) specifies these limits. Structural checks on 2026-11-14 accepted 10,001-character inputs; the library follows the stricter published contract. Those checks establish neither message delivery nor rendering. This support is included in 4.0.0 and is absent from 3.2.0. See the [4.0.0 migration notes](migration#upgrading-to-400) before upgrading.
 :::
 
 <Tabs>
@@ -4352,7 +4352,7 @@ block, err := slackblocks.NewDataTableBlock().
 `RawNumberBuilder.Value(float64)` can round an integer such as `9007199254740993`
 before serialization. For exact JSON, import `encoding/json` and use
 `slackblocks.NewRawNumber().ValueNumber(json.Number("9007199254740993")).Text("9,007,199,254,740,993")`.
-The `slackblocks` import is `github.com/nicklambourne/slackblocks/go/v3`.
+The `slackblocks` import is `github.com/nicklambourne/slackblocks/go/v4`.
 
 `Build()` validates JSON number syntax, rejecting empty numbers, leading zeros,
 NaN and infinity. Integer, decimal and exponent lexemes stay numeric JSON values,

@@ -1,0 +1,230 @@
+---
+title: Preview in Block Kit Builder
+slug: /usage/recipes/builder-preview
+sidebar_position: 9
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": "https://app.slack.com/block-kit-builder/T123#%7B%22blocks%22%3A%5B%7B%22text%22%3A%7B%22text%22%3A%22Preview%20%2Athis%2A%22%2C%22type%22%3A%22mrkdwn%22%7D%2C%22type%22%3A%22section%22%7D%5D%7D",
+  "java": "https://app.slack.com/block-kit-builder/#%7B%22mrkdwn%22%3Atrue%2C%22text%22%3A%22Preview%22%2C%22channel%22%3A%22C1%22%2C%22blocks%22%3A%5B%7B%22type%22%3A%22section%22%2C%22text%22%3A%7B%22type%22%3A%22mrkdwn%22%2C%22text%22%3A%22Preview%20*this*%22%7D%7D%5D%7D",
+  "go": "https://app.slack.com/block-kit-builder/#%7B%22blocks%22:%5B%7B%22text%22:%7B%22text%22:%22Preview%20*this*%22,%22type%22:%22mrkdwn%22%7D,%22type%22:%22section%22%7D%5D,%22channel%22:%22C1%22,%22mrkdwn%22:true,%22text%22:%22Preview%22%7D",
+  "ruby": "https://app.slack.com/block-kit-builder/#%7B%22channel%22%3A%22C1%22%2C%22blocks%22%3A%5B%7B%22type%22%3A%22section%22%2C%22text%22%3A%7B%22type%22%3A%22mrkdwn%22%2C%22text%22%3A%22Preview%20*this*%22%7D%7D%5D%2C%22text%22%3A%22Preview%22%2C%22mrkdwn%22%3Atrue%7D",
+  "csharp": "https://app.slack.com/block-kit-builder/#%7B%22channel%22%3A%22C1%22%2C%22blocks%22%3A%5B%7B%22type%22%3A%22section%22%2C%22text%22%3A%7B%22type%22%3A%22mrkdwn%22%2C%22text%22%3A%22Preview%20%2Athis%2A%22%7D%7D%5D%2C%22text%22%3A%22Preview%22%2C%22mrkdwn%22%3Atrue%7D",
+  "php": "https://app.slack.com/block-kit-builder/#%7B%22channel%22%3A%22C1%22%2C%22blocks%22%3A%5B%7B%22type%22%3A%22section%22%2C%22text%22%3A%7B%22type%22%3A%22mrkdwn%22%2C%22text%22%3A%22%2APreview%2A%22%7D%7D%5D%2C%22text%22%3A%22Preview%22%2C%22mrkdwn%22%3Atrue%7D",
+  "rust": "https://app.slack.com/block-kit-builder/T0123ABCD#%7B%22blocks%22%3A%5B%7B%22text%22%3A%7B%22text%22%3A%22Preview%20this%20message%22%2C%22type%22%3A%22mrkdwn%22%7D%2C%22type%22%3A%22section%22%7D%5D%7D",
+  "haskell": "https://app.slack.com/block-kit-builder/T123#%7B%22blocks%22%3A%5B%7B%22text%22%3A%7B%22text%22%3A%22Preview%20%2Athis%2A%22%2C%22type%22%3A%22mrkdwn%22%7D%2C%22type%22%3A%22section%22%7D%5D%7D",
+  "typescript": "https://app.slack.com/block-kit-builder/#%7B%22mrkdwn%22%3Atrue%2C%22text%22%3A%22Preview%22%2C%22channel%22%3A%22C1%22%2C%22blocks%22%3A%5B%7B%22text%22%3A%7B%22text%22%3A%22Preview%20*this*%22%2C%22type%22%3A%22mrkdwn%22%7D%2C%22type%22%3A%22section%22%7D%5D%7D",
+  "python": "https://app.slack.com/block-kit-builder/#%7B%22blocks%22%3A%5B%7B%22type%22%3A%22header%22%2C%22block_id%22%3A%22build%22%2C%22text%22%3A%7B%22type%22%3A%22plain_text%22%2C%22text%22%3A%22Build%20%23482%20passed%20%3Awhite_check_mark%3A%22%7D%7D%2C%7B%22type%22%3A%22section%22%2C%22block_id%22%3A%22summary%22%2C%22text%22%3A%7B%22type%22%3A%22mrkdwn%22%2C%22text%22%3A%22All%201%2C247%20tests%20green%20in%203m%2012s.%22%7D%7D%2C%7B%22type%22%3A%22divider%22%2C%22block_id%22%3A%22divider%22%7D%2C%7B%22type%22%3A%22section%22%2C%22block_id%22%3A%22details%22%2C%22fields%22%3A%5B%7B%22type%22%3A%22mrkdwn%22%2C%22text%22%3A%22%2AAuthor%2A%5Cn%40nick%22%7D%2C%7B%22type%22%3A%22mrkdwn%22%2C%22text%22%3A%22%2ABranch%2A%5Cn%60main%60%22%7D%5D%7D%5D%7D"
+};
+
+# Preview in Block Kit Builder
+
+Generate a Block Kit Builder URL locally. The preview below decodes that exact URL; generating it does not send a Slack message.
+
+<RecipeOutput recipe="builder-preview" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+Use `block_kit_builder_url` to build a [Block Kit Builder](https://app.slack.com/block-kit-builder) URL and open it in your browser to verify a message before posting it. Useful while iterating on layout — no Slack credentials needed.
+
+```python
+from slackblocks import (
+    block_kit_builder_url,
+    DividerBlock,
+    HeaderBlock,
+    Markdown,
+    SectionBlock,
+)
+
+blocks = [
+    HeaderBlock("Build #482 passed :white_check_mark:", block_id="build"),
+    SectionBlock(text=Markdown("All 1,247 tests green in 3m 12s."), block_id="summary"),
+    DividerBlock(block_id="divider"),
+    SectionBlock(fields=["*Author*\n@nick", "*Branch*\n`main`"], block_id="details"),
+]
+
+print(block_kit_builder_url(blocks))
+# https://app.slack.com/block-kit-builder/#%7B%22blocks%22%3A%5B...%5D%7D
+```
+
+`block_kit_builder_url` accepts:
+
+- A single `Block`, `Element`, or anything else with a `_resolve()` method.
+- A list of `Block` objects (wrapped in `{"blocks": [...]}` automatically).
+- A `Message`, `WebhookMessage`, `MessageResponse`, or `View`.
+- A raw `dict` (escape hatch).
+
+Pass `team_id="T0123ABCD"` for a workspace-specific URL.
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const message = S.Message().channel("C1").text("Preview").blocks(S.SectionBlock().text("Preview *this*")).build();
+console.log(JSON.stringify(S.blockKitBuilderUrl(message)));
+```
+
+</TypeScript>
+
+<Go>
+
+Go has no dedicated Builder URL helper. Encode a validated payload as the URL fragment using the standard library; this makes no network request.
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"net/url"
+)
+
+func main() {
+	value, err := s.NewMessage().Channel("C1").Text("Preview").Blocks(s.NewSectionBlock().Text("Preview *this*")).Build()
+	if err != nil {
+		panic(err)
+	}
+	wire, err := json.Marshal(value)
+	if err != nil {
+		panic(err)
+	}
+	link := url.URL{Scheme: "https", Host: "app.slack.com", Path: "/block-kit-builder/", Fragment: string(wire)}
+	fmt.Println(link.String())
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var value = MessagePayload.builder().channel("C1").text("Preview").blocks(
+    SectionBlock.builder().markdownText("Preview *this*").build()).build();
+    String fragment = java.net.URLEncoder.encode(value.toJson(), java.nio.charset.StandardCharsets.UTF_8).replace("+", "%20");
+    System.out.println("https://app.slack.com/block-kit-builder/#" + fragment);
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var value = new MessagePayload("C1", text: "Preview", blocks: [new SectionBlock("Preview *this*")]);
+Console.WriteLine("https://app.slack.com/block-kit-builder/#" + Uri.EscapeDataString(value.ToJson()));
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+require "uri"
+value = MessagePayload.new(channel: "C1", text: "Preview", blocks: [SectionBlock.new(text: "Preview *this*")])
+puts JSON.generate("https://app.slack.com/block-kit-builder/#" + URI.encode_www_form_component(value.to_json).gsub("+", "%20"))
+```
+
+</Ruby>
+
+<Rust>
+
+The helper encodes UTF-8 JSON in a Builder URL without sending a request. It borrows blocks and payloads.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block: Block = SectionBlock::builder()
+        .text("Preview this message")
+        .build()?
+        .into();
+    println!("{}", block_kit_builder_url(&block, Some("T0123ABCD"))?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(channel: 'C1', text: 'Preview', blocks: [new S\SectionBlock('*Preview*')]);
+echo S\Builder::url($message);
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+Slackblocks.Blocks.Section.new!(text: "Preview *this*")
+|> Slackblocks.block_kit_builder_url!(team_id: "T123")
+```
+
+This constructs a URL locally; it sends no message or request.
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  text <- buildMarkdownText (markdownText "Preview *this*")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  pure (blockKitBuilderURL (BuilderBlocks [sectionBlockAsBlock section]) (Just "T123"))
+```
+
+The URL is produced locally; it does not prove Slack rendering acceptance.
+
+</Haskell>
+
+</LanguageContent>

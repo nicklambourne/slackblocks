@@ -2,7 +2,7 @@ package slackblocks_test
 
 import (
 	"fmt"
-	slackblocks "github.com/nicklambourne/slackblocks/go/v3"
+	slackblocks "github.com/nicklambourne/slackblocks/go/v4"
 	"math"
 	"testing"
 )

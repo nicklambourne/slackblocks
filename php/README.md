@@ -5,7 +5,7 @@ Native, immutable Slack Block Kit values for **PHP 8.2+ (64-bit)**. PHP support 
 ## Installation
 
 ```sh
-composer require nicklambourne/slackblocks:^2.7
+composer require nicklambourne/slackblocks:^4.0
 ```
 
 ## Quickstart

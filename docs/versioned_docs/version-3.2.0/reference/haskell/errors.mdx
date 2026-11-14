@@ -1,0 +1,210 @@
+---
+sidebar_position: 7
+---
+
+# Validation errors
+
+Signatures come from GHC; descriptions come from compiled Haddock comments. Import `Slackblocks` or the defining public module. Checked values encode with Aeson; field records must be built first.
+
+## ErrorCategory {#slackblocks-validation-errorcategory}
+
+Normative shared categories; categoryName returns the stable wire spelling.
+
+```haskell
+type Slackblocks.Validation.ErrorCategory :: *
+```
+
+## Field {#slackblocks-validation-field}
+
+Object field name.
+
+```haskell
+Slackblocks.Validation.Field ::
+  Data.Text.Text -> Slackblocks.Validation.PathPiece
+```
+
+## Index {#slackblocks-validation-index}
+
+Zero-based array position.
+
+```haskell
+Slackblocks.Validation.Index ::
+  Int -> Slackblocks.Validation.PathPiece
+```
+
+## InvalidUsage {#slackblocks-validation-invalidusage}
+
+A combination or receiving context is unsupported.
+
+```haskell
+Slackblocks.Validation.InvalidUsage ::
+  Slackblocks.Validation.ErrorCategory
+```
+
+## LengthExceeded {#slackblocks-validation-lengthexceeded}
+
+Text or collection exceeds a shared limit.
+
+```haskell
+Slackblocks.Validation.LengthExceeded ::
+  Slackblocks.Validation.ErrorCategory
+```
+
+## MissingRequired {#slackblocks-validation-missingrequired}
+
+A required value is absent.
+
+```haskell
+Slackblocks.Validation.MissingRequired ::
+  Slackblocks.Validation.ErrorCategory
+```
+
+## MutuallyExclusive {#slackblocks-validation-mutuallyexclusive}
+
+Fields cannot be supplied together.
+
+```haskell
+Slackblocks.Validation.MutuallyExclusive ::
+  Slackblocks.Validation.ErrorCategory
+```
+
+## OutOfRange {#slackblocks-validation-outofrange}
+
+A number or count is outside the accepted range.
+
+```haskell
+Slackblocks.Validation.OutOfRange ::
+  Slackblocks.Validation.ErrorCategory
+```
+
+## PathPiece {#slackblocks-validation-pathpiece}
+
+A field or zero-based array index in a validation path.
+
+```haskell
+type Slackblocks.Validation.PathPiece :: *
+```
+
+## Result {#slackblocks-validation-result}
+
+Checked construction result. Failure contains at least one validation error.
+
+```haskell
+type Slackblocks.Validation.Result :: * -> *
+```
+
+## TypeMismatch {#slackblocks-validation-typemismatch}
+
+The value has an unsupported type or vocabulary.
+
+```haskell
+Slackblocks.Validation.TypeMismatch ::
+  Slackblocks.Validation.ErrorCategory
+```
+
+## ValidationError {#slackblocks-validation-validationerror}
+
+One validation failure with a machine-readable category, path and constraint.
+
+```haskell
+Slackblocks.Validation.ValidationError ::
+  Slackblocks.Validation.ErrorCategory
+  -> [Slackblocks.Validation.PathPiece]
+  -> Data.Text.Text
+  -> Data.Text.Text
+  -> Slackblocks.Validation.ValidationError
+
+type Slackblocks.Validation.ValidationError :: *
+```
+
+## atField {#slackblocks-validation-atfield}
+
+Prefix every error path with a field; preserve successful values.
+
+```haskell
+Slackblocks.Validation.atField ::
+  Data.Text.Text
+  -> Slackblocks.Validation.Result a
+  -> Slackblocks.Validation.Result a
+```
+
+## atIndex {#slackblocks-validation-atindex}
+
+Prefix every error path with a zero-based index; preserve successful values.
+
+```haskell
+Slackblocks.Validation.atIndex ::
+  Int
+  -> Slackblocks.Validation.Result a
+  -> Slackblocks.Validation.Result a
+```
+
+## categoryName {#slackblocks-validation-categoryname}
+
+Stable shared category spelling suitable for logging and matching.
+
+```haskell
+Slackblocks.Validation.categoryName ::
+  Slackblocks.Validation.ErrorCategory -> Data.Text.Text
+```
+
+## errorCategory {#slackblocks-validation-errorcategory}
+
+Normative shared category.
+
+```haskell
+Slackblocks.Validation.errorCategory ::
+  Slackblocks.Validation.ValidationError
+  -> Slackblocks.Validation.ErrorCategory
+```
+
+## errorConstraint {#slackblocks-validation-errorconstraint}
+
+Stable constraint identifier.
+
+```haskell
+Slackblocks.Validation.errorConstraint ::
+  Slackblocks.Validation.ValidationError -> Data.Text.Text
+```
+
+## errorMessage {#slackblocks-validation-errormessage}
+
+Human-readable explanation; do not use prose as a compatibility key.
+
+```haskell
+Slackblocks.Validation.errorMessage ::
+  Slackblocks.Validation.ValidationError -> Data.Text.Text
+```
+
+## errorPath {#slackblocks-validation-errorpath}
+
+Structured path from the root payload.
+
+```haskell
+Slackblocks.Validation.errorPath ::
+  Slackblocks.Validation.ValidationError
+  -> [Slackblocks.Validation.PathPiece]
+```
+
+## failure {#slackblocks-validation-failure}
+
+Create one failure without throwing an exception.
+
+```haskell
+Slackblocks.Validation.failure ::
+  Slackblocks.Validation.ErrorCategory
+  -> [Slackblocks.Validation.PathPiece]
+  -> Data.Text.Text
+  -> Data.Text.Text
+  -> Slackblocks.Validation.Result a
+```
+
+## renderPath {#slackblocks-validation-renderpath}
+
+Format a path starting at $, with dot fields and zero-based bracket indexes.
+
+```haskell
+Slackblocks.Validation.renderPath ::
+  [Slackblocks.Validation.PathPiece] -> Data.Text.Text
+```
+

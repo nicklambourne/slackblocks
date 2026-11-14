@@ -1,0 +1,3933 @@
+---
+sidebar_position: 2
+---
+
+# Elements
+
+Signatures come from GHC; descriptions come from compiled Haddock comments. Import `Slackblocks` or the defining public module. Checked values encode with Aeson; field records must be built first.
+
+## ButtonElement {#slackblocks-models-buttonelement}
+
+An interactive button that sends a payload or opens a URL.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/button-element](https://docs.slack.dev/reference/block-kit/block-elements/button-element)
+ A prompt display requires an agent prompt.
+
+```haskell
+type Slackblocks.Models.ButtonElement :: *
+```
+
+## ButtonElementFields {#slackblocks-models-buttonelementfields}
+
+Editable construction input. Call [`buildButtonElement`](/reference/haskell/elements#slackblocks-models-buildbuttonelement) before encoding.
+
+```haskell
+Slackblocks.Models.ButtonElementFields ::
+  Slackblocks.Models.PlainText
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.ButtonStyle
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ButtonElementFields
+
+type Slackblocks.Models.ButtonElementFields :: *
+```
+
+## ChannelMultiSelectElement {#slackblocks-models-channelmultiselectelement}
+
+A menu for selecting multiple public channels.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element)
+
+```haskell
+type Slackblocks.Models.ChannelMultiSelectElement :: *
+```
+
+## ChannelMultiSelectElementFields {#slackblocks-models-channelmultiselectelementfields}
+
+Editable construction input. Call [`buildChannelMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildchannelmultiselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.ChannelMultiSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe [Data.Text.Text]
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Integer
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ChannelMultiSelectElementFields
+
+type Slackblocks.Models.ChannelMultiSelectElementFields :: *
+```
+
+## ChannelSelectElement {#slackblocks-models-channelselectelement}
+
+A menu for selecting one public channel.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element)
+
+```haskell
+type Slackblocks.Models.ChannelSelectElement :: *
+```
+
+## ChannelSelectElementFields {#slackblocks-models-channelselectelementfields}
+
+Editable construction input. Call [`buildChannelSelectElement`](/reference/haskell/elements#slackblocks-models-buildchannelselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.ChannelSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ChannelSelectElementFields
+
+type Slackblocks.Models.ChannelSelectElementFields :: *
+```
+
+## CheckboxesElement {#slackblocks-models-checkboxeselement}
+
+A group of checkboxes.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element](https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element)
+
+```haskell
+type Slackblocks.Models.CheckboxesElement :: *
+```
+
+## CheckboxesElementFields {#slackblocks-models-checkboxeselementfields}
+
+Editable construction input. Call [`buildCheckboxesElement`](/reference/haskell/elements#slackblocks-models-buildcheckboxeselement) before encoding.
+
+```haskell
+Slackblocks.Models.CheckboxesElementFields ::
+  Maybe Data.Text.Text
+  -> [Slackblocks.Models.SelectOption]
+  -> Maybe [Slackblocks.Models.SelectOption]
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.CheckboxesElementFields
+
+type Slackblocks.Models.CheckboxesElementFields :: *
+```
+
+## ConversationMultiSelectElement {#slackblocks-models-conversationmultiselectelement}
+
+A menu for selecting multiple conversations.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element)
+
+```haskell
+type Slackblocks.Models.ConversationMultiSelectElement :: *
+```
+
+## ConversationMultiSelectElementFields {#slackblocks-models-conversationmultiselectelementfields}
+
+Editable construction input. Call [`buildConversationMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildconversationmultiselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.ConversationMultiSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe [Data.Text.Text]
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.ConversationFilter
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Integer
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ConversationMultiSelectElementFields
+
+type Slackblocks.Models.ConversationMultiSelectElementFields :: *
+```
+
+## ConversationSelectElement {#slackblocks-models-conversationselectelement}
+
+A menu for selecting one conversation.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element)
+
+```haskell
+type Slackblocks.Models.ConversationSelectElement :: *
+```
+
+## ConversationSelectElementFields {#slackblocks-models-conversationselectelementfields}
+
+Editable construction input. Call [`buildConversationSelectElement`](/reference/haskell/elements#slackblocks-models-buildconversationselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.ConversationSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.ConversationFilter
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ConversationSelectElementFields
+
+type Slackblocks.Models.ConversationSelectElementFields :: *
+```
+
+## DatePickerElement {#slackblocks-models-datepickerelement}
+
+A calendar date picker.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element)
+ initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates.
+
+```haskell
+type Slackblocks.Models.DatePickerElement :: *
+```
+
+## DatePickerElementFields {#slackblocks-models-datepickerelementfields}
+
+Editable construction input. Call [`buildDatePickerElement`](/reference/haskell/elements#slackblocks-models-builddatepickerelement) before encoding.
+
+```haskell
+Slackblocks.Models.DatePickerElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.DatePickerElementFields
+
+type Slackblocks.Models.DatePickerElementFields :: *
+```
+
+## DateTimePickerElement {#slackblocks-models-datetimepickerelement}
+
+A combined date and time picker.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element](https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element)
+
+```haskell
+type Slackblocks.Models.DateTimePickerElement :: *
+```
+
+## DateTimePickerElementFields {#slackblocks-models-datetimepickerelementfields}
+
+Editable construction input. Call [`buildDateTimePickerElement`](/reference/haskell/elements#slackblocks-models-builddatetimepickerelement) before encoding.
+
+```haskell
+Slackblocks.Models.DateTimePickerElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Integer
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.DateTimePickerElementFields
+
+type Slackblocks.Models.DateTimePickerElementFields :: *
+```
+
+## EmailInputElement {#slackblocks-models-emailinputelement}
+
+A single-line input that accepts an email address.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/email-input-element](https://docs.slack.dev/reference/block-kit/block-elements/email-input-element)
+
+```haskell
+type Slackblocks.Models.EmailInputElement :: *
+```
+
+## EmailInputElementFields {#slackblocks-models-emailinputelementfields}
+
+Editable construction input. Call [`buildEmailInputElement`](/reference/haskell/elements#slackblocks-models-buildemailinputelement) before encoding.
+
+```haskell
+Slackblocks.Models.EmailInputElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.EmailInputElementFields
+
+type Slackblocks.Models.EmailInputElementFields :: *
+```
+
+## ExternalMultiSelectElement {#slackblocks-models-externalmultiselectelement}
+
+A menu for selecting multiple options loaded from your app.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element)
+ focus_on_load is unsupported and must be omitted, including explicit false.
+
+```haskell
+type Slackblocks.Models.ExternalMultiSelectElement :: *
+```
+
+## ExternalMultiSelectElementFields {#slackblocks-models-externalmultiselectelementfields}
+
+Editable construction input. Call [`buildExternalMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildexternalmultiselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.ExternalMultiSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Integer
+  -> Maybe [Slackblocks.Models.SelectOption]
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Integer
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ExternalMultiSelectElementFields
+
+type Slackblocks.Models.ExternalMultiSelectElementFields :: *
+```
+
+## ExternalSelectElement {#slackblocks-models-externalselectelement}
+
+A menu for selecting one option loaded from your app.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element)
+
+```haskell
+type Slackblocks.Models.ExternalSelectElement :: *
+```
+
+## ExternalSelectElementFields {#slackblocks-models-externalselectelementfields}
+
+Editable construction input. Call [`buildExternalSelectElement`](/reference/haskell/elements#slackblocks-models-buildexternalselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.ExternalSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Integer
+  -> Maybe Slackblocks.Models.SelectOption
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ExternalSelectElementFields
+
+type Slackblocks.Models.ExternalSelectElementFields :: *
+```
+
+## FeedbackButtonsElement {#slackblocks-models-feedbackbuttonselement}
+
+A pair of thumbs-up and thumbs-down feedback buttons.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element)
+
+```haskell
+type Slackblocks.Models.FeedbackButtonsElement :: *
+```
+
+## FeedbackButtonsElementFields {#slackblocks-models-feedbackbuttonselementfields}
+
+Editable construction input. Call [`buildFeedbackButtonsElement`](/reference/haskell/elements#slackblocks-models-buildfeedbackbuttonselement) before encoding.
+
+```haskell
+Slackblocks.Models.FeedbackButtonsElementFields ::
+  Slackblocks.Models.FeedbackButton
+  -> Slackblocks.Models.FeedbackButton
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.FeedbackButtonsElementFields
+
+type Slackblocks.Models.FeedbackButtonsElementFields :: *
+```
+
+## FileInputElement {#slackblocks-models-fileinputelement}
+
+An input that lets users upload files.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/file-input-element](https://docs.slack.dev/reference/block-kit/block-elements/file-input-element)
+
+```haskell
+type Slackblocks.Models.FileInputElement :: *
+```
+
+## FileInputElementFields {#slackblocks-models-fileinputelementfields}
+
+Editable construction input. Call [`buildFileInputElement`](/reference/haskell/elements#slackblocks-models-buildfileinputelement) before encoding.
+
+```haskell
+Slackblocks.Models.FileInputElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe [Data.Text.Text]
+  -> Maybe Integer
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.FileInputElementFields
+
+type Slackblocks.Models.FileInputElementFields :: *
+```
+
+## IconButtonElement {#slackblocks-models-iconbuttonelement}
+
+A button that shows an icon instead of text.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element](https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element)
+
+```haskell
+type Slackblocks.Models.IconButtonElement :: *
+```
+
+## IconButtonElementFields {#slackblocks-models-iconbuttonelementfields}
+
+Editable construction input. Call [`buildIconButtonElement`](/reference/haskell/elements#slackblocks-models-buildiconbuttonelement) before encoding.
+
+```haskell
+Slackblocks.Models.IconButtonElementFields ::
+  Slackblocks.Models.PlainText
+  -> Slackblocks.Models.IconButtonIcon
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Data.Text.Text
+  -> Maybe [Data.Text.Text]
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.IconButtonElementFields
+
+type Slackblocks.Models.IconButtonElementFields :: *
+```
+
+## ImageElement {#slackblocks-models-imageelement}
+
+An image displayed inside a section, context, or card.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/image-element](https://docs.slack.dev/reference/block-kit/block-elements/image-element)
+ Provide exactly one of an image URL or a Slack file.
+
+```haskell
+type Slackblocks.Models.ImageElement :: *
+```
+
+## ImageElementFields {#slackblocks-models-imageelementfields}
+
+Editable construction input. Call [`buildImageElement`](/reference/haskell/elements#slackblocks-models-buildimageelement) before encoding.
+
+```haskell
+Slackblocks.Models.ImageElementFields ::
+  Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.SlackFile
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.ImageElementFields
+
+type Slackblocks.Models.ImageElementFields :: *
+```
+
+## NumberInputElement {#slackblocks-models-numberinputelement}
+
+An input that accepts whole or decimal numbers.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/number-input-element](https://docs.slack.dev/reference/block-kit/block-elements/number-input-element)
+ The minimum value cannot exceed the maximum value.
+
+```haskell
+type Slackblocks.Models.NumberInputElement :: *
+```
+
+## NumberInputElementFields {#slackblocks-models-numberinputelementfields}
+
+Editable construction input. Call [`buildNumberInputElement`](/reference/haskell/elements#slackblocks-models-buildnumberinputelement) before encoding.
+
+```haskell
+Slackblocks.Models.NumberInputElementFields ::
+  Maybe Data.Text.Text
+  -> Bool
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.NumberInputElementFields
+
+type Slackblocks.Models.NumberInputElementFields :: *
+```
+
+## OverflowElement {#slackblocks-models-overflowelement}
+
+A compact menu of up to five options.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element)
+
+```haskell
+type Slackblocks.Models.OverflowElement :: *
+```
+
+## OverflowElementFields {#slackblocks-models-overflowelementfields}
+
+Editable construction input. Call [`buildOverflowElement`](/reference/haskell/elements#slackblocks-models-buildoverflowelement) before encoding.
+
+```haskell
+Slackblocks.Models.OverflowElementFields ::
+  Maybe Data.Text.Text
+  -> [Slackblocks.Models.SelectOption]
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.OverflowElementFields
+
+type Slackblocks.Models.OverflowElementFields :: *
+```
+
+## PlainTextInputElement {#slackblocks-models-plaintextinputelement}
+
+A single-line or multi-line free-text input.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element)
+ When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied.
+
+```haskell
+type Slackblocks.Models.PlainTextInputElement :: *
+```
+
+## PlainTextInputElementFields {#slackblocks-models-plaintextinputelementfields}
+
+Editable construction input. Call [`buildPlainTextInputElement`](/reference/haskell/elements#slackblocks-models-buildplaintextinputelement) before encoding.
+
+```haskell
+Slackblocks.Models.PlainTextInputElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Bool
+  -> Maybe Integer
+  -> Maybe Integer
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.PlainTextInputElementFields
+
+type Slackblocks.Models.PlainTextInputElementFields :: *
+```
+
+## RadioButtonsElement {#slackblocks-models-radiobuttonselement}
+
+A group of radio buttons.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element](https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element)
+
+```haskell
+type Slackblocks.Models.RadioButtonsElement :: *
+```
+
+## RadioButtonsElementFields {#slackblocks-models-radiobuttonselementfields}
+
+Editable construction input. Call [`buildRadioButtonsElement`](/reference/haskell/elements#slackblocks-models-buildradiobuttonselement) before encoding.
+
+```haskell
+Slackblocks.Models.RadioButtonsElementFields ::
+  Maybe Data.Text.Text
+  -> [Slackblocks.Models.SelectOption]
+  -> Maybe Slackblocks.Models.SelectOption
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.RadioButtonsElementFields
+
+type Slackblocks.Models.RadioButtonsElementFields :: *
+```
+
+## RichTextInputElement {#slackblocks-models-richtextinputelement}
+
+An input that accepts formatted rich text.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element](https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element)
+
+```haskell
+type Slackblocks.Models.RichTextInputElement :: *
+```
+
+## RichTextInputElementFields {#slackblocks-models-richtextinputelementfields}
+
+Editable construction input. Call [`buildRichTextInputElement`](/reference/haskell/elements#slackblocks-models-buildrichtextinputelement) before encoding.
+
+```haskell
+Slackblocks.Models.RichTextInputElementFields ::
+  Data.Text.Text
+  -> Maybe Slackblocks.Models.RichTextBlock
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Maybe Integer
+  -> Maybe Integer
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.RichTextInputElementFields
+
+type Slackblocks.Models.RichTextInputElementFields :: *
+```
+
+## StaticMultiSelectElement {#slackblocks-models-staticmultiselectelement}
+
+A menu for selecting multiple options defined in the payload.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element)
+ Use options or option groups, not both.
+
+```haskell
+type Slackblocks.Models.StaticMultiSelectElement :: *
+```
+
+## StaticMultiSelectElementFields {#slackblocks-models-staticmultiselectelementfields}
+
+Editable construction input. Call [`buildStaticMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildstaticmultiselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.StaticMultiSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe [Slackblocks.Models.SelectOption]
+  -> Maybe [Slackblocks.Models.SelectOptionGroup]
+  -> Maybe [Slackblocks.Models.SelectOption]
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Integer
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.StaticMultiSelectElementFields
+
+type Slackblocks.Models.StaticMultiSelectElementFields :: *
+```
+
+## StaticSelectElement {#slackblocks-models-staticselectelement}
+
+A menu for selecting one option defined in the payload.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element)
+ Use options or option groups, not both.
+
+```haskell
+type Slackblocks.Models.StaticSelectElement :: *
+```
+
+## StaticSelectElementFields {#slackblocks-models-staticselectelementfields}
+
+Editable construction input. Call [`buildStaticSelectElement`](/reference/haskell/elements#slackblocks-models-buildstaticselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.StaticSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe [Slackblocks.Models.SelectOption]
+  -> Maybe [Slackblocks.Models.SelectOptionGroup]
+  -> Maybe Slackblocks.Models.SelectOption
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.StaticSelectElementFields
+
+type Slackblocks.Models.StaticSelectElementFields :: *
+```
+
+## TimePickerElement {#slackblocks-models-timepickerelement}
+
+A time-of-day picker.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element)
+ initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59.
+
+```haskell
+type Slackblocks.Models.TimePickerElement :: *
+```
+
+## TimePickerElementFields {#slackblocks-models-timepickerelementfields}
+
+Editable construction input. Call [`buildTimePickerElement`](/reference/haskell/elements#slackblocks-models-buildtimepickerelement) before encoding.
+
+```haskell
+Slackblocks.Models.TimePickerElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.TimePickerElementFields
+
+type Slackblocks.Models.TimePickerElementFields :: *
+```
+
+## UrlInputElement {#slackblocks-models-urlinputelement}
+
+A single-line input that accepts a URL.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/url-input-element](https://docs.slack.dev/reference/block-kit/block-elements/url-input-element)
+
+```haskell
+type Slackblocks.Models.UrlInputElement :: *
+```
+
+## UrlInputElementFields {#slackblocks-models-urlinputelementfields}
+
+Editable construction input. Call [`buildUrlInputElement`](/reference/haskell/elements#slackblocks-models-buildurlinputelement) before encoding.
+
+```haskell
+Slackblocks.Models.UrlInputElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.UrlInputElementFields
+
+type Slackblocks.Models.UrlInputElementFields :: *
+```
+
+## UserMultiSelectElement {#slackblocks-models-usermultiselectelement}
+
+A menu for selecting multiple workspace users.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element)
+
+```haskell
+type Slackblocks.Models.UserMultiSelectElement :: *
+```
+
+## UserMultiSelectElementFields {#slackblocks-models-usermultiselectelementfields}
+
+Editable construction input. Call [`buildUserMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildusermultiselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.UserMultiSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe [Data.Text.Text]
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Integer
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.UserMultiSelectElementFields
+
+type Slackblocks.Models.UserMultiSelectElementFields :: *
+```
+
+## UserSelectElement {#slackblocks-models-userselectelement}
+
+A menu for selecting one workspace user.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element)
+
+```haskell
+type Slackblocks.Models.UserSelectElement :: *
+```
+
+## UserSelectElementFields {#slackblocks-models-userselectelementfields}
+
+Editable construction input. Call [`buildUserSelectElement`](/reference/haskell/elements#slackblocks-models-builduserselectelement) before encoding.
+
+```haskell
+Slackblocks.Models.UserSelectElementFields ::
+  Maybe Data.Text.Text
+  -> Maybe Data.Text.Text
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Bool
+  -> Maybe Slackblocks.Models.PlainText
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.UserSelectElementFields
+
+type Slackblocks.Models.UserSelectElementFields :: *
+```
+
+## WorkflowButtonElement {#slackblocks-models-workflowbuttonelement}
+
+A button that starts a workflow through a link trigger.
+
+[https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element](https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element)
+
+```haskell
+type Slackblocks.Models.WorkflowButtonElement :: *
+```
+
+## WorkflowButtonElementFields {#slackblocks-models-workflowbuttonelementfields}
+
+Editable construction input. Call [`buildWorkflowButtonElement`](/reference/haskell/elements#slackblocks-models-buildworkflowbuttonelement) before encoding.
+
+```haskell
+Slackblocks.Models.WorkflowButtonElementFields ::
+  Slackblocks.Models.PlainText
+  -> Slackblocks.Models.Workflow
+  -> Data.Text.Text
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+  -> Maybe Slackblocks.Models.ButtonStyle
+  -> Maybe Data.Text.Text
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Models.WorkflowButtonElementFields
+
+type Slackblocks.Models.WorkflowButtonElementFields :: *
+```
+
+## buildButtonElement {#slackblocks-models-buildbuttonelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ButtonElement.
+
+```haskell
+Slackblocks.Models.buildButtonElement ::
+  Slackblocks.Models.ButtonElementFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.ButtonElement
+```
+
+## buildChannelMultiSelectElement {#slackblocks-models-buildchannelmultiselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ChannelMultiSelectElement.
+
+```haskell
+Slackblocks.Models.buildChannelMultiSelectElement ::
+  Slackblocks.Models.ChannelMultiSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.ChannelMultiSelectElement
+```
+
+## buildChannelSelectElement {#slackblocks-models-buildchannelselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ChannelSelectElement.
+
+```haskell
+Slackblocks.Models.buildChannelSelectElement ::
+  Slackblocks.Models.ChannelSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.ChannelSelectElement
+```
+
+## buildCheckboxesElement {#slackblocks-models-buildcheckboxeselement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked CheckboxesElement.
+
+```haskell
+Slackblocks.Models.buildCheckboxesElement ::
+  Slackblocks.Models.CheckboxesElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.CheckboxesElement
+```
+
+## buildConversationMultiSelectElement {#slackblocks-models-buildconversationmultiselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ConversationMultiSelectElement.
+
+```haskell
+Slackblocks.Models.buildConversationMultiSelectElement ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.ConversationMultiSelectElement
+```
+
+## buildConversationSelectElement {#slackblocks-models-buildconversationselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ConversationSelectElement.
+
+```haskell
+Slackblocks.Models.buildConversationSelectElement ::
+  Slackblocks.Models.ConversationSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.ConversationSelectElement
+```
+
+## buildDatePickerElement {#slackblocks-models-builddatepickerelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked DatePickerElement.
+
+```haskell
+Slackblocks.Models.buildDatePickerElement ::
+  Slackblocks.Models.DatePickerElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.DatePickerElement
+```
+
+## buildDateTimePickerElement {#slackblocks-models-builddatetimepickerelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked DateTimePickerElement.
+
+```haskell
+Slackblocks.Models.buildDateTimePickerElement ::
+  Slackblocks.Models.DateTimePickerElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.DateTimePickerElement
+```
+
+## buildEmailInputElement {#slackblocks-models-buildemailinputelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked EmailInputElement.
+
+```haskell
+Slackblocks.Models.buildEmailInputElement ::
+  Slackblocks.Models.EmailInputElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.EmailInputElement
+```
+
+## buildExternalMultiSelectElement {#slackblocks-models-buildexternalmultiselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ExternalMultiSelectElement.
+
+```haskell
+Slackblocks.Models.buildExternalMultiSelectElement ::
+  Slackblocks.Models.ExternalMultiSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.ExternalMultiSelectElement
+```
+
+## buildExternalSelectElement {#slackblocks-models-buildexternalselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ExternalSelectElement.
+
+```haskell
+Slackblocks.Models.buildExternalSelectElement ::
+  Slackblocks.Models.ExternalSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.ExternalSelectElement
+```
+
+## buildFeedbackButtonsElement {#slackblocks-models-buildfeedbackbuttonselement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked FeedbackButtonsElement.
+
+```haskell
+Slackblocks.Models.buildFeedbackButtonsElement ::
+  Slackblocks.Models.FeedbackButtonsElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.FeedbackButtonsElement
+```
+
+## buildFileInputElement {#slackblocks-models-buildfileinputelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked FileInputElement.
+
+```haskell
+Slackblocks.Models.buildFileInputElement ::
+  Slackblocks.Models.FileInputElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.FileInputElement
+```
+
+## buildIconButtonElement {#slackblocks-models-buildiconbuttonelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked IconButtonElement.
+
+```haskell
+Slackblocks.Models.buildIconButtonElement ::
+  Slackblocks.Models.IconButtonElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.IconButtonElement
+```
+
+## buildImageElement {#slackblocks-models-buildimageelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked ImageElement.
+
+```haskell
+Slackblocks.Models.buildImageElement ::
+  Slackblocks.Models.ImageElementFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.ImageElement
+```
+
+## buildNumberInputElement {#slackblocks-models-buildnumberinputelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked NumberInputElement.
+
+```haskell
+Slackblocks.Models.buildNumberInputElement ::
+  Slackblocks.Models.NumberInputElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.NumberInputElement
+```
+
+## buildOverflowElement {#slackblocks-models-buildoverflowelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked OverflowElement.
+
+```haskell
+Slackblocks.Models.buildOverflowElement ::
+  Slackblocks.Models.OverflowElementFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.OverflowElement
+```
+
+## buildPlainTextInputElement {#slackblocks-models-buildplaintextinputelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked PlainTextInputElement.
+
+```haskell
+Slackblocks.Models.buildPlainTextInputElement ::
+  Slackblocks.Models.PlainTextInputElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.PlainTextInputElement
+```
+
+## buildRadioButtonsElement {#slackblocks-models-buildradiobuttonselement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked RadioButtonsElement.
+
+```haskell
+Slackblocks.Models.buildRadioButtonsElement ::
+  Slackblocks.Models.RadioButtonsElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.RadioButtonsElement
+```
+
+## buildRichTextInputElement {#slackblocks-models-buildrichtextinputelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked RichTextInputElement.
+
+```haskell
+Slackblocks.Models.buildRichTextInputElement ::
+  Slackblocks.Models.RichTextInputElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.RichTextInputElement
+```
+
+## buildStaticMultiSelectElement {#slackblocks-models-buildstaticmultiselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked StaticMultiSelectElement.
+
+```haskell
+Slackblocks.Models.buildStaticMultiSelectElement ::
+  Slackblocks.Models.StaticMultiSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.StaticMultiSelectElement
+```
+
+## buildStaticSelectElement {#slackblocks-models-buildstaticselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked StaticSelectElement.
+
+```haskell
+Slackblocks.Models.buildStaticSelectElement ::
+  Slackblocks.Models.StaticSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.StaticSelectElement
+```
+
+## buildTimePickerElement {#slackblocks-models-buildtimepickerelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked TimePickerElement.
+
+```haskell
+Slackblocks.Models.buildTimePickerElement ::
+  Slackblocks.Models.TimePickerElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.TimePickerElement
+```
+
+## buildUrlInputElement {#slackblocks-models-buildurlinputelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked UrlInputElement.
+
+```haskell
+Slackblocks.Models.buildUrlInputElement ::
+  Slackblocks.Models.UrlInputElementFields
+  -> Slackblocks.Validation.Result Slackblocks.Models.UrlInputElement
+```
+
+## buildUserMultiSelectElement {#slackblocks-models-buildusermultiselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked UserMultiSelectElement.
+
+```haskell
+Slackblocks.Models.buildUserMultiSelectElement ::
+  Slackblocks.Models.UserMultiSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.UserMultiSelectElement
+```
+
+## buildUserSelectElement {#slackblocks-models-builduserselectelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked UserSelectElement.
+
+```haskell
+Slackblocks.Models.buildUserSelectElement ::
+  Slackblocks.Models.UserSelectElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.UserSelectElement
+```
+
+## buildWorkflowButtonElement {#slackblocks-models-buildworkflowbuttonelement}
+
+Validate fields, extensions and receiving context. Return structured errors or a checked WorkflowButtonElement.
+
+```haskell
+Slackblocks.Models.buildWorkflowButtonElement ::
+  Slackblocks.Models.WorkflowButtonElementFields
+  -> Slackblocks.Validation.Result
+       Slackblocks.Models.WorkflowButtonElement
+```
+
+## buttonElement {#slackblocks-models-buttonelement}
+
+Start editable fields for ButtonElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildButtonElement`](/reference/haskell/elements#slackblocks-models-buildbuttonelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.buttonElement ::
+  Slackblocks.Models.PlainText
+  -> Slackblocks.Models.ButtonElementFields
+```
+
+## buttonElementAccessibilityLabel {#slackblocks-models-buttonelementaccessibilitylabel}
+
+Sets the label read by screen readers in place of the visible text. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `button.accessibility_label`.
+
+```haskell
+Slackblocks.Models.buttonElementAccessibilityLabel ::
+  Slackblocks.Models.ButtonElementFields -> Maybe Data.Text.Text
+```
+
+## buttonElementActionId {#slackblocks-models-buttonelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.buttonElementActionId ::
+  Slackblocks.Models.ButtonElementFields -> Maybe Data.Text.Text
+```
+
+## buttonElementAgentPrompt {#slackblocks-models-buttonelementagentprompt}
+
+Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `button.agent_prompt`.
+
+```haskell
+Slackblocks.Models.buttonElementAgentPrompt ::
+  Slackblocks.Models.ButtonElementFields -> Maybe Data.Text.Text
+```
+
+## buttonElementAgentPromptDisplay {#slackblocks-models-buttonelementagentpromptdisplay}
+
+Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.buttonElementAgentPromptDisplay ::
+  Slackblocks.Models.ButtonElementFields -> Maybe Data.Text.Text
+```
+
+## buttonElementAsElement {#slackblocks-models-buttonelementaselement}
+
+Place a checked ButtonElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.buttonElementAsElement ::
+  Slackblocks.Models.ButtonElement -> Slackblocks.Models.Element
+```
+
+## buttonElementConfirm {#slackblocks-models-buttonelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.buttonElementConfirm ::
+  Slackblocks.Models.ButtonElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## buttonElementExtensions {#slackblocks-models-buttonelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.buttonElementExtensions ::
+  Slackblocks.Models.ButtonElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## buttonElementStyle {#slackblocks-models-buttonelementstyle}
+
+Sets the button's emphasis. Omit it for the default neutral style. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.buttonElementStyle ::
+  Slackblocks.Models.ButtonElementFields
+  -> Maybe Slackblocks.Models.ButtonStyle
+```
+
+## buttonElementText {#slackblocks-models-buttonelementtext}
+
+Sets the button label. Required. Shared limit: `button.text`.
+
+```haskell
+Slackblocks.Models.buttonElementText ::
+  Slackblocks.Models.ButtonElementFields
+  -> Slackblocks.Models.PlainText
+```
+
+## buttonElementUrl {#slackblocks-models-buttonelementurl}
+
+Sets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `button.url`.
+
+```haskell
+Slackblocks.Models.buttonElementUrl ::
+  Slackblocks.Models.ButtonElementFields -> Maybe Data.Text.Text
+```
+
+## buttonElementValue {#slackblocks-models-buttonelementvalue}
+
+Sets the application-defined value sent in interaction payloads. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `button.value`.
+
+```haskell
+Slackblocks.Models.buttonElementValue ::
+  Slackblocks.Models.ButtonElementFields -> Maybe Data.Text.Text
+```
+
+## channelMultiSelectElement {#slackblocks-models-channelmultiselectelement}
+
+Start editable fields for ChannelMultiSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildChannelMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildchannelmultiselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElement ::
+  Slackblocks.Models.ChannelMultiSelectElementFields
+```
+
+## channelMultiSelectElementActionId {#slackblocks-models-channelmultiselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElementActionId ::
+  Slackblocks.Models.ChannelMultiSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## channelMultiSelectElementAsElement {#slackblocks-models-channelmultiselectelementaselement}
+
+Place a checked ChannelMultiSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElementAsElement ::
+  Slackblocks.Models.ChannelMultiSelectElement
+  -> Slackblocks.Models.Element
+```
+
+## channelMultiSelectElementAsInputElement {#slackblocks-models-channelmultiselectelementasinputelement}
+
+Place a checked ChannelMultiSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElementAsInputElement ::
+  Slackblocks.Models.ChannelMultiSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## channelMultiSelectElementConfirm {#slackblocks-models-channelmultiselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElementConfirm ::
+  Slackblocks.Models.ChannelMultiSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## channelMultiSelectElementExtensions {#slackblocks-models-channelmultiselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElementExtensions ::
+  Slackblocks.Models.ChannelMultiSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## channelMultiSelectElementFocusOnLoad {#slackblocks-models-channelmultiselectelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElementFocusOnLoad ::
+  Slackblocks.Models.ChannelMultiSelectElementFields -> Maybe Bool
+```
+
+## channelMultiSelectElementInitialChannels {#slackblocks-models-channelmultiselectelementinitialchannels}
+
+Adds channel IDs that are selected when the menu loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElementInitialChannels ::
+  Slackblocks.Models.ChannelMultiSelectElementFields
+  -> Maybe [Data.Text.Text]
+```
+
+## channelMultiSelectElementMaxSelectedItems {#slackblocks-models-channelmultiselectelementmaxselecteditems}
+
+Sets the maximum number of items a user can select. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `multi_select.max_selected_items`.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElementMaxSelectedItems ::
+  Slackblocks.Models.ChannelMultiSelectElementFields -> Maybe Integer
+```
+
+## channelMultiSelectElementPlaceholder {#slackblocks-models-channelmultiselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.channelMultiSelectElementPlaceholder ::
+  Slackblocks.Models.ChannelMultiSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## channelSelectElement {#slackblocks-models-channelselectelement}
+
+Start editable fields for ChannelSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildChannelSelectElement`](/reference/haskell/elements#slackblocks-models-buildchannelselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.channelSelectElement ::
+  Slackblocks.Models.ChannelSelectElementFields
+```
+
+## channelSelectElementActionId {#slackblocks-models-channelselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.channelSelectElementActionId ::
+  Slackblocks.Models.ChannelSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## channelSelectElementAsElement {#slackblocks-models-channelselectelementaselement}
+
+Place a checked ChannelSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.channelSelectElementAsElement ::
+  Slackblocks.Models.ChannelSelectElement
+  -> Slackblocks.Models.Element
+```
+
+## channelSelectElementAsInputElement {#slackblocks-models-channelselectelementasinputelement}
+
+Place a checked ChannelSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.channelSelectElementAsInputElement ::
+  Slackblocks.Models.ChannelSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## channelSelectElementConfirm {#slackblocks-models-channelselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.channelSelectElementConfirm ::
+  Slackblocks.Models.ChannelSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## channelSelectElementExtensions {#slackblocks-models-channelselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.channelSelectElementExtensions ::
+  Slackblocks.Models.ChannelSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## channelSelectElementFocusOnLoad {#slackblocks-models-channelselectelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.channelSelectElementFocusOnLoad ::
+  Slackblocks.Models.ChannelSelectElementFields -> Maybe Bool
+```
+
+## channelSelectElementInitialChannel {#slackblocks-models-channelselectelementinitialchannel}
+
+Sets the channel ID selected when the menu loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.channelSelectElementInitialChannel ::
+  Slackblocks.Models.ChannelSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## channelSelectElementPlaceholder {#slackblocks-models-channelselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.channelSelectElementPlaceholder ::
+  Slackblocks.Models.ChannelSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## channelSelectElementResponseUrlEnabled {#slackblocks-models-channelselectelementresponseurlenabled}
+
+Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.channelSelectElementResponseUrlEnabled ::
+  Slackblocks.Models.ChannelSelectElementFields -> Maybe Bool
+```
+
+## checkboxesElement {#slackblocks-models-checkboxeselement}
+
+Start editable fields for CheckboxesElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildCheckboxesElement`](/reference/haskell/elements#slackblocks-models-buildcheckboxeselement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.checkboxesElement ::
+  [Slackblocks.Models.SelectOption]
+  -> Slackblocks.Models.CheckboxesElementFields
+```
+
+## checkboxesElementActionId {#slackblocks-models-checkboxeselementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.checkboxesElementActionId ::
+  Slackblocks.Models.CheckboxesElementFields -> Maybe Data.Text.Text
+```
+
+## checkboxesElementAsElement {#slackblocks-models-checkboxeselementaselement}
+
+Place a checked CheckboxesElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.checkboxesElementAsElement ::
+  Slackblocks.Models.CheckboxesElement -> Slackblocks.Models.Element
+```
+
+## checkboxesElementAsInputElement {#slackblocks-models-checkboxeselementasinputelement}
+
+Place a checked CheckboxesElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.checkboxesElementAsInputElement ::
+  Slackblocks.Models.CheckboxesElement
+  -> Slackblocks.Models.InputElement
+```
+
+## checkboxesElementConfirm {#slackblocks-models-checkboxeselementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.checkboxesElementConfirm ::
+  Slackblocks.Models.CheckboxesElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## checkboxesElementExtensions {#slackblocks-models-checkboxeselementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.checkboxesElementExtensions ::
+  Slackblocks.Models.CheckboxesElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## checkboxesElementFocusOnLoad {#slackblocks-models-checkboxeselementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.checkboxesElementFocusOnLoad ::
+  Slackblocks.Models.CheckboxesElementFields -> Maybe Bool
+```
+
+## checkboxesElementInitialOptions {#slackblocks-models-checkboxeselementinitialoptions}
+
+Adds options that are selected when the element loads. Each must match an option in the element. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.checkboxesElementInitialOptions ::
+  Slackblocks.Models.CheckboxesElementFields
+  -> Maybe [Slackblocks.Models.SelectOption]
+```
+
+## checkboxesElementOptions {#slackblocks-models-checkboxeselementoptions}
+
+Adds selectable options in display order. Required. Shared limit: `checkboxes.options`.
+
+```haskell
+Slackblocks.Models.checkboxesElementOptions ::
+  Slackblocks.Models.CheckboxesElementFields
+  -> [Slackblocks.Models.SelectOption]
+```
+
+## conversationMultiSelectElement {#slackblocks-models-conversationmultiselectelement}
+
+Start editable fields for ConversationMultiSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildConversationMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildconversationmultiselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElement ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+```
+
+## conversationMultiSelectElementActionId {#slackblocks-models-conversationmultiselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementActionId ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## conversationMultiSelectElementAsElement {#slackblocks-models-conversationmultiselectelementaselement}
+
+Place a checked ConversationMultiSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementAsElement ::
+  Slackblocks.Models.ConversationMultiSelectElement
+  -> Slackblocks.Models.Element
+```
+
+## conversationMultiSelectElementAsInputElement {#slackblocks-models-conversationmultiselectelementasinputelement}
+
+Place a checked ConversationMultiSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementAsInputElement ::
+  Slackblocks.Models.ConversationMultiSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## conversationMultiSelectElementConfirm {#slackblocks-models-conversationmultiselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementConfirm ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## conversationMultiSelectElementDefaultToCurrentConversation {#slackblocks-models-conversationmultiselectelementdefaulttocurrentconversation}
+
+Sets whether the menu pre-selects the conversation the user is viewing. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementDefaultToCurrentConversation ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Maybe Bool
+```
+
+## conversationMultiSelectElementExtensions {#slackblocks-models-conversationmultiselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementExtensions ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## conversationMultiSelectElementFilter {#slackblocks-models-conversationmultiselectelementfilter}
+
+Sets which conversation types the menu offers. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementFilter ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Maybe Slackblocks.Models.ConversationFilter
+```
+
+## conversationMultiSelectElementFocusOnLoad {#slackblocks-models-conversationmultiselectelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementFocusOnLoad ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Maybe Bool
+```
+
+## conversationMultiSelectElementInitialConversations {#slackblocks-models-conversationmultiselectelementinitialconversations}
+
+Adds conversation IDs that are selected when the menu loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementInitialConversations ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Maybe [Data.Text.Text]
+```
+
+## conversationMultiSelectElementMaxSelectedItems {#slackblocks-models-conversationmultiselectelementmaxselecteditems}
+
+Sets the maximum number of items a user can select. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `multi_select.max_selected_items`.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementMaxSelectedItems ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Maybe Integer
+```
+
+## conversationMultiSelectElementPlaceholder {#slackblocks-models-conversationmultiselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.conversationMultiSelectElementPlaceholder ::
+  Slackblocks.Models.ConversationMultiSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## conversationSelectElement {#slackblocks-models-conversationselectelement}
+
+Start editable fields for ConversationSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildConversationSelectElement`](/reference/haskell/elements#slackblocks-models-buildconversationselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.conversationSelectElement ::
+  Slackblocks.Models.ConversationSelectElementFields
+```
+
+## conversationSelectElementActionId {#slackblocks-models-conversationselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.conversationSelectElementActionId ::
+  Slackblocks.Models.ConversationSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## conversationSelectElementAsElement {#slackblocks-models-conversationselectelementaselement}
+
+Place a checked ConversationSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.conversationSelectElementAsElement ::
+  Slackblocks.Models.ConversationSelectElement
+  -> Slackblocks.Models.Element
+```
+
+## conversationSelectElementAsInputElement {#slackblocks-models-conversationselectelementasinputelement}
+
+Place a checked ConversationSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.conversationSelectElementAsInputElement ::
+  Slackblocks.Models.ConversationSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## conversationSelectElementConfirm {#slackblocks-models-conversationselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationSelectElementConfirm ::
+  Slackblocks.Models.ConversationSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## conversationSelectElementDefaultToCurrentConversation {#slackblocks-models-conversationselectelementdefaulttocurrentconversation}
+
+Sets whether the menu pre-selects the conversation the user is viewing. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationSelectElementDefaultToCurrentConversation ::
+  Slackblocks.Models.ConversationSelectElementFields -> Maybe Bool
+```
+
+## conversationSelectElementExtensions {#slackblocks-models-conversationselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.conversationSelectElementExtensions ::
+  Slackblocks.Models.ConversationSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## conversationSelectElementFilter {#slackblocks-models-conversationselectelementfilter}
+
+Sets which conversation types the menu offers. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationSelectElementFilter ::
+  Slackblocks.Models.ConversationSelectElementFields
+  -> Maybe Slackblocks.Models.ConversationFilter
+```
+
+## conversationSelectElementFocusOnLoad {#slackblocks-models-conversationselectelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationSelectElementFocusOnLoad ::
+  Slackblocks.Models.ConversationSelectElementFields -> Maybe Bool
+```
+
+## conversationSelectElementInitialConversation {#slackblocks-models-conversationselectelementinitialconversation}
+
+Sets the conversation ID selected when the menu loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationSelectElementInitialConversation ::
+  Slackblocks.Models.ConversationSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## conversationSelectElementPlaceholder {#slackblocks-models-conversationselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.conversationSelectElementPlaceholder ::
+  Slackblocks.Models.ConversationSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## conversationSelectElementResponseUrlEnabled {#slackblocks-models-conversationselectelementresponseurlenabled}
+
+Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.conversationSelectElementResponseUrlEnabled ::
+  Slackblocks.Models.ConversationSelectElementFields -> Maybe Bool
+```
+
+## datePickerElement {#slackblocks-models-datepickerelement}
+
+Start editable fields for DatePickerElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildDatePickerElement`](/reference/haskell/elements#slackblocks-models-builddatepickerelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.datePickerElement ::
+  Slackblocks.Models.DatePickerElementFields
+```
+
+## datePickerElementActionId {#slackblocks-models-datepickerelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.datePickerElementActionId ::
+  Slackblocks.Models.DatePickerElementFields -> Maybe Data.Text.Text
+```
+
+## datePickerElementAsElement {#slackblocks-models-datepickerelementaselement}
+
+Place a checked DatePickerElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.datePickerElementAsElement ::
+  Slackblocks.Models.DatePickerElement -> Slackblocks.Models.Element
+```
+
+## datePickerElementAsInputElement {#slackblocks-models-datepickerelementasinputelement}
+
+Place a checked DatePickerElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.datePickerElementAsInputElement ::
+  Slackblocks.Models.DatePickerElement
+  -> Slackblocks.Models.InputElement
+```
+
+## datePickerElementConfirm {#slackblocks-models-datepickerelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.datePickerElementConfirm ::
+  Slackblocks.Models.DatePickerElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## datePickerElementExtensions {#slackblocks-models-datepickerelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.datePickerElementExtensions ::
+  Slackblocks.Models.DatePickerElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## datePickerElementFocusOnLoad {#slackblocks-models-datepickerelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.datePickerElementFocusOnLoad ::
+  Slackblocks.Models.DatePickerElementFields -> Maybe Bool
+```
+
+## datePickerElementInitialDate {#slackblocks-models-datepickerelementinitialdate}
+
+Sets the initially selected date, formatted as YYYY-MM-DD. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.datePickerElementInitialDate ::
+  Slackblocks.Models.DatePickerElementFields -> Maybe Data.Text.Text
+```
+
+## datePickerElementPlaceholder {#slackblocks-models-datepickerelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `date_picker.placeholder`.
+
+```haskell
+Slackblocks.Models.datePickerElementPlaceholder ::
+  Slackblocks.Models.DatePickerElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## dateTimePickerElement {#slackblocks-models-datetimepickerelement}
+
+Start editable fields for DateTimePickerElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildDateTimePickerElement`](/reference/haskell/elements#slackblocks-models-builddatetimepickerelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.dateTimePickerElement ::
+  Slackblocks.Models.DateTimePickerElementFields
+```
+
+## dateTimePickerElementActionId {#slackblocks-models-datetimepickerelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.dateTimePickerElementActionId ::
+  Slackblocks.Models.DateTimePickerElementFields
+  -> Maybe Data.Text.Text
+```
+
+## dateTimePickerElementAsElement {#slackblocks-models-datetimepickerelementaselement}
+
+Place a checked DateTimePickerElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.dateTimePickerElementAsElement ::
+  Slackblocks.Models.DateTimePickerElement
+  -> Slackblocks.Models.Element
+```
+
+## dateTimePickerElementAsInputElement {#slackblocks-models-datetimepickerelementasinputelement}
+
+Place a checked DateTimePickerElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.dateTimePickerElementAsInputElement ::
+  Slackblocks.Models.DateTimePickerElement
+  -> Slackblocks.Models.InputElement
+```
+
+## dateTimePickerElementConfirm {#slackblocks-models-datetimepickerelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.dateTimePickerElementConfirm ::
+  Slackblocks.Models.DateTimePickerElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## dateTimePickerElementExtensions {#slackblocks-models-datetimepickerelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.dateTimePickerElementExtensions ::
+  Slackblocks.Models.DateTimePickerElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## dateTimePickerElementFocusOnLoad {#slackblocks-models-datetimepickerelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.dateTimePickerElementFocusOnLoad ::
+  Slackblocks.Models.DateTimePickerElementFields -> Maybe Bool
+```
+
+## dateTimePickerElementInitialDateTime {#slackblocks-models-datetimepickerelementinitialdatetime}
+
+Sets the initially selected moment as a UNIX timestamp in seconds. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.dateTimePickerElementInitialDateTime ::
+  Slackblocks.Models.DateTimePickerElementFields -> Maybe Integer
+```
+
+## emailInputElement {#slackblocks-models-emailinputelement}
+
+Start editable fields for EmailInputElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildEmailInputElement`](/reference/haskell/elements#slackblocks-models-buildemailinputelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.emailInputElement ::
+  Slackblocks.Models.EmailInputElementFields
+```
+
+## emailInputElementActionId {#slackblocks-models-emailinputelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.emailInputElementActionId ::
+  Slackblocks.Models.EmailInputElementFields -> Maybe Data.Text.Text
+```
+
+## emailInputElementAsElement {#slackblocks-models-emailinputelementaselement}
+
+Place a checked EmailInputElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.emailInputElementAsElement ::
+  Slackblocks.Models.EmailInputElement -> Slackblocks.Models.Element
+```
+
+## emailInputElementAsInputElement {#slackblocks-models-emailinputelementasinputelement}
+
+Place a checked EmailInputElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.emailInputElementAsInputElement ::
+  Slackblocks.Models.EmailInputElement
+  -> Slackblocks.Models.InputElement
+```
+
+## emailInputElementDispatchActionConfig {#slackblocks-models-emailinputelementdispatchactionconfig}
+
+Sets which user interactions send a block_actions payload. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.emailInputElementDispatchActionConfig ::
+  Slackblocks.Models.EmailInputElementFields
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+```
+
+## emailInputElementExtensions {#slackblocks-models-emailinputelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.emailInputElementExtensions ::
+  Slackblocks.Models.EmailInputElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## emailInputElementFocusOnLoad {#slackblocks-models-emailinputelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.emailInputElementFocusOnLoad ::
+  Slackblocks.Models.EmailInputElementFields -> Maybe Bool
+```
+
+## emailInputElementInitialValue {#slackblocks-models-emailinputelementinitialvalue}
+
+Sets the value present when the input loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.emailInputElementInitialValue ::
+  Slackblocks.Models.EmailInputElementFields -> Maybe Data.Text.Text
+```
+
+## emailInputElementPlaceholder {#slackblocks-models-emailinputelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `email_input.placeholder`.
+
+```haskell
+Slackblocks.Models.emailInputElementPlaceholder ::
+  Slackblocks.Models.EmailInputElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## externalMultiSelectElement {#slackblocks-models-externalmultiselectelement}
+
+Start editable fields for ExternalMultiSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildExternalMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildexternalmultiselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElement ::
+  Slackblocks.Models.ExternalMultiSelectElementFields
+```
+
+## externalMultiSelectElementActionId {#slackblocks-models-externalmultiselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementActionId ::
+  Slackblocks.Models.ExternalMultiSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## externalMultiSelectElementAsElement {#slackblocks-models-externalmultiselectelementaselement}
+
+Place a checked ExternalMultiSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementAsElement ::
+  Slackblocks.Models.ExternalMultiSelectElement
+  -> Slackblocks.Models.Element
+```
+
+## externalMultiSelectElementAsInputElement {#slackblocks-models-externalmultiselectelementasinputelement}
+
+Place a checked ExternalMultiSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementAsInputElement ::
+  Slackblocks.Models.ExternalMultiSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## externalMultiSelectElementConfirm {#slackblocks-models-externalmultiselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementConfirm ::
+  Slackblocks.Models.ExternalMultiSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## externalMultiSelectElementExtensions {#slackblocks-models-externalmultiselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementExtensions ::
+  Slackblocks.Models.ExternalMultiSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## externalMultiSelectElementFocusOnLoad {#slackblocks-models-externalmultiselectelementfocusonload}
+
+Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementFocusOnLoad ::
+  Slackblocks.Models.ExternalMultiSelectElementFields -> Maybe Bool
+```
+
+## externalMultiSelectElementInitialOptions {#slackblocks-models-externalmultiselectelementinitialoptions}
+
+Adds options that are selected when the element loads. Each must match an option in the element. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementInitialOptions ::
+  Slackblocks.Models.ExternalMultiSelectElementFields
+  -> Maybe [Slackblocks.Models.SelectOption]
+```
+
+## externalMultiSelectElementMaxSelectedItems {#slackblocks-models-externalmultiselectelementmaxselecteditems}
+
+Sets the maximum number of items a user can select. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `multi_select.max_selected_items`.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementMaxSelectedItems ::
+  Slackblocks.Models.ExternalMultiSelectElementFields
+  -> Maybe Integer
+```
+
+## externalMultiSelectElementMinQueryLength {#slackblocks-models-externalmultiselectelementminquerylength}
+
+Sets how many characters the user must type before Slack queries your options endpoint. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.min_query_length`.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementMinQueryLength ::
+  Slackblocks.Models.ExternalMultiSelectElementFields
+  -> Maybe Integer
+```
+
+## externalMultiSelectElementPlaceholder {#slackblocks-models-externalmultiselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.externalMultiSelectElementPlaceholder ::
+  Slackblocks.Models.ExternalMultiSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## externalSelectElement {#slackblocks-models-externalselectelement}
+
+Start editable fields for ExternalSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildExternalSelectElement`](/reference/haskell/elements#slackblocks-models-buildexternalselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.externalSelectElement ::
+  Slackblocks.Models.ExternalSelectElementFields
+```
+
+## externalSelectElementActionId {#slackblocks-models-externalselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.externalSelectElementActionId ::
+  Slackblocks.Models.ExternalSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## externalSelectElementAsElement {#slackblocks-models-externalselectelementaselement}
+
+Place a checked ExternalSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.externalSelectElementAsElement ::
+  Slackblocks.Models.ExternalSelectElement
+  -> Slackblocks.Models.Element
+```
+
+## externalSelectElementAsInputElement {#slackblocks-models-externalselectelementasinputelement}
+
+Place a checked ExternalSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.externalSelectElementAsInputElement ::
+  Slackblocks.Models.ExternalSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## externalSelectElementConfirm {#slackblocks-models-externalselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.externalSelectElementConfirm ::
+  Slackblocks.Models.ExternalSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## externalSelectElementExtensions {#slackblocks-models-externalselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.externalSelectElementExtensions ::
+  Slackblocks.Models.ExternalSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## externalSelectElementFocusOnLoad {#slackblocks-models-externalselectelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.externalSelectElementFocusOnLoad ::
+  Slackblocks.Models.ExternalSelectElementFields -> Maybe Bool
+```
+
+## externalSelectElementInitialOption {#slackblocks-models-externalselectelementinitialoption}
+
+Sets the option selected when the element loads. It must match an option in the element. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.externalSelectElementInitialOption ::
+  Slackblocks.Models.ExternalSelectElementFields
+  -> Maybe Slackblocks.Models.SelectOption
+```
+
+## externalSelectElementMinQueryLength {#slackblocks-models-externalselectelementminquerylength}
+
+Sets how many characters the user must type before Slack queries your options endpoint. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.min_query_length`.
+
+```haskell
+Slackblocks.Models.externalSelectElementMinQueryLength ::
+  Slackblocks.Models.ExternalSelectElementFields -> Maybe Integer
+```
+
+## externalSelectElementPlaceholder {#slackblocks-models-externalselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.externalSelectElementPlaceholder ::
+  Slackblocks.Models.ExternalSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## feedbackButtonsElement {#slackblocks-models-feedbackbuttonselement}
+
+Start editable fields for FeedbackButtonsElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildFeedbackButtonsElement`](/reference/haskell/elements#slackblocks-models-buildfeedbackbuttonselement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.feedbackButtonsElement ::
+  Slackblocks.Models.FeedbackButton
+  -> Slackblocks.Models.FeedbackButton
+  -> Slackblocks.Models.FeedbackButtonsElementFields
+```
+
+## feedbackButtonsElementActionId {#slackblocks-models-feedbackbuttonselementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.feedbackButtonsElementActionId ::
+  Slackblocks.Models.FeedbackButtonsElementFields
+  -> Maybe Data.Text.Text
+```
+
+## feedbackButtonsElementAsContextActionsElement {#slackblocks-models-feedbackbuttonselementascontextactionselement}
+
+Place a checked FeedbackButtonsElement in the ContextActionsElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.feedbackButtonsElementAsContextActionsElement ::
+  Slackblocks.Models.FeedbackButtonsElement
+  -> Slackblocks.Models.ContextActionsElement
+```
+
+## feedbackButtonsElementAsElement {#slackblocks-models-feedbackbuttonselementaselement}
+
+Place a checked FeedbackButtonsElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.feedbackButtonsElementAsElement ::
+  Slackblocks.Models.FeedbackButtonsElement
+  -> Slackblocks.Models.Element
+```
+
+## feedbackButtonsElementExtensions {#slackblocks-models-feedbackbuttonselementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.feedbackButtonsElementExtensions ::
+  Slackblocks.Models.FeedbackButtonsElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## feedbackButtonsElementNegativeButton {#slackblocks-models-feedbackbuttonselementnegativebutton}
+
+Sets the button for negative feedback. Required.
+
+```haskell
+Slackblocks.Models.feedbackButtonsElementNegativeButton ::
+  Slackblocks.Models.FeedbackButtonsElementFields
+  -> Slackblocks.Models.FeedbackButton
+```
+
+## feedbackButtonsElementPositiveButton {#slackblocks-models-feedbackbuttonselementpositivebutton}
+
+Sets the button for positive feedback. Required.
+
+```haskell
+Slackblocks.Models.feedbackButtonsElementPositiveButton ::
+  Slackblocks.Models.FeedbackButtonsElementFields
+  -> Slackblocks.Models.FeedbackButton
+```
+
+## fileInputElement {#slackblocks-models-fileinputelement}
+
+Start editable fields for FileInputElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildFileInputElement`](/reference/haskell/elements#slackblocks-models-buildfileinputelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.fileInputElement ::
+  Slackblocks.Models.FileInputElementFields
+```
+
+## fileInputElementActionId {#slackblocks-models-fileinputelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.fileInputElementActionId ::
+  Slackblocks.Models.FileInputElementFields -> Maybe Data.Text.Text
+```
+
+## fileInputElementAsElement {#slackblocks-models-fileinputelementaselement}
+
+Place a checked FileInputElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.fileInputElementAsElement ::
+  Slackblocks.Models.FileInputElement -> Slackblocks.Models.Element
+```
+
+## fileInputElementAsInputElement {#slackblocks-models-fileinputelementasinputelement}
+
+Place a checked FileInputElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.fileInputElementAsInputElement ::
+  Slackblocks.Models.FileInputElement
+  -> Slackblocks.Models.InputElement
+```
+
+## fileInputElementExtensions {#slackblocks-models-fileinputelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.fileInputElementExtensions ::
+  Slackblocks.Models.FileInputElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## fileInputElementFiletypes {#slackblocks-models-fileinputelementfiletypes}
+
+Adds accepted file extensions, such as pdf or png. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.fileInputElementFiletypes ::
+  Slackblocks.Models.FileInputElementFields -> Maybe [Data.Text.Text]
+```
+
+## fileInputElementMaxFiles {#slackblocks-models-fileinputelementmaxfiles}
+
+Sets the maximum number of files a user can upload. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `file_input.max_files`.
+
+```haskell
+Slackblocks.Models.fileInputElementMaxFiles ::
+  Slackblocks.Models.FileInputElementFields -> Maybe Integer
+```
+
+## iconButtonElement {#slackblocks-models-iconbuttonelement}
+
+Start editable fields for IconButtonElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildIconButtonElement`](/reference/haskell/elements#slackblocks-models-buildiconbuttonelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.iconButtonElement ::
+  Slackblocks.Models.PlainText
+  -> Slackblocks.Models.IconButtonIcon
+  -> Slackblocks.Models.IconButtonElementFields
+```
+
+## iconButtonElementAccessibilityLabel {#slackblocks-models-iconbuttonelementaccessibilitylabel}
+
+Sets the label read by screen readers in place of the visible text. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `icon_button.accessibility_label`.
+
+```haskell
+Slackblocks.Models.iconButtonElementAccessibilityLabel ::
+  Slackblocks.Models.IconButtonElementFields -> Maybe Data.Text.Text
+```
+
+## iconButtonElementActionId {#slackblocks-models-iconbuttonelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.iconButtonElementActionId ::
+  Slackblocks.Models.IconButtonElementFields -> Maybe Data.Text.Text
+```
+
+## iconButtonElementAsContextActionsElement {#slackblocks-models-iconbuttonelementascontextactionselement}
+
+Place a checked IconButtonElement in the ContextActionsElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.iconButtonElementAsContextActionsElement ::
+  Slackblocks.Models.IconButtonElement
+  -> Slackblocks.Models.ContextActionsElement
+```
+
+## iconButtonElementAsElement {#slackblocks-models-iconbuttonelementaselement}
+
+Place a checked IconButtonElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.iconButtonElementAsElement ::
+  Slackblocks.Models.IconButtonElement -> Slackblocks.Models.Element
+```
+
+## iconButtonElementConfirm {#slackblocks-models-iconbuttonelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.iconButtonElementConfirm ::
+  Slackblocks.Models.IconButtonElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## iconButtonElementExtensions {#slackblocks-models-iconbuttonelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.iconButtonElementExtensions ::
+  Slackblocks.Models.IconButtonElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## iconButtonElementIcon {#slackblocks-models-iconbuttonelementicon}
+
+Sets the icon shown on the button. Required.
+
+```haskell
+Slackblocks.Models.iconButtonElementIcon ::
+  Slackblocks.Models.IconButtonElementFields
+  -> Slackblocks.Models.IconButtonIcon
+```
+
+## iconButtonElementText {#slackblocks-models-iconbuttonelementtext}
+
+Sets the text used as the button's accessible name. Required.
+
+```haskell
+Slackblocks.Models.iconButtonElementText ::
+  Slackblocks.Models.IconButtonElementFields
+  -> Slackblocks.Models.PlainText
+```
+
+## iconButtonElementValue {#slackblocks-models-iconbuttonelementvalue}
+
+Sets the application-defined value sent in interaction payloads. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `icon_button.value`.
+
+```haskell
+Slackblocks.Models.iconButtonElementValue ::
+  Slackblocks.Models.IconButtonElementFields -> Maybe Data.Text.Text
+```
+
+## iconButtonElementVisibleToUserIds {#slackblocks-models-iconbuttonelementvisibletouserids}
+
+Adds the IDs of users who can see this button. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `icon_button.visible_to_user_ids`.
+
+```haskell
+Slackblocks.Models.iconButtonElementVisibleToUserIds ::
+  Slackblocks.Models.IconButtonElementFields
+  -> Maybe [Data.Text.Text]
+```
+
+## imageElement {#slackblocks-models-imageelement}
+
+Start editable fields for ImageElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildImageElement`](/reference/haskell/elements#slackblocks-models-buildimageelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.imageElement ::
+  Data.Text.Text -> Slackblocks.Models.ImageElementFields
+```
+
+## imageElementAltText {#slackblocks-models-imageelementalttext}
+
+Sets a plain-text summary of the image or video for assistive technology. Required. Shared limit: `image_element.alt_text`.
+
+```haskell
+Slackblocks.Models.imageElementAltText ::
+  Slackblocks.Models.ImageElementFields -> Data.Text.Text
+```
+
+## imageElementAsContextElement {#slackblocks-models-imageelementascontextelement}
+
+Place a checked ImageElement in the ContextElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.imageElementAsContextElement ::
+  Slackblocks.Models.ImageElement
+  -> Slackblocks.Models.ContextElement
+```
+
+## imageElementAsElement {#slackblocks-models-imageelementaselement}
+
+Place a checked ImageElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.imageElementAsElement ::
+  Slackblocks.Models.ImageElement -> Slackblocks.Models.Element
+```
+
+## imageElementExtensions {#slackblocks-models-imageelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.imageElementExtensions ::
+  Slackblocks.Models.ImageElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## imageElementImageUrl {#slackblocks-models-imageelementimageurl}
+
+Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `image_element.image_url`.
+
+```haskell
+Slackblocks.Models.imageElementImageUrl ::
+  Slackblocks.Models.ImageElementFields -> Maybe Data.Text.Text
+```
+
+## imageElementSlackFile {#slackblocks-models-imageelementslackfile}
+
+Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.imageElementSlackFile ::
+  Slackblocks.Models.ImageElementFields
+  -> Maybe Slackblocks.Models.SlackFile
+```
+
+## inspectButtonElement {#slackblocks-models-inspectbuttonelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildButtonElement`](/reference/haskell/elements#slackblocks-models-buildbuttonelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectButtonElement ::
+  Slackblocks.Models.ButtonElement
+  -> Slackblocks.Models.ButtonElementFields
+```
+
+## inspectChannelMultiSelectElement {#slackblocks-models-inspectchannelmultiselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildChannelMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildchannelmultiselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectChannelMultiSelectElement ::
+  Slackblocks.Models.ChannelMultiSelectElement
+  -> Slackblocks.Models.ChannelMultiSelectElementFields
+```
+
+## inspectChannelSelectElement {#slackblocks-models-inspectchannelselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildChannelSelectElement`](/reference/haskell/elements#slackblocks-models-buildchannelselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectChannelSelectElement ::
+  Slackblocks.Models.ChannelSelectElement
+  -> Slackblocks.Models.ChannelSelectElementFields
+```
+
+## inspectCheckboxesElement {#slackblocks-models-inspectcheckboxeselement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildCheckboxesElement`](/reference/haskell/elements#slackblocks-models-buildcheckboxeselement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectCheckboxesElement ::
+  Slackblocks.Models.CheckboxesElement
+  -> Slackblocks.Models.CheckboxesElementFields
+```
+
+## inspectConversationMultiSelectElement {#slackblocks-models-inspectconversationmultiselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildConversationMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildconversationmultiselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectConversationMultiSelectElement ::
+  Slackblocks.Models.ConversationMultiSelectElement
+  -> Slackblocks.Models.ConversationMultiSelectElementFields
+```
+
+## inspectConversationSelectElement {#slackblocks-models-inspectconversationselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildConversationSelectElement`](/reference/haskell/elements#slackblocks-models-buildconversationselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectConversationSelectElement ::
+  Slackblocks.Models.ConversationSelectElement
+  -> Slackblocks.Models.ConversationSelectElementFields
+```
+
+## inspectDatePickerElement {#slackblocks-models-inspectdatepickerelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildDatePickerElement`](/reference/haskell/elements#slackblocks-models-builddatepickerelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectDatePickerElement ::
+  Slackblocks.Models.DatePickerElement
+  -> Slackblocks.Models.DatePickerElementFields
+```
+
+## inspectDateTimePickerElement {#slackblocks-models-inspectdatetimepickerelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildDateTimePickerElement`](/reference/haskell/elements#slackblocks-models-builddatetimepickerelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectDateTimePickerElement ::
+  Slackblocks.Models.DateTimePickerElement
+  -> Slackblocks.Models.DateTimePickerElementFields
+```
+
+## inspectEmailInputElement {#slackblocks-models-inspectemailinputelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildEmailInputElement`](/reference/haskell/elements#slackblocks-models-buildemailinputelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectEmailInputElement ::
+  Slackblocks.Models.EmailInputElement
+  -> Slackblocks.Models.EmailInputElementFields
+```
+
+## inspectExternalMultiSelectElement {#slackblocks-models-inspectexternalmultiselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildExternalMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildexternalmultiselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectExternalMultiSelectElement ::
+  Slackblocks.Models.ExternalMultiSelectElement
+  -> Slackblocks.Models.ExternalMultiSelectElementFields
+```
+
+## inspectExternalSelectElement {#slackblocks-models-inspectexternalselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildExternalSelectElement`](/reference/haskell/elements#slackblocks-models-buildexternalselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectExternalSelectElement ::
+  Slackblocks.Models.ExternalSelectElement
+  -> Slackblocks.Models.ExternalSelectElementFields
+```
+
+## inspectFeedbackButtonsElement {#slackblocks-models-inspectfeedbackbuttonselement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildFeedbackButtonsElement`](/reference/haskell/elements#slackblocks-models-buildfeedbackbuttonselement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectFeedbackButtonsElement ::
+  Slackblocks.Models.FeedbackButtonsElement
+  -> Slackblocks.Models.FeedbackButtonsElementFields
+```
+
+## inspectFileInputElement {#slackblocks-models-inspectfileinputelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildFileInputElement`](/reference/haskell/elements#slackblocks-models-buildfileinputelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectFileInputElement ::
+  Slackblocks.Models.FileInputElement
+  -> Slackblocks.Models.FileInputElementFields
+```
+
+## inspectIconButtonElement {#slackblocks-models-inspecticonbuttonelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildIconButtonElement`](/reference/haskell/elements#slackblocks-models-buildiconbuttonelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectIconButtonElement ::
+  Slackblocks.Models.IconButtonElement
+  -> Slackblocks.Models.IconButtonElementFields
+```
+
+## inspectImageElement {#slackblocks-models-inspectimageelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildImageElement`](/reference/haskell/elements#slackblocks-models-buildimageelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectImageElement ::
+  Slackblocks.Models.ImageElement
+  -> Slackblocks.Models.ImageElementFields
+```
+
+## inspectNumberInputElement {#slackblocks-models-inspectnumberinputelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildNumberInputElement`](/reference/haskell/elements#slackblocks-models-buildnumberinputelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectNumberInputElement ::
+  Slackblocks.Models.NumberInputElement
+  -> Slackblocks.Models.NumberInputElementFields
+```
+
+## inspectOverflowElement {#slackblocks-models-inspectoverflowelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildOverflowElement`](/reference/haskell/elements#slackblocks-models-buildoverflowelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectOverflowElement ::
+  Slackblocks.Models.OverflowElement
+  -> Slackblocks.Models.OverflowElementFields
+```
+
+## inspectPlainTextInputElement {#slackblocks-models-inspectplaintextinputelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildPlainTextInputElement`](/reference/haskell/elements#slackblocks-models-buildplaintextinputelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectPlainTextInputElement ::
+  Slackblocks.Models.PlainTextInputElement
+  -> Slackblocks.Models.PlainTextInputElementFields
+```
+
+## inspectRadioButtonsElement {#slackblocks-models-inspectradiobuttonselement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildRadioButtonsElement`](/reference/haskell/elements#slackblocks-models-buildradiobuttonselement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectRadioButtonsElement ::
+  Slackblocks.Models.RadioButtonsElement
+  -> Slackblocks.Models.RadioButtonsElementFields
+```
+
+## inspectRichTextInputElement {#slackblocks-models-inspectrichtextinputelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildRichTextInputElement`](/reference/haskell/elements#slackblocks-models-buildrichtextinputelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectRichTextInputElement ::
+  Slackblocks.Models.RichTextInputElement
+  -> Slackblocks.Models.RichTextInputElementFields
+```
+
+## inspectStaticMultiSelectElement {#slackblocks-models-inspectstaticmultiselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildStaticMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildstaticmultiselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectStaticMultiSelectElement ::
+  Slackblocks.Models.StaticMultiSelectElement
+  -> Slackblocks.Models.StaticMultiSelectElementFields
+```
+
+## inspectStaticSelectElement {#slackblocks-models-inspectstaticselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildStaticSelectElement`](/reference/haskell/elements#slackblocks-models-buildstaticselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectStaticSelectElement ::
+  Slackblocks.Models.StaticSelectElement
+  -> Slackblocks.Models.StaticSelectElementFields
+```
+
+## inspectTimePickerElement {#slackblocks-models-inspecttimepickerelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildTimePickerElement`](/reference/haskell/elements#slackblocks-models-buildtimepickerelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectTimePickerElement ::
+  Slackblocks.Models.TimePickerElement
+  -> Slackblocks.Models.TimePickerElementFields
+```
+
+## inspectUrlInputElement {#slackblocks-models-inspecturlinputelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildUrlInputElement`](/reference/haskell/elements#slackblocks-models-buildurlinputelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectUrlInputElement ::
+  Slackblocks.Models.UrlInputElement
+  -> Slackblocks.Models.UrlInputElementFields
+```
+
+## inspectUserMultiSelectElement {#slackblocks-models-inspectusermultiselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildUserMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildusermultiselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectUserMultiSelectElement ::
+  Slackblocks.Models.UserMultiSelectElement
+  -> Slackblocks.Models.UserMultiSelectElementFields
+```
+
+## inspectUserSelectElement {#slackblocks-models-inspectuserselectelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildUserSelectElement`](/reference/haskell/elements#slackblocks-models-builduserselectelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectUserSelectElement ::
+  Slackblocks.Models.UserSelectElement
+  -> Slackblocks.Models.UserSelectElementFields
+```
+
+## inspectWorkflowButtonElement {#slackblocks-models-inspectworkflowbuttonelement}
+
+Inspect immutable construction fields. Rebuild edits with [`buildWorkflowButtonElement`](/reference/haskell/elements#slackblocks-models-buildworkflowbuttonelement) to revalidate.
+
+```haskell
+Slackblocks.Models.inspectWorkflowButtonElement ::
+  Slackblocks.Models.WorkflowButtonElement
+  -> Slackblocks.Models.WorkflowButtonElementFields
+```
+
+## numberInputElement {#slackblocks-models-numberinputelement}
+
+Start editable fields for NumberInputElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildNumberInputElement`](/reference/haskell/elements#slackblocks-models-buildnumberinputelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.numberInputElement ::
+  Bool -> Slackblocks.Models.NumberInputElementFields
+```
+
+## numberInputElementActionId {#slackblocks-models-numberinputelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.numberInputElementActionId ::
+  Slackblocks.Models.NumberInputElementFields -> Maybe Data.Text.Text
+```
+
+## numberInputElementAsElement {#slackblocks-models-numberinputelementaselement}
+
+Place a checked NumberInputElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.numberInputElementAsElement ::
+  Slackblocks.Models.NumberInputElement -> Slackblocks.Models.Element
+```
+
+## numberInputElementAsInputElement {#slackblocks-models-numberinputelementasinputelement}
+
+Place a checked NumberInputElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.numberInputElementAsInputElement ::
+  Slackblocks.Models.NumberInputElement
+  -> Slackblocks.Models.InputElement
+```
+
+## numberInputElementDispatchActionConfig {#slackblocks-models-numberinputelementdispatchactionconfig}
+
+Sets which user interactions send a block_actions payload. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.numberInputElementDispatchActionConfig ::
+  Slackblocks.Models.NumberInputElementFields
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+```
+
+## numberInputElementExtensions {#slackblocks-models-numberinputelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.numberInputElementExtensions ::
+  Slackblocks.Models.NumberInputElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## numberInputElementFocusOnLoad {#slackblocks-models-numberinputelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.numberInputElementFocusOnLoad ::
+  Slackblocks.Models.NumberInputElementFields -> Maybe Bool
+```
+
+## numberInputElementInitialValue {#slackblocks-models-numberinputelementinitialvalue}
+
+Sets the number present when the input loads, as a string such as 42 or 3.5. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.numberInputElementInitialValue ::
+  Slackblocks.Models.NumberInputElementFields -> Maybe Data.Text.Text
+```
+
+## numberInputElementIsDecimalAllowed {#slackblocks-models-numberinputelementisdecimalallowed}
+
+Sets whether the input accepts decimal numbers. Required.
+
+```haskell
+Slackblocks.Models.numberInputElementIsDecimalAllowed ::
+  Slackblocks.Models.NumberInputElementFields -> Bool
+```
+
+## numberInputElementMaxValue {#slackblocks-models-numberinputelementmaxvalue}
+
+Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.numberInputElementMaxValue ::
+  Slackblocks.Models.NumberInputElementFields -> Maybe Data.Text.Text
+```
+
+## numberInputElementMinValue {#slackblocks-models-numberinputelementminvalue}
+
+Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.numberInputElementMinValue ::
+  Slackblocks.Models.NumberInputElementFields -> Maybe Data.Text.Text
+```
+
+## numberInputElementPlaceholder {#slackblocks-models-numberinputelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `number_input.placeholder`.
+
+```haskell
+Slackblocks.Models.numberInputElementPlaceholder ::
+  Slackblocks.Models.NumberInputElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## overflowElement {#slackblocks-models-overflowelement}
+
+Start editable fields for OverflowElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildOverflowElement`](/reference/haskell/elements#slackblocks-models-buildoverflowelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.overflowElement ::
+  [Slackblocks.Models.SelectOption]
+  -> Slackblocks.Models.OverflowElementFields
+```
+
+## overflowElementActionId {#slackblocks-models-overflowelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.overflowElementActionId ::
+  Slackblocks.Models.OverflowElementFields -> Maybe Data.Text.Text
+```
+
+## overflowElementAsElement {#slackblocks-models-overflowelementaselement}
+
+Place a checked OverflowElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.overflowElementAsElement ::
+  Slackblocks.Models.OverflowElement -> Slackblocks.Models.Element
+```
+
+## overflowElementConfirm {#slackblocks-models-overflowelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.overflowElementConfirm ::
+  Slackblocks.Models.OverflowElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## overflowElementExtensions {#slackblocks-models-overflowelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.overflowElementExtensions ::
+  Slackblocks.Models.OverflowElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## overflowElementOptions {#slackblocks-models-overflowelementoptions}
+
+Adds selectable options in display order. Required. Shared limit: `overflow.options`.
+
+```haskell
+Slackblocks.Models.overflowElementOptions ::
+  Slackblocks.Models.OverflowElementFields
+  -> [Slackblocks.Models.SelectOption]
+```
+
+## plainTextInputElement {#slackblocks-models-plaintextinputelement}
+
+Start editable fields for PlainTextInputElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildPlainTextInputElement`](/reference/haskell/elements#slackblocks-models-buildplaintextinputelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.plainTextInputElement ::
+  Slackblocks.Models.PlainTextInputElementFields
+```
+
+## plainTextInputElementActionId {#slackblocks-models-plaintextinputelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.plainTextInputElementActionId ::
+  Slackblocks.Models.PlainTextInputElementFields
+  -> Maybe Data.Text.Text
+```
+
+## plainTextInputElementAsElement {#slackblocks-models-plaintextinputelementaselement}
+
+Place a checked PlainTextInputElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.plainTextInputElementAsElement ::
+  Slackblocks.Models.PlainTextInputElement
+  -> Slackblocks.Models.Element
+```
+
+## plainTextInputElementAsInputElement {#slackblocks-models-plaintextinputelementasinputelement}
+
+Place a checked PlainTextInputElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.plainTextInputElementAsInputElement ::
+  Slackblocks.Models.PlainTextInputElement
+  -> Slackblocks.Models.InputElement
+```
+
+## plainTextInputElementDispatchActionConfig {#slackblocks-models-plaintextinputelementdispatchactionconfig}
+
+Sets which user interactions send a block_actions payload. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.plainTextInputElementDispatchActionConfig ::
+  Slackblocks.Models.PlainTextInputElementFields
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+```
+
+## plainTextInputElementExtensions {#slackblocks-models-plaintextinputelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.plainTextInputElementExtensions ::
+  Slackblocks.Models.PlainTextInputElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## plainTextInputElementFocusOnLoad {#slackblocks-models-plaintextinputelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.plainTextInputElementFocusOnLoad ::
+  Slackblocks.Models.PlainTextInputElementFields -> Maybe Bool
+```
+
+## plainTextInputElementInitialValue {#slackblocks-models-plaintextinputelementinitialvalue}
+
+Sets the value present when the input loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.plainTextInputElementInitialValue ::
+  Slackblocks.Models.PlainTextInputElementFields
+  -> Maybe Data.Text.Text
+```
+
+## plainTextInputElementMaxLength {#slackblocks-models-plaintextinputelementmaxlength}
+
+Sets the maximum number of characters the user can enter. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `plain_text_input.max_length`.
+
+```haskell
+Slackblocks.Models.plainTextInputElementMaxLength ::
+  Slackblocks.Models.PlainTextInputElementFields -> Maybe Integer
+```
+
+## plainTextInputElementMinLength {#slackblocks-models-plaintextinputelementminlength}
+
+Sets the minimum number of characters the user must enter. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `plain_text_input.min_length`.
+
+```haskell
+Slackblocks.Models.plainTextInputElementMinLength ::
+  Slackblocks.Models.PlainTextInputElementFields -> Maybe Integer
+```
+
+## plainTextInputElementMultiline {#slackblocks-models-plaintextinputelementmultiline}
+
+Sets whether the input is a multi-line text area. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.plainTextInputElementMultiline ::
+  Slackblocks.Models.PlainTextInputElementFields -> Maybe Bool
+```
+
+## plainTextInputElementPlaceholder {#slackblocks-models-plaintextinputelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `plain_text_input.placeholder`.
+
+```haskell
+Slackblocks.Models.plainTextInputElementPlaceholder ::
+  Slackblocks.Models.PlainTextInputElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## radioButtonsElement {#slackblocks-models-radiobuttonselement}
+
+Start editable fields for RadioButtonsElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildRadioButtonsElement`](/reference/haskell/elements#slackblocks-models-buildradiobuttonselement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.radioButtonsElement ::
+  [Slackblocks.Models.SelectOption]
+  -> Slackblocks.Models.RadioButtonsElementFields
+```
+
+## radioButtonsElementActionId {#slackblocks-models-radiobuttonselementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.radioButtonsElementActionId ::
+  Slackblocks.Models.RadioButtonsElementFields
+  -> Maybe Data.Text.Text
+```
+
+## radioButtonsElementAsElement {#slackblocks-models-radiobuttonselementaselement}
+
+Place a checked RadioButtonsElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.radioButtonsElementAsElement ::
+  Slackblocks.Models.RadioButtonsElement
+  -> Slackblocks.Models.Element
+```
+
+## radioButtonsElementAsInputElement {#slackblocks-models-radiobuttonselementasinputelement}
+
+Place a checked RadioButtonsElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.radioButtonsElementAsInputElement ::
+  Slackblocks.Models.RadioButtonsElement
+  -> Slackblocks.Models.InputElement
+```
+
+## radioButtonsElementConfirm {#slackblocks-models-radiobuttonselementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.radioButtonsElementConfirm ::
+  Slackblocks.Models.RadioButtonsElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## radioButtonsElementExtensions {#slackblocks-models-radiobuttonselementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.radioButtonsElementExtensions ::
+  Slackblocks.Models.RadioButtonsElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## radioButtonsElementFocusOnLoad {#slackblocks-models-radiobuttonselementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.radioButtonsElementFocusOnLoad ::
+  Slackblocks.Models.RadioButtonsElementFields -> Maybe Bool
+```
+
+## radioButtonsElementInitialOption {#slackblocks-models-radiobuttonselementinitialoption}
+
+Sets the option selected when the element loads. It must match an option in the element. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.radioButtonsElementInitialOption ::
+  Slackblocks.Models.RadioButtonsElementFields
+  -> Maybe Slackblocks.Models.SelectOption
+```
+
+## radioButtonsElementOptions {#slackblocks-models-radiobuttonselementoptions}
+
+Adds selectable options in display order. Required. Shared limit: `radio_buttons.options`.
+
+```haskell
+Slackblocks.Models.radioButtonsElementOptions ::
+  Slackblocks.Models.RadioButtonsElementFields
+  -> [Slackblocks.Models.SelectOption]
+```
+
+## richTextInputElement {#slackblocks-models-richtextinputelement}
+
+Start editable fields for RichTextInputElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildRichTextInputElement`](/reference/haskell/elements#slackblocks-models-buildrichtextinputelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.richTextInputElement ::
+  Data.Text.Text -> Slackblocks.Models.RichTextInputElementFields
+```
+
+## richTextInputElementActionId {#slackblocks-models-richtextinputelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.richTextInputElementActionId ::
+  Slackblocks.Models.RichTextInputElementFields -> Data.Text.Text
+```
+
+## richTextInputElementAsElement {#slackblocks-models-richtextinputelementaselement}
+
+Place a checked RichTextInputElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.richTextInputElementAsElement ::
+  Slackblocks.Models.RichTextInputElement
+  -> Slackblocks.Models.Element
+```
+
+## richTextInputElementAsInputElement {#slackblocks-models-richtextinputelementasinputelement}
+
+Place a checked RichTextInputElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.richTextInputElementAsInputElement ::
+  Slackblocks.Models.RichTextInputElement
+  -> Slackblocks.Models.InputElement
+```
+
+## richTextInputElementDispatchActionConfig {#slackblocks-models-richtextinputelementdispatchactionconfig}
+
+Sets which user interactions send a block_actions payload. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.richTextInputElementDispatchActionConfig ::
+  Slackblocks.Models.RichTextInputElementFields
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+```
+
+## richTextInputElementExtensions {#slackblocks-models-richtextinputelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.richTextInputElementExtensions ::
+  Slackblocks.Models.RichTextInputElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## richTextInputElementFocusOnLoad {#slackblocks-models-richtextinputelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.richTextInputElementFocusOnLoad ::
+  Slackblocks.Models.RichTextInputElementFields -> Maybe Bool
+```
+
+## richTextInputElementInitialValue {#slackblocks-models-richtextinputelementinitialvalue}
+
+Sets the rich text present when the input loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.richTextInputElementInitialValue ::
+  Slackblocks.Models.RichTextInputElementFields
+  -> Maybe Slackblocks.Models.RichTextBlock
+```
+
+## richTextInputElementMaxLines {#slackblocks-models-richtextinputelementmaxlines}
+
+Sets the maximum visible height of the input, in lines. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `rich_text_input.max_lines`.
+
+```haskell
+Slackblocks.Models.richTextInputElementMaxLines ::
+  Slackblocks.Models.RichTextInputElementFields -> Maybe Integer
+```
+
+## richTextInputElementMinLines {#slackblocks-models-richtextinputelementminlines}
+
+Sets the minimum visible height of the input, in lines. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `rich_text_input.min_lines`.
+
+```haskell
+Slackblocks.Models.richTextInputElementMinLines ::
+  Slackblocks.Models.RichTextInputElementFields -> Maybe Integer
+```
+
+## richTextInputElementPlaceholder {#slackblocks-models-richtextinputelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `rich_text_input.placeholder`.
+
+```haskell
+Slackblocks.Models.richTextInputElementPlaceholder ::
+  Slackblocks.Models.RichTextInputElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## staticMultiSelectElement {#slackblocks-models-staticmultiselectelement}
+
+Start editable fields for StaticMultiSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildStaticMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildstaticmultiselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElement ::
+  Slackblocks.Models.StaticMultiSelectElementFields
+```
+
+## staticMultiSelectElementActionId {#slackblocks-models-staticmultiselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementActionId ::
+  Slackblocks.Models.StaticMultiSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## staticMultiSelectElementAsElement {#slackblocks-models-staticmultiselectelementaselement}
+
+Place a checked StaticMultiSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementAsElement ::
+  Slackblocks.Models.StaticMultiSelectElement
+  -> Slackblocks.Models.Element
+```
+
+## staticMultiSelectElementAsInputElement {#slackblocks-models-staticmultiselectelementasinputelement}
+
+Place a checked StaticMultiSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementAsInputElement ::
+  Slackblocks.Models.StaticMultiSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## staticMultiSelectElementConfirm {#slackblocks-models-staticmultiselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementConfirm ::
+  Slackblocks.Models.StaticMultiSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## staticMultiSelectElementExtensions {#slackblocks-models-staticmultiselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementExtensions ::
+  Slackblocks.Models.StaticMultiSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## staticMultiSelectElementFocusOnLoad {#slackblocks-models-staticmultiselectelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementFocusOnLoad ::
+  Slackblocks.Models.StaticMultiSelectElementFields -> Maybe Bool
+```
+
+## staticMultiSelectElementInitialOptions {#slackblocks-models-staticmultiselectelementinitialoptions}
+
+Adds options that are selected when the element loads. Each must match an option in the element. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementInitialOptions ::
+  Slackblocks.Models.StaticMultiSelectElementFields
+  -> Maybe [Slackblocks.Models.SelectOption]
+```
+
+## staticMultiSelectElementMaxSelectedItems {#slackblocks-models-staticmultiselectelementmaxselecteditems}
+
+Sets the maximum number of items a user can select. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `multi_select.max_selected_items`.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementMaxSelectedItems ::
+  Slackblocks.Models.StaticMultiSelectElementFields -> Maybe Integer
+```
+
+## staticMultiSelectElementOptionGroups {#slackblocks-models-staticmultiselectelementoptiongroups}
+
+Adds labelled groups of options in display order. Cannot be combined with ungrouped options. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.option_groups`.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementOptionGroups ::
+  Slackblocks.Models.StaticMultiSelectElementFields
+  -> Maybe [Slackblocks.Models.SelectOptionGroup]
+```
+
+## staticMultiSelectElementOptions {#slackblocks-models-staticmultiselectelementoptions}
+
+Adds selectable options in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.options`.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementOptions ::
+  Slackblocks.Models.StaticMultiSelectElementFields
+  -> Maybe [Slackblocks.Models.SelectOption]
+```
+
+## staticMultiSelectElementPlaceholder {#slackblocks-models-staticmultiselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.staticMultiSelectElementPlaceholder ::
+  Slackblocks.Models.StaticMultiSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## staticSelectElement {#slackblocks-models-staticselectelement}
+
+Start editable fields for StaticSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildStaticSelectElement`](/reference/haskell/elements#slackblocks-models-buildstaticselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.staticSelectElement ::
+  Slackblocks.Models.StaticSelectElementFields
+```
+
+## staticSelectElementActionId {#slackblocks-models-staticselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.staticSelectElementActionId ::
+  Slackblocks.Models.StaticSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## staticSelectElementAsElement {#slackblocks-models-staticselectelementaselement}
+
+Place a checked StaticSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.staticSelectElementAsElement ::
+  Slackblocks.Models.StaticSelectElement
+  -> Slackblocks.Models.Element
+```
+
+## staticSelectElementAsInputElement {#slackblocks-models-staticselectelementasinputelement}
+
+Place a checked StaticSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.staticSelectElementAsInputElement ::
+  Slackblocks.Models.StaticSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## staticSelectElementConfirm {#slackblocks-models-staticselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.staticSelectElementConfirm ::
+  Slackblocks.Models.StaticSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## staticSelectElementExtensions {#slackblocks-models-staticselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.staticSelectElementExtensions ::
+  Slackblocks.Models.StaticSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## staticSelectElementFocusOnLoad {#slackblocks-models-staticselectelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.staticSelectElementFocusOnLoad ::
+  Slackblocks.Models.StaticSelectElementFields -> Maybe Bool
+```
+
+## staticSelectElementInitialOption {#slackblocks-models-staticselectelementinitialoption}
+
+Sets the option selected when the element loads. It must match an option in the element. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.staticSelectElementInitialOption ::
+  Slackblocks.Models.StaticSelectElementFields
+  -> Maybe Slackblocks.Models.SelectOption
+```
+
+## staticSelectElementOptionGroups {#slackblocks-models-staticselectelementoptiongroups}
+
+Adds labelled groups of options in display order. Cannot be combined with ungrouped options. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.option_groups`.
+
+```haskell
+Slackblocks.Models.staticSelectElementOptionGroups ::
+  Slackblocks.Models.StaticSelectElementFields
+  -> Maybe [Slackblocks.Models.SelectOptionGroup]
+```
+
+## staticSelectElementOptions {#slackblocks-models-staticselectelementoptions}
+
+Adds selectable options in display order. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.options`.
+
+```haskell
+Slackblocks.Models.staticSelectElementOptions ::
+  Slackblocks.Models.StaticSelectElementFields
+  -> Maybe [Slackblocks.Models.SelectOption]
+```
+
+## staticSelectElementPlaceholder {#slackblocks-models-staticselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.staticSelectElementPlaceholder ::
+  Slackblocks.Models.StaticSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## timePickerElement {#slackblocks-models-timepickerelement}
+
+Start editable fields for TimePickerElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildTimePickerElement`](/reference/haskell/elements#slackblocks-models-buildtimepickerelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.timePickerElement ::
+  Slackblocks.Models.TimePickerElementFields
+```
+
+## timePickerElementActionId {#slackblocks-models-timepickerelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.timePickerElementActionId ::
+  Slackblocks.Models.TimePickerElementFields -> Maybe Data.Text.Text
+```
+
+## timePickerElementAsElement {#slackblocks-models-timepickerelementaselement}
+
+Place a checked TimePickerElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.timePickerElementAsElement ::
+  Slackblocks.Models.TimePickerElement -> Slackblocks.Models.Element
+```
+
+## timePickerElementAsInputElement {#slackblocks-models-timepickerelementasinputelement}
+
+Place a checked TimePickerElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.timePickerElementAsInputElement ::
+  Slackblocks.Models.TimePickerElement
+  -> Slackblocks.Models.InputElement
+```
+
+## timePickerElementConfirm {#slackblocks-models-timepickerelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.timePickerElementConfirm ::
+  Slackblocks.Models.TimePickerElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## timePickerElementExtensions {#slackblocks-models-timepickerelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.timePickerElementExtensions ::
+  Slackblocks.Models.TimePickerElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## timePickerElementFocusOnLoad {#slackblocks-models-timepickerelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.timePickerElementFocusOnLoad ::
+  Slackblocks.Models.TimePickerElementFields -> Maybe Bool
+```
+
+## timePickerElementInitialTime {#slackblocks-models-timepickerelementinitialtime}
+
+Sets the initially selected time, formatted as HH:mm in 24-hour time. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.timePickerElementInitialTime ::
+  Slackblocks.Models.TimePickerElementFields -> Maybe Data.Text.Text
+```
+
+## timePickerElementPlaceholder {#slackblocks-models-timepickerelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `time_picker.placeholder`.
+
+```haskell
+Slackblocks.Models.timePickerElementPlaceholder ::
+  Slackblocks.Models.TimePickerElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## timePickerElementTimezone {#slackblocks-models-timepickerelementtimezone}
+
+Sets the IANA time zone used to display the time, such as Australia/Brisbane. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.timePickerElementTimezone ::
+  Slackblocks.Models.TimePickerElementFields -> Maybe Data.Text.Text
+```
+
+## urlInputElement {#slackblocks-models-urlinputelement}
+
+Start editable fields for UrlInputElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildUrlInputElement`](/reference/haskell/elements#slackblocks-models-buildurlinputelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.urlInputElement ::
+  Slackblocks.Models.UrlInputElementFields
+```
+
+## urlInputElementActionId {#slackblocks-models-urlinputelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.urlInputElementActionId ::
+  Slackblocks.Models.UrlInputElementFields -> Maybe Data.Text.Text
+```
+
+## urlInputElementAsElement {#slackblocks-models-urlinputelementaselement}
+
+Place a checked UrlInputElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.urlInputElementAsElement ::
+  Slackblocks.Models.UrlInputElement -> Slackblocks.Models.Element
+```
+
+## urlInputElementAsInputElement {#slackblocks-models-urlinputelementasinputelement}
+
+Place a checked UrlInputElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.urlInputElementAsInputElement ::
+  Slackblocks.Models.UrlInputElement
+  -> Slackblocks.Models.InputElement
+```
+
+## urlInputElementDispatchActionConfig {#slackblocks-models-urlinputelementdispatchactionconfig}
+
+Sets which user interactions send a block_actions payload. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.urlInputElementDispatchActionConfig ::
+  Slackblocks.Models.UrlInputElementFields
+  -> Maybe Slackblocks.Models.DispatchActionConfiguration
+```
+
+## urlInputElementExtensions {#slackblocks-models-urlinputelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.urlInputElementExtensions ::
+  Slackblocks.Models.UrlInputElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## urlInputElementFocusOnLoad {#slackblocks-models-urlinputelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.urlInputElementFocusOnLoad ::
+  Slackblocks.Models.UrlInputElementFields -> Maybe Bool
+```
+
+## urlInputElementInitialValue {#slackblocks-models-urlinputelementinitialvalue}
+
+Sets the value present when the input loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.urlInputElementInitialValue ::
+  Slackblocks.Models.UrlInputElementFields -> Maybe Data.Text.Text
+```
+
+## urlInputElementPlaceholder {#slackblocks-models-urlinputelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `url_input.placeholder`.
+
+```haskell
+Slackblocks.Models.urlInputElementPlaceholder ::
+  Slackblocks.Models.UrlInputElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## userMultiSelectElement {#slackblocks-models-usermultiselectelement}
+
+Start editable fields for UserMultiSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildUserMultiSelectElement`](/reference/haskell/elements#slackblocks-models-buildusermultiselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.userMultiSelectElement ::
+  Slackblocks.Models.UserMultiSelectElementFields
+```
+
+## userMultiSelectElementActionId {#slackblocks-models-usermultiselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.userMultiSelectElementActionId ::
+  Slackblocks.Models.UserMultiSelectElementFields
+  -> Maybe Data.Text.Text
+```
+
+## userMultiSelectElementAsElement {#slackblocks-models-usermultiselectelementaselement}
+
+Place a checked UserMultiSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.userMultiSelectElementAsElement ::
+  Slackblocks.Models.UserMultiSelectElement
+  -> Slackblocks.Models.Element
+```
+
+## userMultiSelectElementAsInputElement {#slackblocks-models-usermultiselectelementasinputelement}
+
+Place a checked UserMultiSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.userMultiSelectElementAsInputElement ::
+  Slackblocks.Models.UserMultiSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## userMultiSelectElementConfirm {#slackblocks-models-usermultiselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.userMultiSelectElementConfirm ::
+  Slackblocks.Models.UserMultiSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## userMultiSelectElementExtensions {#slackblocks-models-usermultiselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.userMultiSelectElementExtensions ::
+  Slackblocks.Models.UserMultiSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## userMultiSelectElementFocusOnLoad {#slackblocks-models-usermultiselectelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.userMultiSelectElementFocusOnLoad ::
+  Slackblocks.Models.UserMultiSelectElementFields -> Maybe Bool
+```
+
+## userMultiSelectElementInitialUsers {#slackblocks-models-usermultiselectelementinitialusers}
+
+Adds user IDs that are selected when the menu loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.userMultiSelectElementInitialUsers ::
+  Slackblocks.Models.UserMultiSelectElementFields
+  -> Maybe [Data.Text.Text]
+```
+
+## userMultiSelectElementMaxSelectedItems {#slackblocks-models-usermultiselectelementmaxselecteditems}
+
+Sets the maximum number of items a user can select. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `multi_select.max_selected_items`.
+
+```haskell
+Slackblocks.Models.userMultiSelectElementMaxSelectedItems ::
+  Slackblocks.Models.UserMultiSelectElementFields -> Maybe Integer
+```
+
+## userMultiSelectElementPlaceholder {#slackblocks-models-usermultiselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.userMultiSelectElementPlaceholder ::
+  Slackblocks.Models.UserMultiSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## userSelectElement {#slackblocks-models-userselectelement}
+
+Start editable fields for UserSelectElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildUserSelectElement`](/reference/haskell/elements#slackblocks-models-builduserselectelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.userSelectElement ::
+  Slackblocks.Models.UserSelectElementFields
+```
+
+## userSelectElementActionId {#slackblocks-models-userselectelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.userSelectElementActionId ::
+  Slackblocks.Models.UserSelectElementFields -> Maybe Data.Text.Text
+```
+
+## userSelectElementAsElement {#slackblocks-models-userselectelementaselement}
+
+Place a checked UserSelectElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.userSelectElementAsElement ::
+  Slackblocks.Models.UserSelectElement -> Slackblocks.Models.Element
+```
+
+## userSelectElementAsInputElement {#slackblocks-models-userselectelementasinputelement}
+
+Place a checked UserSelectElement in the InputElement role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.userSelectElementAsInputElement ::
+  Slackblocks.Models.UserSelectElement
+  -> Slackblocks.Models.InputElement
+```
+
+## userSelectElementConfirm {#slackblocks-models-userselectelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.userSelectElementConfirm ::
+  Slackblocks.Models.UserSelectElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## userSelectElementExtensions {#slackblocks-models-userselectelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.userSelectElementExtensions ::
+  Slackblocks.Models.UserSelectElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## userSelectElementFocusOnLoad {#slackblocks-models-userselectelementfocusonload}
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.userSelectElementFocusOnLoad ::
+  Slackblocks.Models.UserSelectElementFields -> Maybe Bool
+```
+
+## userSelectElementInitialUser {#slackblocks-models-userselectelementinitialuser}
+
+Sets the user ID selected when the menu loads. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.userSelectElementInitialUser ::
+  Slackblocks.Models.UserSelectElementFields -> Maybe Data.Text.Text
+```
+
+## userSelectElementPlaceholder {#slackblocks-models-userselectelementplaceholder}
+
+Sets the placeholder text shown before a value is chosen. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `select.placeholder`.
+
+```haskell
+Slackblocks.Models.userSelectElementPlaceholder ::
+  Slackblocks.Models.UserSelectElementFields
+  -> Maybe Slackblocks.Models.PlainText
+```
+
+## workflowButtonElement {#slackblocks-models-workflowbuttonelement}
+
+Start editable fields for WorkflowButtonElement; required arguments follow the signature.
+ Optional fields start absent except the explicit shared defaults; no block ID is invented.
+ Finish with [`buildWorkflowButtonElement`](/reference/haskell/elements#slackblocks-models-buildworkflowbuttonelement) to validate before JSON encoding.
+
+```haskell
+Slackblocks.Models.workflowButtonElement ::
+  Slackblocks.Models.PlainText
+  -> Slackblocks.Models.Workflow
+  -> Data.Text.Text
+  -> Slackblocks.Models.WorkflowButtonElementFields
+```
+
+## workflowButtonElementAccessibilityLabel {#slackblocks-models-workflowbuttonelementaccessibilitylabel}
+
+Sets the label read by screen readers in place of the visible text. Optional; Nothing omits the field. Factory default: `Nothing`. Shared limit: `workflow_button.accessibility_label`.
+
+```haskell
+Slackblocks.Models.workflowButtonElementAccessibilityLabel ::
+  Slackblocks.Models.WorkflowButtonElementFields
+  -> Maybe Data.Text.Text
+```
+
+## workflowButtonElementActionId {#slackblocks-models-workflowbuttonelementactionid}
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Shared limit: `action_id`.
+
+```haskell
+Slackblocks.Models.workflowButtonElementActionId ::
+  Slackblocks.Models.WorkflowButtonElementFields -> Data.Text.Text
+```
+
+## workflowButtonElementAsElement {#slackblocks-models-workflowbuttonelementaselement}
+
+Place a checked WorkflowButtonElement in the Element role. The receiving parent retains its contextual validation.
+
+```haskell
+Slackblocks.Models.workflowButtonElementAsElement ::
+  Slackblocks.Models.WorkflowButtonElement
+  -> Slackblocks.Models.Element
+```
+
+## workflowButtonElementConfirm {#slackblocks-models-workflowbuttonelementconfirm}
+
+Sets a confirmation dialog shown before the action is sent. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.workflowButtonElementConfirm ::
+  Slackblocks.Models.WorkflowButtonElementFields
+  -> Maybe Slackblocks.Models.ConfirmationDialogue
+```
+
+## workflowButtonElementExtensions {#slackblocks-models-workflowbuttonelementextensions}
+
+Unmodeled extension fields. Reserved and modeled keys are rejected.
+
+```haskell
+Slackblocks.Models.workflowButtonElementExtensions ::
+  Slackblocks.Models.WorkflowButtonElementFields
+  -> Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+```
+
+## workflowButtonElementStyle {#slackblocks-models-workflowbuttonelementstyle}
+
+Sets the button's emphasis. Omit it for the default neutral style. Optional; Nothing omits the field. Factory default: `Nothing`.
+
+```haskell
+Slackblocks.Models.workflowButtonElementStyle ::
+  Slackblocks.Models.WorkflowButtonElementFields
+  -> Maybe Slackblocks.Models.ButtonStyle
+```
+
+## workflowButtonElementText {#slackblocks-models-workflowbuttonelementtext}
+
+Sets the button label. Required. Shared limit: `workflow_button.text`.
+
+```haskell
+Slackblocks.Models.workflowButtonElementText ::
+  Slackblocks.Models.WorkflowButtonElementFields
+  -> Slackblocks.Models.PlainText
+```
+
+## workflowButtonElementWorkflow {#slackblocks-models-workflowbuttonelementworkflow}
+
+Sets the workflow started when the button is clicked. Required.
+
+```haskell
+Slackblocks.Models.workflowButtonElementWorkflow ::
+  Slackblocks.Models.WorkflowButtonElementFields
+  -> Slackblocks.Models.Workflow
+```
+

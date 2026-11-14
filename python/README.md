@@ -28,7 +28,7 @@ This release conforms to the shared cross-language slackblocks specification.
 pip install slackblocks
 ```
 
-`slackblocks 2.x` requires Python 3.10 or newer. Users on Python 3.8 / 3.9 should pin to the `1.x` line — see the [Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility) page.
+`slackblocks 4.x` requires Python 3.10 or newer. Users on Python 3.8 / 3.9 should pin to the `1.x` line — see the [Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility) page.
 
 ## Quickstart
 

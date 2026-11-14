@@ -3,7 +3,7 @@
 [![RubyGems](https://img.shields.io/gem/v/slackblocks?logo=rubygems)](https://rubygems.org/gems/slackblocks)
 [![Ruby CI](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml)
 
-Build and validate Slack Block Kit payloads with Ruby 3.3 or newer. The gem implements shared spec 1.2.0 and uses only Ruby's JSON default gem at runtime.
+Build and validate Slack Block Kit payloads with Ruby 3.3 or newer. The gem implements shared spec 1.6.0 and uses only Ruby's JSON default gem at runtime.
 
 Install from RubyGems:
 

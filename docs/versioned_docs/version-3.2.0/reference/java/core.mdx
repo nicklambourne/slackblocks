@@ -1,0 +1,90 @@
+---
+sidebar_position: 6
+toc_max_heading_level: 3
+---
+
+# Core Types
+
+This page documents the public Java API for core types, generated from the Javadoc by the javadoc tool. Values are immutable, builders are concrete and fluent, validation runs when you call `.build()`, and typed getters read built values back.
+
+## Buildable
+
+A concrete fluent builder that materializes one immutable Slack value.
+
+### Build
+
+Builds and validates an immutable value.
+
+```java
+public T build()
+```
+
+**Returns:** a defensive snapshot of the configured value
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the configured value breaks a Slack Block Kit rule |
+
+## Slackblocks
+
+Package metadata shared with the conformance corpus.
+
+## SlackblocksJson
+
+JSON serialization helpers for clients that do not use Slack's Java SDK.
+
+### Write — `SlackObject`
+
+Serializes one slackblocks value or payload to compact JSON.
+
+```java
+public static String write(SlackObject value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a built slackblocks value |
+
+**Returns:** compact Slack-compatible JSON
+
+**Related types:** [`SlackObject`](/reference/java/core#slackobject)
+
+### Write — `Collection<? extends SlackObject>`
+
+Serializes an ordered collection of slackblocks values, such as a list of blocks, to a compact JSON array.
+
+```java
+public static String write(Collection<? extends SlackObject> values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | built slackblocks values |
+
+**Returns:** compact Slack-compatible JSON array
+
+**Related types:** [`SlackObject`](/reference/java/core#slackobject)
+
+## SlackObject
+
+An immutable value that can be serialized to Slack's JSON wire format.
+
+### ToMap
+
+Returns an immutable, JSON-compatible representation of this value.
+
+```java
+public Map<String,Object> toMap()
+```
+
+**Returns:** the Slack wire representation
+
+### ToJson
+
+Serializes this value to compact Slack-compatible JSON.
+
+```java
+public default String toJson()
+```
+
+**Returns:** compact JSON containing this value

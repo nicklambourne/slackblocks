@@ -1,0 +1,514 @@
+---
+sidebar_position: 4
+---
+
+# Messages, Attachments and Views
+
+Generated from compiled Elixir documentation and native typespecs. Values are immutable; constructors and changes use keyword options.
+
+## Slackblocks.Attachment {#slackblocks-attachment}
+
+A legacy message attachment containing blocks and an optional color bar.
+
+Slack reference: https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments
+
+### Fields
+
+* `blocks` — Adds the attachment's blocks in display order. Required.
+* `color` — Sets the attachment's left border color: a six-digit hex color or good, warning, or danger. Optional; `nil` omits the field.
+* `fallback` — Sets plain-text summary shown in clients that cannot display attachments. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Attachment{
+  blocks: [Slackblocks.Types.block()],
+  color: binary() | nil,
+  fallback: binary() | nil
+}
+```
+
+### change/2 {#slackblocks-attachment-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-attachment-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-attachment-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-attachment-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Message {#slackblocks-message}
+
+A complete payload for chat.postMessage and related Web API methods.
+
+Slack reference: https://docs.slack.dev/reference/methods/chat.postMessage
+
+### Fields
+
+* `channel` — Sets the ID of the channel, private group, or conversation that receives the message. Required.
+* `blocks` — Adds the message blocks in display order. Optional; `nil` omits the field.
+* `attachments` — Adds legacy attachments in display order. Optional; `nil` omits the field.
+* `text` — Sets the fallback text used in notifications and by clients that cannot display blocks. Default: `""`. Optional; `nil` omits the field.
+* `mrkdwn` — Sets whether Slack formats the top-level text as mrkdwn. Default: `true`. Optional; `nil` omits the field.
+* `unfurl_links` — Sets whether Slack unfurls text-based links. Optional; `nil` omits the field.
+* `unfurl_media` — Sets whether Slack unfurls media links. Optional; `nil` omits the field.
+* `metadata` — Sets message metadata as a JSON-compatible map, such as event_type and event_payload. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Message{
+  attachments: [Slackblocks.Attachment.t()] | nil,
+  blocks: [Slackblocks.Types.block()] | nil,
+  channel: binary(),
+  metadata: %{optional(binary()) => Slackblocks.Types.json()} | nil,
+  mrkdwn: boolean() | nil,
+  text: binary() | nil,
+  unfurl_links: boolean() | nil,
+  unfurl_media: boolean() | nil
+}
+```
+
+### change/2 {#slackblocks-message-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-message-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-message-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-message-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.MessageResponse {#slackblocks-messageresponse}
+
+A response body for slash commands and interaction response URLs.
+
+Slack reference: https://docs.slack.dev/interactivity/handling-user-interaction#message_responses
+
+### Fields
+
+* `blocks` — Adds the response blocks in display order. Optional; `nil` omits the field.
+* `attachments` — Adds legacy attachments in display order. Optional; `nil` omits the field.
+* `text` — Sets the fallback text used in notifications and by clients that cannot display blocks. Default: `""`. Optional; `nil` omits the field.
+* `mrkdwn` — Sets whether Slack formats the top-level text as mrkdwn. Default: `true`. Optional; `nil` omits the field.
+* `replace_original` — Sets whether the response replaces the message that triggered it. Default: `false`. Optional; `nil` omits the field.
+* `response_type` — Sets who can see the response. Default: `:in_channel`. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.MessageResponse{
+  attachments: [Slackblocks.Attachment.t()] | nil,
+  blocks: [Slackblocks.Types.block()] | nil,
+  mrkdwn: boolean() | nil,
+  replace_original: boolean() | nil,
+  response_type: Slackblocks.Types.response_type() | nil,
+  text: binary() | nil
+}
+```
+
+### change/2 {#slackblocks-messageresponse-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-messageresponse-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-messageresponse-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-messageresponse-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Views.Home {#slackblocks-views-home}
+
+The payload for publishing an App Home tab with views.publish.
+
+Slack reference: https://docs.slack.dev/surfaces/app-home
+
+### Fields
+
+* `blocks` — Adds the blocks shown on the App Home tab, in display order. Required.
+* `private_metadata` — Sets application-defined data returned in view payloads. Optional; `nil` omits the field.
+* `callback_id` — Sets an identifier returned in view payloads so your app can recognize the view. Optional; `nil` omits the field.
+* `external_id` — Sets a workspace-unique identifier you can use to update the view later. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Views.Home{
+  blocks: [Slackblocks.Types.block()],
+  callback_id: binary() | nil,
+  external_id: binary() | nil,
+  private_metadata: binary() | nil
+}
+```
+
+### change/2 {#slackblocks-views-home-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-views-home-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-views-home-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-views-home-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Views.Modal {#slackblocks-views-modal}
+
+The view payload for views.open, views.push, and views.update.
+
+Slack reference: https://docs.slack.dev/surfaces/modals
+
+### Fields
+
+* `title` — Sets the title in the modal's top bar. Required.
+* `blocks` — Adds the blocks shown in the modal, in display order. Required.
+* `close` — Sets the label of the button that closes the modal. Optional; `nil` omits the field.
+* `submit` — Sets the label of the button that submits the modal. Optional; `nil` omits the field.
+* `private_metadata` — Sets application-defined data returned in view payloads. Optional; `nil` omits the field.
+* `callback_id` — Sets an identifier returned in view payloads so your app can recognize the view. Optional; `nil` omits the field.
+* `clear_on_close` — Sets whether closing this modal closes every view in its stack. Optional; `nil` omits the field.
+* `notify_on_close` — Sets whether Slack sends a view_closed event when the user closes the modal. Optional; `nil` omits the field.
+* `external_id` — Sets a workspace-unique identifier you can use to update the view later. Optional; `nil` omits the field.
+* `submit_disabled` — Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Views.Modal{
+  blocks: [Slackblocks.Types.block()],
+  callback_id: binary() | nil,
+  clear_on_close: boolean() | nil,
+  close: Slackblocks.Objects.PlainText.t() | nil,
+  external_id: binary() | nil,
+  notify_on_close: boolean() | nil,
+  private_metadata: binary() | nil,
+  submit: Slackblocks.Objects.PlainText.t() | nil,
+  submit_disabled: boolean() | nil,
+  title: Slackblocks.Objects.PlainText.t()
+}
+```
+
+### change/2 {#slackblocks-views-modal-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-views-modal-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-views-modal-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-views-modal-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.WebhookMessage {#slackblocks-webhookmessage}
+
+A payload for incoming webhooks.
+
+Slack reference: https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks
+
+### Fields
+
+* `blocks` — Adds the message blocks in display order. Optional; `nil` omits the field.
+* `attachments` — Adds legacy attachments in display order. Optional; `nil` omits the field.
+* `text` — Sets the fallback text used in notifications and by clients that cannot display blocks. Optional; `nil` omits the field.
+* `response_type` — Sets who can see the response. Optional; `nil` omits the field.
+* `replace_original` — Sets whether the response replaces the message that triggered it. Optional; `nil` omits the field.
+* `delete_original` — Sets whether the response deletes the message that triggered it. Optional; `nil` omits the field.
+* `unfurl_links` — Sets whether Slack unfurls text-based links. Optional; `nil` omits the field.
+* `unfurl_media` — Sets whether Slack unfurls media links. Optional; `nil` omits the field.
+* `metadata` — Sets message metadata as a JSON-compatible map, such as event_type and event_payload. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.WebhookMessage{
+  attachments: [Slackblocks.Attachment.t()] | nil,
+  blocks: [Slackblocks.Types.block()] | nil,
+  delete_original: boolean() | nil,
+  metadata: %{optional(binary()) => Slackblocks.Types.json()} | nil,
+  replace_original: boolean() | nil,
+  response_type: Slackblocks.Types.response_type() | nil,
+  text: binary() | nil,
+  unfurl_links: boolean() | nil,
+  unfurl_media: boolean() | nil
+}
+```
+
+### change/2 {#slackblocks-webhookmessage-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-webhookmessage-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-webhookmessage-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-webhookmessage-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	sb "github.com/nicklambourne/slackblocks/go/v3"
+	sb "github.com/nicklambourne/slackblocks/go/v4"
 )
 
 func TestRichTextLinkNativeUnsafe(t *testing.T) {

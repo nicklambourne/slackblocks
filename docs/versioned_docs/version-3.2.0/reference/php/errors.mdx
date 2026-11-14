@@ -1,0 +1,117 @@
+---
+sidebar_position: 7
+toc_max_heading_level: 3
+---
+
+# Validation and Errors
+
+Generated from actual PHP reflection and PHPDoc. Names live in the `Slackblocks` namespace. Use named arguments and `declare(strict_types=1)`; values validate before construction returns.
+
+## ErrorCategory
+
+Stable validation categories shared by every Slackblocks implementation.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `LengthExceeded` | `'length-exceeded'` | Text length or collection size is outside its allowed bounds. |
+| `OutOfRange` | `'out-of-range'` | A numeric value or page index is outside its allowed range. |
+| `MutuallyExclusive` | `'mutually-exclusive'` | Fields violate an exclusive-choice requirement. |
+| `TypeMismatch` | `'type-mismatch'` | A value has the wrong type, shape, vocabulary or serialization context. |
+| `MissingRequired` | `'missing-required'` | A required field or required content is absent. |
+| `InvalidUsage` | `'invalid-usage'` | Individually typed values violate a dependency or composition rule. |
+
+### $name
+
+PHP case name, as declared in the enum.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Slack wire string represented by this case.
+
+```php
+public readonly string $value;
+```
+
+### cases
+
+Returns every enum case in declaration order.
+
+```php
+public static function cases(): array
+```
+
+**Returns:** list&lt;ErrorCategory&gt; Declared cases.
+
+### from
+
+Resolves a Slack wire string to its enum case, throwing if it is unknown.
+
+```php
+public static function from(string|int $value): static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ErrorCategory Matching case.
+
+| Throws | When |
+| --- | --- |
+| `ValueError` | The wire string has no matching case. |
+
+### tryFrom
+
+Resolves a Slack wire string to its enum case, returning null if it is unknown.
+
+```php
+public static function tryFrom(string|int $value): ?static
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack wire string to resolve. |
+
+**Returns:** ErrorCategory|null Matching case.
+
+## ValidationError
+
+Invalid Slack content, with a stable category and a wire-field path.
+
+### $category
+
+Stable shared classification of the validation failure.
+
+```php
+public readonly ErrorCategory $category;
+```
+
+**Related types:** [`ErrorCategory`](/reference/php/errors#errorcategory)
+
+### $path
+
+Failing wire-field path, including collection indexes when applicable.
+
+```php
+public readonly string $path;
+```
+
+### __construct
+
+Describes a validation failure without losing its machine-readable category/path.
+
+```php
+public function __construct(ErrorCategory $category, string $path, string $message)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `category` | ErrorCategory — Stable shared classification of the failure. |
+| `path` | string — Failing wire-field path, including collection indexes when applicable. |
+| `message` | string — Human-readable explanation of the violated rule. |
+
+**Related types:** [`ErrorCategory`](/reference/php/errors#errorcategory)

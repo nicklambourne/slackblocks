@@ -276,7 +276,7 @@ def execute(language, cases, temp):
         return {name: run(["node", temp / f"{name}.mjs"]) for name in cases}
     if language == "Go":
         (temp / "go.mod").write_text(
-            f"module recipes\n\ngo 1.22\n\nrequire github.com/nicklambourne/slackblocks/go/v3 v3.2.0\nreplace github.com/nicklambourne/slackblocks/go/v3 => {ROOT / 'go'}\n"
+            f"module recipes\n\ngo 1.22\n\nrequire github.com/nicklambourne/slackblocks/go/v4 v4.0.0\nreplace github.com/nicklambourne/slackblocks/go/v4 => {ROOT / 'go'}\n"
         )
         for name, code in cases.items():
             (temp / name).mkdir()

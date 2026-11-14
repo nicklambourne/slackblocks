@@ -1,0 +1,368 @@
+---
+sidebar_position: 5
+---
+
+# Components and utilities
+
+Signatures come from GHC; descriptions come from compiled Haddock comments. Import `Slackblocks` or the defining public module. Checked values encode with Aeson; field records must be built first.
+
+## Black {#slackblocks-helpers-black}
+
+Slack attachment color `#000000`.
+
+```haskell
+Slackblocks.Helpers.Black :: Slackblocks.Helpers.NamedColor
+```
+
+## Blue {#slackblocks-helpers-blue}
+
+Slack attachment color `#0000ff`.
+
+```haskell
+Slackblocks.Helpers.Blue :: Slackblocks.Helpers.NamedColor
+```
+
+## BuilderBlocks {#slackblocks-helpers-builderblocks}
+
+A block list wrapped in a blocks object.
+
+```haskell
+Slackblocks.Helpers.BuilderBlocks ::
+  [Slackblocks.Models.Block] -> Slackblocks.Helpers.BuilderPayload
+```
+
+## BuilderHome {#slackblocks-helpers-builderhome}
+
+A checked App Home view.
+
+```haskell
+Slackblocks.Helpers.BuilderHome ::
+  Slackblocks.Models.HomeTabView
+  -> Slackblocks.Helpers.BuilderPayload
+```
+
+## BuilderJSON {#slackblocks-helpers-builderjson}
+
+An explicit unchecked application object; modeled support does not rely on this escape hatch.
+
+```haskell
+Slackblocks.Helpers.BuilderJSON ::
+  Data.Map.Strict.Map Data.Text.Text Data.Aeson.Value
+  -> Slackblocks.Helpers.BuilderPayload
+```
+
+## BuilderMessage {#slackblocks-helpers-buildermessage}
+
+A complete checked Web API message.
+
+```haskell
+Slackblocks.Helpers.BuilderMessage ::
+  Slackblocks.Models.MessagePayload
+  -> Slackblocks.Helpers.BuilderPayload
+```
+
+## BuilderModal {#slackblocks-helpers-buildermodal}
+
+A checked modal view.
+
+```haskell
+Slackblocks.Helpers.BuilderModal ::
+  Slackblocks.Models.ModalView -> Slackblocks.Helpers.BuilderPayload
+```
+
+## BuilderPayload {#slackblocks-helpers-builderpayload}
+
+Explicit Builder input shapes. [`BuilderJSON`](/reference/haskell/components#slackblocks-helpers-builderjson) is a deliberate opaque-object
+ escape hatch; it is not validation or typed support for a Block Kit feature.
+
+```haskell
+type Slackblocks.Helpers.BuilderPayload :: *
+```
+
+## BuilderResponse {#slackblocks-helpers-builderresponse}
+
+A checked interaction response.
+
+```haskell
+Slackblocks.Helpers.BuilderResponse ::
+  Slackblocks.Models.MessageResponse
+  -> Slackblocks.Helpers.BuilderPayload
+```
+
+## BuilderWebhook {#slackblocks-helpers-builderwebhook}
+
+A checked incoming-webhook payload.
+
+```haskell
+Slackblocks.Helpers.BuilderWebhook ::
+  Slackblocks.Models.WebhookMessage
+  -> Slackblocks.Helpers.BuilderPayload
+```
+
+## Color {#slackblocks-helpers-color}
+
+Valid attachment color. Use [`colorText`](/reference/haskell/components#slackblocks-helpers-colortext) with an attachment's color field.
+
+```haskell
+type Slackblocks.Helpers.Color :: *
+```
+
+## Danger {#slackblocks-helpers-danger}
+
+Slack attachment color `danger`.
+
+```haskell
+Slackblocks.Helpers.Danger :: Slackblocks.Helpers.NamedColor
+```
+
+## Good {#slackblocks-helpers-good}
+
+Slack attachment color `good`.
+
+```haskell
+Slackblocks.Helpers.Good :: Slackblocks.Helpers.NamedColor
+```
+
+## Green {#slackblocks-helpers-green}
+
+Slack attachment color `#00ff00`.
+
+```haskell
+Slackblocks.Helpers.Green :: Slackblocks.Helpers.NamedColor
+```
+
+## NamedColor {#slackblocks-helpers-namedcolor}
+
+Named attachment colors, including Slack semantic good, warning and danger values.
+
+```haskell
+type Slackblocks.Helpers.NamedColor :: *
+```
+
+## Orange {#slackblocks-helpers-orange}
+
+Slack attachment color `#ff8800`.
+
+```haskell
+Slackblocks.Helpers.Orange :: Slackblocks.Helpers.NamedColor
+```
+
+## PaginatorOptions {#slackblocks-helpers-paginatoroptions}
+
+Page numbers start at one. Navigation adds up to two blocks; the receiving
+ message or view checks total counts after expansion. No fields encode directly.
+
+```haskell
+Slackblocks.Helpers.PaginatorOptions ::
+  Data.Text.Text
+  -> Integer
+  -> Integer
+  -> Data.Text.Text
+  -> Data.Text.Text
+  -> Bool
+  -> Maybe Data.Text.Text
+  -> Slackblocks.Helpers.PaginatorOptions
+
+type Slackblocks.Helpers.PaginatorOptions :: *
+```
+
+## Purple {#slackblocks-helpers-purple}
+
+Slack attachment color `#8800ff`.
+
+```haskell
+Slackblocks.Helpers.Purple :: Slackblocks.Helpers.NamedColor
+```
+
+## Red {#slackblocks-helpers-red}
+
+Slack attachment color `#ff0000`.
+
+```haskell
+Slackblocks.Helpers.Red :: Slackblocks.Helpers.NamedColor
+```
+
+## Warning {#slackblocks-helpers-warning}
+
+Slack attachment color `warning`.
+
+```haskell
+Slackblocks.Helpers.Warning :: Slackblocks.Helpers.NamedColor
+```
+
+## Yellow {#slackblocks-helpers-yellow}
+
+Slack attachment color `#ffff00`.
+
+```haskell
+Slackblocks.Helpers.Yellow :: Slackblocks.Helpers.NamedColor
+```
+
+## accordion {#slackblocks-helpers-accordion}
+
+Expand checked collapsible sections, preserving their order.
+
+```haskell
+Slackblocks.Helpers.accordion ::
+  [Slackblocks.Models.ContainerBlock]
+  -> Slackblocks.Validation.Result [Slackblocks.Models.Block]
+```
+
+## accordionSection {#slackblocks-helpers-accordionsection}
+
+Construction input for a collapsible container, initially collapsed. Edit
+ ordinary container fields, then call [`buildContainerBlock`](/reference/haskell/blocks#slackblocks-models-buildcontainerblock). No ID is invented.
+
+```haskell
+Slackblocks.Helpers.accordionSection ::
+  Slackblocks.Models.PlainText
+  -> [Slackblocks.Models.Block]
+  -> Slackblocks.Models.ContainerBlockFields
+```
+
+## blockKitBuilderURL {#slackblocks-helpers-blockkitbuilderurl}
+
+Percent-encode UTF-8 JSON and an optional team as a single path segment.
+ Makes no network request; rendering in Slack is a separate acceptance step.
+
+```haskell
+Slackblocks.Helpers.blockKitBuilderURL ::
+  Slackblocks.Helpers.BuilderPayload
+  -> Maybe Data.Text.Text -> Data.Text.Text
+```
+
+## colorText {#slackblocks-helpers-colortext}
+
+Return the exact Slack color string for a checked color.
+
+```haskell
+Slackblocks.Helpers.colorText ::
+  Slackblocks.Helpers.Color -> Data.Text.Text
+```
+
+## hexColor {#slackblocks-helpers-hexcolor}
+
+Six ASCII hexadecimal digits, with optional #. Letter case is preserved.
+
+```haskell
+Slackblocks.Helpers.hexColor ::
+  Data.Text.Text
+  -> Slackblocks.Validation.Result Slackblocks.Helpers.Color
+```
+
+## namedColor {#slackblocks-helpers-namedcolor}
+
+Resolve a named attachment color without network access.
+
+```haskell
+Slackblocks.Helpers.namedColor ::
+  Slackblocks.Helpers.NamedColor -> Slackblocks.Helpers.Color
+```
+
+## paginate {#slackblocks-helpers-paginate}
+
+Select a one-based page, add navigation and optionally its indicator. Reject empty content, invalid page/size and empty action prefix.
+
+```haskell
+Slackblocks.Helpers.paginate ::
+  Slackblocks.Helpers.PaginatorOptions
+  -> [Slackblocks.Models.Block]
+  -> Slackblocks.Validation.Result [Slackblocks.Models.Block]
+```
+
+## paginator {#slackblocks-helpers-paginator}
+
+Defaults: first page, five content blocks, Previous/Next and page indicator.
+
+```haskell
+Slackblocks.Helpers.paginator ::
+  Data.Text.Text -> Slackblocks.Helpers.PaginatorOptions
+```
+
+## paginatorActionIdPrefix {#slackblocks-helpers-paginatoractionidprefix}
+
+Nonempty prefix; navigation action IDs append .previous or .next.
+
+```haskell
+Slackblocks.Helpers.paginatorActionIdPrefix ::
+  Slackblocks.Helpers.PaginatorOptions -> Data.Text.Text
+```
+
+## paginatorBlockId {#slackblocks-helpers-paginatorblockid}
+
+Optional actions-block ID; absent by default.
+
+```haskell
+Slackblocks.Helpers.paginatorBlockId ::
+  Slackblocks.Helpers.PaginatorOptions -> Maybe Data.Text.Text
+```
+
+## paginatorNextText {#slackblocks-helpers-paginatornexttext}
+
+Next-button label; defaults to Next.
+
+```haskell
+Slackblocks.Helpers.paginatorNextText ::
+  Slackblocks.Helpers.PaginatorOptions -> Data.Text.Text
+```
+
+## paginatorPage {#slackblocks-helpers-paginatorpage}
+
+One-based requested page; defaults to 1.
+
+```haskell
+Slackblocks.Helpers.paginatorPage ::
+  Slackblocks.Helpers.PaginatorOptions -> Integer
+```
+
+## paginatorPageSize {#slackblocks-helpers-paginatorpagesize}
+
+Positive number of content blocks per page; defaults to 5.
+
+```haskell
+Slackblocks.Helpers.paginatorPageSize ::
+  Slackblocks.Helpers.PaginatorOptions -> Integer
+```
+
+## paginatorPreviousText {#slackblocks-helpers-paginatorprevioustext}
+
+Previous-button label; defaults to Previous.
+
+```haskell
+Slackblocks.Helpers.paginatorPreviousText ::
+  Slackblocks.Helpers.PaginatorOptions -> Data.Text.Text
+```
+
+## paginatorShowPageIndicator {#slackblocks-helpers-paginatorshowpageindicator}
+
+Include a context block with the page number; defaults to True.
+
+```haskell
+Slackblocks.Helpers.paginatorShowPageIndicator ::
+  Slackblocks.Helpers.PaginatorOptions -> Bool
+```
+
+## rgbColor {#slackblocks-helpers-rgbcolor}
+
+Construct a lowercase hexadecimal color; each exact integer channel must be in 0..255.
+
+```haskell
+Slackblocks.Helpers.rgbColor ::
+  Integer
+  -> Integer
+  -> Integer
+  -> Slackblocks.Validation.Result Slackblocks.Helpers.Color
+```
+
+## workflowFromURL {#slackblocks-helpers-workflowfromurl}
+
+Build a workflow's trigger and optional customizable parameters. This does
+ not call Slack or add restrictions beyond the shared trigger contract.
+
+```haskell
+Slackblocks.Helpers.workflowFromURL ::
+  Data.Text.Text
+  -> [Slackblocks.Models.InputParameter]
+  -> Slackblocks.Validation.Result Slackblocks.Models.Workflow
+```
+

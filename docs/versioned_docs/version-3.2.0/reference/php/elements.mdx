@@ -1,0 +1,2236 @@
+---
+sidebar_position: 2
+toc_max_heading_level: 3
+---
+
+# Elements
+
+Generated from actual PHP reflection and PHPDoc. Names live in the `Slackblocks` namespace. Use named arguments and `declare(strict_types=1)`; values validate before construction returns.
+
+## ButtonElement
+
+An interactive button that sends a payload or opens a URL. A prompt display requires an agent prompt. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/button-element).
+
+### $text
+
+Sets the button label.
+
+```php
+public readonly PlainText $text;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $url
+
+Sets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload.
+
+```php
+public readonly ?string $url;
+```
+
+### $value
+
+Sets the application-defined value sent in interaction payloads.
+
+```php
+public readonly ?string $value;
+```
+
+### $style
+
+Sets the button's emphasis. Omit it for the default neutral style.
+
+```php
+public readonly ?ButtonStyle $style;
+```
+
+**Related types:** [`ButtonStyle`](/reference/php/core#buttonstyle)
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $accessibilityLabel
+
+Sets the label read by screen readers in place of the visible text.
+
+```php
+public readonly ?string $accessibilityLabel;
+```
+
+### $agentPrompt
+
+Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds.
+
+```php
+public readonly ?string $agentPrompt;
+```
+
+### $agentPromptDisplay
+
+Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable.
+
+```php
+public readonly ?string $agentPromptDisplay;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(PlainText|string $text, ?string $actionId = NULL, ?string $url = NULL, ?string $value = NULL, ?ButtonStyle $style = NULL, ?Confirmation $confirm = NULL, ?string $accessibilityLabel = NULL, ?JsonObject $extensions = NULL, ?string $agentPrompt = NULL, ?string $agentPromptDisplay = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | PlainText\|string — Sets the button label. |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `url` | string\|null — Sets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload. |
+| `value` | string\|null — Sets the application-defined value sent in interaction payloads. |
+| `style` | ButtonStyle\|null — Sets the button's emphasis. Omit it for the default neutral style. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `accessibilityLabel` | string\|null — Sets the label read by screen readers in place of the visible text. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+| `agentPrompt` | string\|null — Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds. |
+| `agentPromptDisplay` | string\|null — Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`ButtonStyle`](/reference/php/core#buttonstyle), [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## ChannelMultiSelectElement
+
+A menu for selecting multiple public channels. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialChannels
+
+Adds channel IDs that are selected when the menu loads.
+
+```php
+/** @var list<string>|null */
+public readonly ?array $initialChannels;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $maxSelectedItems
+
+Sets the maximum number of items a user can select.
+
+```php
+public readonly ?int $maxSelectedItems;
+```
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?array $initialChannels = NULL, ?Confirmation $confirm = NULL, ?int $maxSelectedItems = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialChannels` | list&lt;string&gt;\|null — Adds channel IDs that are selected when the menu loads. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | int\|null — Sets the maximum number of items a user can select. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## ChannelSelectElement
+
+A menu for selecting one public channel. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialChannel
+
+Sets the channel ID selected when the menu loads.
+
+```php
+public readonly ?string $initialChannel;
+```
+
+### $responseUrlEnabled
+
+Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals.
+
+```php
+public readonly ?bool $responseUrlEnabled;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?string $initialChannel = NULL, ?bool $responseUrlEnabled = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialChannel` | string\|null — Sets the channel ID selected when the menu loads. |
+| `responseUrlEnabled` | bool\|null — Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## CheckboxesElement
+
+A group of checkboxes. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $options
+
+Adds selectable options in display order.
+
+```php
+/** @var list<Option> */
+public readonly array $options;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $initialOptions
+
+Adds options that are selected when the element loads. Each must match an option in the element.
+
+```php
+/** @var list<Option>|null */
+public readonly ?array $initialOptions;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $options, ?string $actionId = NULL, ?array $initialOptions = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `options` | list&lt;Option&gt; — Adds selectable options in display order. |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialOptions` | list&lt;Option&gt;\|null — Adds options that are selected when the element loads. Each must match an option in the element. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject)
+
+## ConversationMultiSelectElement
+
+A menu for selecting multiple conversations. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialConversations
+
+Adds conversation IDs that are selected when the menu loads.
+
+```php
+/** @var list<string>|null */
+public readonly ?array $initialConversations;
+```
+
+### $defaultToCurrentConversation
+
+Sets whether the menu pre-selects the conversation the user is viewing.
+
+```php
+public readonly ?bool $defaultToCurrentConversation;
+```
+
+### $filter
+
+Sets which conversation types the menu offers.
+
+```php
+public readonly ?ConversationFilter $filter;
+```
+
+**Related types:** [`ConversationFilter`](/reference/php/objects#conversationfilter)
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $maxSelectedItems
+
+Sets the maximum number of items a user can select.
+
+```php
+public readonly ?int $maxSelectedItems;
+```
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?array $initialConversations = NULL, ?bool $defaultToCurrentConversation = NULL, ?ConversationFilter $filter = NULL, ?Confirmation $confirm = NULL, ?int $maxSelectedItems = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialConversations` | list&lt;string&gt;\|null — Adds conversation IDs that are selected when the menu loads. |
+| `defaultToCurrentConversation` | bool\|null — Sets whether the menu pre-selects the conversation the user is viewing. |
+| `filter` | ConversationFilter\|null — Sets which conversation types the menu offers. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | int\|null — Sets the maximum number of items a user can select. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`ConversationFilter`](/reference/php/objects#conversationfilter), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## ConversationSelectElement
+
+A menu for selecting one conversation. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialConversation
+
+Sets the conversation ID selected when the menu loads.
+
+```php
+public readonly ?string $initialConversation;
+```
+
+### $defaultToCurrentConversation
+
+Sets whether the menu pre-selects the conversation the user is viewing.
+
+```php
+public readonly ?bool $defaultToCurrentConversation;
+```
+
+### $filter
+
+Sets which conversation types the menu offers.
+
+```php
+public readonly ?ConversationFilter $filter;
+```
+
+**Related types:** [`ConversationFilter`](/reference/php/objects#conversationfilter)
+
+### $responseUrlEnabled
+
+Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals.
+
+```php
+public readonly ?bool $responseUrlEnabled;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?string $initialConversation = NULL, ?bool $defaultToCurrentConversation = NULL, ?ConversationFilter $filter = NULL, ?bool $responseUrlEnabled = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialConversation` | string\|null — Sets the conversation ID selected when the menu loads. |
+| `defaultToCurrentConversation` | bool\|null — Sets whether the menu pre-selects the conversation the user is viewing. |
+| `filter` | ConversationFilter\|null — Sets which conversation types the menu offers. |
+| `responseUrlEnabled` | bool\|null — Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`ConversationFilter`](/reference/php/objects#conversationfilter), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## DatePickerElement
+
+A calendar date picker. initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialDate
+
+Sets the initially selected date, formatted as YYYY-MM-DD.
+
+```php
+public readonly ?string $initialDate;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?string $initialDate = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialDate` | string\|null — Sets the initially selected date, formatted as YYYY-MM-DD. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## DateTimePickerElement
+
+A combined date and time picker. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialDateTime
+
+Sets the initially selected moment as a UNIX timestamp in seconds.
+
+```php
+public readonly ?int $initialDateTime;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?int $initialDateTime = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialDateTime` | int\|null — Sets the initially selected moment as a UNIX timestamp in seconds. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject)
+
+## EmailInputElement
+
+A single-line input that accepts an email address. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/email-input-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialValue
+
+Sets the value present when the input loads.
+
+```php
+public readonly ?string $initialValue;
+```
+
+### $dispatchActionConfig
+
+Sets which user interactions send a block_actions payload.
+
+```php
+public readonly ?DispatchActionConfiguration $dispatchActionConfig;
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?string $initialValue = NULL, ?DispatchActionConfiguration $dispatchActionConfig = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialValue` | string\|null — Sets the value present when the input loads. |
+| `dispatchActionConfig` | DispatchActionConfiguration\|null — Sets which user interactions send a block_actions payload. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## ExternalMultiSelectElement
+
+A menu for selecting multiple options loaded from your app. focus_on_load is unsupported and must be omitted, including explicit false. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $minQueryLength
+
+Sets how many characters the user must type before Slack queries your options endpoint.
+
+```php
+public readonly ?int $minQueryLength;
+```
+
+### $initialOptions
+
+Adds options that are selected when the element loads. Each must match an option in the element.
+
+```php
+/** @var list<Option>|null */
+public readonly ?array $initialOptions;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $maxSelectedItems
+
+Sets the maximum number of items a user can select.
+
+```php
+public readonly ?int $maxSelectedItems;
+```
+
+### $focusOnLoad
+
+Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?int $minQueryLength = NULL, ?array $initialOptions = NULL, ?Confirmation $confirm = NULL, ?int $maxSelectedItems = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `minQueryLength` | int\|null — Sets how many characters the user must type before Slack queries your options endpoint. |
+| `initialOptions` | list&lt;Option&gt;\|null — Adds options that are selected when the element loads. Each must match an option in the element. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | int\|null — Sets the maximum number of items a user can select. |
+| `focusOnLoad` | bool\|null — Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## ExternalSelectElement
+
+A menu for selecting one option loaded from your app. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $minQueryLength
+
+Sets how many characters the user must type before Slack queries your options endpoint.
+
+```php
+public readonly ?int $minQueryLength;
+```
+
+### $initialOption
+
+Sets the option selected when the element loads. It must match an option in the element.
+
+```php
+public readonly ?Option $initialOption;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?int $minQueryLength = NULL, ?Option $initialOption = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `minQueryLength` | int\|null — Sets how many characters the user must type before Slack queries your options endpoint. |
+| `initialOption` | Option\|null — Sets the option selected when the element loads. It must match an option in the element. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`Option`](/reference/php/objects#option), [`PlainText`](/reference/php/objects#plaintext)
+
+## FeedbackButtonsElement
+
+A pair of thumbs-up and thumbs-down feedback buttons. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+### $positiveButton
+
+Sets the button for positive feedback.
+
+```php
+public readonly FeedbackButton $positiveButton;
+```
+
+**Related types:** [`FeedbackButton`](/reference/php/objects#feedbackbutton)
+
+### $negativeButton
+
+Sets the button for negative feedback.
+
+```php
+public readonly FeedbackButton $negativeButton;
+```
+
+**Related types:** [`FeedbackButton`](/reference/php/objects#feedbackbutton)
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(FeedbackButton $positiveButton, FeedbackButton $negativeButton, ?string $actionId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `positiveButton` | FeedbackButton — Sets the button for positive feedback. |
+| `negativeButton` | FeedbackButton — Sets the button for negative feedback. |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`FeedbackButton`](/reference/php/objects#feedbackbutton), [`JsonObject`](/reference/php/core#jsonobject)
+
+## FileInputElement
+
+An input that lets users upload files. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/file-input-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $filetypes
+
+Adds accepted file extensions, such as pdf or png.
+
+```php
+/** @var list<string>|null */
+public readonly ?array $filetypes;
+```
+
+### $maxFiles
+
+Sets the maximum number of files a user can upload.
+
+```php
+public readonly ?int $maxFiles;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?array $filetypes = NULL, ?int $maxFiles = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `filetypes` | list&lt;string&gt;\|null — Adds accepted file extensions, such as pdf or png. |
+| `maxFiles` | int\|null — Sets the maximum number of files a user can upload. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## IconButtonElement
+
+A button that shows an icon instead of text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element).
+
+### $text
+
+Sets the text used as the button's accessible name.
+
+```php
+public readonly PlainText $text;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $icon
+
+Sets the icon shown on the button.
+
+```php
+public readonly IconButtonIcon $icon;
+```
+
+**Related types:** [`IconButtonIcon`](/reference/php/core#iconbuttonicon)
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $value
+
+Sets the application-defined value sent in interaction payloads.
+
+```php
+public readonly ?string $value;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $accessibilityLabel
+
+Sets the label read by screen readers in place of the visible text.
+
+```php
+public readonly ?string $accessibilityLabel;
+```
+
+### $visibleToUserIds
+
+Adds the IDs of users who can see this button.
+
+```php
+/** @var list<string>|null */
+public readonly ?array $visibleToUserIds;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(PlainText|string $text, IconButtonIcon $icon = IconButtonIcon::Trash, ?string $actionId = NULL, ?string $value = NULL, ?Confirmation $confirm = NULL, ?string $accessibilityLabel = NULL, ?array $visibleToUserIds = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | PlainText\|string — Sets the text used as the button's accessible name. |
+| `icon` | IconButtonIcon — Sets the icon shown on the button. |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `value` | string\|null — Sets the application-defined value sent in interaction payloads. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `accessibilityLabel` | string\|null — Sets the label read by screen readers in place of the visible text. |
+| `visibleToUserIds` | list&lt;string&gt;\|null — Adds the IDs of users who can see this button. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`IconButtonIcon`](/reference/php/core#iconbuttonicon), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## ImageElement
+
+An image displayed inside a section, context, or card. Provide exactly one of an image URL or a Slack file. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/image-element).
+
+### $altText
+
+Sets a plain-text summary of the image or video for assistive technology.
+
+```php
+public readonly string $altText;
+```
+
+### $imageUrl
+
+Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+
+```php
+public readonly ?string $imageUrl;
+```
+
+### $slackFile
+
+Sets a file hosted in Slack as the image source. Cannot be combined with an image URL.
+
+```php
+public readonly ?SlackFile $slackFile;
+```
+
+**Related types:** [`SlackFile`](/reference/php/objects#slackfile)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $altText, ?string $imageUrl = NULL, ?SlackFile $slackFile = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `altText` | string — Sets a plain-text summary of the image or video for assistive technology. |
+| `imageUrl` | string\|null — Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. |
+| `slackFile` | SlackFile\|null — Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`SlackFile`](/reference/php/objects#slackfile)
+
+## NumberInputElement
+
+An input that accepts whole or decimal numbers. The minimum value cannot exceed the maximum value. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/number-input-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $isDecimalAllowed
+
+Sets whether the input accepts decimal numbers.
+
+```php
+public readonly bool $isDecimalAllowed;
+```
+
+### $initialValue
+
+Sets the number present when the input loads, as a string such as 42 or 3.5.
+
+```php
+public readonly ?string $initialValue;
+```
+
+### $minValue
+
+Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+
+```php
+public readonly ?string $minValue;
+```
+
+### $maxValue
+
+Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+
+```php
+public readonly ?string $maxValue;
+```
+
+### $dispatchActionConfig
+
+Sets which user interactions send a block_actions payload.
+
+```php
+public readonly ?DispatchActionConfiguration $dispatchActionConfig;
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(bool $isDecimalAllowed, ?string $actionId = NULL, ?string $initialValue = NULL, string|int|float|null $minValue = NULL, string|int|float|null $maxValue = NULL, ?DispatchActionConfiguration $dispatchActionConfig = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `isDecimalAllowed` | bool — Sets whether the input accepts decimal numbers. |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialValue` | string\|null — Sets the number present when the input loads, as a string such as 42 or 3.5. |
+| `minValue` | string\|int\|float\|null — Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. |
+| `maxValue` | string\|int\|float\|null — Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. |
+| `dispatchActionConfig` | DispatchActionConfiguration\|null — Sets which user interactions send a block_actions payload. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## OverflowElement
+
+A compact menu of up to five options. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $options
+
+Adds selectable options in display order.
+
+```php
+/** @var list<Option> */
+public readonly array $options;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $options, ?string $actionId = NULL, ?Confirmation $confirm = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `options` | list&lt;Option&gt; — Adds selectable options in display order. |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject)
+
+## PlainTextInputElement
+
+A single-line or multi-line free-text input. When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialValue
+
+Sets the value present when the input loads.
+
+```php
+public readonly ?string $initialValue;
+```
+
+### $multiline
+
+Sets whether the input is a multi-line text area.
+
+```php
+public readonly ?bool $multiline;
+```
+
+### $minLength
+
+Sets the minimum number of characters the user must enter.
+
+```php
+public readonly ?int $minLength;
+```
+
+### $maxLength
+
+Sets the maximum number of characters the user can enter.
+
+```php
+public readonly ?int $maxLength;
+```
+
+### $dispatchActionConfig
+
+Sets which user interactions send a block_actions payload.
+
+```php
+public readonly ?DispatchActionConfiguration $dispatchActionConfig;
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?string $initialValue = NULL, ?bool $multiline = NULL, ?int $minLength = NULL, ?int $maxLength = NULL, ?DispatchActionConfiguration $dispatchActionConfig = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialValue` | string\|null — Sets the value present when the input loads. |
+| `multiline` | bool\|null — Sets whether the input is a multi-line text area. |
+| `minLength` | int\|null — Sets the minimum number of characters the user must enter. |
+| `maxLength` | int\|null — Sets the maximum number of characters the user can enter. |
+| `dispatchActionConfig` | DispatchActionConfiguration\|null — Sets which user interactions send a block_actions payload. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## RadioButtonsElement
+
+A group of radio buttons. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $options
+
+Adds selectable options in display order.
+
+```php
+/** @var list<Option> */
+public readonly array $options;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $initialOption
+
+Sets the option selected when the element loads. It must match an option in the element.
+
+```php
+public readonly ?Option $initialOption;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $options, ?string $actionId = NULL, ?Option $initialOption = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `options` | list&lt;Option&gt; — Adds selectable options in display order. |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialOption` | Option\|null — Sets the option selected when the element loads. It must match an option in the element. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`Option`](/reference/php/objects#option)
+
+## RichTextInputElement
+
+An input that accepts formatted rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly string $actionId;
+```
+
+### $initialValue
+
+Sets the rich text present when the input loads.
+
+```php
+public readonly ?RichTextBlock $initialValue;
+```
+
+**Related types:** [`RichTextBlock`](/reference/php/blocks#richtextblock)
+
+### $dispatchActionConfig
+
+Sets which user interactions send a block_actions payload.
+
+```php
+public readonly ?DispatchActionConfiguration $dispatchActionConfig;
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $minLines
+
+Sets the minimum visible height of the input, in lines.
+
+```php
+public readonly ?int $minLines;
+```
+
+### $maxLines
+
+Sets the maximum visible height of the input, in lines.
+
+```php
+public readonly ?int $maxLines;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $actionId, ?RichTextBlock $initialValue = NULL, ?DispatchActionConfiguration $dispatchActionConfig = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?int $minLines = NULL, ?int $maxLines = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialValue` | RichTextBlock\|null — Sets the rich text present when the input loads. |
+| `dispatchActionConfig` | DispatchActionConfiguration\|null — Sets which user interactions send a block_actions payload. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `minLines` | int\|null — Sets the minimum visible height of the input, in lines. |
+| `maxLines` | int\|null — Sets the maximum visible height of the input, in lines. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext), [`RichTextBlock`](/reference/php/blocks#richtextblock)
+
+## StaticMultiSelectElement
+
+A menu for selecting multiple options defined in the payload. Use options or option groups, not both. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $options
+
+Adds selectable options in display order.
+
+```php
+/** @var list<Option>|null */
+public readonly ?array $options;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $optionGroups
+
+Adds labelled groups of options in display order. Cannot be combined with ungrouped options.
+
+```php
+/** @var list<OptionGroup>|null */
+public readonly ?array $optionGroups;
+```
+
+**Related types:** [`OptionGroup`](/reference/php/objects#optiongroup)
+
+### $initialOptions
+
+Adds options that are selected when the element loads. Each must match an option in the element.
+
+```php
+/** @var list<Option>|null */
+public readonly ?array $initialOptions;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $maxSelectedItems
+
+Sets the maximum number of items a user can select.
+
+```php
+public readonly ?int $maxSelectedItems;
+```
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?array $options = NULL, ?array $optionGroups = NULL, ?array $initialOptions = NULL, ?Confirmation $confirm = NULL, ?int $maxSelectedItems = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `options` | list&lt;Option&gt;\|null — Adds selectable options in display order. |
+| `optionGroups` | list&lt;OptionGroup&gt;\|null — Adds labelled groups of options in display order. Cannot be combined with ungrouped options. |
+| `initialOptions` | list&lt;Option&gt;\|null — Adds options that are selected when the element loads. Each must match an option in the element. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | int\|null — Sets the maximum number of items a user can select. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## StaticSelectElement
+
+A menu for selecting one option defined in the payload. Use options or option groups, not both. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $options
+
+Adds selectable options in display order.
+
+```php
+/** @var list<Option>|null */
+public readonly ?array $options;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $optionGroups
+
+Adds labelled groups of options in display order. Cannot be combined with ungrouped options.
+
+```php
+/** @var list<OptionGroup>|null */
+public readonly ?array $optionGroups;
+```
+
+**Related types:** [`OptionGroup`](/reference/php/objects#optiongroup)
+
+### $initialOption
+
+Sets the option selected when the element loads. It must match an option in the element.
+
+```php
+public readonly ?Option $initialOption;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?array $options = NULL, ?array $optionGroups = NULL, ?Option $initialOption = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `options` | list&lt;Option&gt;\|null — Adds selectable options in display order. |
+| `optionGroups` | list&lt;OptionGroup&gt;\|null — Adds labelled groups of options in display order. Cannot be combined with ungrouped options. |
+| `initialOption` | Option\|null — Sets the option selected when the element loads. It must match an option in the element. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`Option`](/reference/php/objects#option), [`PlainText`](/reference/php/objects#plaintext)
+
+## TimePickerElement
+
+A time-of-day picker. initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialTime
+
+Sets the initially selected time, formatted as HH:mm in 24-hour time.
+
+```php
+public readonly ?string $initialTime;
+```
+
+### $timezone
+
+Sets the IANA time zone used to display the time, such as Australia/Brisbane.
+
+```php
+public readonly ?string $timezone;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?string $initialTime = NULL, ?string $timezone = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialTime` | string\|null — Sets the initially selected time, formatted as HH:mm in 24-hour time. |
+| `timezone` | string\|null — Sets the IANA time zone used to display the time, such as Australia/Brisbane. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## UrlInputElement
+
+A single-line input that accepts a URL. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/url-input-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialValue
+
+Sets the value present when the input loads.
+
+```php
+public readonly ?string $initialValue;
+```
+
+### $dispatchActionConfig
+
+Sets which user interactions send a block_actions payload.
+
+```php
+public readonly ?DispatchActionConfiguration $dispatchActionConfig;
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?string $initialValue = NULL, ?DispatchActionConfiguration $dispatchActionConfig = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialValue` | string\|null — Sets the value present when the input loads. |
+| `dispatchActionConfig` | DispatchActionConfiguration\|null — Sets which user interactions send a block_actions payload. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/php/objects#dispatchactionconfiguration), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## UserMultiSelectElement
+
+A menu for selecting multiple workspace users. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialUsers
+
+Adds user IDs that are selected when the menu loads.
+
+```php
+/** @var list<string>|null */
+public readonly ?array $initialUsers;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $maxSelectedItems
+
+Sets the maximum number of items a user can select.
+
+```php
+public readonly ?int $maxSelectedItems;
+```
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?array $initialUsers = NULL, ?Confirmation $confirm = NULL, ?int $maxSelectedItems = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialUsers` | list&lt;string&gt;\|null — Adds user IDs that are selected when the menu loads. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | int\|null — Sets the maximum number of items a user can select. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## UserSelectElement
+
+A menu for selecting one workspace user. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly ?string $actionId;
+```
+
+### $initialUser
+
+Sets the user ID selected when the menu loads.
+
+```php
+public readonly ?string $initialUser;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $focusOnLoad
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```php
+public readonly ?bool $focusOnLoad;
+```
+
+### $placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```php
+public readonly ?PlainText $placeholder;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $actionId = NULL, ?string $initialUser = NULL, ?Confirmation $confirm = NULL, ?bool $focusOnLoad = NULL, PlainText|string|null $placeholder = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | string\|null — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initialUser` | string\|null — Sets the user ID selected when the menu loads. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | bool\|null — Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | PlainText\|string\|null — Sets the placeholder text shown before a value is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## WorkflowButtonElement
+
+A button that starts a workflow through a link trigger. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element).
+
+### $text
+
+Sets the button label.
+
+```php
+public readonly PlainText $text;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $workflow
+
+Sets the workflow started when the button is clicked.
+
+```php
+public readonly Workflow $workflow;
+```
+
+**Related types:** [`Workflow`](/reference/php/objects#workflow)
+
+### $actionId
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```php
+public readonly string $actionId;
+```
+
+### $confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```php
+public readonly ?Confirmation $confirm;
+```
+
+**Related types:** [`Confirmation`](/reference/php/objects#confirmation)
+
+### $style
+
+Sets the button's emphasis. Omit it for the default neutral style.
+
+```php
+public readonly ?ButtonStyle $style;
+```
+
+**Related types:** [`ButtonStyle`](/reference/php/core#buttonstyle)
+
+### $accessibilityLabel
+
+Sets the label read by screen readers in place of the visible text.
+
+```php
+public readonly ?string $accessibilityLabel;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(PlainText|string $text, Workflow $workflow, string $actionId, ?Confirmation $confirm = NULL, ?ButtonStyle $style = NULL, ?string $accessibilityLabel = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | PlainText\|string — Sets the button label. |
+| `workflow` | Workflow — Sets the workflow started when the button is clicked. |
+| `actionId` | string — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `confirm` | Confirmation\|null — Sets a confirmation dialog shown before the action is sent. |
+| `style` | ButtonStyle\|null — Sets the button's emphasis. Omit it for the default neutral style. |
+| `accessibilityLabel` | string\|null — Sets the label read by screen readers in place of the visible text. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`ButtonStyle`](/reference/php/core#buttonstyle), [`Confirmation`](/reference/php/objects#confirmation), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext), [`Workflow`](/reference/php/objects#workflow)

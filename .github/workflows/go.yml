@@ -153,7 +153,7 @@ jobs:
         run: |
           go mod tidy -modfile=go125.mod
           git diff --exit-code -- go125.mod go125.sum
-          go test -modfile=go125.mod -mod=readonly -count=1 -race -cover . github.com/nicklambourne/slackblocks/go/v3/...
+          go test -modfile=go125.mod -mod=readonly -count=1 -race -cover . github.com/nicklambourne/slackblocks/go/v4/...
           go run -modfile=go125.mod -mod=readonly ../../docs/examples/multiselect-compat/go/main.go > "$RUNNER_TEMP/go125-sdk.jsonl"
           python3 ../../docs/examples/multiselect-compat/check.py "$RUNNER_TEMP/go125-sdk.jsonl"
           cmp "$RUNNER_TEMP/go-minimum-sdk.jsonl" "$RUNNER_TEMP/go125-sdk.jsonl"
@@ -164,7 +164,7 @@ jobs:
         run: |
           go mod tidy
           git diff --exit-code -- go.mod go.sum
-          go test -mod=readonly -count=1 -race -cover ./... github.com/nicklambourne/slackblocks/go/v3/...
+          go test -mod=readonly -count=1 -race -cover ./... github.com/nicklambourne/slackblocks/go/v4/...
           go run -mod=readonly ../../docs/examples/multiselect-compat/go/main.go > "$RUNNER_TEMP/go-newer-sdk.jsonl"
           python3 ../../docs/examples/multiselect-compat/check.py "$RUNNER_TEMP/go-newer-sdk.jsonl"
           cmp "$RUNNER_TEMP/go-minimum-sdk.jsonl" "$RUNNER_TEMP/go-newer-sdk.jsonl"

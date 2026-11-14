@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	slackblocks "github.com/nicklambourne/slackblocks/go/v3"
+	slackblocks "github.com/nicklambourne/slackblocks/go/v4"
 )
 
 func interfaceType[T any]() reflect.Type { return reflect.TypeOf((*T)(nil)).Elem() }

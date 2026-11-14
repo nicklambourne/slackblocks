@@ -182,11 +182,16 @@ def main():
         tomllib.loads(code) for code in re.findall(r"```toml\n(.*?)```", compatibility, re.S)
     ]
     assert len(configs) == 2
-    assert configs[0]["tool"]["poetry"]["dependencies"]["slackblocks"] == "^3"
-    assert configs[1]["project"]["dependencies"] == ["slackblocks>=3,<4"]
+    major = int(
+        tomllib.loads((ROOT / "python/pyproject.toml").read_text())["project"]["version"].split(
+            "."
+        )[0]
+    )
+    assert configs[0]["tool"]["poetry"]["dependencies"]["slackblocks"] == f"^{major}"
+    assert configs[1]["project"]["dependencies"] == [f"slackblocks>={major},<{major + 1}"]
     assert re.findall(r"^slackblocks[^\n]*", compatibility, re.M) == [
-        "slackblocks>=3,<4",
-        'slackblocks = "^3"',
+        f"slackblocks>={major},<{major + 1}",
+        f'slackblocks = "^{major}"',
     ]
 
     for page in ["reference/index.mdx", "usage/migration.mdx"]:

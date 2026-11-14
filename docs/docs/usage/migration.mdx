@@ -5,6 +5,82 @@ import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust,
 
 # Migration
 
+## Upgrading to 4.0.0
+
+All ten implementations move to 4.0.0 together. Supported language and runtime
+minimums remain unchanged; see [Compatibility](compatibility). The frozen
+[3.2.0 documentation](/3.2.0/usage/installation) describes the previous release.
+Update your package dependency to 4.0.0 and test the complete payloads your
+application sends, including blocks composed into messages and attachments.
+
+### Go module path
+
+Replace every `github.com/nicklambourne/slackblocks/go/v3` import with
+`github.com/nicklambourne/slackblocks/go/v4`, including tests and separate example
+modules. Then run:
+
+```bash
+go get github.com/nicklambourne/slackblocks/go/v4@v4.0.0
+go mod tidy
+go test ./...
+```
+
+Go 1.22 and the default slack-go v0.17.3 dependency remain supported. The
+separately tested SDK v0.23.1 profile still requires Go 1.25; SDK v0.35.0 requires
+Go 1.26. Upgrading Slackblocks does not select the newer SDK or backport its
+security fixes. See the [SDK selection guide](compatibility#go-support-matrix).
+
+### Sparse table settings and public types
+
+Every implementation now preserves skipped positions in `column_settings`.
+For example, `[null, {"align": "right"}]` configures the second column without
+shifting it into the first position. Null entries count toward the 20-entry
+maximum; omitted settings and shorter leading-column lists remain valid.
+
+| Language | Upgrade guidance |
+| --- | --- |
+| Python | `column_settings` can contain `None`; handle optional entries when reading the list. |
+| TypeScript | Handle `null` when reading nullable column-setting entries. Existing non-null inputs remain valid. |
+| Go | Pass `nil` to preserve a skipped column; migrate the module path as above. |
+| Java | Getters now expose `List<@Nullable ColumnSettings>`; check entries before dereferencing. Builders accept null entries. |
+| C# | Getters now expose `IReadOnlyList<ColumnSettings?>`; handle nullable entries. Existing non-null inputs remain valid. |
+| Ruby | Settings lists may contain `nil`; update consumers that assumed every entry was a setting object. |
+| Rust | `TableBlock::column_settings()` changes from `Option<&[ColumnSettings]>` to `Option<&[Option<ColumnSettings>]>`. Handle each inner `Option`; setters still accept ordinary settings. |
+| PHP | Settings arrays can contain `null`; handle nullable entries in readers. |
+| Elixir | Settings lists may contain `nil`; account for it when matching or traversing the list. |
+| Haskell | `tableBlockColumnSettings` changes from `Maybe [ColumnSettings]` to `Maybe [Maybe ColumnSettings]`. Wrap existing entries in `Just`, and use `Nothing` for a skipped column. |
+
+For example, Haskell's old `Just [settings]` becomes `Just [Just settings]`;
+`Just [Nothing, Just settings]` leaves the first column at its default. In Rust,
+preserve the outer omission distinction and match each inner option rather than
+flattening the list, which would change column positions.
+
+Slack's reference permits null entries, but the stress workspace's
+`blocks.validate` endpoint rejected them on 14 November 2026. It accepted default
+objects such as `[{}, {"align": "right"}]`. Use native default `ColumnSettings`
+objects in place of nulls when the receiving path rejects the documented sparse
+form. These structural probes do not establish message delivery or rendering.
+See [Table Block](using_blocks#table-block) for all ten native examples.
+
+### Numeric cells and stricter validation
+
+Plain tables now accept `RawNumber` cells. Existing exhaustive Rust/Haskell
+matches over table-cell variants must also handle the new numeric variant.
+Provide both a finite numeric `value` for sorting and non-empty displayed `text`.
+Empty numeric display labels are now rejected in both plain and data tables;
+Python also rejects NaN and infinities while retaining arbitrary-size integers.
+
+Plain-table displayed text is now limited to 10,000 Unicode code points per table
+and across all plain tables in a message, including attachments, containers and
+layout fallbacks. Raw text, rich-text text/link labels and numeric display text
+consume the budget; sorting numbers, URLs and metadata do not. Data-table and
+Markdown budgets remain separate. Previously accepted oversized payloads now
+fail local validation: shorten the displayed text or split it across messages.
+
+Ragged plain-table rows remain valid. The change does not impose data-table
+rectangular-row rules on ordinary tables. Supported runtime floors, SDK profile
+minimums and unrelated construction defaults remain unchanged.
+
 ## Upgrading to 3.0.0
 
 All nine implementations move to 3.0.0 together. Minimum supported language and runtime versions are unchanged; see [Compatibility](compatibility).

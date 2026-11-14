@@ -3,7 +3,7 @@ package slackblocks_test
 import (
 	"encoding/json"
 	"errors"
-	s "github.com/nicklambourne/slackblocks/go/v3"
+	s "github.com/nicklambourne/slackblocks/go/v4"
 	slack "github.com/slack-go/slack"
 	"strings"
 	"testing"

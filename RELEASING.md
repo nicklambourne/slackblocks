@@ -2,10 +2,12 @@
 
 The Python (`slackblocks` on PyPI), TypeScript
 (`@nicklambourne/slackblocks` on npm), Go
-(`github.com/nicklambourne/slackblocks/go/v3`), Java
+(`github.com/nicklambourne/slackblocks/go/v4`), Java
 (`io.github.nicklambourne:slackblocks` on Maven Central), C# (`Slackblocks` on NuGet), Ruby (`slackblocks` on RubyGems), Rust (`slackblocks` on crates.io), PHP (`nicklambourne/slackblocks` on Packagist), Elixir (`slackblocks` on Hex), and Haskell (`slackblocks` on Hackage)
 packages are released together and always carry the same version
 number.
+
+**Release 4.0.0 is authorized for publication.** The maintainer approved preparation and coordinated publication on 14 November 2026. It ships numeric plain-table cells, sparse column settings and table text validation in all ten languages under spec 1.6.0. Rust getter and Haskell field types change, and Go moves to `/v4`; see the 4.0.0 migration guide. The outgoing 3.2.0 docs are frozen from release commit `bf9eac6f89bf60f70893f8664c520a20e160d1aa`, with provenance and file hashes in `docs/release-snapshots/3.2.0.json`. Runtime floors and registry prerequisites remain unchanged. Publication is complete only after all ten publishers and public registry checks succeed.
 
 **Release 3.2.0 is authorized for publication.** It adds
 layout blocks across all ten implementations under spec 1.5.0. The outgoing
@@ -54,7 +56,7 @@ Releases are triggered by pushing tags:
 |---|---|---|
 | `python/vX.Y.Z` | [`.github/workflows/publish.yml`](.github/workflows/publish.yml) | `slackblocks` to PyPI |
 | `ts/vX.Y.Z` | [`.github/workflows/publish-npm.yml`](.github/workflows/publish-npm.yml) | `@nicklambourne/slackblocks` to npm |
-| `go/vX.Y.Z` | [`.github/workflows/publish-go.yml`](.github/workflows/publish-go.yml) | `github.com/nicklambourne/slackblocks/go/v3` to the Go module ecosystem |
+| `go/vX.Y.Z` | [`.github/workflows/publish-go.yml`](.github/workflows/publish-go.yml) | `github.com/nicklambourne/slackblocks/go/v4` to the Go module ecosystem |
 | `java/vX.Y.Z` | [`.github/workflows/publish-java.yml`](.github/workflows/publish-java.yml) | `io.github.nicklambourne:slackblocks` to Maven Central |
 | `csharp/vX.Y.Z` | [`.github/workflows/publish-nuget.yml`](.github/workflows/publish-nuget.yml) | `Slackblocks` to NuGet |
 | `ruby/vX.Y.Z` | [`.github/workflows/publish-rubygems.yml`](.github/workflows/publish-rubygems.yml) | `slackblocks` to RubyGems |
@@ -620,10 +622,10 @@ panels. `docs/release-snapshots/2.7.0.json` records its language set and file ha
      `docs/docs/usage/installation.mdx`
 
    For a new major release, also change the Go semantic import path in
-   `go/go.mod` from `/v2` to `/vN`, update every Go import in code and docs,
+   `go/go.mod` from `/v3` to `/vN`, update every Go import in code and docs,
    and update the shared release preflight’s module-path policy as needed. A coordinated
-   3.0.0 release therefore requires a Go `/v3` module; the
-   existing `/v2` path cannot publish `go/v3.0.0`.
+   4.0.0 release therefore requires a Go `/v4` module; the
+   existing `/v3` path cannot publish `go/v4.0.0`.
 3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to `python/CHANGELOG.md`,
    `typescript/CHANGELOG.md`, `go/CHANGELOG.md`, `java/CHANGELOG.md`,
    `csharp/CHANGELOG.md`, `ruby/CHANGELOG.md`, `rust/CHANGELOG.md`, `php/CHANGELOG.md`, `elixir/CHANGELOG.md`, and `haskell/CHANGELOG.md`. The
@@ -793,7 +795,7 @@ After a failure, check:
   the sdist and the wheel.
 - npm: https://www.npmjs.com/package/@nicklambourne/slackblocks shows the new
   version (with provenance).
-- Go: https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v3 lists the
+- Go: https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v4 lists the
   new module version.
 - Maven Central: https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks
   lists the new artifact version with binary, source, and Javadoc JARs.

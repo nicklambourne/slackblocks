@@ -6,7 +6,7 @@ public final class Slackblocks {
   public static final String SPEC_VERSION = "1.6.0";
 
   /** The package version, kept in lockstep with every slackblocks language. */
-  public static final String VERSION = "3.2.0";
+  public static final String VERSION = "4.0.0";
 
   private Slackblocks() {}
 }
