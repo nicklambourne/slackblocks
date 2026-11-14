@@ -723,19 +723,19 @@
     },
     {
       "id": "blocks/table_numeric",
-      "description": "Table numeric",
+      "description": "Numeric display text with ragged rows and partial leading-column settings",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/table-block/",
       "since": "1.6.0"
     },
     {
       "id": "blocks/table_text_at_limit",
-      "description": "Table text at limit",
+      "description": "Numeric display text at the 10000 Unicode code-point per-table boundary",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/table-block/",
       "since": "1.6.0"
     },
     {
       "id": "messages/message_table_total_at_limit",
-      "description": "Table total at limit",
+      "description": "Raw and numeric text across two tables at the 10000-code-point message boundary",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/table-block/",
       "since": "1.6.0"
     }

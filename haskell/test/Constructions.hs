@@ -11,7 +11,7 @@ tableWire :: Int -> Bool -> Value
 tableWire n numeric =
   object
     [ "type" .= String "table",
-      "rows" .= [[object (["type" .= String (if numeric then "raw_number" else "raw_text"), "text" .= T.replicate n "😀"] <> if numeric then ["value" .= (1 :: Int)] else [])]]
+      "rows" .= [[object (["type" .= String (if numeric then "raw_number" else "raw_text"), "text" .= T.replicate n "😀"] <> ["value" .= (1 :: Int) | numeric])]]
     ]
 
 nestedTableMessage :: Result MessagePayload

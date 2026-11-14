@@ -1092,7 +1092,50 @@ final class InvalidConformanceTest {
       case "data-table-page-size-too-large" -> dataTable(validRows(), "Names", "page_size", 101);
       case "data-table-cell-text-empty" ->
           dataTable(List.of(List.of(rawText("Name")), List.of(rawText(""))), "Names");
-      case "table-layout-fallback-total-too-long" -> invalid("Message", map("channel", "C123", "blocks", List.of(map("type", "layout", "label", "Table", "rows", List.of(map("items", List.of(map("block", map("type", "table", "rows", List.of(List.of(map("type", "raw_text", "text", repeated("😀", 5000))))))))), "fallback", List.of(map("type", "table", "rows", List.of(List.of(map("type", "raw_text", "text", repeated("😀", 5001))))))))));
+      case "table-layout-fallback-total-too-long" ->
+          invalid(
+              "Message",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  List.of(
+                      map(
+                          "type",
+                          "layout",
+                          "label",
+                          "Table",
+                          "rows",
+                          List.of(
+                              map(
+                                  "items",
+                                  List.of(
+                                      map(
+                                          "block",
+                                          map(
+                                              "type",
+                                              "table",
+                                              "rows",
+                                              List.of(
+                                                  List.of(
+                                                      map(
+                                                          "type",
+                                                          "raw_text",
+                                                          "text",
+                                                          repeated("😀", 5000))))))))),
+                          "fallback",
+                          List.of(
+                              map(
+                                  "type",
+                                  "table",
+                                  "rows",
+                                  List.of(
+                                      List.of(
+                                          map(
+                                              "type",
+                                              "raw_text",
+                                              "text",
+                                              repeated("😀", 5001))))))))));
       case "table-content-too-long" ->
           typed(
               "TableBlock",

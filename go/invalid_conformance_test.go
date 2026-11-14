@@ -419,8 +419,8 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewDataTableBlock().Rows(validRows()...).Caption("Names").PageSize(101))
 	case "data-table-cell-text-empty":
 		return buildError(slackblocks.NewDataTableBlock().Rows([]slackblocks.DataTableCell{rawText("Name")}, []slackblocks.DataTableCell{rawText("")}).Caption("Names"))
-    case "table-layout-fallback-total-too-long":
-        return buildError(slackblocks.NewMessage().Channel("C123").Blocks(slackblocks.NewLayoutBlock().Label("Table").Rows(slackblocks.NewLayoutRow().Items(slackblocks.NewLayoutItem().Block(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText(repeated("😀", 5000))})))).Fallback(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText(repeated("😀", 5001))}))))
+	case "table-layout-fallback-total-too-long":
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(slackblocks.NewLayoutBlock().Label("Table").Rows(slackblocks.NewLayoutRow().Items(slackblocks.NewLayoutItem().Block(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText(repeated("😀", 5000))})))).Fallback(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText(repeated("😀", 5001))}))))
 	case "table-content-too-long":
 		return buildError(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{slackblocks.NewRawNumber().Value(1).Text(repeated("😀", 10001))}))
 	case "table-total-content-too-long":
