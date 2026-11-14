@@ -855,3 +855,26 @@ jobs, immutable tags and existing artifacts. Never retry an uncertain upload
 without first reconciling the public package identity. PHP checks the ordinary
 Composer p2 feed and uses isolated Composer metadata for both archive and source
 installs; a Packagist page or a warmed local cache is insufficient evidence.
+
+## Resuming a coordinated release
+
+Dispatch **Coordinated Release** from master with the same version and `resume`
+selected. The current tooling checks out the immutable Python release tag,
+verifies all ten annotated tags and source ancestry, and observes the existing
+publisher runs. Successful publishers are reused; active publishers keep their
+run IDs. Each matrix job preserves `publisher-record-<language>-<attempt>` with
+source/tooling SHAs, run/attempt IDs, official jobs, actual hosted runners and
+artifact IDs/digests. Keep these records with the release evidence.
+
+Only failed NuGet, Composer or Hackage consumer jobs with explicit pending
+availability receipts may rerun automatically, once per coordinator attempt.
+Successful upload jobs are not repeated. Missing runs after a prior dispatch,
+unknown upload outcomes, authentication errors, changed source identities and
+consumer failures stop for investigation. A pending or blocked record never
+means the coordinated release is complete. A new initial dispatch for the same
+source is rejected; use resume even when the previous coordinator is red.
+
+Resume uses current reviewed tooling while retaining the tagged release source.
+It does not recreate tags, change package bytes, repeat credential readiness
+writes, or repair a failed upload automatically. Resolve a genuinely failed
+publisher with its existing immutable-artifact recovery process before resuming.
