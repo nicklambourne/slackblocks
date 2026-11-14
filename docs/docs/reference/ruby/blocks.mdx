@@ -2515,13 +2515,13 @@ See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/tabl
 Construct an immutable, validated value with keyword arguments. Required keywords: rows.
 
 ```ruby
-def self.new: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
+def self.new: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings?])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
 ```
 
 | Parameter | Description |
 | --- | --- |
 | `rows` | Adds complete table rows in display order. |
-| `column_settings` | Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid. |
+| `column_settings` | Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries. |
 | `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
 | `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
 
@@ -2538,7 +2538,7 @@ def self.new: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSet
 Keyword-only alias for .new.
 
 ```ruby
-def self.[]: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
+def self.[]: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings?])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
 ```
 
 **Returns:** TableBlock
@@ -2559,13 +2559,13 @@ def rows: () -> Array[Array[TableCell]]
 
 ### column_settings
 
-Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid. Wire key: column_settings.
+Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries. Wire key: column_settings.
 
 ```ruby
-def column_settings: () -> (Array[ColumnSettings])?
+def column_settings: () -> (Array[ColumnSettings?])?
 ```
 
-**Returns:** (Array[ColumnSettings])?
+**Returns:** (Array[ColumnSettings?])?
 
 **Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings)
 
