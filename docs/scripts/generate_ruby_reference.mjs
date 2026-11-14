@@ -37,6 +37,14 @@ const index = [
   "",
 ].join("\n");
 
+const helperDefaults = {
+  AccordionSection: 'Defaults: expanded: false, width: ContainerWidth::STANDARD, has_header_divider: false; subtitle, icon and block_id omitted. Expand sections before constructing the final payload.',
+  Paginator: 'Defaults: page: 1, page_size: 5, previous_text: "Previous", next_text: "Next", show_page_indicator: true, block_id omitted. Pages are one-based. Actions use <prefix>.previous and <prefix>.next, with the target page in value. The application handles clicks and rebuilds the payload.',
+};
+for (const type of reference.types) {
+  if (helperDefaults[type.name]) type.doc += "\n\n" + helperDefaults[type.name].replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
 const count = await writeReferencePages({
   reference,
   domains,

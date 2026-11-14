@@ -20,6 +20,6 @@ const count = await writeReferencePages({
   language: "php", fence: "php", preserveMemberNames: true,
   outputRoot: path.resolve(directory, "../docs/reference/php"),
   introduction: () => "Generated from actual PHP reflection and PHPDoc. Names live in the `Slackblocks` namespace. Use named arguments and `declare(strict_types=1)`; values validate before construction returns.\n\n",
-  index: `---\nsidebar_position: 0\n---\n\n# PHP API reference\n\nPHP 8.2+ on 64-bit systems, with readonly classes, named arguments and backed enums. The first release is being prepared for 2.7.0; see [installation](/usage/installation). Core serialization has no HTTP or framework dependencies.\n\n${domains.map((d) => `- [${d.title}](/reference/php/${d.slug})`).join("\n")}\n`,
+  index: `---\nsidebar_position: 0\n---\n\n# PHP API reference\n\nPHP 8.2+ on 64-bit systems, with readonly classes, named arguments and backed enums. PHP has been available since 2.7.0; see [installation](/usage/installation). Core serialization has no HTTP or framework dependencies.\n\n${domains.map((d) => `- [${d.title}](/reference/php/${d.slug})`).join("\n")}\n`,
 });
 console.log(`Generated ${count} PHP public types from reflection and PHPDoc.`);

@@ -79,7 +79,7 @@ assert.equal(
 );
 assert.equal(
   typescriptDocuments.some(({ u }) =>
-    /\/usage\/(?:compatibility|migration)$/.test(u),
+    /\/usage\/migration$/.test(u),
   ),
   false,
 );
@@ -101,20 +101,20 @@ for (const [language, documents] of [
 }
 
 assert.match(pythonText, /Python 3\.10 or newer is required/);
-assert.doesNotMatch(pythonText, /Node\.js 20\.19 or newer is required/);
-assert.match(typescriptText, /Node\.js 20\.19 or newer is required/);
+assert.doesNotMatch(pythonText, /\^20\.19\.0 \|\| >=22\.12\.0/);
+assert.match(typescriptText, /\^20\.19\.0 \|\| >=22\.12\.0/);
 assert.doesNotMatch(typescriptText, /Python 3\.10 or newer is required/);
 assert.match(goText, /Go 1\.22 or newer is required/);
 assert.doesNotMatch(goText, /Python 3\.10 or newer is required/);
-assert.doesNotMatch(goText, /Node\.js 20\.19 or newer is required/);
+assert.doesNotMatch(goText, /\^20\.19\.0 \|\| >=22\.12\.0/);
 assert.match(javaText, /Java 17 or newer is required/);
 assert.doesNotMatch(javaText, /Python 3\.10 or newer is required/);
-assert.doesNotMatch(javaText, /Node\.js 20\.19 or newer is required/);
+assert.doesNotMatch(javaText, /\^20\.19\.0 \|\| >=22\.12\.0/);
 assert.doesNotMatch(javaText, /Go 1\.22 or newer is required/);
 assert.doesNotMatch(javaText, /\.NET 8 or newer is required/);
 assert.match(csharpText, /\.NET 8 or newer is required/);
 assert.doesNotMatch(csharpText, /Python 3\.10 or newer is required/);
-assert.doesNotMatch(csharpText, /Node\.js 20\.19 or newer is required/);
+assert.doesNotMatch(csharpText, /\^20\.19\.0 \|\| >=22\.12\.0/);
 assert.doesNotMatch(csharpText, /Go 1\.22 or newer is required/);
 assert.doesNotMatch(csharpText, /Java 17 or newer is required/);
 
@@ -208,3 +208,8 @@ assert.ok(haskellDocuments.some(({ u }) => u.includes("/reference/haskell/blocks
 assert.ok(haskellDocuments.some(({ u }) => u.endsWith("/usage/compatibility")));
 assert.doesNotMatch(haskellText, /PHP 8\.2 or newer is required/);
 assert.doesNotMatch(haskellText, /Elixir 1\.16\.3 or newer/);
+
+for (const language of ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "haskell"]) {
+  const documents = await readDocuments(language);
+  assert.ok(documents.some(({u}) => u.endsWith("/usage/compatibility")), `${language}: compatibility must be searchable`);
+}

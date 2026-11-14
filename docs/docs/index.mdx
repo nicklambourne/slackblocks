@@ -81,7 +81,7 @@ See [Using Blocks](usage/using_blocks) for examples of all block types side-by-s
 ### Utilities
 
 - [`block_kit_builder_url(payload, team_id=None)`](reference/python/builder#block_kit_builder_url) — turn any block, list of blocks, message, or view into a [Block Kit Builder](https://app.slack.com/block-kit-builder) URL for browser-based preview.
-- [`Block.from_dict(data)`](reference/python/blocks#block) — parse a Slack-shaped block payload back into a `slackblocks` object. Per-class `from_dict` parsers are also available on every composition object.
+- [`Block.from_dict(data)`](reference/python/blocks#block) — parse a Slack-shaped block payload back into a `slackblocks` object. Parsing is partial: selected composition objects also have `from_dict` methods, while others do not. Consult the [parsing capability inventory](/usage/recipes/parse-json) before round-tripping data; unknown fields may be lost.
 
 </Python>
 <TypeScript>

@@ -106,6 +106,7 @@ class View:
         )
 
     def to_dict(self) -> dict[str, Any]:
+        """Return a fresh Slack-shaped dictionary, validating the resolved payload."""
         return self._resolve()
 
     def __repr__(self) -> str:

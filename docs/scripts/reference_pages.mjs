@@ -92,6 +92,9 @@ export async function writeReferencePages({ reference, domains, domainFor, langu
     const types = byDomain.get(domain.slug).sort((a, b) => a.name.localeCompare(b.name));
     let output = `---\nsidebar_position: ${domain.position}\ntoc_max_heading_level: 3\n---\n\n# ${domain.title}\n\n`;
     output += introduction(domain);
+    output += "import ReferenceIndex from '@site/src/components/ReferenceIndex';\n\n";
+    output += `<ReferenceIndex entries={${JSON.stringify(types.map(type => ({name: type.name, href: `#${anchor(type.name)}`})))}} />\n\n`;
+
     for (const type of types) {
       output += `## ${type.name}\n\n`;
       output += `${resolveLinks(type.doc || `Public ${type.name} API.`, typeLinks)}\n\n`;

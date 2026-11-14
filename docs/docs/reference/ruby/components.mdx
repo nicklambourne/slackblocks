@@ -7,6 +7,10 @@ toc_max_heading_level: 3
 
 This page documents the Ruby API for components. Values use keyword-only construction, validate before freezing, and serialize to Slack JSON.
 
+import ReferenceIndex from '@site/src/components/ReferenceIndex';
+
+<ReferenceIndex entries={[{"name":"Accordion","href":"#accordion"},{"name":"AccordionSection","href":"#accordionsection"},{"name":"Paginator","href":"#paginator"}]} />
+
 ## Accordion
 
 Combine collapsible sections in display order.
@@ -27,6 +31,8 @@ def self.create: (sections: Array[ContainerBlock]) -> Array[Block]
 
 Create one Slack-native collapsible container.
 
+Defaults: expanded: false, width: ContainerWidth::STANDARD, has_header_divider: false; subtitle, icon and block_id omitted. Expand sections before constructing the final payload.
+
 ### .create
 
 Return a validated collapsible container. The title remains visible when collapsed.
@@ -42,6 +48,8 @@ def self.create: (title: String | PlainText, blocks: Array[Block], ?subtitle: St
 ## Paginator
 
 Select one page of blocks and append navigation controls when multiple pages exist.
+
+Defaults: page: 1, page_size: 5, previous_text: "Previous", next_text: "Next", show_page_indicator: true, block_id omitted. Pages are one-based. Actions use &lt;prefix&gt;.previous and &lt;prefix&gt;.next, with the target page in value. The application handles clicks and rebuilds the payload.
 
 ### .create
 

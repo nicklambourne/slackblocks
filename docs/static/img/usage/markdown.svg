@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="944" height="216" viewBox="0 0 944 216" role="img" aria-labelledby="title description">
-  <title id="title">Markdown Block rendered in Slack</title>
+  <title id="title">Markdown Block illustrative local preview</title>
   <desc id="description">A Slack app message with bold Hello text and an italic GitHub-flavored phrase.</desc>
   <rect x="0.5" y="0.5" width="943" height="215" rx="18" fill="#fff" stroke="#f0f0f0" />
   <g transform="rotate(-12 78 78)">

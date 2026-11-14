@@ -28,7 +28,7 @@ const LANGUAGE_INDEXES = Object.fromEntries(LANGUAGES.map((language) => {
     ignoredRoutes: [
       ...(language === "elixir" ? [] : [/^usage\/erlang$/]),
       new RegExp(`^reference/(?:${others.join("|")})(?:/|$)`),
-      ...(["python", "rust", "php", "elixir", "haskell"].includes(language) ? [] : [/^usage\/(?:compatibility|migration)$/]),
+      ...(["python", "rust", "php", "elixir", "haskell"].includes(language) ? [] : [/^usage\/migration$/]),
     ],
   }];
 }));
