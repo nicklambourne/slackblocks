@@ -3,7 +3,7 @@ name: Elixir
 on:
   push:
     branches: [master]
-    paths: ["elixir/**", "spec/**", "docs/**", "README.md", "AGENTS.md", ".github/workflows/elixir.yml", ".github/workflows/publish-hex.yml", ".github/workflows/coordinated-release.yml", ".github/scripts/**", "RELEASING.md"]
+    paths: ["elixir/**", "spec/**", "docs/**", "README.md", "AGENTS.md", ".github/workflows/elixir.yml", ".github/workflows/publish-hex.yml", ".github/workflows/recover-hex.yml", ".github/workflows/coordinated-release.yml", ".github/scripts/**", "RELEASING.md"]
   pull_request:
   workflow_dispatch:
 

@@ -111,7 +111,7 @@ class ElixirReleaseTests(unittest.TestCase):
             patch.object(
                 hex_release,
                 "package",
-                side_effect=lambda _, p: p.write_bytes(b"different"),
+                side_effect=lambda _, p, reference=None: p.write_bytes(b"different"),
             ),
             self.assertRaisesRegex(hex_release.preflight.ReleaseError, "reproduction"),
         ):
@@ -341,6 +341,37 @@ class ElixirReleaseTests(unittest.TestCase):
                         run.call_args.args[1:], ("mix", "hex.publish", "docs", "--yes")
                     )
 
+    def test_publication_uploads_the_exact_tested_archive_without_rebuilding(self):
+        record = self.artifact()
+        existing = {
+            "version": record["version"],
+            "checksum": record["sha256"],
+            "has_docs": True,
+        }
+        with (
+            patch.object(hex_release.preflight, "publisher"),
+            patch.object(hex_release, "verify", return_value=record),
+            patch.object(hex_release, "account"),
+            patch.object(hex_release, "registry", return_value=None),
+            patch.object(hex_release, "wait_registry", return_value=existing),
+            patch.object(hex_release, "wait_docs"),
+            patch.object(hex_release, "run") as run,
+        ):
+            hex_release.publish(self.root, self.directory)
+            run.assert_called_once_with(
+                self.root,
+                "mix",
+                "do",
+                "compile",
+                "--no-prune-code-paths",
+                "+",
+                "run",
+                "--no-start",
+                str(fixtures.ROOT / "elixir/tools/publish_archive.exs"),
+                str(self.directory / hex_release.ARCHIVE),
+                record["sha256"],
+            )
+
     def test_uncertain_upload_queries_identity_without_retrying_write(self):
         record = self.artifact()
         existing = {
@@ -399,6 +430,25 @@ class ElixirDocsTests(unittest.TestCase):
 
 
 class ElixirWorkflowTests(unittest.TestCase):
+    def test_recovery_binds_original_source_and_artifact_before_credentials(self):
+        workflow = (fixtures.ROOT / ".github/workflows/recover-hex.yml").read_text()
+        self.assertIn("if: github.ref == 'refs/heads/master'", workflow)
+        self.assertIn("name: hex", workflow)
+        self.assertIn("original['head_sha'] == head", workflow)
+        self.assertIn("original['head_branch'] == tag", workflow)
+        self.assertIn("build['conclusion'] == 'success'", workflow)
+        self.assertIn("run-id: ${{ inputs.artifact_run }}", workflow)
+        self.assertLess(
+            workflow.index("verify-release.py publisher --language elixir"),
+            workflow.index("secrets.HEX_API_KEY"),
+        )
+        self.assertLess(
+            workflow.index("verify --source-root source --directory artifact"),
+            workflow.index("secrets.HEX_API_KEY"),
+        )
+        self.assertNotIn("--replace", workflow)
+        self.assertNotIn("id-token: write", workflow)
+
     def test_secrets_are_only_in_protected_job_and_preflight_precedes_them(self):
         workflow = (fixtures.ROOT / ".github/workflows/publish-hex.yml").read_text()
         build, rest = workflow.split("  publish:\n", 1)

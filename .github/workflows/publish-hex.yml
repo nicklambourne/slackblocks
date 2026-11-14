@@ -40,6 +40,8 @@ jobs:
         run: |
           mix run tools/check.exs --profile native
           python3 tools/docs_check.py
+      - name: Verify archive ordering and immutable upload guards
+        run: python3 elixir/tools/test_release_archive.py
       - name: Build and reproduce tested archive
         run: |
           python3 elixir/tools/release.py prepare
