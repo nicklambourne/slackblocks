@@ -7,6 +7,10 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[2]
 manifest = ROOT / 'rust/Cargo.toml'
 cargo = ['cargo', '+stable']
+# Cargo's build-directory layout can change between compiler versions. Partial
+# cleanup may retain old instrumented binaries restored by CI's target cache;
+# llvm-cov then counts their unexecuted regions in the current report.
+subprocess.run(cargo + ['llvm-cov', 'clean', '--manifest-path', str(manifest)], check=True)
 metadata = json.loads(subprocess.check_output(cargo + ['metadata', '--manifest-path', str(manifest), '--format-version', '1', '--no-deps']))
 report = Path(metadata['target_directory']) / 'coverage.json'
 subprocess.run(cargo + ['llvm-cov', '--manifest-path', str(manifest), '--workspace', '--all-targets', '--all-features', '--locked', '--json', '--output-path', str(report)], check=True)
