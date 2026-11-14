@@ -114,7 +114,7 @@ These must be in place before the workflows can publish:
       token path only runs while the secret is present.
 4. **Go requires no registry credentials** — Go modules are published by
    pushing the correctly prefixed repository tag. Because the module lives in
-   the `go/` subdirectory and declares the `/v3` module path, its tags must use
+   the `go/` subdirectory and declares the `/v4` module path, its tags must use
    the exact form `go/vX.Y.Z`. The workflow verifies the module and creates the
    corresponding GitHub Release; consumers and the public Go proxy resolve it
    directly from the repository.
@@ -209,14 +209,14 @@ gh workflow run publish-java.yml --ref master -f release_tag=java/v2.6.0
 
 Recovery uses the workflow's tested Maven launcher while checking out and building
 the original tag's sources and POM. The shared guard still requires the complete
-eight-tag set, a clean checkout and master ancestry. Never move the release tag.
+ten-tag set, a clean checkout and master ancestry. Never move the release tag.
 Confirm the version is absent from Maven Central before retrying, and verify its
 availability afterwards; a validated deployment may still be propagating.
 
 ## Rust activation and first publication
 
 The initial 2.6.0 bootstrap below is historical. Rust is already published;
-ongoing releases use the eight-language coordinator and the current version.
+ongoing releases use the ten-language coordinator and the current version.
 
 The implementation train kept publication disabled until this release-readiness
 change. Preparing or merging release files does not create tags or publish packages.
