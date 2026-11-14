@@ -457,6 +457,21 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
             ],
         ],
     ),
+    "blocks/table_numeric": lambda: TableBlock(
+        block_id="fake_block_id",
+        rows=[[RawText("Count"), RawNumber(42, "42 items")], [RawNumber(3, "Three")]],
+        column_settings=[ColumnSettings(align="right")],
+    ),
+    "blocks/table_text_at_limit": lambda: TableBlock(
+        block_id="fake_block_id", rows=[[RawNumber(1, "😀" * 10000)]]
+    ),
+    "messages/message_table_total_at_limit": lambda: Message(
+        channel="C123",
+        blocks=[
+            TableBlock(block_id="fake_block_id", rows=[[RawText("😀" * 5000)]]),
+            TableBlock(block_id="fake_block_id", rows=[[RawNumber(1, "😀" * 5000)]]),
+        ],
+    ),
     "blocks/table_ragged_rows": lambda: TableBlock(
         block_id="fake_block_id",
         rows=[

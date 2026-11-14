@@ -669,6 +669,43 @@ defmodule Slackblocks.Test.ValidConstructions do
            block_id: "fake_block_id"
          )
        end},
+      {"blocks/table_numeric",
+       fn ->
+         Blocks.Table.new!(
+           block_id: "fake_block_id",
+           rows: [
+             [
+               Objects.RawText.new!(text: "Count"),
+               Objects.RawNumber.new!(value: 42, text: "42 items")
+             ],
+             [Objects.RawNumber.new!(value: 3, text: "Three")]
+           ],
+           column_settings: [Objects.ColumnSettings.new!(align: :right)]
+         )
+       end},
+      {"blocks/table_text_at_limit",
+       fn ->
+         Blocks.Table.new!(
+           block_id: "fake_block_id",
+           rows: [[Objects.RawNumber.new!(value: 1, text: String.duplicate("😀", 10000))]]
+         )
+       end},
+      {"messages/message_table_total_at_limit",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Table.new!(
+               block_id: "fake_block_id",
+               rows: [[Objects.RawText.new!(text: String.duplicate("😀", 5000))]]
+             ),
+             Blocks.Table.new!(
+               block_id: "fake_block_id",
+               rows: [[Objects.RawNumber.new!(value: 1, text: String.duplicate("😀", 5000))]]
+             )
+           ]
+         )
+       end},
       {"blocks/table_ragged_rows",
        fn ->
          Blocks.Table.new!(

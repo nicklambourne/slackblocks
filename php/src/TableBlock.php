@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Slackblocks;
 
 /**
- * A simple table of raw text and rich text cells.
+ * A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.
  * @see https://docs.slack.dev/reference/block-kit/blocks/table-block
  */
 final readonly class TableBlock extends Value implements Block, LayoutChild, LayoutFallback
@@ -17,7 +17,7 @@ final readonly class TableBlock extends Value implements Block, LayoutChild, Lay
      */
     public array $rows;
 
-    /** Adds per-column settings in column order. Provide one entry for every column.
+    /** Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid.
      * @var list<ColumnSettings>|null
      */
     public array|null $columnSettings;
@@ -29,7 +29,7 @@ final readonly class TableBlock extends Value implements Block, LayoutChild, Lay
 
     /**
      * @param list<list<TableCell>> $rows Adds complete table rows in display order.
-     * @param list<ColumnSettings>|null $columnSettings Adds per-column settings in column order. Provide one entry for every column.
+     * @param list<ColumnSettings>|null $columnSettings Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid.
      * @param string|null $blockId Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
      * @param JsonObject|null $extensions Additional JSON fields; modeled names and type are reserved.
      */

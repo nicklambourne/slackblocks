@@ -250,12 +250,15 @@ module Slackblocks
 
     def self.message(wire, path)
       surface(wire["blocks"] || [], "message", "#{path}.blocks")
-      totals = {"markdown" => 0, "data_table" => 0, "data_visualization" => 0}
+      totals = {"markdown" => 0, "data_table" => 0, "table" => 0, "data_visualization" => 0}
       tally(wire["blocks"], totals)
       (wire["attachments"] || []).each { |attachment| tally(attachment["blocks"], totals) }
       fail!("length-exceeded", path, "a message may contain at most two data visualization blocks") if totals["data_visualization"] > limit("message.data_visualizations.max_items")
       if totals["markdown"] > limit("markdown.total_text.max_length")
         fail!("length-exceeded", path, "message markdown total exceeded")
+      end
+      if totals["table"] > limit("table.total_content.max_length")
+        fail!("length-exceeded", path, "message table total exceeded")
       end
       if totals["data_table"] > limit("data_table.total_content.max_length")
         fail!("length-exceeded", path, "message data table total exceeded")
@@ -269,8 +272,8 @@ module Slackblocks
           totals["markdown"] += node.fetch("text").length
         elsif node["type"] == "data_visualization"
           totals["data_visualization"] += 1
-        elsif node["type"] == "data_table"
-          totals["data_table"] += characters(node.fetch("rows"))
+        elsif %w[table data_table].include?(node["type"])
+          totals[node.fetch("type")] += characters(node.fetch("rows"))
         elsif %w[container layout].include?(node["type"])
           tally(composite_children(node), totals)
         end
@@ -313,6 +316,9 @@ module Slackblocks
             end
           end
         end
+      end
+      if !data_table && characters(rows) > limit("table.content.max_length")
+        fail!("length-exceeded", "#{path}.rows", "table content exceeded")
       end
       if data_table
         fail!("invalid-usage", "#{path}.column_settings", "unsupported") if wire.key?("column_settings")

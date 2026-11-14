@@ -59,6 +59,7 @@ from slackblocks._limits import (
     SECTION_TEXT_MAX_LENGTH,
     TABLE_COLUMN_SETTINGS_MAX_ITEMS,
     TABLE_COLUMNS_MAX_ITEMS,
+    TABLE_CONTENT_MAX_LENGTH,
     TABLE_ROWS_MAX_ITEMS,
     VIDEO_ALT_TEXT_MAX_LENGTH,
     VIDEO_AUTHOR_NAME_MAX_LENGTH,
@@ -163,6 +164,7 @@ ALLOWED_INPUT_ELEMENTS = (
 
 ALLOWED_TABLE_CELL_ELEMENTS = (
     RawText,
+    RawNumber,
     RichTextList,
     RichTextCodeBlock,
     RichTextQuote,
@@ -416,7 +418,8 @@ class DividerBlock(Block):
 
 class FileBlock(Block):
     """
-    Displays a remote file (e.g. a PDF).
+    A retrieved remote-file representation (e.g. a PDF), not an outgoing message block.
+    Register and share remote files with the Files API, then read back this representation.
 
     For details on how remote files are exposed to Slack, see
     <https://api.slack.com/messaging/files#adding>.
@@ -818,20 +821,21 @@ class TableBlock(Block):
     A `TableBlock` displays data in a table format.
 
     Args:
-        rows: a list of lists of `RawText` or `RichTextObject` objects.
-        column_settings: a list of `ColumnSettings` objects.
+        rows: a list of lists of `RawText`, `RawNumber` or `RichTextObject` objects.
+        column_settings: settings for leading columns; omitted trailing columns use Slack defaults.
         block_id: you can use this field to provide a deterministic identifier for the block.
 
     Throws:
-        InvalidUsageError: when items in `rows` are not `RawText` or `RichTextObject` objects.
+        InvalidUsageError: when items in `rows` are not `RawText`, `RawNumber` or `RichTextObject` objects.
         InvalidUsageError: when the number of rows is greater than 100.
         InvalidUsageError: when the number of columns in a row is greater than 20.
         InvalidUsageError: when the number of column_settings is greater than 20.
+        LengthError: when displayed cell text exceeds 10,000 Unicode code points.
     """
 
     def __init__(
         self,
-        rows: list[list[RawText | RichTextObject]],
+        rows: list[list[RawText | RawNumber | RichTextObject]],
         column_settings: list[ColumnSettings] | None = None,
         block_id: str | None = None,
     ) -> None:
@@ -859,6 +863,8 @@ class TableBlock(Block):
         if column_settings and len(column_settings) > TABLE_COLUMN_SETTINGS_MAX_ITEMS:
             raise LengthError("`column_settings` can have a maximum of 20 items.")
         self.column_settings = column_settings
+        if _text_character_count(self._resolve()["rows"]) > TABLE_CONTENT_MAX_LENGTH:
+            raise LengthError("Table cell text exceeds the 10,000-character limit.")
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -869,14 +875,14 @@ class TableBlock(Block):
             }
         )
 
-    def _resolve_cell(self, cell: RawText | RichTextObject) -> dict[str, Any]:
+    def _resolve_cell(self, cell: RawText | RawNumber | RichTextObject) -> dict[str, Any]:
         """
         Resolve a table cell to its JSON representation.
 
-        RawText cells are resolved directly.
+        RawText and RawNumber cells are resolved directly.
         RichTextObject cells are wrapped in a rich_text structure.
         """
-        if isinstance(cell, RawText):
+        if isinstance(cell, (RawText, RawNumber)):
             return cell._resolve()
         else:
             # Wrap RichTextObject in rich_text structure

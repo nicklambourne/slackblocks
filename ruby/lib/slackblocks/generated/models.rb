@@ -808,6 +808,7 @@ module Slackblocks
   class RawNumber
     include Value
     include DataTableCell
+    include TableCell
     attr_reader :value, :text, :additional_fields
   end
   RawNumber.const_set(:WIRE_TYPE, "raw_number")

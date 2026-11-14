@@ -6,9 +6,9 @@
 
 namespace Slackblocks.Blocks;
 
-/// <summary>A value that can appear as a table block cell: raw text or a rich text block.</summary>
+/// <summary>A value that can appear as a table block cell: raw text, a raw number, or a rich text block.</summary>
 /// <remarks>
-/// Implemented by <see cref="global::Slackblocks.Objects.RawText"/>, <see cref="global::Slackblocks.Blocks.RichTextBlock"/>.
+/// Implemented by <see cref="global::Slackblocks.Objects.RawNumber"/>, <see cref="global::Slackblocks.Objects.RawText"/>, <see cref="global::Slackblocks.Blocks.RichTextBlock"/>.
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public interface ITableCell : global::Slackblocks.ISlackObject

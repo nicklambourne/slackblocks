@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A simple table of raw text and rich text cells.
+ * A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode
+ * code points per table and across tables in a message.
  *
  * <p>Start with {@link #builder()}, set fields with the named fluent methods, and call {@link
  * Builder#build()} to validate and create an immutable value.
@@ -57,7 +58,8 @@ public final class TableBlock implements Block, LayoutChild, LayoutFallback {
   }
 
   /**
-   * Returns per-column settings in column order. Provide one entry for every column.
+   * Returns settings for leading columns in column order. Omitted trailing columns retain Slack
+   * defaults; fewer entries than columns are valid.
    *
    * @return the values in order, or an empty list when none were set
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
@@ -114,7 +116,8 @@ public final class TableBlock implements Block, LayoutChild, LayoutFallback {
     }
 
     /**
-     * Adds per-column settings in column order. Provide one entry for every column.
+     * Adds settings for leading columns in column order. Omitted trailing columns retain Slack
+     * defaults; fewer entries than columns are valid.
      *
      * <p>Slack allows at most 20 items. Each call appends to any values already added.
      *

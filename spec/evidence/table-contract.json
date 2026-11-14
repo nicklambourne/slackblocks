@@ -1,0 +1,32 @@
+{
+  "checked_on": "2026-11-14",
+  "sources": [
+    "https://docs.slack.dev/reference/block-kit/blocks/table-block/",
+    "https://docs.slack.dev/reference/methods/blocks.validate/"
+  ],
+  "contract": {
+    "cells": [
+      "raw_text",
+      "raw_number",
+      "rich_text"
+    ],
+    "per_table_codepoints": 10000,
+    "message_table_codepoints": 10000,
+    "counting": "Displayed text, including rich-text text/link text and raw_number.text. Numeric sorting values, URLs, IDs and application metadata are not text. Plain and data table budgets remain independent.",
+    "shape": "Ragged rows and partial leading-column settings remain valid."
+  },
+  "structural_observations": {
+    "scope": "Authorized stress workspace; auth.test and blocks.validate only. No message writes, rendering or interaction claims.",
+    "numeric_value_and_text": "accepted",
+    "numeric_value_only": "rejected: missing required text",
+    "ragged_partial_settings": "accepted",
+    "text_10000_and_10001": "both accepted",
+    "unicode_10000_and_10001": "both accepted",
+    "two_table_total_10000_and_10001": "both accepted",
+    "rich_text_10001": "accepted",
+    "numeric_display_text_10001": "accepted"
+  },
+  "decision": "Apply the stricter explicitly documented 10000-character rule despite the structural validator accepting over-limit cases. Use the existing cross-language Unicode-code-point convention; count raw_number display text, not its numeric value.",
+  "availability": "Observation date only; no announcement or effective date established.",
+  "compatibility": "Spec 1.6.0; new native cell role and stricter validation may reject previously constructed over-limit tables. No package release or language-floor change."
+}

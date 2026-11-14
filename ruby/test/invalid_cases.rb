@@ -155,6 +155,9 @@ module InvalidCases
     data-table-page-size-too-small
     data-table-page-size-too-large
     data-table-cell-text-empty
+    table-layout-fallback-total-too-long
+    table-content-too-long
+    table-total-content-too-long
     data-table-content-too-long
     message-too-many-charts
     data-visualization-title-too-long
@@ -375,6 +378,9 @@ module InvalidCases
     when "data-table-page-size-too-small" then data_table_case(valid_rows, "Names", "page_size", 0)
     when "data-table-page-size-too-large" then data_table_case(valid_rows, "Names", "page_size", 101)
     when "data-table-cell-text-empty" then data_table_case(items(items(raw_text("Name")), items(raw_text(""))), "Names")
+    when "table-layout-fallback-total-too-long" then invalid_case("Message", map("channel", "C123", "blocks", items(map("type", "layout", "label", "Table", "rows", items(map("items", items(map("block", map("type", "table", "rows", items(items(map("type", "raw_text", "text", repeated("😀", 5000))))))))), "fallback", items(map("type", "table", "rows", items(items(map("type", "raw_text", "text", repeated("😀", 5001))))))))))
+    when "table-content-too-long" then typed("TableBlock", "table", "rows", items(items(obj("raw_number", "value", 1, "text", repeated("😀", 10001)))))
+    when "table-total-content-too-long" then invalid_case("Message", map("channel", "C123", "blocks", items(obj("table", "rows", items(items(raw_text(repeated("😀", 5000))))), obj("table", "rows", items(items(obj("raw_number", "value", 1, "text", repeated("😀", 5001))))))))
     when "data-table-content-too-long" then data_table_case(items(items(raw_text("Name")), items(raw_text(repeated("x", 20000)))), "Names")
     when "message-too-many-charts" then invalid_case("Message", {"channel" => "C123", "blocks" => Array.new(3) { obj("data_visualization", "title", "Chart", "chart", obj("pie", "segments", items(segment("A", 1)))) }})
     when "data-visualization-title-too-long" then typed("DataVisualizationBlock", "data_visualization", "title", repeated("x", 51), "chart", obj("pie", "segments", items(segment("A", 1))))

@@ -62,5 +62,5 @@ main = do
   assert "layout false preserved" $ layoutBlockIsLabelVisible (inspectLayoutBlock changed) == Just False
   assert "layout typed width" $ layoutItemWidth (inspectLayoutItem item) == Just LayoutWidthWide
   assert "layout native decoding" $ (fromValue (toJSON changed) :: Result LayoutBlock) == Right changed
-  assert "spec identity" $ specVersion == "1.5.0"
+  assert "spec identity" $ specVersion == "1.6.0"
   putStrLn "Foundation construction, wire, Unicode, editing and prompt controls passed."

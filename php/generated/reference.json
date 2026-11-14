@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.5.0",
+  "spec_version": "1.6.0",
   "types": [
     {
       "name": "ActionsBlock",
@@ -507,7 +507,7 @@
       "package": "block",
       "goConstructor": "NewFileBlock",
       "wireType": "file",
-      "description": "A remote file previously added with the files.remote API.",
+      "description": "A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/file-block",
       "implements": [
         "LayoutChild"
@@ -871,7 +871,7 @@
       "package": "block",
       "goConstructor": "NewTableBlock",
       "wireType": "table",
-      "description": "A simple table of raw text and rich text cells.",
+      "description": "A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/table-block",
       "implements": [
         "LayoutChild",
@@ -895,7 +895,7 @@
           "wire": "column_settings",
           "kind": "list",
           "type": "ColumnSettings",
-          "description": "Adds per-column settings in column order. Provide one entry for every column.",
+          "description": "Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid.",
           "limits": "table.column_settings"
         },
         {
@@ -3431,9 +3431,10 @@
       "package": "object",
       "goConstructor": "NewRawNumber",
       "wireType": "raw_number",
-      "description": "A numeric data table cell with display text.",
+      "description": "A numeric table or data table cell with display text.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-table-block",
       "implements": [
+        "TableCell",
         "DataTableCell"
       ],
       "defaults": {},
@@ -4563,7 +4564,7 @@
     {
       "package": "block",
       "name": "TableCell",
-      "description": "A value that can appear as a table block cell: raw text or a rich text block."
+      "description": "A value that can appear as a table block cell: raw text, a raw number, or a rich text block."
     },
     {
       "package": "block",

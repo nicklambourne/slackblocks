@@ -5,6 +5,8 @@ same version number as the Python, TypeScript, and Java packages.
 
 ## [Unreleased]
 
+- Add numeric plain-table cells and enforce Slack’s documented 10,000-character per-table and message-wide limits (spec 1.6.0). Count displayed cell text as Unicode code points, including composed blocks and attachments; ragged rows and partial column settings remain valid. Previously accepted over-limit tables now fail validation. Runtime floors and package versions are unchanged.
+
 - Add a separately tested slack-go v0.35.0 integration profile for Go 1.26+, retaining the v0.30.1 file-URL token-disclosure fix and adding the v0.35.0 body-only interaction parser fix. Preserve the Go 1.22 / SDK v0.17.3 default and Go 1.25 / SDK v0.23.1 profile; applications must explicitly select the newer SDK to receive its fixes.
 
 ## [3.2.0] — 2026-10-31

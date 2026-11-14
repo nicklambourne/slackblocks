@@ -87,6 +87,9 @@ func TestRelaxedFixturesThroughFluentBuilders(t *testing.T) {
 		"elements/button_agent_prompt_at_limit": slackblocks.NewButton().Text("Summarize").AgentPrompt(strings.Repeat("😀", 4000)),
 		"elements/button_agent_prompt_empty":    slackblocks.NewButton().Text("Summarize").AgentPrompt("").AgentPromptDisplay(""),
 		"elements/button_without_action_id":     slackblocks.NewButton().Text("Click Me").Value("click_me"),
+		"blocks/table_numeric":                  slackblocks.NewTableBlock().BlockID("fake_block_id").Rows([]slackblocks.TableCell{rawText("Count"), slackblocks.NewRawNumber().Value(42).Text("42 items")}, []slackblocks.TableCell{slackblocks.NewRawNumber().Value(3).Text("Three")}).ColumnSettings(slackblocks.NewColumnSettings().Align(slackblocks.ColumnAlignRight)),
+		"blocks/table_text_at_limit":            slackblocks.NewTableBlock().BlockID("fake_block_id").Rows([]slackblocks.TableCell{slackblocks.NewRawNumber().Value(1).Text(strings.Repeat("😀", 10000))}),
+		"messages/message_table_total_at_limit": slackblocks.NewMessage().Channel("C123").Blocks(slackblocks.NewTableBlock().BlockID("fake_block_id").Rows([]slackblocks.TableCell{rawText(strings.Repeat("😀", 5000))}), slackblocks.NewTableBlock().BlockID("fake_block_id").Rows([]slackblocks.TableCell{slackblocks.NewRawNumber().Value(1).Text(strings.Repeat("😀", 5000))})),
 		"blocks/table_ragged_rows": slackblocks.NewTableBlock().BlockID("fake_block_id").Rows(
 			[]slackblocks.TableCell{rawText("Header A"), rawText("Header B")},
 			[]slackblocks.TableCell{rawText("Only one cell")},

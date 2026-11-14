@@ -564,6 +564,7 @@ def emit_model(t, registry):
     typed_rules = {
         "Attachment": 'crate::rules::attachment(&value, "Attachment")?;',
         "DataTableBlock": 'crate::rules::data_table(&value, "DataTableBlock")?;',
+        "TableBlock": 'crate::rules::plain_table(&value, "TableBlock")?;',
         "ModalView": 'crate::rules::view(value.blocks(), "modal", value.submit().is_some(), "ModalView")?;',
         "HomeTabView": 'crate::rules::view(value.blocks(), "home", false, "HomeTabView")?;',
     }
@@ -594,7 +595,6 @@ def emit_model(t, registry):
         "DatePickerElement",
         "TimePickerElement",
         "NumberInputElement",
-        "TableBlock",
         "AxisConfig",
         "ChartSegment",
         "LineChart",

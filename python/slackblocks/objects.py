@@ -931,7 +931,7 @@ class RawText:
 
 class RawNumber(RenderableMixin):
     """
-    A numeric cell for a
+    A numeric cell for a table or
     [`DataTableBlock`](/slackblocks/latest/reference/blocks/#blocks.DataTableBlock).
 
     See: <https://docs.slack.dev/reference/block-kit/blocks/data-table-block>.

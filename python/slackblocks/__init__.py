@@ -131,7 +131,7 @@ name = "slackblocks"
 
 # The version of the shared conformance spec (spec/SPEC.md) this
 # implementation conforms to.
-SPEC_VERSION: str = "1.5.0"
+SPEC_VERSION: str = "1.6.0"
 
 # Literal exports are visible to strict external type checkers.
 __all__ = [

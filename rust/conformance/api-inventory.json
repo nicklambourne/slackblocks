@@ -2589,11 +2589,13 @@
   ],
   "TableCell": [
     "impl Deserialize < 'de >",
+    "impl From < RawNumber >",
     "impl From < RawText >",
     "impl From < RichTextBlock >",
     "impl FromWire",
     "impl Serialize",
     "impl TryFrom < Value >",
+    "variant RawNumber (RawNumber)",
     "variant RawText (RawText)",
     "variant RichText (RichTextBlock)"
   ],

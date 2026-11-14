@@ -125,7 +125,7 @@ public final class Validator {
   private static final Set<String> CONTAINER_WIDTHS = Set.of("narrow", "standard", "wide", "full");
   private static final Set<String> TASK_STATUSES =
       Set.of("pending", "in_progress", "complete", "error");
-  private static final Set<String> TABLE_CELL_TYPES = Set.of("raw_text", "rich_text");
+  private static final Set<String> TABLE_CELL_TYPES = Set.of("raw_text", "raw_number", "rich_text");
   private static final Set<String> DATA_TABLE_CELL_TYPES =
       Set.of("raw_text", "rich_text", "raw_number");
 
@@ -1027,6 +1027,12 @@ public final class Validator {
           0,
           SlackLimits.TABLE_COLUMN_SETTINGS_MAX_ITEMS);
     }
+    if (!dataTable && contentLength > SlackLimits.TABLE_CONTENT_MAX_LENGTH) {
+      fail(
+          ErrorCategory.LENGTH_EXCEEDED,
+          child(path, "rows"),
+          "table content exceeds maximum " + SlackLimits.TABLE_CONTENT_MAX_LENGTH);
+    }
     if (dataTable) {
       Double pageSize = number(value.get("page_size"));
       if (pageSize != null
@@ -1133,7 +1139,7 @@ public final class Validator {
       }
     }
     // Slack limits markdown block text and data table cell text across the whole message.
-    int[] totals = new int[3];
+    int[] totals = new int[4];
     addMessageTotals(value.get("blocks"), totals);
     if (value.get("attachments") instanceof List<?> attachments) {
       for (Object attachment : attachments) {
@@ -1155,6 +1161,12 @@ public final class Validator {
               + ", exceeding maximum "
               + SlackLimits.MARKDOWN_TOTAL_TEXT_MAX_LENGTH);
     }
+    if (totals[3] > SlackLimits.TABLE_TOTAL_CONTENT_MAX_LENGTH) {
+      fail(
+          ErrorCategory.LENGTH_EXCEEDED,
+          path,
+          "message table content exceeds maximum " + SlackLimits.TABLE_TOTAL_CONTENT_MAX_LENGTH);
+    }
     if (totals[1] > SlackLimits.DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH) {
       fail(
           ErrorCategory.LENGTH_EXCEEDED,
@@ -1166,7 +1178,7 @@ public final class Validator {
     }
   }
 
-  /** Adds markdown text, data table text and data visualization counts to the three totals. */
+  /** Adds markdown text, data table text, chart counts and plain table text to the totals. */
   private static void addMessageTotals(@Nullable Object value, int[] totals) {
     if (value instanceof Map<?, ?> map) {
       Object type = map.get("type");
@@ -1174,6 +1186,8 @@ public final class Validator {
         totals[0] += text.codePointCount(0, text.length());
       } else if ("data_visualization".equals(type)) {
         totals[2]++;
+      } else if ("table".equals(type)) {
+        totals[3] += textCharacterCount(map.get("rows"));
       } else if ("data_table".equals(type)) {
         totals[1] += textCharacterCount(map.get("rows"));
       } else if ("container".equals(type) || "layout".equals(type)) {

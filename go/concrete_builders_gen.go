@@ -235,11 +235,12 @@ func (*RichTextUserBuilder) slackblocksRichTextSectionElement()      {}
 func (*RichTextUserGroupBuilder) slackblocksRichTextSectionElement() {}
 
 // TableCell is raw text or a rich text block that can appear as a table block cell.
-// Implemented by *RawTextBuilder and *RichTextBlockBuilder.
+// Implemented by *RawNumberBuilder, *RawTextBuilder, and *RichTextBlockBuilder.
 type TableCell interface {
 	slackblocksTableCell()
 }
 
+func (*RawNumberBuilder) slackblocksTableCell()     {}
 func (*RawTextBuilder) slackblocksTableCell()       {}
 func (*RichTextBlockBuilder) slackblocksTableCell() {}
 
@@ -2078,7 +2079,7 @@ func (b *FeedbackButtonsBuilder) ActionID(value string) *FeedbackButtonsBuilder 
 
 // FileBlockBuilder is the concrete fluent builder returned by NewFileBlock.
 //
-// A remote file previously added with the files.remote API.
+// A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.
 //
 //   - Required: ExternalID and Source.
 //
@@ -3354,7 +3355,7 @@ func (b *RadioButtonsBuilder) FocusOnLoad(value bool) *RadioButtonsBuilder {
 
 // RawNumberBuilder is the concrete fluent builder returned by NewRawNumber.
 //
-// A numeric data table cell with display text.
+// A numeric table or data table cell with display text.
 //
 //   - Required: Value and Text.
 //
@@ -4072,7 +4073,7 @@ func (b *StaticSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *Static
 
 // TableBlockBuilder is the concrete fluent builder returned by NewTableBlock.
 //
-// A simple table of raw text and rich text cells.
+// A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.
 //
 //   - Required: Rows.
 //
@@ -4096,8 +4097,9 @@ func (b *TableBlockBuilder) Rows(rows ...[]TableCell) *TableBlockBuilder {
 	return b
 }
 
-// ColumnSettings adds per-column settings in column order. Provide one entry for every column.
-// Slack allows at most 20 items. Each call appends to any values already added.
+// ColumnSettings adds settings for leading columns in column order. Omitted trailing columns
+// retain Slack defaults; fewer entries than columns are valid. Slack allows at most 20 items.
+// Each call appends to any values already added.
 func (b *TableBlockBuilder) ColumnSettings(values ...*ColumnSettingsBuilder) *TableBlockBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {

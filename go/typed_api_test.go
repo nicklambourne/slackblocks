@@ -35,7 +35,7 @@ func TestMarkerInterfacesAcceptOnlyTheirRoles(t *testing.T) {
 		{interfaceType[slackblocks.ContextActionsElement](), slackblocks.NewIconButton(), true},
 		{interfaceType[slackblocks.ContextActionsElement](), slackblocks.NewButton(), false},
 		{interfaceType[slackblocks.TableCell](), slackblocks.NewRawText(), true},
-		{interfaceType[slackblocks.TableCell](), slackblocks.NewRawNumber(), false},
+		{interfaceType[slackblocks.TableCell](), slackblocks.NewRawNumber(), true},
 		{interfaceType[slackblocks.DataTableCell](), slackblocks.NewRawNumber(), true},
 		{interfaceType[slackblocks.Chart](), slackblocks.NewPieChart(), true},
 		{interfaceType[slackblocks.Chart](), slackblocks.NewDataSeries(), false},

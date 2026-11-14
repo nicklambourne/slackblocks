@@ -5735,7 +5735,8 @@
         "readonly": true,
         "interfaces": [
             "JsonSerializable",
-            "Slackblocks\\DataTableCell"
+            "Slackblocks\\DataTableCell",
+            "Slackblocks\\TableCell"
         ],
         "properties": {
             "value": {
@@ -8118,7 +8119,7 @@
         "methods": [],
         "constants": {
             "PACKAGE": "3.2.0",
-            "SPEC": "1.5.0"
+            "SPEC": "1.6.0"
         }
     },
     "VideoBlock": {

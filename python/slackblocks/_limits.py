@@ -159,6 +159,10 @@ TABLE_ROWS_MAX_ITEMS = 100
 TABLE_COLUMNS_MAX_ITEMS = 20
 # table.column_settings.max_items
 TABLE_COLUMN_SETTINGS_MAX_ITEMS = 20
+# table.content.max_length
+TABLE_CONTENT_MAX_LENGTH = 10000
+# table.total_content.max_length
+TABLE_TOTAL_CONTENT_MAX_LENGTH = 10000
 # data_table.rows.min_items
 DATA_TABLE_ROWS_MIN_ITEMS = 2
 # data_table.rows.max_items

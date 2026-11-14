@@ -144,7 +144,9 @@ rules owner value = case owner of
   "NumberInputElement" -> do
     mapM_ (\key -> when (present key) (check TypeMismatch [Field key] "number_input.decimal" (isJust (decimalParts (text (get key)))))) ["min_value", "max_value"]
     when (present "min_value" && present "max_value") $ check OutOfRange [] "number_input.bounds" (compareDecimal (text (get "min_value")) (text (get "max_value")) /= Just GT)
-  "TableBlock" -> indexed "rows" (\row -> check LengthExceeded [] "table.columns.max_items" (fromIntegral (length (array row)) <= limit "table.columns.max_items"))
+  "TableBlock" -> do
+    indexed "rows" (\row -> check LengthExceeded [] "table.columns.max_items" (fromIntegral (length (array row)) <= limit "table.columns.max_items"))
+    check LengthExceeded [Field "rows"] "table.content.max_length" (tableCharacters value <= limit "table.content.max_length")
   "DataTableBlock" -> dataTable value
   "AxisConfig" -> do
     indexed "categories" (\label -> check LengthExceeded [] "data_visualization.category_label.max_length" (count label <= limit "data_visualization.category_label.max_length"))
@@ -237,10 +239,12 @@ message value = do
       charts = filter ((== String "data_visualization") . at "type") nested
       markdown = sum [count (at "text" b) | b <- nested, at "type" b == String "markdown"]
       tables = sum [tableCharacters b | b <- nested, at "type" b == String "data_table"]
+      plainTables = sum [tableCharacters b | b <- nested, at "type" b == String "table"]
   surface "message" [Field "blocks"] blocks
   check LengthExceeded [] "message.data_visualizations.max_items" (fromIntegral (length charts) <= limit "message.data_visualizations.max_items")
   check LengthExceeded [] "markdown.total_text.max_length" (markdown <= limit "markdown.total_text.max_length")
   check LengthExceeded [] "data_table.total_content.max_length" (tables <= limit "data_table.total_content.max_length")
+  check LengthExceeded [] "table.total_content.max_length" (plainTables <= limit "table.total_content.max_length")
 
 tableCharacters :: Value -> Integer
 tableCharacters value = sum (map cellCharacters (concatMap array (array (at "rows" value))))

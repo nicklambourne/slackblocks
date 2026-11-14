@@ -134,7 +134,9 @@ const (
 	limitSelectPlaceholderMaxLength                          = 150   // select.placeholder.max_length
 	limitTableColumnSettingsMaxItems                         = 20    // table.column_settings.max_items
 	limitTableColumnsMaxItems                                = 20    // table.columns.max_items
+	limitTableContentMaxLength                               = 10000 // table.content.max_length
 	limitTableRowsMaxItems                                   = 100   // table.rows.max_items
+	limitTableTotalContentMaxLength                          = 10000 // table.total_content.max_length
 	limitTextMaxLength                                       = 3000  // text.max_length
 	limitTextMinLength                                       = 1     // text.min_length
 	limitTimePickerPlaceholderMaxLength                      = 150   // time_picker.placeholder.max_length

@@ -638,6 +638,9 @@ module ValidConstructions
         block_id: "fake_block_id"
       )
     },
+    "blocks/table_numeric" => -> { Slackblocks::TableBlock.new(block_id: "fake_block_id", rows: [[Slackblocks::RawText.new(text: "Count"), Slackblocks::RawNumber.new(value: 42, text: "42 items")], [Slackblocks::RawNumber.new(value: 3, text: "Three")]], column_settings: [Slackblocks::ColumnSettings.new(align: Slackblocks::ColumnAlign::RIGHT)]) },
+    "blocks/table_text_at_limit" => -> { Slackblocks::TableBlock.new(block_id: "fake_block_id", rows: [[Slackblocks::RawNumber.new(value: 1, text: "😀" * 10000)]]) },
+    "messages/message_table_total_at_limit" => -> { Slackblocks::MessagePayload.new(channel: "C123", blocks: [Slackblocks::TableBlock.new(block_id: "fake_block_id", rows: [[Slackblocks::RawText.new(text: "😀" * 5000)]]), Slackblocks::TableBlock.new(block_id: "fake_block_id", rows: [[Slackblocks::RawNumber.new(value: 1, text: "😀" * 5000)]])]) },
     "blocks/table_ragged_rows" => -> {
       Slackblocks::TableBlock.new(
         rows: [

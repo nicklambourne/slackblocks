@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace Slackblocks;
 
-/** A value that can appear as a table block cell: raw text or a rich text block. */
+/** A value that can appear as a table block cell: raw text, a raw number, or a rich text block. */
 interface TableCell extends \JsonSerializable
 {
     /** Exports the Slack wire fields as a detached array.

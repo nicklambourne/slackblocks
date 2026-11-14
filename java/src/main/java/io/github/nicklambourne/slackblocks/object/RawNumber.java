@@ -5,6 +5,7 @@ import com.google.gson.annotations.JsonAdapter;
 import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.DataTableCell;
+import io.github.nicklambourne.slackblocks.block.TableCell;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
 import io.github.nicklambourne.slackblocks.internal.TypedFields;
@@ -12,7 +13,7 @@ import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.Map;
 
 /**
- * A numeric data table cell with display text.
+ * A numeric table or data table cell with display text.
  *
  * <p>Start with {@link #builder()}, set fields with the named fluent methods, and call {@link
  * Builder#build()} to validate and create an immutable value.
@@ -25,7 +26,7 @@ import java.util.Map;
  *     reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class RawNumber implements DataTableCell {
+public final class RawNumber implements TableCell, DataTableCell {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

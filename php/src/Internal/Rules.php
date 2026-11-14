@@ -211,9 +211,12 @@ final class Rules
             if (self::chartCount($blocks) > Schema::LIMITS['message.data_visualizations.max_items']) {
                 Validator::fail(C::LengthExceeded, $path, 'a message may contain at most two data visualization blocks');
             }
-            [$markdown, $table] = self::totals($blocks);
+            [$markdown, $table, $plainTable] = self::totals($blocks);
             if ($markdown > Schema::LIMITS['markdown.total_text.max_length']) {
                 Validator::fail(C::LengthExceeded, $path, 'message markdown total exceeded');
+            }
+            if ($plainTable > Schema::LIMITS['table.total_content.max_length']) {
+                Validator::fail(C::LengthExceeded, $path, 'message table total exceeded');
             }
             if ($table > Schema::LIMITS['data_table.total_content.max_length']) {
                 Validator::fail(C::LengthExceeded, $path, 'message data table total exceeded');
@@ -390,25 +393,29 @@ final class Rules
 
     /**
      * @param list<S\Block> $blocks
-     * @return array{int, int}
+     * @return array{int, int, int}
      */
     private static function totals(array $blocks): array
     {
-        $markdown = $table = 0;
+        $markdown = $table = $plainTable = 0;
         foreach ($blocks as $block) {
             if ($block instanceof S\MarkdownBlock) {
                 $markdown += Json::length($block->text, 'text');
+            }
+            if ($block instanceof S\TableBlock) {
+                $plainTable += self::tableCharacters($block);
             }
             if ($block instanceof S\DataTableBlock) {
                 $table += self::tableCharacters($block);
             }
             if ($block instanceof S\ContainerBlock || $block instanceof S\LayoutBlock) {
-                [$a, $b] = self::totals(self::compositeChildren($block));
+                [$a, $b, $c] = self::totals(self::compositeChildren($block));
                 $markdown += $a;
                 $table += $b;
+                $plainTable += $c;
             }
         }
-        return [$markdown, $table];
+        return [$markdown, $table, $plainTable];
     }
 
     private static function table(S\TableBlock|S\DataTableBlock $value, string $path): void
@@ -433,6 +440,9 @@ final class Rules
                 }
             }
         }
+        if (!$data && self::tableCharacters($value) > Schema::LIMITS['table.content.max_length']) {
+            Validator::fail(C::LengthExceeded, $path . '.rows', 'table text total exceeded');
+        }
         if ($value instanceof S\DataTableBlock) {
             if (array_key_exists('column_settings', $value->extensions?->toArray() ?? [])) {
                 Validator::fail(C::InvalidUsage, $path . '.column_settings', 'unsupported data table field');
@@ -443,7 +453,7 @@ final class Rules
         }
     }
 
-    private static function tableCharacters(S\DataTableBlock $value): int
+    private static function tableCharacters(S\TableBlock|S\DataTableBlock $value): int
     {
         $total = 0;
         foreach ($value->rows as $row) {

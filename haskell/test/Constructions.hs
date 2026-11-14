@@ -7,6 +7,49 @@ import Data.Map.Strict qualified as Map
 import Data.Text qualified as T
 import Slackblocks
 
+tableWire :: Int -> Bool -> Value
+tableWire n numeric =
+  object
+    [ "type" .= String "table",
+      "rows" .= [[object (["type" .= String (if numeric then "raw_number" else "raw_text"), "text" .= T.replicate n "😀"] <> if numeric then ["value" .= (1 :: Int)] else [])]]
+    ]
+
+nestedTableMessage :: Result MessagePayload
+nestedTableMessage = do
+  left <- plainTextTable 5000
+  right <- plainTextTable 5001
+  item <- buildLayoutItem (layoutItem (tableBlockAsLayoutChild left))
+  row <- buildLayoutRow (layoutRow [item])
+  layout <- buildLayoutBlock ((layoutBlock "Table" [row]) {layoutBlockFallback = Just [tableBlockAsLayoutFallback right]})
+  buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [layoutBlockAsBlock layout]})
+
+nestedTableWire :: Value
+nestedTableWire = object ["channel" .= String "C123", "blocks" .= [object ["type" .= String "layout", "label" .= String "Table", "rows" .= [object ["items" .= [object ["block" .= tableWire 5000 False]]]], "fallback" .= [tableWire 5001 False]]]]
+
+numericTable :: Result TableBlock
+numericTable = do
+  label <- buildRawText (rawText "Count")
+  count <- buildRawNumber (rawNumber 42 "42 items")
+  three <- buildRawNumber (rawNumber 3 "Three")
+  setting <- buildColumnSettings (columnSettings {columnSettingsAlign = Just ColumnAlignRight})
+  buildTableBlock ((tableBlock [[rawTextAsTableCell label, rawNumberAsTableCell count], [rawNumberAsTableCell three]]) {tableBlockColumnSettings = Just [setting], tableBlockBlockId = Just "fake_block_id"})
+
+numericTextTable :: Int -> Result TableBlock
+numericTextTable n = do
+  cell <- buildRawNumber (rawNumber 1 (T.replicate n "😀"))
+  buildTableBlock ((tableBlock [[rawNumberAsTableCell cell]]) {tableBlockBlockId = Just "fake_block_id"})
+
+plainTextTable :: Int -> Result TableBlock
+plainTextTable n = do
+  cell <- buildRawText (rawText (T.replicate n "😀"))
+  buildTableBlock ((tableBlock [[rawTextAsTableCell cell]]) {tableBlockBlockId = Just "fake_block_id"})
+
+tableMessage :: Int -> Result MessagePayload
+tableMessage n = do
+  left <- plainTextTable 5000
+  right <- numericTextTable n
+  buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [tableBlockAsBlock left, tableBlockAsBlock right]})
+
 valid0 :: Result Value
 valid0 = do
   v0 <- buildMarkdownText ((markdownText "I like pretty colours") {markdownTextVerbatim = Nothing})
@@ -870,6 +913,9 @@ validCases =
     ("blocks/section_block_single_field_value_coercion", valid30, \value -> toJSON <$> (fromValue value :: Result SectionBlock)),
     ("blocks/section_block_text_only", valid31, \value -> toJSON <$> (fromValue value :: Result SectionBlock)),
     ("blocks/table_block", valid32, \value -> toJSON <$> (fromValue value :: Result TableBlock)),
+    ("blocks/table_numeric", toJSON <$> numericTable, \value -> toJSON <$> (fromValue value :: Result TableBlock)),
+    ("blocks/table_text_at_limit", toJSON <$> numericTextTable 10000, \value -> toJSON <$> (fromValue value :: Result TableBlock)),
+    ("messages/message_table_total_at_limit", toJSON <$> tableMessage 5000, \value -> toJSON <$> (fromValue value :: Result MessagePayload)),
     ("blocks/table_ragged_rows", valid33, \value -> toJSON <$> (fromValue value :: Result TableBlock)),
     ("blocks/task_card_block", valid34, \value -> toJSON <$> (fromValue value :: Result TaskCardBlock)),
     ("blocks/video_block_basic", valid35, \value -> toJSON <$> (fromValue value :: Result VideoBlock)),
@@ -2300,6 +2346,9 @@ invalidCases =
     ("data-table-page-size-too-small", Just invalid125, void (fromValue (object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "Name"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String "Alice"]] :: [Value])] :: [Value]), "caption" .= String "Names", "page_size" .= Number 0]) :: Result DataTableBlock)),
     ("data-table-page-size-too-large", Just invalid126, void (fromValue (object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "Name"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String "Alice"]] :: [Value])] :: [Value]), "caption" .= String "Names", "page_size" .= Number 101]) :: Result DataTableBlock)),
     ("data-table-cell-text-empty", Just invalid127, void (fromValue (object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "Name"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String ""]] :: [Value])] :: [Value]), "caption" .= String "Names"]) :: Result DataTableBlock)),
+    ("table-layout-fallback-total-too-long", Just (void nestedTableMessage), void (fromValue nestedTableWire :: Result MessagePayload)),
+    ("table-content-too-long", Just (void (numericTextTable 10001)), void (fromValue (tableWire 10001 True) :: Result TableBlock)),
+    ("table-total-content-too-long", Just (void (tableMessage 5001)), void (fromValue (object ["channel" .= String "C123", "blocks" .= [tableWire 5000 False, tableWire 5001 True]]) :: Result MessagePayload)),
     ("data-table-content-too-long", Just invalid128, void (fromValue (object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "Name"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String (T.replicate 20000 "x")]] :: [Value])] :: [Value]), "caption" .= String "Names"]) :: Result DataTableBlock)),
     ("message-too-many-charts", Just invalid129, void (fromValue (object ["channel" .= String "C123", "blocks" .= toJSON (replicate 3 (object ["type" .= String "data_visualization", "title" .= String "Chart", "chart" .= object ["type" .= String "pie", "segments" .= toJSON ([object ["label" .= String "A", "value" .= Number 1]] :: [Value])]]))]) :: Result MessagePayload)),
     ("data-visualization-title-too-long", Just invalid130, void (fromValue (object ["type" .= String "data_visualization", "title" .= String (T.replicate 51 "x"), "chart" .= object ["type" .= String "pie", "segments" .= toJSON ([object ["label" .= String "A", "value" .= Number 1]] :: [Value])]]) :: Result DataVisualizationBlock)),

@@ -119,7 +119,7 @@ var (
 	taskStatuses        = stringSet("pending", "in_progress", "complete", "error")
 	conversationTypes   = stringSet("im", "mpim", "private", "public")
 	multiSelectTypes    = stringSet("multi_channels_select", "multi_conversations_select", "multi_external_select", "multi_static_select", "multi_users_select")
-	tableCellTypes      = stringSet("raw_text", "rich_text")
+	tableCellTypes      = stringSet("raw_text", "raw_number", "rich_text")
 	dataTableCellTypes  = stringSet("raw_text", "rich_text", "raw_number")
 )
 
@@ -1110,6 +1110,9 @@ func validateTable(object Object, path string, dataTable bool) error {
 			}
 		}
 	}
+	if !dataTable && contentLength > limitTableContentMaxLength {
+		return validationError(LengthExceeded, child(path, "rows"), "table content exceeds maximum %d", limitTableContentMaxLength)
+	}
 	if dataTable {
 		if pageSize, ok := number(object["page_size"]); ok && (pageSize < limitDataTablePageSizeMin || pageSize > limitDataTablePageSizeMax) {
 			return validationError(OutOfRange, child(path, "page_size"), "expected a value between %d and %d", limitDataTablePageSizeMin, limitDataTablePageSizeMax)
@@ -1244,18 +1247,22 @@ func validateMessageCollections(object Object, path string) error {
 	if charts > limitMessageDataVisualizationsMaxItems {
 		return validationError(LengthExceeded, path, "a message may contain at most two data visualization blocks")
 	}
-	markdown, tableContent := messageTotals(object["blocks"])
+	markdown, tableContent, plainTableContent := messageTotals(object["blocks"])
 	if attachments, ok := object["attachments"].([]any); ok {
 		for _, raw := range attachments {
 			if attachment, ok := raw.(Object); ok {
-				nestedMarkdown, nestedContent := messageTotals(attachment["blocks"])
+				nestedMarkdown, nestedContent, nestedPlainContent := messageTotals(attachment["blocks"])
 				markdown += nestedMarkdown
 				tableContent += nestedContent
+				plainTableContent += nestedPlainContent
 			}
 		}
 	}
 	if markdown > limitMarkdownTotalTextMaxLength {
 		return validationError(LengthExceeded, path, "markdown block text totals %d characters, exceeding maximum %d", markdown, limitMarkdownTotalTextMaxLength)
+	}
+	if plainTableContent > limitTableTotalContentMaxLength {
+		return validationError(LengthExceeded, path, "message table content exceeds maximum %d", limitTableTotalContentMaxLength)
 	}
 	if tableContent > limitDataTableTotalContentMaxLength {
 		return validationError(LengthExceeded, path, "data table cell text totals %d characters, exceeding maximum %d", tableContent, limitDataTableTotalContentMaxLength)
@@ -1283,27 +1290,30 @@ func chartCount(value any) int {
 }
 
 // messageTotals visits modeled blocks and container children, keeping application JSON opaque.
-func messageTotals(value any) (markdown, tableContent int) {
+func messageTotals(value any) (markdown, tableContent, plainTableContent int) {
 	switch typed := value.(type) {
 	case Object:
 		switch objectType(typed) {
 		case "markdown":
 			text, _ := typed["text"].(string)
-			return utf8.RuneCountInString(text), 0
+			return utf8.RuneCountInString(text), 0, 0
 		case "data_table":
-			return 0, textCharacterCount(typed["rows"])
+			return 0, textCharacterCount(typed["rows"]), 0
+		case "table":
+			return 0, 0, textCharacterCount(typed["rows"])
 		}
 		if objectType(typed) == "container" || objectType(typed) == "layout" {
 			return messageTotals(compositeSurfaceChildren(typed))
 		}
 	case []any:
 		for _, nested := range typed {
-			nestedMarkdown, nestedContent := messageTotals(nested)
+			nestedMarkdown, nestedContent, nestedPlainContent := messageTotals(nested)
 			markdown += nestedMarkdown
 			tableContent += nestedContent
+			plainTableContent += nestedPlainContent
 		}
 	}
-	return markdown, tableContent
+	return markdown, tableContent, plainTableContent
 }
 
 // validatePlanTasks checks a plan's task cards. Plan tasks are sent without a type and, unlike

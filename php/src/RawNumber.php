@@ -7,10 +7,10 @@ declare(strict_types=1);
 namespace Slackblocks;
 
 /**
- * A numeric data table cell with display text.
+ * A numeric table or data table cell with display text.
  * @see https://docs.slack.dev/reference/block-kit/blocks/data-table-block
  */
-final readonly class RawNumber extends Value implements DataTableCell
+final readonly class RawNumber extends Value implements TableCell, DataTableCell
 {
     /** Sets the numeric value used for sorting.
      * @var int|float

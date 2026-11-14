@@ -6,7 +6,7 @@
 
 namespace Slackblocks.Blocks;
 
-/// <summary>A simple table of raw text and rich text cells.</summary>
+/// <summary>A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.</summary>
 /// <remarks>
 /// <list type="bullet">
 /// <item><description>Required: <c>rows</c>.</description></item>
@@ -18,7 +18,7 @@ public sealed partial class TableBlock : global::Slackblocks.SlackObject, global
 {
     /// <summary>Creates and validates a <see cref="TableBlock"/>.</summary>
     /// <param name="rows">Complete table rows in display order. Required. Slack allows at most 100 items.</param>
-    /// <param name="columnSettings">Per-column settings in column order. Provide one entry for every column. Slack allows at most 20 items.</param>
+    /// <param name="columnSettings">Settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid. Slack allows at most 20 items.</param>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
@@ -40,7 +40,7 @@ public sealed partial class TableBlock : global::Slackblocks.SlackObject, global
     /// <value>The values in order, or an empty list when none were set.</value>
     public global::System.Collections.Generic.IReadOnlyList<global::System.Collections.Generic.IReadOnlyList<global::Slackblocks.Blocks.ITableCell>> Rows { get; }
 
-    /// <summary>Gets per-column settings in column order. Provide one entry for every column.</summary>
+    /// <summary>Gets settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid.</summary>
     /// <value>The values in order, or an empty list when none were set.</value>
     public global::System.Collections.Generic.IReadOnlyList<global::Slackblocks.Objects.ColumnSettings> ColumnSettings { get; }
 

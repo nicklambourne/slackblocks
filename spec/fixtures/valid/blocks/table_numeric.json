@@ -1,0 +1,29 @@
+{
+  "type": "table",
+  "rows": [
+    [
+      {
+        "type": "raw_text",
+        "text": "Count"
+      },
+      {
+        "type": "raw_number",
+        "value": 42,
+        "text": "42 items"
+      }
+    ],
+    [
+      {
+        "type": "raw_number",
+        "value": 3,
+        "text": "Three"
+      }
+    ]
+  ],
+  "column_settings": [
+    {
+      "align": "right"
+    }
+  ],
+  "block_id": "fake_block_id"
+}

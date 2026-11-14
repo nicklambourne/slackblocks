@@ -53,9 +53,10 @@ defmodule Slackblocks.Internal.Rules do
     surface(blocks, "message", p ++ ["blocks"])
     combined = blocks ++ Enum.flat_map(Map.get(w, "attachments", []), &Map.get(&1, "blocks", []))
     max_size(chart_count(combined), "message.data_visualizations.max_items", p)
-    {markdown, cells} = totals(combined)
+    {markdown, cells, plain_cells} = totals(combined)
     max_size(markdown, "markdown.total_text.max_length", p)
     max_size(cells, "data_table.total_content.max_length", p)
+    max_size(plain_cells, "table.total_content.max_length", p)
   end
 
   defp local("Attachment", w, p) do
@@ -322,7 +323,8 @@ defmodule Slackblocks.Internal.Rules do
       if data?, do: data_row(row, i, length(hd(w["rows"])), p ++ ["rows", i])
     end)
 
-    if data?, do: max_size(table_characters(w), "data_table.content.max_length", p ++ ["rows"])
+    key = if data?, do: "data_table.content.max_length", else: "table.content.max_length"
+    max_size(table_characters(w), key, p ++ ["rows"])
   end
 
   defp data_row(row, i, columns, path) do
@@ -364,20 +366,23 @@ defmodule Slackblocks.Internal.Rules do
   end
 
   defp totals(blocks) do
-    Enum.reduce(blocks, {0, 0}, fn block, {markdown, table} ->
+    Enum.reduce(blocks, {0, 0, 0}, fn block, {markdown, table, plain} ->
       case block["type"] do
         "markdown" ->
-          {markdown + Codec.length_codepoints(block["text"]), table}
+          {markdown + Codec.length_codepoints(block["text"]), table, plain}
 
         "data_table" ->
-          {markdown, table + table_characters(block)}
+          {markdown, table + table_characters(block), plain}
+
+        "table" ->
+          {markdown, table, plain + table_characters(block)}
 
         kind when kind in ~w(container layout) ->
-          {m, t} = totals(composite_children(block))
-          {markdown + m, table + t}
+          {m, t, pt} = totals(composite_children(block))
+          {markdown + m, table + t, plain + pt}
 
         _ ->
-          {markdown, table}
+          {markdown, table, plain}
       end
     end)
   end

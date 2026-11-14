@@ -31,7 +31,10 @@ defmodule Slackblocks.Types do
           | Slackblocks.Objects.PlainText.t()
   @type context_actions_element ::
           Slackblocks.Elements.FeedbackButtons.t() | Slackblocks.Elements.IconButton.t()
-  @type table_cell :: Slackblocks.Blocks.RichText.t() | Slackblocks.Objects.RawText.t()
+  @type table_cell ::
+          Slackblocks.Blocks.RichText.t()
+          | Slackblocks.Objects.RawNumber.t()
+          | Slackblocks.Objects.RawText.t()
   @type data_table_cell ::
           Slackblocks.Blocks.RichText.t()
           | Slackblocks.Objects.RawNumber.t()
