@@ -133,7 +133,7 @@ def monitor(repo, language, version, source, directory, resume, *, timeout=1800,
                     break
             if run is None:
                 raise ValueError("Dispatch accepted but run is not observable; resume without redispatching")
-        record.update(run_id=run["id"], run_url=run["html_url"])
+        record.update(run_id=run["id"], run_url=run["html_url"], release_started_at=run.get("created_at"))
         retried = False
         while True:
             run = api(f"repos/{repo}/actions/runs/{run['id']}")

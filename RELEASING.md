@@ -879,6 +879,15 @@ It does not recreate tags, change package bytes, repeat credential readiness
 writes, or repair a failed upload automatically. Resolve a genuinely failed
 publisher with its existing immutable-artifact recovery process before resuming.
 
+After merge, **Follow Up Pending Release** checks hourly for recorded availability
+waits. It may dispatch resume for an existing release only when all ten publisher
+identities agree, no coordinator is active, and the original publication started
+less than 24 hours ago. It also recognizes pending public-consumer or documentation
+receipts. Successful, blocked, incomplete, expired and mismatched evidence does
+not trigger retries. After the 24-hour window, investigate the retained failure
+and resume manually. This follow-up has no publication credentials and never
+starts a new version; the coordinator's upload and source guards still apply.
+
 ## Public verification and the completion record
 
 `Verify Public Release` is read-only and runs after all publishers succeed. It can
