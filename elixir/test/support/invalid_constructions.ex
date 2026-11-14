@@ -1304,7 +1304,7 @@ defmodule Slackblocks.Test.InvalidConstructions do
       {"table-content-too-long",
        fn ->
          Blocks.Table.new!(
-           rows: [[Objects.RawNumber.new!(value: 1, text: String.duplicate("😀", 10001))]]
+           rows: [[Objects.RawNumber.new!(value: 1, text: String.duplicate("😀", 10_001))]]
          )
        end},
       {"table-total-content-too-long",

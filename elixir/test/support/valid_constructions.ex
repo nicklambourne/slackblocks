@@ -687,7 +687,7 @@ defmodule Slackblocks.Test.ValidConstructions do
        fn ->
          Blocks.Table.new!(
            block_id: "fake_block_id",
-           rows: [[Objects.RawNumber.new!(value: 1, text: String.duplicate("😀", 10000))]]
+           rows: [[Objects.RawNumber.new!(value: 1, text: String.duplicate("😀", 10_000))]]
          )
        end},
       {"messages/message_table_total_at_limit",
