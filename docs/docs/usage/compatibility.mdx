@@ -77,7 +77,7 @@ For an upgrade walkthrough from `1.x` to `2.x`, see the
 
 The engine range is `^20.19.0 || >=22.12.0`: Node 20.19+ within the 20.x line, or Node 22.12+. Node 21 and Node 22.0–22.11 are excluded. CI executes package consumers on Node 20.19.0, 22 and 24.
 
-The package ships one ESM module; use `import` in an ESM application or dynamic `import()` from CommonJS. Fluent builders validate at `.build()` and emit plain JSON-compatible objects. The distributed bundle has no runtime package dependencies; TypeScript, tsdown and the Slack type declarations are build/development inputs, not additional consumer runtime requirements. Use the [parsing recipe](/usage/recipes/parse-json) for checked JSON ingress and [Sending Messages](sending_messages) for optional clients.
+The package ships one ESM module; use `import` in an ESM application or dynamic `import()` from CommonJS. Fluent builders validate at `.build()` and emit plain JSON-compatible objects. The JavaScript bundle emits no runtime imports. The installed package still declares `@slack/types` as a dependency because its public TypeScript declarations reference Slack types; consumers need those declarations for type checking. TypeScript and tsdown are development/build tools. Use the [parsing recipe](/usage/recipes/parse-json) for checked JSON ingress and [Sending Messages](sending_messages) for optional clients.
 
 </TypeScript>
 <Go>

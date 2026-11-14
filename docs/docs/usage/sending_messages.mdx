@@ -1167,6 +1167,15 @@ needs no Phoenix-specific serializer. Verify Slack signatures, acknowledge
 promptly, and route later work in your application. The core does not provide
 a bot framework, supervision tree or interaction state store.
 
+## Modals and App Home
+
+Build a `Slackblocks.Views.Modal` or `Slackblocks.Views.Home` value with its native
+`new!/1` constructor, then use `Slackblocks.to_map!/1` as the request's `view`.
+For `views.open`, add the fresh interaction `trigger_id` alongside `view`; for
+`views.publish`, add the target `user_id`. Use the same authenticated Req client
+and HTTP/Slack error handling as above. Acknowledgement, view IDs and hashes
+remain application-owned. See the [native views reference](/reference/elixir/payloads).
+
 ## Integration compatibility
 
 The isolated project tests slack_elixir 1.2.2, Req 0.5+ (below 1.0) and Ecto 3.14+

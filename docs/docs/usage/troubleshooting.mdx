@@ -85,7 +85,7 @@ If a field exceeds its limit, truncate or split the content.
 `slackblocks` only constructs the *outgoing* payload. Handling button clicks, menu selections, and modal submissions requires:
 
 1. Either a public HTTPS **Interactivity & Shortcuts** Request URL, or a [Socket Mode](https://docs.slack.dev/apis/events-api/using-socket-mode/) connection. Socket Mode does not require a public HTTP endpoint.
-2. An interaction handler that parses the payload Slack POSTs to that URL.
+2. An interaction handler that processes and acknowledges the payload received through the chosen HTTP or Socket Mode transport.
 
 The [`slack-bolt`](https://slack.dev/bolt-python/) framework is the easiest way to wire this up.
 
@@ -111,13 +111,18 @@ import requests
 
 from slackblocks import Message, SectionBlock
 
-message = Message(channel="#general", blocks=SectionBlock("Hi!"))
+message = Message(channel="C0123456", text="Hi!", blocks=SectionBlock("Hi!"))
 
-requests.post(
+response = requests.post(
     "https://slack.com/api/chat.postMessage",
     json=message.to_dict(),
     headers={"Authorization": f"Bearer {os.environ['SLACK_API_TOKEN']}"},
-).raise_for_status()
+    timeout=30,
+)
+response.raise_for_status()
+result = response.json()
+if result.get("ok") is not True:
+    raise RuntimeError(f"Slack rejected the message: {result.get('error')}")
 ```
 
 ## Can I use `slackblocks` with async code?

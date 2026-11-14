@@ -13,7 +13,7 @@ export default function ReferenceIndex({entries}: {entries: Entry[]}) {
       <input id={id} type="search" value={query} onChange={event => setQuery(event.target.value)} />
       <p role="status">{matches.length} matching entries</p>
       <ul style={{maxHeight: "20rem", overflow: "auto"}}>
-        {matches.map(({name, href}) => <li key={href}><a href={href}>{name}</a></li>)}
+        {matches.map(({name, href}) => <li key={`${name}:${href}`}><a href={href}>{name}</a></li>)}
       </ul>
     </details>
   );
