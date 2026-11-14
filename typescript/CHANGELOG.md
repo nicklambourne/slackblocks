@@ -5,13 +5,15 @@ All notable changes to the TypeScript package are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [4.0.0] — 2026-11-14
+
+- Coordinate the ten-language 4.0.0 release with shared contract 1.6.0. Supported runtime floors are unchanged. See the 4.0.0 migration guide for Go imports, sparse-setting types and stricter validation.
 
 - Require non-empty numeric display labels in both plain and data tables, matching the isolated Slack validation probe.
 
 - Preserve skipped columns in sparse table column settings through native APIs and supported parsers. Null entries count toward the existing 20-column-settings limit.
 
-- Add numeric plain-table cells and enforce Slack’s documented 10,000-character per-table and message-wide limits (spec 1.6.0). Count displayed cell text as Unicode code points, including composed blocks and attachments; ragged rows and partial column settings remain valid. Previously accepted over-limit tables now fail validation. Runtime floors and package versions are unchanged.
+- Add numeric plain-table cells and enforce Slack’s documented 10,000-character per-table and message-wide limits (spec 1.6.0). Count displayed cell text as Unicode code points, including composed blocks and attachments; ragged rows and partial column settings remain valid. Previously accepted over-limit tables now fail validation. Supported runtime floors are unchanged.
 
 ## [3.2.0] — 2026-10-31
 

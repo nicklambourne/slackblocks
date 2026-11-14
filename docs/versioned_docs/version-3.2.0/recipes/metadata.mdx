@@ -1,0 +1,368 @@
+---
+title: Metadata and safe edits
+slug: /usage/recipes/metadata
+sidebar_position: 14
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "channel": "C1",
+    "metadata": {
+      "event_payload": {
+        "array": [],
+        "count": 0,
+        "enabled": false,
+        "missing": null,
+        "object": {}
+      },
+      "event_type": "build"
+    },
+    "mrkdwn": true,
+    "text": "Updated"
+  },
+  "java": {
+    "mrkdwn": true,
+    "text": "Updated",
+    "channel": "C1",
+    "metadata": {
+      "event_payload": {
+        "count": 0,
+        "enabled": false
+      },
+      "event_type": "build"
+    }
+  },
+  "go": {
+    "channel": "C1",
+    "metadata": {
+      "event_payload": {
+        "count": 0,
+        "enabled": false,
+        "missing": null
+      },
+      "event_type": "build"
+    },
+    "mrkdwn": true,
+    "text": "Updated"
+  },
+  "ruby": {
+    "channel": "C1",
+    "text": "Updated",
+    "mrkdwn": true,
+    "metadata": {
+      "event_type": "build",
+      "event_payload": {
+        "count": 0,
+        "enabled": false,
+        "missing": null
+      }
+    }
+  },
+  "csharp": {
+    "channel": "C1",
+    "text": "Updated",
+    "mrkdwn": true,
+    "metadata": {
+      "event_type": "build",
+      "event_payload": {
+        "count": 0,
+        "enabled": false,
+        "missing": null
+      }
+    }
+  },
+  "php": {
+    "channel": "C1",
+    "text": "Complete",
+    "mrkdwn": true,
+    "unfurl_links": false,
+    "metadata": {
+      "event_type": "deployment",
+      "event_payload": {
+        "context": {},
+        "optional": null,
+        "enabled": false,
+        "count": 0
+      }
+    }
+  },
+  "rust": {
+    "channel": "C1",
+    "text": "Updated",
+    "mrkdwn": true,
+    "metadata": {
+      "event_payload": {
+        "count": 0,
+        "enabled": false,
+        "missing": null
+      },
+      "event_type": "build"
+    }
+  },
+  "haskell": {
+    "channel": "C1",
+    "metadata": {
+      "event_payload": {
+        "count": 0,
+        "enabled": false,
+        "missing": null
+      },
+      "event_type": "build"
+    },
+    "mrkdwn": true,
+    "text": "Updated"
+  },
+  "typescript": {
+    "mrkdwn": true,
+    "text": "Updated",
+    "channel": "C1",
+    "metadata": {
+      "event_type": "build",
+      "event_payload": {
+        "count": 0,
+        "enabled": false,
+        "missing": null
+      }
+    }
+  },
+  "python": {
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Updated",
+    "metadata": {
+      "event_type": "build",
+      "event_payload": {
+        "count": 0,
+        "enabled": false,
+        "missing": null
+      }
+    }
+  }
+};
+
+# Metadata and safe edits
+
+Keep application metadata attached while constructing an updated message. Follow each language’s ownership rules; metadata is not visible message content.
+
+<RecipeOutput recipe="metadata" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+Metadata is application data, not visible Slack message content. Copy Python models before changing a shared template.
+
+```python
+from copy import deepcopy
+from slackblocks import Message
+
+original = Message(channel="C1", text="Ready", metadata={
+    "event_type": "build", "event_payload": {"count": 0, "enabled": False, "missing": None},
+})
+updated = deepcopy(original)  # Python models are mutable.
+updated.text = "Updated"
+assert original.text == "Ready"
+print(updated.json())
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const metadata = {event_type: "build", event_payload: {count: 0, enabled: false, missing: null}};
+const original = S.Message().channel("C1").text("Ready").metadata(metadata).build();
+const updated = S.Message().channel("C1").text("Updated").metadata(metadata).build();
+if (original.text !== "Ready") throw new Error("Original changed");
+console.log(JSON.stringify(updated));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	metadata := s.Object{"event_type": "build", "event_payload": s.Object{"count": 0, "enabled": false, "missing": nil}}
+	original, err := s.NewMessage().Channel("C1").Text("Ready").Metadata(metadata).Build()
+	if err != nil {
+		panic(err)
+	}
+	value, err := s.NewMessage().Channel("C1").Text("Updated").Metadata(metadata).Build()
+	if original["text"] != "Ready" {
+		panic("Original changed")
+	}
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+The Java metadata setter rejects null values. Omit absent fields; do not substitute an explicit null. Built values snapshot the supplied metadata.
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var fields = new java.util.LinkedHashMap<String, Object>();
+    fields.put("count", 0); fields.put("enabled", false);
+    var metadata = Map.<String, Object>of("event_type", "build", "event_payload", fields);
+    var original = MessagePayload.builder().channel("C1").text("Ready").metadata(metadata).build();
+    var value = MessagePayload.builder().channel("C1").text("Updated").metadata(metadata).build();
+    if (!original.toMap().get("text").equals("Ready")) throw new AssertionError("Original changed");
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var metadata = new Dictionary<string, object?> {
+    ["event_type"] = "build", ["event_payload"] = new Dictionary<string, object?> { ["count"] = 0, ["enabled"] = false, ["missing"] = null },
+};
+var original = new MessagePayload("C1", text: "Ready", metadata: metadata);
+var value = new MessagePayload("C1", text: "Updated", metadata: metadata);
+if (original.Text != "Ready") throw new InvalidOperationException("Original changed");
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+original = MessagePayload.new(channel: "C1", text: "Ready", metadata: {
+  "event_type" => "build", "event_payload" => {"count" => 0, "enabled" => false, "missing" => nil}
+})
+value = original.with(text: "Updated")
+raise "Original changed" unless original.text == "Ready"
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let original = MessagePayload::builder("C1").text("Ready")
+        .metadata(serde_json::from_value(serde_json::json!({"event_type": "build", "event_payload": {"count": 0, "enabled": false, "missing": null}}))?)
+        .build()?;
+    let updated = original.clone().into_builder().text("Updated").build()?;
+    assert_eq!(original.text(), Some("Ready"));
+    println!("{}", serde_json::to_string(&updated)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$metadata = new S\JsonObject(['event_type' => 'deployment', 'event_payload' => (object) ['context' => (object) [], 'optional' => null, 'enabled' => false, 'count' => 0]]);
+$message = new S\MessagePayload(channel: 'C1', text: 'Ready', metadata: $metadata, unfurlLinks: false);
+$edited = $message->with(text: 'Complete');
+assert($message->text === 'Ready');
+echo $edited->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+original = Slackblocks.Message.new!(channel: "C1", metadata: %{
+  "event_type" => "build", "event_payload" => %{"count" => 0, "enabled" => false, "missing" => nil, "object" => %{}, "array" => []}
+})
+updated = Slackblocks.Message.change!(original, text: "Updated")
+Slackblocks.to_map!(updated)
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Aeson
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  original <-
+    buildMessagePayload
+      ( (messagePayload "C1")
+          { messagePayloadMetadata =
+              Just
+                ( Map.fromList
+                    [ ("event_type", Data.Aeson.String "build"),
+                      ("event_payload", Data.Aeson.object ["count" Data.Aeson..= (0 :: Integer), "enabled" Data.Aeson..= False, "missing" Data.Aeson..= Data.Aeson.Null])
+                    ]
+                )
+          }
+      )
+  buildMessagePayload ((inspectMessagePayload original) {messagePayloadText = Just "Updated"})
+```
+
+</Haskell>
+
+</LanguageContent>

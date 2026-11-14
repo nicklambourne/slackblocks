@@ -3,7 +3,7 @@ package slackblocks_test
 import (
 	"testing"
 
-	sb "github.com/nicklambourne/slackblocks/go/v3"
+	sb "github.com/nicklambourne/slackblocks/go/v4"
 )
 
 func TestSuppliedEnumsRejectEmptyAndUnknownValues(t *testing.T) {

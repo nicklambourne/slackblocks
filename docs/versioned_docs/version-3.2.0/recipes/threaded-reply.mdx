@@ -1,0 +1,299 @@
+---
+title: Threaded reply
+slug: /usage/recipes/threaded-reply
+sidebar_position: 5
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Deployment complete",
+    "thread_ts": "1700000000.000001"
+  },
+  "java": {
+    "mrkdwn": true,
+    "text": "Deployment complete",
+    "channel": "C1",
+    "thread_ts": "1700000000.000100"
+  },
+  "go": {
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Deployment complete",
+    "thread_ts": "1700000000.000100"
+  },
+  "ruby": {
+    "channel": "C1",
+    "text": "Deployment complete",
+    "mrkdwn": true,
+    "thread_ts": "1700000000.000100"
+  },
+  "csharp": {
+    "channel": "C1",
+    "text": "Deployment complete",
+    "mrkdwn": true,
+    "thread_ts": "1700000000.000100"
+  },
+  "php": {
+    "channel": "C1",
+    "text": "Deployment complete",
+    "mrkdwn": true,
+    "thread_ts": "1700000000.000001"
+  },
+  "rust": {
+    "channel": "C01234567",
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Reticulating splines... 30% complete."
+        }
+      }
+    ],
+    "text": "30% complete",
+    "mrkdwn": true,
+    "thread_ts": "1700000000.000100"
+  },
+  "haskell": {
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Deployment complete",
+    "thread_ts": "1700000000.000001"
+  },
+  "typescript": {
+    "mrkdwn": true,
+    "text": "Deployment complete",
+    "channel": "C1",
+    "thread_ts": "1700000000.000100"
+  },
+  "python": {
+    "channel": "#general",
+    "mrkdwn": true,
+    "blocks": [
+      {
+        "type": "section",
+        "block_id": "<generated-block-id>",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Reticulating splines... 30% complete."
+        }
+      }
+    ],
+    "thread_ts": "1700000000.000100",
+    "text": ""
+  }
+};
+
+# Threaded reply
+
+Attach the parent message timestamp to the outgoing request. Preserve the original channel together with that timestamp when handling a delayed interaction.
+
+<RecipeOutput recipe="threaded-reply" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+Pass `thread_ts` (the timestamp of the parent message) to reply in-thread.
+
+```python
+from slackblocks import Message, SectionBlock
+
+reply = Message(
+    channel="#general",
+    thread_ts="1700000000.000100",
+    blocks=SectionBlock("Reticulating splines... 30% complete."),
+)
+print(reply.json())
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const message = S.Message().channel("C1").text("Deployment complete").build();
+// thread_ts is a transport option outside this implementation's modeled fields.
+console.log(JSON.stringify({...message, thread_ts: "1700000000.000100"}));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	value, err := s.NewMessage().Channel("C1").Text("Deployment complete").Build()
+	// thread_ts belongs to the transport request; it is not validated by this builder.
+	if err == nil {
+		value["thread_ts"] = "1700000000.000100"
+	}
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var message = MessagePayload.builder().channel("C1").text("Deployment complete").build();
+    // Add transport fields to an exported copy, leaving the immutable model intact.
+    var request = new java.util.LinkedHashMap<>(message.toMap());
+    request.put("thread_ts", "1700000000.000100");
+    System.out.println(new com.google.gson.Gson().toJson(request));
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var message = new MessagePayload("C1", text: "Deployment complete");
+// The export is an independent request body; transport fields are application-owned.
+var request = System.Text.Json.Nodes.JsonNode.Parse(message.ToJson())!.AsObject();
+request["thread_ts"] = "1700000000.000100";
+Console.WriteLine(request.ToJsonString());
+```
+
+</CSharp>
+
+<Ruby>
+
+Add the transport timestamp to the exported request, keeping the immutable model unchanged.
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+message = MessagePayload.new(channel: "C1", text: "Deployment complete")
+request = message.as_json.merge("thread_ts" => "1700000000.000100")
+puts JSON.generate(request)
+```
+
+</Ruby>
+
+<Rust>
+
+Threading is an unmodeled delivery option. Add the parent message timestamp as
+a checked extension, or set `thread_ts` on your HTTP/Slack request.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let reply = MessagePayload::builder("C01234567")
+        .extension("thread_ts", "1700000000.000100")
+        .text("30% complete")
+        .block(
+            SectionBlock::builder()
+                .text("Reticulating splines... 30% complete.")
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&reply)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(channel: 'C1', text: 'Deployment complete', extensions: new S\JsonObject([
+    'thread_ts' => '1700000000.000001',
+]));
+echo $message->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+wire = Slackblocks.Message.new!(channel: "C1", text: "Deployment complete")
+|> Slackblocks.to_map!()
+Map.put(wire, "thread_ts", "1700000000.000001")
+```
+
+Transport-specific fields outside the shared model can be added to the validated map in application code. Such additions are not validated by slackblocks.
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Aeson
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example =
+  buildMessagePayload
+    ( (messagePayload "C1")
+        { messagePayloadText = Just "Deployment complete",
+          messagePayloadExtensions = Map.fromList [("thread_ts", Data.Aeson.String "1700000000.000001")]
+        }
+    )
+```
+
+`thread_ts` is an explicit unmodeled extension. It cannot override reserved or modeled keys; application-specific extension semantics are not validated.
+
+</Haskell>
+
+</LanguageContent>

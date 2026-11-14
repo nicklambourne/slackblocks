@@ -12,7 +12,7 @@ This page documents which Python versions are supported by each `slackblocks` re
 
 Each row in the table maps a major `slackblocks` release line to the oldest Python interpreter that can run it. **Minimum Python** means that version or any newer supported Python version—not that the release only works on that one version. The status in parentheses tells you whether the line receives current feature development or maintenance fixes only.
 
-Start with the Python version used by your application or deployment environment, then choose the newest `slackblocks` line whose minimum requirement it meets. For example, Python 3.9 requires `slackblocks` 1.x, while Python 3.10 and newer can use 3.x.
+Start with the Python version used by your application or deployment environment, then choose the newest `slackblocks` line whose minimum requirement it meets. For example, Python 3.9 requires `slackblocks` 1.x, while Python 3.10 and newer can use 4.x.
 
 ## Support matrix
 
@@ -20,15 +20,16 @@ Start with the Python version used by your application or deployment environment
 | --- | --- | --- |
 | `1.x` (maintenance) | 3.8.1 | The last release line to support Python 3.8 and 3.9. |
 | `2.x` | 3.10 | Modern typing (`X \| Y`, `list[X]`), dataclasses with `slots`, `match` statements, and other Python 3.10+ features used internally. |
-| `3.x` (current) | 3.10 | Corrected number-input bound APIs; the interpreter minimum is unchanged from 2.x. |
+| `3.x` | 3.10 | Corrected number-input bound APIs; the interpreter minimum is unchanged from 2.x. |
+| `4.x` (current) | 3.10 | Numeric table cells, sparse settings and stricter validation; the interpreter minimum is unchanged. |
 
-Choose exactly one release line. The copyable files below select current 3.x on Python 3.10+. For a Python 3.8/3.9 application, replace that single constraint with `slackblocks>=1,<2` (Poetry: `^1`) and set the project’s Python constraint to its actual runtime; do not install both lines together:
+Choose exactly one release line. The copyable files below select current 4.x on Python 3.10+. For a Python 3.8/3.9 application, replace that single constraint with `slackblocks>=1,<2` (Poetry: `^1`) and set the project’s Python constraint to its actual runtime; do not install both lines together:
 
 <Tabs>
 <TabItem value={"pip-requirements-txt"} label={"pip (`requirements.txt`)"}>
 
 ```text
-slackblocks>=3,<4
+slackblocks>=4,<5
 ```
 
 
@@ -38,7 +39,7 @@ slackblocks>=3,<4
 ```toml
 [tool.poetry.dependencies]
 python = ">=3.10"
-slackblocks = "^3"
+slackblocks = "^4"
 ```
 
 
@@ -50,7 +51,7 @@ slackblocks = "^3"
 name = "slackblocks-example"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["slackblocks>=3,<4"]
+dependencies = ["slackblocks>=4,<5"]
 ```
 
 
@@ -64,8 +65,8 @@ The current package continues to support Python 3.10+, including after upstream 
 ## Choosing a version
 
 - **You're on Python 3.8 or 3.9**: install the latest `1.x`.
-- **You're on Python 3.10 or newer**: install the current `3.x` release line.
-- **You're starting a new project on a modern Python**: prefer `3.x` to take advantage of the improved typing surface.
+- **You're on Python 3.10 or newer**: install the current `4.x` release line.
+- **You're starting a new project on a modern Python**: prefer `4.x` to take advantage of the improved typing surface.
 
 For an upgrade walkthrough from `1.x` to `2.x`, see the
 [Migration Guide](migration).
@@ -84,16 +85,16 @@ The package ships one ESM module; use `import` in an ESM application or dynamic 
 
 ## Go support matrix
 
-The current `github.com/nicklambourne/slackblocks/go/v3` module supports Go 1.22
+The current `github.com/nicklambourne/slackblocks/go/v4` module supports Go 1.22
 and newer. Its minimum dependency remains `github.com/slack-go/slack` v0.17.3.
 Applications can select a newer SDK without changing the slackblocks module line,
 provided their Go toolchain meets that SDK's own requirements.
 
 | slackblocks module line | Tested `slack-go/slack` version | Minimum Go | Selection |
 | --- | --- | --- | --- |
-| Current `go/v3` | v0.17.3 | 1.22 | Default minimum dependency; keeps Go 1.22, 1.23 and 1.24 compatible. |
-| Current `go/v3` | v0.23.1 | 1.25 | Explicit application upgrade; tested separately from the minimum dependency. |
-| Next release on `go/v3` (unreleased) | v0.35.0 | 1.26 | Explicit application upgrade with upstream file-URL and interaction-parser security fixes; existing profiles remain supported. |
+| Current `go/v4` | v0.17.3 | 1.22 | Default minimum dependency; keeps Go 1.22, 1.23 and 1.24 compatible. |
+| Current `go/v4` | v0.23.1 | 1.25 | Explicit application upgrade; tested separately from the minimum dependency. |
+| Current `go/v4` | v0.35.0 | 1.26 | Explicit application upgrade with upstream file-URL and interaction-parser security fixes; existing profiles remain supported. |
 
 These are tested combinations, not a guarantee for every intervening or future
 SDK release. All three profiles use the same slackblocks API. No separate maintenance
@@ -104,19 +105,19 @@ release line is needed for these combinations.
 For the Go 1.22-compatible combination, select both modules in your application:
 
 ```bash
-go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.17.3
+go get github.com/nicklambourne/slackblocks/go/v4 github.com/slack-go/slack@v0.17.3
 ```
 
 With Go 1.25 or newer, select the retained Go 1.25-compatible SDK:
 
 ```bash
-go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.23.1
+go get github.com/nicklambourne/slackblocks/go/v4 github.com/slack-go/slack@v0.23.1
 ```
 
-For the next release's Go 1.26+ combination, select v0.35.0 explicitly:
+For the Go 1.26+ combination, select v0.35.0 explicitly:
 
 ```bash
-go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.35.0
+go get github.com/nicklambourne/slackblocks/go/v4 github.com/slack-go/slack@v0.35.0
 ```
 
 Go's [minimal version selection](https://go.dev/ref/mod#minimal-version-selection)
@@ -348,7 +349,7 @@ own `http-client`, `http-client-tls` and `http-types` graph on minimum/current G
 
 ### Version bounds and source compatibility
 
-Use a range such as `slackblocks >= 3.2 && < 3.3`. Haskell follows the coordinated
+Use a range such as `slackblocks >= 4.0 && < 4.1`. Haskell follows the coordinated
 package release number; it does not use an independent 0.x numbering scheme.
 The [Haskell Package Versioning Policy](https://pvp.haskell.org/) explains why
 bounds matter when constructors and exported names evolve. A new closed enum or

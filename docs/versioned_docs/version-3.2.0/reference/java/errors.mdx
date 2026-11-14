@@ -1,0 +1,59 @@
+---
+sidebar_position: 7
+toc_max_heading_level: 3
+---
+
+# Validation And Errors
+
+This page documents the public Java API for validation and errors, generated from the Javadoc by the javadoc tool. Values are immutable, builders are concrete and fluent, validation runs when you call `.build()`, and typed getters read built values back.
+
+## ErrorCategory
+
+Stable validation categories shared by every slackblocks implementation.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `LENGTH_EXCEEDED` | `length-exceeded` | A string or collection falls outside Slack's documented length limits. |
+| `OUT_OF_RANGE` | `out-of-range` | A numeric value falls outside Slack's documented range. |
+| `MUTUALLY_EXCLUSIVE` | `mutually-exclusive` | Two fields that cannot coexist were supplied together. |
+| `TYPE_MISMATCH` | `type-mismatch` | A value is not an accepted Slack object or scalar type. |
+| `MISSING_REQUIRED` | `missing-required` | A required field or collection is absent. |
+| `INVALID_USAGE` | `invalid-usage` | A combination of otherwise valid values cannot be used together. |
+
+### WireValue
+
+Returns the language-neutral category used by the conformance manifest.
+
+```java
+public String wireValue()
+```
+
+**Returns:** the kebab-case category value
+
+## ValidationException
+
+Thrown when a builder cannot produce a valid Slack Block Kit value.
+
+This is an `IllegalArgumentException`, so code that already treats invalid arguments uniformly continues to work. Catch `ValidationException` when you need the stable [`category`](/reference/java/errors#validationexception) or the [`path`](/reference/java/errors#validationexception) of the invalid field. Paths start with the public Java type being built, for example `SectionBlock.fields[2].text`.
+
+### GetCategory
+
+Returns the stable cross-language error category.
+
+```java
+public ErrorCategory getCategory()
+```
+
+**Returns:** the error category
+
+**Related types:** [`ErrorCategory`](/reference/java/errors#errorcategory)
+
+### GetPath
+
+Returns the dotted path of the invalid field, starting with the Java type being built.
+
+```java
+public String getPath()
+```
+
+**Returns:** the field path

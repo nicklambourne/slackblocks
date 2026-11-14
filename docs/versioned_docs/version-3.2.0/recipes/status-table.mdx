@@ -1,0 +1,621 @@
+---
+title: Multi-column status report
+slug: /usage/recipes/status-table
+sidebar_position: 7
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "blocks": [
+      {
+        "rows": [
+          [
+            {
+              "text": "Service",
+              "type": "raw_text"
+            },
+            {
+              "text": "Status",
+              "type": "raw_text"
+            }
+          ],
+          [
+            {
+              "text": "API",
+              "type": "raw_text"
+            },
+            {
+              "text": "Healthy",
+              "type": "raw_text"
+            }
+          ],
+          [
+            {
+              "text": "Worker",
+              "type": "raw_text"
+            },
+            {
+              "text": "Degraded",
+              "type": "raw_text"
+            }
+          ]
+        ],
+        "type": "table"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Service status"
+  },
+  "java": {
+    "type": "table",
+    "rows": [
+      [
+        {
+          "type": "raw_text",
+          "text": "Service"
+        },
+        {
+          "type": "raw_text",
+          "text": "Status"
+        }
+      ],
+      [
+        {
+          "type": "raw_text",
+          "text": "API"
+        },
+        {
+          "type": "raw_text",
+          "text": "Healthy"
+        }
+      ]
+    ]
+  },
+  "go": {
+    "rows": [
+      [
+        {
+          "text": "Service",
+          "type": "raw_text"
+        },
+        {
+          "text": "Status",
+          "type": "raw_text"
+        }
+      ],
+      [
+        {
+          "text": "API",
+          "type": "raw_text"
+        },
+        {
+          "text": "Healthy",
+          "type": "raw_text"
+        }
+      ]
+    ],
+    "type": "table"
+  },
+  "ruby": {
+    "type": "table",
+    "rows": [
+      [
+        {
+          "type": "raw_text",
+          "text": "Service"
+        },
+        {
+          "type": "raw_text",
+          "text": "Status"
+        }
+      ],
+      [
+        {
+          "type": "raw_text",
+          "text": "API"
+        },
+        {
+          "type": "raw_text",
+          "text": "Healthy"
+        }
+      ]
+    ]
+  },
+  "csharp": {
+    "type": "table",
+    "rows": [
+      [
+        {
+          "type": "raw_text",
+          "text": "Service"
+        },
+        {
+          "type": "raw_text",
+          "text": "Status"
+        }
+      ],
+      [
+        {
+          "type": "raw_text",
+          "text": "API"
+        },
+        {
+          "type": "raw_text",
+          "text": "Healthy"
+        }
+      ]
+    ]
+  },
+  "php": {
+    "type": "table",
+    "rows": [
+      [
+        {
+          "type": "raw_text",
+          "text": "Service"
+        },
+        {
+          "type": "raw_text",
+          "text": "Status"
+        }
+      ],
+      [
+        {
+          "type": "raw_text",
+          "text": "API"
+        },
+        {
+          "type": "raw_text",
+          "text": "Healthy"
+        }
+      ]
+    ]
+  },
+  "rust": {
+    "type": "table",
+    "rows": [
+      [
+        {
+          "type": "raw_text",
+          "text": "Service"
+        },
+        {
+          "type": "raw_text",
+          "text": "Status"
+        }
+      ],
+      [
+        {
+          "type": "raw_text",
+          "text": "API"
+        },
+        {
+          "type": "raw_text",
+          "text": "Healthy"
+        }
+      ]
+    ]
+  },
+  "haskell": {
+    "blocks": [
+      {
+        "rows": [
+          [
+            {
+              "text": "Service",
+              "type": "raw_text"
+            },
+            {
+              "text": "Status",
+              "type": "raw_text"
+            }
+          ],
+          [
+            {
+              "text": "API",
+              "type": "raw_text"
+            },
+            {
+              "text": "Healthy",
+              "type": "raw_text"
+            }
+          ],
+          [
+            {
+              "text": "Worker",
+              "type": "raw_text"
+            },
+            {
+              "text": "Degraded",
+              "type": "raw_text"
+            }
+          ]
+        ],
+        "type": "table"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Service status"
+  },
+  "typescript": {
+    "rows": [
+      [
+        {
+          "text": "Service",
+          "type": "raw_text"
+        },
+        {
+          "text": "Status",
+          "type": "raw_text"
+        }
+      ],
+      [
+        {
+          "text": "API",
+          "type": "raw_text"
+        },
+        {
+          "text": "Healthy",
+          "type": "raw_text"
+        }
+      ]
+    ],
+    "type": "table"
+  },
+  "python": {
+    "channel": "#ops",
+    "mrkdwn": true,
+    "blocks": [
+      {
+        "type": "table",
+        "block_id": "<generated-block-id>",
+        "rows": [
+          [
+            {
+              "type": "rich_text",
+              "elements": [
+                {
+                  "type": "rich_text_section",
+                  "elements": [
+                    {
+                      "type": "text",
+                      "text": "Service",
+                      "style": {
+                        "bold": true
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rich_text",
+              "elements": [
+                {
+                  "type": "rich_text_section",
+                  "elements": [
+                    {
+                      "type": "text",
+                      "text": "p99 (ms)",
+                      "style": {
+                        "bold": true
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rich_text",
+              "elements": [
+                {
+                  "type": "rich_text_section",
+                  "elements": [
+                    {
+                      "type": "text",
+                      "text": "Errors",
+                      "style": {
+                        "bold": true
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "type": "raw_text",
+              "text": "api"
+            },
+            {
+              "type": "raw_text",
+              "text": "142"
+            },
+            {
+              "type": "raw_text",
+              "text": "3"
+            }
+          ],
+          [
+            {
+              "type": "raw_text",
+              "text": "worker"
+            },
+            {
+              "type": "raw_text",
+              "text": "89"
+            },
+            {
+              "type": "raw_text",
+              "text": "0"
+            }
+          ],
+          [
+            {
+              "type": "raw_text",
+              "text": "billing"
+            },
+            {
+              "type": "raw_text",
+              "text": "310"
+            },
+            {
+              "type": "raw_text",
+              "text": "12"
+            }
+          ]
+        ],
+        "column_settings": [
+          {
+            "align": "left"
+          },
+          {
+            "align": "right"
+          },
+          {
+            "align": "right"
+          }
+        ]
+      }
+    ],
+    "text": "Daily service report"
+  }
+};
+
+# Multi-column status report
+
+Present a compact service report using native table cells. The code and preview use the same selected-language output.
+
+<RecipeOutput recipe="status-table" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+`TableBlock` is useful for compact tabular output.
+
+```python
+from slackblocks import (
+    ColumnSettings,
+    Message,
+    RawText,
+    RichText,
+    RichTextSection,
+    TableBlock,
+)
+
+
+def header_cell(text: str) -> RichTextSection:
+    return RichTextSection(elements=[RichText(text=text, bold=True)])
+
+
+report = Message(
+    channel="#ops",
+    text="Daily service report",
+    blocks=[
+        TableBlock(
+            column_settings=[
+                ColumnSettings(align="left"),
+                ColumnSettings(align="right"),
+                ColumnSettings(align="right"),
+            ],
+            rows=[
+                [header_cell("Service"), header_cell("p99 (ms)"), header_cell("Errors")],
+                [RawText("api"),     RawText("142"), RawText("3")],
+                [RawText("worker"),  RawText("89"),  RawText("0")],
+                [RawText("billing"), RawText("310"), RawText("12")],
+            ],
+        ),
+    ],
+)
+print(report.json())
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const table = S.TableBlock()
+  .rows([S.RawText().text("Service"), S.RawText().text("Status")])
+  .rows([S.RawText().text("API"), S.RawText().text("Healthy")])
+  .build();
+console.log(JSON.stringify(table));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	value, err := s.NewTableBlock().Rows(
+		[]s.TableCell{s.NewRawText().Text("Service"), s.NewRawText().Text("Status")},
+		[]s.TableCell{s.NewRawText().Text("API"), s.NewRawText().Text("Healthy")},
+	).Build()
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var value = TableBlock.builder().rows(
+    List.of(RawText.of("Service"), RawText.of("Status")),
+    List.of(RawText.of("API"), RawText.of("Healthy"))).build();
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var value = new TableBlock(rows: [
+    [new RawText("Service"), new RawText("Status")],
+    [new RawText("API"), new RawText("Healthy")],
+]);
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+value = TableBlock.new(rows: [
+  [RawText.new(text: "Service"), RawText.new(text: "Status")],
+  [RawText.new(text: "API"), RawText.new(text: "Healthy")]
+])
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let table = TableBlock::builder()
+        .rows([
+            vec![RawText::new("Service")?, RawText::new("Status")?],
+            vec![RawText::new("API")?, RawText::new("Healthy")?],
+        ])
+        .build()?;
+    println!("{}", serde_json::to_string(&table)?);
+    Ok(())
+}
+```
+
+Plain tables permit ragged rows; data tables require rectangular rows and raw
+header cells. `DataTableBlock` also checks its caption and text totals.
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$table = new S\TableBlock(rows: [
+    [new S\RawText('Service'), new S\RawText('Status')],
+    [new S\RawText('API'), new S\RawText('Healthy')],
+]);
+echo $table->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.{Message, Blocks.Table, Objects.RawText}
+rows = for row <- [["Service", "Status"], ["API", "Healthy"], ["Worker", "Degraded"]] do
+  for text <- row, do: RawText.new!(text: text)
+end
+Message.new!(channel: "C1", text: "Service status", blocks: [Table.new!(rows: rows)])
+|> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  rows <-
+    traverse
+      (traverse (fmap rawTextAsTableCell . buildRawText . rawText))
+      [["Service", "Status"], ["API", "Healthy"], ["Worker", "Degraded"]]
+  table <- buildTableBlock (tableBlock rows)
+  buildMessagePayload ((messagePayload "C1") {messagePayloadText = Just "Service status", messagePayloadBlocks = Just [tableBlockAsBlock table]})
+```
+
+</Haskell>
+
+</LanguageContent>

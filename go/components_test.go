@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	slackblocks "github.com/nicklambourne/slackblocks/go/v3"
+	slackblocks "github.com/nicklambourne/slackblocks/go/v4"
 	slackapi "github.com/slack-go/slack"
 )
 

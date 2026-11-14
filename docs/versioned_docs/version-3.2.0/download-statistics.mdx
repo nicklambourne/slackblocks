@@ -1,0 +1,13 @@
+---
+sidebar_position: 6
+description: How Slackblocks download totals are counted and refreshed.
+---
+
+# Download statistics
+
+The **Downloads** badge sums all-time counts from PyPI (via Pepy), npm,
+NuGet, RubyGems, crates.io, Packagist, Hex, and Hackage. Go and Maven Central have no comparable public
+all-time download counters and are excluded. Registry counting rules differ;
+these counts include automated downloads and do not represent unique users.
+The total refreshes hourly and shows unavailable if any contributing count is
+missing or more than 24 hours old.

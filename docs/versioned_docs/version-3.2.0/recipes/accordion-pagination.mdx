@@ -1,0 +1,798 @@
+---
+title: Accordion and pagination
+slug: /usage/recipes/accordion-pagination
+sidebar_position: 13
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "blocks": [
+      {
+        "child_blocks": [
+          {
+            "text": {
+              "text": "Ready",
+              "type": "mrkdwn"
+            },
+            "type": "section"
+          }
+        ],
+        "default_collapsed": true,
+        "has_header_divider": false,
+        "is_collapsible": true,
+        "title": {
+          "text": "Details",
+          "type": "plain_text"
+        },
+        "type": "container",
+        "width": "standard"
+      },
+      {
+        "text": {
+          "text": "One",
+          "type": "mrkdwn"
+        },
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "text": "Page 1 of 2",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "context"
+      },
+      {
+        "elements": [
+          {
+            "action_id": "items.next",
+            "text": {
+              "text": "Next",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "2"
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Items"
+  },
+  "java": {
+    "mrkdwn": true,
+    "text": "Items",
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "container",
+        "title": {
+          "type": "plain_text",
+          "text": "Details"
+        },
+        "child_blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "Ready"
+            }
+          }
+        ],
+        "is_collapsible": true,
+        "default_collapsed": true,
+        "width": "standard",
+        "has_header_divider": false
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "One"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "Page 1 of 2"
+          }
+        ]
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Next"
+            },
+            "action_id": "items.next",
+            "value": "2"
+          }
+        ]
+      }
+    ]
+  },
+  "go": {
+    "blocks": [
+      {
+        "child_blocks": [
+          {
+            "text": {
+              "text": "Ready",
+              "type": "mrkdwn"
+            },
+            "type": "section"
+          }
+        ],
+        "default_collapsed": true,
+        "is_collapsible": true,
+        "title": {
+          "text": "Details",
+          "type": "plain_text"
+        },
+        "type": "container"
+      },
+      {
+        "text": {
+          "text": "One",
+          "type": "mrkdwn"
+        },
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "text": "Page 1 of 2",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "context"
+      },
+      {
+        "elements": [
+          {
+            "action_id": "items.next",
+            "text": {
+              "text": "Next",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "2"
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Items"
+  },
+  "ruby": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "container",
+        "child_blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "Ready"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Details"
+        },
+        "width": "standard",
+        "is_collapsible": true,
+        "default_collapsed": true,
+        "has_header_divider": false
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "One"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "Page 1 of 2"
+          }
+        ]
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Next"
+            },
+            "action_id": "items.next",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "text": "Items",
+    "mrkdwn": true
+  },
+  "csharp": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "container",
+        "child_blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "Ready"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Details"
+        },
+        "width": "standard",
+        "is_collapsible": true,
+        "default_collapsed": true,
+        "has_header_divider": false
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "One"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "Page 1 of 2"
+          }
+        ]
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Next"
+            },
+            "action_id": "items.next",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "text": "Items",
+    "mrkdwn": true
+  },
+  "php": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "container",
+        "child_blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "Ready"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Details"
+        },
+        "width": "standard",
+        "is_collapsible": true,
+        "default_collapsed": true,
+        "has_header_divider": false
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "One"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "Page 1 of 2"
+          }
+        ]
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Next"
+            },
+            "action_id": "releases.next",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "text": "Releases",
+    "mrkdwn": true
+  },
+  "rust": {
+    "channel": "C01234567",
+    "blocks": [
+      {
+        "type": "container",
+        "child_blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "All checks passed"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Details"
+        },
+        "width": "standard",
+        "is_collapsible": true,
+        "default_collapsed": true,
+        "has_header_divider": false
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "One"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "Page 1 of 2"
+          }
+        ]
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Next"
+            },
+            "action_id": "builds.next",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "text": "Build details",
+    "mrkdwn": true
+  },
+  "haskell": {
+    "blocks": [
+      {
+        "child_blocks": [
+          {
+            "text": {
+              "text": "Ready",
+              "type": "mrkdwn"
+            },
+            "type": "section"
+          }
+        ],
+        "default_collapsed": true,
+        "has_header_divider": false,
+        "is_collapsible": true,
+        "title": {
+          "text": "Details",
+          "type": "plain_text"
+        },
+        "type": "container",
+        "width": "standard"
+      },
+      {
+        "text": {
+          "text": "Ready",
+          "type": "mrkdwn"
+        },
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "text": "Page 1 of 2",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "context"
+      },
+      {
+        "elements": [
+          {
+            "action_id": "items.next",
+            "text": {
+              "text": "Next",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "2"
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Items"
+  },
+  "typescript": {
+    "mrkdwn": true,
+    "text": "Items",
+    "channel": "C1",
+    "blocks": [
+      {
+        "title": {
+          "text": "Details",
+          "type": "plain_text"
+        },
+        "child_blocks": [
+          {
+            "text": {
+              "text": "Ready",
+              "type": "mrkdwn"
+            },
+            "type": "section"
+          }
+        ],
+        "is_collapsible": true,
+        "default_collapsed": true,
+        "type": "container"
+      },
+      {
+        "text": {
+          "text": "One",
+          "type": "mrkdwn"
+        },
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "text": "Page 1 of 2",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "context"
+      },
+      {
+        "elements": [
+          {
+            "text": {
+              "text": "Next",
+              "type": "plain_text"
+            },
+            "action_id": "items.next",
+            "value": "2",
+            "type": "button"
+          }
+        ],
+        "type": "actions"
+      }
+    ]
+  },
+  "python": {
+    "channel": "C1",
+    "mrkdwn": true,
+    "blocks": [
+      {
+        "type": "container",
+        "block_id": "<generated-block-id>",
+        "title": {
+          "type": "plain_text",
+          "text": "Details"
+        },
+        "child_blocks": [
+          {
+            "type": "section",
+            "block_id": "<generated-block-id>",
+            "text": {
+              "type": "mrkdwn",
+              "text": "Ready"
+            }
+          }
+        ],
+        "width": "standard",
+        "is_collapsible": true,
+        "default_collapsed": false,
+        "has_header_divider": false
+      },
+      {
+        "type": "section",
+        "block_id": "<generated-block-id>",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Result one"
+        }
+      },
+      {
+        "type": "actions",
+        "block_id": "<generated-block-id>",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Next"
+            },
+            "action_id": "items.next",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "text": "Items"
+  }
+};
+
+# Accordion and pagination
+
+Combine collapsible detail with a page of content and navigation. Your application owns the page state and rebuilds the payload when a navigation callback arrives.
+
+<RecipeOutput recipe="accordion-pagination" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+Python has no named Accordion/Paginator helper. Compose native blocks and keep paging state in the application. Your callback handler reads the destination page and rebuilds the message.
+
+```python
+from slackblocks import ActionsBlock, Button, ContainerBlock, Message, SectionBlock
+
+items = ["Result one", "Result two"]
+page, page_size = 1, 1
+visible = items[(page - 1) * page_size:page * page_size]
+blocks = [ContainerBlock(title="Details", is_collapsible=True, child_blocks=[SectionBlock("Ready")])]
+blocks.extend(SectionBlock(item) for item in visible)
+if page * page_size < len(items):
+    blocks.append(ActionsBlock(elements=[Button(text="Next", action_id="items.next", value=str(page + 1))]))
+print(Message(channel="C1", text="Items", blocks=blocks).json())
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const message = S.Message().channel("C1").text("Items").blocks(
+  S.Accordion().sections(S.AccordionSection().title("Details").blocks(S.SectionBlock().text("Ready"))),
+  S.Paginator().actionIdPrefix("items").page(1).pageSize(1).blocks(S.SectionBlock().text("One"), S.SectionBlock().text("Two")),
+).build();
+console.log(JSON.stringify(message));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	value, err := s.NewMessage().Channel("C1").Text("Items").Blocks(
+		s.NewAccordion().Sections(s.NewAccordionSection().Title("Details").Blocks(s.NewSectionBlock().Text("Ready"))),
+		s.NewPaginator().ActionIDPrefix("items").Page(1).PageSize(1).Blocks(s.NewSectionBlock().Text("One"), s.NewSectionBlock().Text("Two")),
+	).Build()
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var details = Accordion.builder().sections(AccordionSection.builder("Details")
+    .blocks(SectionBlock.builder().markdownText("Ready").build()).build()).build();
+    var page = Paginator.builder("items").page(1).pageSize(1).blocks(
+    SectionBlock.builder().markdownText("One").build(), SectionBlock.builder().markdownText("Two").build()).build();
+    var value = MessagePayload.builder().channel("C1").text("Items").blocks(details.toArray(Block[]::new)).blocks(page.toArray(Block[]::new)).build();
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var details = Accordion.Create([AccordionSection.Create("Details", [new SectionBlock("Ready")])]);
+var page = Paginator.Create("items", [new SectionBlock("One"), new SectionBlock("Two")], page: 1, pageSize: 1);
+var value = new MessagePayload("C1", text: "Items", blocks: [.. details, .. page]);
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+details = Accordion.create(sections: [AccordionSection.create(title: "Details", blocks: [SectionBlock.new(text: "Ready")])])
+page = Paginator.create(action_id_prefix: "items", blocks: [SectionBlock.new(text: "One"), SectionBlock.new(text: "Two")], page: 1, page_size: 1)
+value = MessagePayload.new(channel: "C1", text: "Items", blocks: details + page)
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let details = AccordionSection::builder("Details")
+        .block(SectionBlock::builder().text("All checks passed").build()?)
+        .build()?;
+    let accordion = Accordion::new([details])?;
+    let page = Paginator::builder("builds", [
+            SectionBlock::builder().text("One").build()?,
+            SectionBlock::builder().text("Two").build()?,
+        ])
+        .page_size(1)
+        .build()?;
+    let message = MessagePayload::builder("C01234567")
+        .text("Build details")
+        .blocks(accordion.into_iter().chain(page))
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+Pagination uses one-based pages. Navigation action IDs end in `.previous` or
+`.next`, and button values contain the destination page. Your interaction handler
+rebuilds the next page. The receiving message validates limits after expansion.
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$sections = S\Accordion::create([
+    S\AccordionSection::create(title: 'Details', blocks: [new S\SectionBlock('Ready')]),
+]);
+$pages = S\Paginator::create(actionIdPrefix: 'releases', blocks: [new S\SectionBlock('One'), new S\SectionBlock('Two')], page: 1, pageSize: 1);
+$view = new S\MessagePayload(channel: 'C1', text: 'Releases', blocks: [...$sections, ...$pages]);
+echo $view->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.{Blocks.Section, Components.Accordion, Components.AccordionSection, Components.Paginator}
+sections = Accordion.to_blocks!([AccordionSection.new!(title: "Details", blocks: [Section.new!(text: "Ready")])])
+page = Paginator.to_blocks!([Section.new!(text: "One"), Section.new!(text: "Two")], action_id_prefix: "items", page: 1, page_size: 1)
+Slackblocks.Message.new!(channel: "C1", text: "Items", blocks: sections ++ page) |> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result MessagePayload
+example = do
+  title <- buildPlainText (plainText "Details")
+  text <- buildMarkdownText (markdownText "Ready")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  container <- buildContainerBlock (accordionSection title [sectionBlockAsBlock section])
+  expanded <- accordion [container]
+  page <-
+    paginate
+      ((paginator "items") {paginatorPageSize = 1})
+      [sectionBlockAsBlock section, sectionBlockAsBlock section]
+  buildMessagePayload
+    ( (messagePayload "C1")
+        { messagePayloadText = Just "Items",
+          messagePayloadBlocks = Just (expanded <> page)
+        }
+    )
+```
+
+</Haskell>
+
+</LanguageContent>

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	slackblocks "github.com/nicklambourne/slackblocks/go/v3"
+	slackblocks "github.com/nicklambourne/slackblocks/go/v4"
 	slack "github.com/slack-go/slack"
 )
 

@@ -1,7 +1,7 @@
 package slackblocks_test
 
 import (
-	sb "github.com/nicklambourne/slackblocks/go/v3"
+	sb "github.com/nicklambourne/slackblocks/go/v4"
 	"strings"
 	"testing"
 )

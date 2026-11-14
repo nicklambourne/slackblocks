@@ -1,0 +1,716 @@
+---
+title: Approval request with action buttons
+slug: /usage/recipes/approval-request
+sidebar_position: 2
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "blocks": [
+      {
+        "text": {
+          "text": "*Approve deployment?*",
+          "type": "mrkdwn"
+        },
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "action_id": "approve",
+            "style": "primary",
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "482"
+          },
+          {
+            "action_id": "reject",
+            "style": "danger",
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "482"
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Approval requested"
+  },
+  "java": {
+    "mrkdwn": true,
+    "text": "Approval requested",
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Approve deployment?"
+        }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          }
+        ]
+      }
+    ]
+  },
+  "go": {
+    "blocks": [
+      {
+        "text": {
+          "text": "Approve deployment?",
+          "type": "mrkdwn"
+        },
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "action_id": "approve",
+            "style": "primary",
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          },
+          {
+            "action_id": "reject",
+            "style": "danger",
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "release-42"
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Approval requested"
+  },
+  "ruby": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Approve deployment?"
+        }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          }
+        ]
+      }
+    ],
+    "text": "Approval requested",
+    "mrkdwn": true
+  },
+  "csharp": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Approve deployment?"
+        }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          }
+        ]
+      }
+    ],
+    "text": "Approval requested",
+    "mrkdwn": true
+  },
+  "php": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*Approve deployment?*"
+        }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "482",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "482",
+            "style": "danger"
+          }
+        ]
+      }
+    ],
+    "text": "Approval requested",
+    "mrkdwn": true
+  },
+  "rust": {
+    "channel": "C01234567",
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Approve this release?"
+        }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger"
+          }
+        ]
+      }
+    ],
+    "text": "Approval requested",
+    "mrkdwn": true
+  },
+  "haskell": {
+    "blocks": [
+      {
+        "text": {
+          "text": "*Approve deployment?*",
+          "type": "mrkdwn"
+        },
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "action_id": "approve",
+            "style": "primary",
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "482"
+          },
+          {
+            "action_id": "reject",
+            "style": "danger",
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "482"
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Approval requested"
+  },
+  "typescript": {
+    "mrkdwn": true,
+    "text": "Approval requested",
+    "channel": "C1",
+    "blocks": [
+      {
+        "text": {
+          "text": "Approve deployment?",
+          "type": "mrkdwn"
+        },
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "text": {
+              "text": "Approve",
+              "type": "plain_text"
+            },
+            "action_id": "approve",
+            "value": "release-42",
+            "style": "primary",
+            "type": "button"
+          },
+          {
+            "text": {
+              "text": "Reject",
+              "type": "plain_text"
+            },
+            "action_id": "reject",
+            "value": "release-42",
+            "style": "danger",
+            "type": "button"
+          }
+        ],
+        "type": "actions"
+      }
+    ]
+  },
+  "python": {
+    "channel": "C1",
+    "mrkdwn": true,
+    "blocks": [
+      {
+        "type": "header",
+        "block_id": "<generated-block-id>",
+        "text": {
+          "type": "plain_text",
+          "text": ":hand: Approval needed"
+        }
+      },
+      {
+        "type": "section",
+        "block_id": "<generated-block-id>",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*Requested by:* Nick\n\nDeploy version 3.1.0?"
+        }
+      },
+      {
+        "type": "actions",
+        "block_id": "approval:release-42",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "action_id": "approve",
+            "style": "primary",
+            "value": "release-42"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Reject"
+            },
+            "action_id": "reject",
+            "style": "danger",
+            "value": "release-42"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "View details"
+            },
+            "action_id": "details",
+            "url": "https://approvals.example.com/release-42"
+          }
+        ]
+      },
+      {
+        "type": "context",
+        "block_id": "<generated-block-id>",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "Request ID: `release-42`"
+          }
+        ]
+      }
+    ],
+    "text": "Approval requested by Nick"
+  }
+};
+
+# Approval request with action buttons
+
+Carry a stable request identifier in action values. The application must authenticate callbacks and implement the approve/reject actions.
+
+<RecipeOutput recipe="approval-request" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+An approval flow with approve, reject and details buttons. The buttons carry `value` or `action_id` so your interaction handler can identify them.
+
+```python
+from slackblocks import (
+    ActionsBlock,
+    Button,
+    ContextBlock,
+    HeaderBlock,
+    Message,
+    SectionBlock,
+    Text,
+)
+
+
+def approval_request(*, channel: str, request_id: str, requester: str, summary: str) -> Message:
+    return Message(
+        channel=channel,
+        text=f"Approval requested by {requester}",
+        blocks=[
+            HeaderBlock(":hand: Approval needed"),
+            SectionBlock(text=f"*Requested by:* {requester}\n\n{summary}"),
+            ActionsBlock(
+                block_id=f"approval:{request_id}",
+                elements=[
+                    Button(
+                        text="Approve",
+                        action_id="approve",
+                        value=request_id,
+                        style="primary",
+                    ),
+                    Button(
+                        text="Reject",
+                        action_id="reject",
+                        value=request_id,
+                        style="danger",
+                    ),
+                    Button(
+                        text="View details",
+                        action_id="details",
+                        url=f"https://approvals.example.com/{request_id}",
+                    ),
+                ],
+            ),
+            ContextBlock(
+                elements=[Text(f"Request ID: `{request_id}`")],
+            ),
+        ],
+    )
+print(approval_request(channel="C1", request_id="release-42", requester="Nick", summary="Deploy version 3.1.0?").json())
+```
+
+When the user clicks a button, Slack will POST an interaction payload to your app. Match on `action_id` (`approve` / `reject` / `details`) and pull the request ID from `block_id` or the button's `value`.
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const message = S.Message().channel("C1").text("Approval requested").blocks(
+  S.SectionBlock().text("Approve deployment?"),
+  S.ActionsBlock().elements(
+    S.Button().text("Approve").actionId("approve").value("release-42").style("primary"),
+    S.Button().text("Reject").actionId("reject").value("release-42").style("danger"),
+  ),
+).build();
+console.log(JSON.stringify(message));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	value, err := s.NewMessage().Channel("C1").Text("Approval requested").Blocks(
+		s.NewSectionBlock().Text("Approve deployment?"),
+		s.NewActionsBlock().Elements(
+			s.NewButton().Text("Approve").ActionID("approve").Value("release-42").Style("primary"),
+			s.NewButton().Text("Reject").ActionID("reject").Value("release-42").Style("danger"),
+		),
+	).Build()
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var value = MessagePayload.builder().channel("C1").text("Approval requested").blocks(
+    SectionBlock.builder().markdownText("Approve deployment?").build(),
+    ActionsBlock.builder().elements(
+    ButtonElement.builder().text("Approve").actionId("approve").value("release-42").style(ButtonStyle.PRIMARY).build(),
+    ButtonElement.builder().text("Reject").actionId("reject").value("release-42").style(ButtonStyle.DANGER).build()).build()).build();
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var value = new MessagePayload("C1", text: "Approval requested", blocks: [
+    new SectionBlock(text: "Approve deployment?"),
+    new ActionsBlock(elements: [
+        new ButtonElement("Approve", actionId: "approve", value: "release-42", style: ButtonStyle.Primary),
+        new ButtonElement("Reject", actionId: "reject", value: "release-42", style: ButtonStyle.Danger),
+    ]),
+]);
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+value = MessagePayload.new(channel: "C1", text: "Approval requested", blocks: [
+  SectionBlock.new(text: "Approve deployment?"),
+  ActionsBlock.new(elements: [
+    ButtonElement.new(text: "Approve", action_id: "approve", value: "release-42", style: ButtonStyle::PRIMARY),
+    ButtonElement.new(text: "Reject", action_id: "reject", value: "release-42", style: ButtonStyle::DANGER)
+  ])
+])
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+Your interaction handler matches the action ID and reads the request ID from the button value.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let actions = ActionsBlock::builder()
+        .element(
+            ButtonElement::builder()
+                .text("Approve")
+                .action_id("approve")
+                .value("release-42")
+                .style(ButtonStyle::Primary)
+                .build()?,
+        )
+        .element(
+            ButtonElement::builder()
+                .text("Reject")
+                .action_id("reject")
+                .value("release-42")
+                .style(ButtonStyle::Danger)
+                .build()?,
+        )
+        .build()?;
+    let message = MessagePayload::builder("C01234567")
+        .text("Approval requested")
+        .block(
+            SectionBlock::builder()
+                .text("Approve this release?")
+                .build()?,
+        )
+        .block(actions)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(channel: 'C1', text: 'Approval requested', blocks: [
+    new S\SectionBlock('*Approve deployment?*'),
+    new S\ActionsBlock(elements: [
+        new S\ButtonElement(text: 'Approve', actionId: 'approve', value: '482', style: S\ButtonStyle::Primary),
+        new S\ButtonElement(text: 'Reject', actionId: 'reject', value: '482', style: S\ButtonStyle::Danger),
+    ]),
+]);
+echo $message->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.{Message, Blocks, Elements.Button}
+Message.new!(channel: "C1", text: "Approval requested", blocks: [
+  Blocks.Section.new!(text: "*Approve deployment?*"),
+  Blocks.Actions.new!(elements: [
+    Button.new!(text: "Approve", action_id: "approve", value: "482", style: :primary),
+    Button.new!(text: "Reject", action_id: "reject", value: "482", style: :danger)
+  ])
+]) |> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  question <- buildMarkdownText (markdownText "*Approve deployment?*")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText question)})
+  yes <- buildPlainText (plainText "Approve")
+  no <- buildPlainText (plainText "Reject")
+  approve <- buildButtonElement ((buttonElement yes) {buttonElementActionId = Just "approve", buttonElementValue = Just "482", buttonElementStyle = Just ButtonStylePrimary})
+  reject <- buildButtonElement ((buttonElement no) {buttonElementActionId = Just "reject", buttonElementValue = Just "482", buttonElementStyle = Just ButtonStyleDanger})
+  actions <- buildActionsBlock (actionsBlock [buttonElementAsElement approve, buttonElementAsElement reject])
+  buildMessagePayload ((messagePayload "C1") {messagePayloadText = Just "Approval requested", messagePayloadBlocks = Just [sectionBlockAsBlock section, actionsBlockAsBlock actions]})
+```
+
+</Haskell>
+
+</LanguageContent>

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	sb "github.com/nicklambourne/slackblocks/go/v3"
+	sb "github.com/nicklambourne/slackblocks/go/v4"
 )
 
 func TestExactRawNumber(t *testing.T) {

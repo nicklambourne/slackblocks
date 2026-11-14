@@ -755,7 +755,7 @@ packageVersion :: Text
 -- | Shared Block Kit contract version implemented by this package.
 specVersion :: Text
 
-packageVersion = "3.2.0"
+packageVersion = "4.0.0"
 
 specVersion = "1.6.0"
 

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	slackblocks "github.com/nicklambourne/slackblocks/go/v3"
+	slackblocks "github.com/nicklambourne/slackblocks/go/v4"
 )
 
 type fixtureManifest struct {

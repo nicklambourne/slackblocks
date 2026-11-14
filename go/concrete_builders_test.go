@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	slackblocks "github.com/nicklambourne/slackblocks/go/v3"
+	slackblocks "github.com/nicklambourne/slackblocks/go/v4"
 )
 
 func TestConcreteBuildersExposeOnlyRegisteredFluentMethods(t *testing.T) {
@@ -43,7 +43,7 @@ func TestConcreteBuildersExposeOnlyRegisteredFluentMethods(t *testing.T) {
 		}
 		files = append(files, file)
 	}
-	checked, err := (&types.Config{Importer: newModuleAwareImporter()}).Check("github.com/nicklambourne/slackblocks/go/v3", set, files, nil)
+	checked, err := (&types.Config{Importer: newModuleAwareImporter()}).Check("github.com/nicklambourne/slackblocks/go/v4", set, files, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
