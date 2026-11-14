@@ -146,7 +146,7 @@ def check_requests_example():
     sys.path.insert(0, str(ROOT / "python"))
     for case in ["success", "http", "slack", "invalid-json", "timeout"]:
 
-        def post(url, **kwargs):
+        def post(url, *, case=case, **kwargs):
             assert url == "https://slack.com/api/chat.postMessage"
             assert kwargs["timeout"] == 30
             assert kwargs["json"]["text"] and kwargs["json"]["blocks"]
@@ -179,8 +179,7 @@ def check_requests_example():
 def main():
     compatibility = read("usage/compatibility.mdx").split("</Python>")[0]
     configs = [
-        tomllib.loads(code)
-        for code in re.findall(r"```toml\n(.*?)```", compatibility, re.S)
+        tomllib.loads(code) for code in re.findall(r"```toml\n(.*?)```", compatibility, re.S)
     ]
     assert len(configs) == 2
     assert configs[0]["tool"]["poetry"]["dependencies"]["slackblocks"] == "^3"
@@ -197,22 +196,15 @@ def main():
             re.I,
         )
 
-    engines = json.loads((ROOT / "typescript/package.json").read_text())["engines"][
-        "node"
-    ]
+    engines = json.loads((ROOT / "typescript/package.json").read_text())["engines"]["node"]
     for page in [
         "quick-start.mdx",
         "usage/installation.mdx",
         "usage/compatibility.mdx",
     ]:
-        assert engines in read(page), (
-            f"{page} must state the package's exact Node range"
-        )
+        assert engines in read(page), f"{page} must state the package's exact Node range"
 
-    model = {
-        t["name"]: t
-        for t in json.loads((ROOT / "spec/model.json").read_text())["types"]
-    }
+    model = {t["name"]: t for t in json.loads((ROOT / "spec/model.json").read_text())["types"]}
     guide = read("usage/using_blocks.mdx")
     for title, name in [
         ("Task Card Block", "TaskCardBlock"),
@@ -233,12 +225,8 @@ def main():
         "image_url",
         "slack_file",
     }
-    assert {f["wire"] for f in model["ImageBlock"]["fields"] if f.get("required")} == {
-        "alt_text"
-    }
-    assert model["ImageBlock"]["rules"] == [
-        "Provide exactly one of an image URL or a Slack file."
-    ]
+    assert {f["wire"] for f in model["ImageBlock"]["fields"] if f.get("required")} == {"alt_text"}
+    assert model["ImageBlock"]["rules"] == ["Provide exactly one of an image URL or a Slack file."]
     for field in ["alt_text", "image_url"]:
         assert (
             f"`{field}` (up to {limits['image'][field]['max_length']:,} characters)"
@@ -247,8 +235,7 @@ def main():
     markdown = guide.split("## Markdown Block", 1)[1].split("\n## ", 1)[0]
     assert "accepts an empty string locally" in markdown
     assert (
-        f"maximum is {limits['markdown']['text']['max_length']:,} Unicode code points"
-        in markdown
+        f"maximum is {limits['markdown']['text']['max_length']:,} Unicode code points" in markdown
     )
     assert "aggregate Markdown text in a complete message" in markdown
     assert limits["markdown"]["text"] == limits["markdown"]["total_text"]
@@ -258,10 +245,7 @@ def main():
     assert "Plain tables allow rows of different lengths" in guide
     assert "column_settings` may describe only the leading columns" in guide
     for filename in ["messages.py", "objects.py"]:
-        assert (
-            "InvalidUsageException"
-            not in (ROOT / "python/slackblocks" / filename).read_text()
-        )
+        assert "InvalidUsageException" not in (ROOT / "python/slackblocks" / filename).read_text()
     print(
         "Copyable configuration, required fields/limits, ten-language journeys and mocked HTTP failures passed."
     )
