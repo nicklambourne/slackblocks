@@ -47,9 +47,8 @@ jobs:
           RELEASE_TAG: ${{ inputs.release_tag }}
           ARTIFACT_RUN: ${{ inputs.artifact_run }}
           REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: refs/tags/${{ inputs.release_tag }}
         run: |
-          python3 source/.github/scripts/verify-release.py publisher --language elixir
+          GITHUB_REF="refs/tags/$RELEASE_TAG" python3 source/.github/scripts/verify-release.py publisher --language elixir
           python3 - <<'PY'
           import json, os, re, subprocess
           from pathlib import Path
@@ -98,8 +97,8 @@ jobs:
       - name: Publish only missing original package and documentation
         env:
           HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
-          GITHUB_REF: refs/tags/${{ inputs.release_tag }}
-        run: python3 tooling/elixir/tools/release.py publish --source-root source --directory artifact
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: GITHUB_REF="refs/tags/$RELEASE_TAG" python3 tooling/elixir/tools/release.py publish --source-root source --directory artifact
       - name: Preserve recovery provenance
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -161,5 +160,5 @@ jobs:
       - name: Verify and publish immutable release assets
         env:
           GH_TOKEN: ${{ github.token }}
-          GITHUB_REF: refs/tags/${{ inputs.release_tag }}
-        run: python3 elixir/tools/github_release.py
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: GITHUB_REF="refs/tags/$RELEASE_TAG" python3 elixir/tools/github_release.py
