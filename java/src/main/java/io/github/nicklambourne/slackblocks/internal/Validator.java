@@ -125,7 +125,7 @@ public final class Validator {
   private static final Set<String> CONTAINER_WIDTHS = Set.of("narrow", "standard", "wide", "full");
   private static final Set<String> TASK_STATUSES =
       Set.of("pending", "in_progress", "complete", "error");
-  private static final Set<String> TABLE_CELL_TYPES = Set.of("raw_text", "rich_text");
+  private static final Set<String> TABLE_CELL_TYPES = Set.of("raw_text", "raw_number", "rich_text");
   private static final Set<String> DATA_TABLE_CELL_TYPES =
       Set.of("raw_text", "rich_text", "raw_number");
 
@@ -271,6 +271,7 @@ public final class Validator {
     }
 
     switch (type) {
+      case "raw_number" -> textLength(value, child(path, "text"), 1, 0);
       case "plain_text", "mrkdwn" ->
           textLength(
               value, child(path, "text"), SlackLimits.TEXT_MIN_LENGTH, SlackLimits.TEXT_MAX_LENGTH);
@@ -505,7 +506,10 @@ public final class Validator {
 
     for (Map.Entry<String, Object> field : value.entrySet()) {
       if (!field.getKey().equals("type") && !field.getKey().equals("event_payload")) {
-        validateNested(field.getValue(), child(path, field.getKey()));
+        validateNested(
+            field.getValue(),
+            child(path, field.getKey()),
+            type.equals("table") && field.getKey().equals("column_settings"));
       }
     }
   }
@@ -1026,6 +1030,29 @@ public final class Validator {
           child(path, "column_settings"),
           0,
           SlackLimits.TABLE_COLUMN_SETTINGS_MAX_ITEMS);
+      List<?> settings = listAt(value.get("column_settings"), child(path, "column_settings"));
+      for (int index = 0; index < settings.size(); index++) {
+        if (settings.get(index) == null) continue;
+        String settingPath = child(path, "column_settings") + "[" + index + "]";
+        Map<String, Object> setting = objectAt(settings.get(index), settingPath);
+        if (setting.containsKey("align")
+            && (!(setting.get("align") instanceof String alignment)
+                || !Set.of("left", "center", "right").contains(alignment))) {
+          fail(
+              ErrorCategory.TYPE_MISMATCH,
+              child(settingPath, "align"),
+              "expected left, center or right");
+        }
+        if (setting.containsKey("is_wrapped") && !(setting.get("is_wrapped") instanceof Boolean)) {
+          fail(ErrorCategory.TYPE_MISMATCH, child(settingPath, "is_wrapped"), "expected a boolean");
+        }
+      }
+    }
+    if (!dataTable && contentLength > SlackLimits.TABLE_CONTENT_MAX_LENGTH) {
+      fail(
+          ErrorCategory.LENGTH_EXCEEDED,
+          child(path, "rows"),
+          "table content exceeds maximum " + SlackLimits.TABLE_CONTENT_MAX_LENGTH);
     }
     if (dataTable) {
       Double pageSize = number(value.get("page_size"));
@@ -1133,7 +1160,7 @@ public final class Validator {
       }
     }
     // Slack limits markdown block text and data table cell text across the whole message.
-    int[] totals = new int[3];
+    int[] totals = new int[4];
     addMessageTotals(value.get("blocks"), totals);
     if (value.get("attachments") instanceof List<?> attachments) {
       for (Object attachment : attachments) {
@@ -1155,6 +1182,12 @@ public final class Validator {
               + ", exceeding maximum "
               + SlackLimits.MARKDOWN_TOTAL_TEXT_MAX_LENGTH);
     }
+    if (totals[3] > SlackLimits.TABLE_TOTAL_CONTENT_MAX_LENGTH) {
+      fail(
+          ErrorCategory.LENGTH_EXCEEDED,
+          path,
+          "message table content exceeds maximum " + SlackLimits.TABLE_TOTAL_CONTENT_MAX_LENGTH);
+    }
     if (totals[1] > SlackLimits.DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH) {
       fail(
           ErrorCategory.LENGTH_EXCEEDED,
@@ -1166,7 +1199,7 @@ public final class Validator {
     }
   }
 
-  /** Adds markdown text, data table text and data visualization counts to the three totals. */
+  /** Adds markdown text, data table text, chart counts and plain table text to the totals. */
   private static void addMessageTotals(@Nullable Object value, int[] totals) {
     if (value instanceof Map<?, ?> map) {
       Object type = map.get("type");
@@ -1174,6 +1207,8 @@ public final class Validator {
         totals[0] += text.codePointCount(0, text.length());
       } else if ("data_visualization".equals(type)) {
         totals[2]++;
+      } else if ("table".equals(type)) {
+        totals[3] += textCharacterCount(map.get("rows"));
       } else if ("data_table".equals(type)) {
         totals[1] += textCharacterCount(map.get("rows"));
       } else if ("container".equals(type) || "layout".equals(type)) {
@@ -1208,14 +1243,15 @@ public final class Validator {
     }
   }
 
-  private static void validateNested(@Nullable Object value, String path) {
+  private static void validateNested(@Nullable Object value, String path, boolean nullableItems) {
     if (value == null) {
       fail(ErrorCategory.TYPE_MISMATCH, path, "expected a value, not null");
     } else if (value instanceof Map<?, ?>) {
       validateObject(objectAt(value, path), path);
     } else if (value instanceof List<?> list) {
       for (int index = 0; index < list.size(); index++) {
-        validateNested(list.get(index), path + "[" + index + "]");
+        if (list.get(index) == null && nullableItems) continue;
+        validateNested(list.get(index), path + "[" + index + "]", false);
       }
     } else if (value instanceof Double number && !Double.isFinite(number)) {
       fail(ErrorCategory.TYPE_MISMATCH, path, "expected a finite number");
@@ -1298,15 +1334,18 @@ public final class Validator {
 
   private static int textCharacterCount(@Nullable Object value) {
     if (value instanceof Map<?, ?>) {
-      int total = 0;
-      for (Map.Entry<String, Object> entry : objectAt(value, "").entrySet()) {
-        if (entry.getKey().equals("text") && entry.getValue() instanceof String text) {
-          total += text.codePointCount(0, text.length());
-        } else {
-          total += textCharacterCount(entry.getValue());
-        }
-      }
-      return total;
+      Map<String, Object> object = objectAt(value, "");
+      return switch (objectType(object)) {
+        case "raw_text", "raw_number", "text", "link" ->
+            object.get("text") instanceof String text ? text.codePointCount(0, text.length()) : 0;
+        case "rich_text",
+            "rich_text_section",
+            "rich_text_list",
+            "rich_text_quote",
+            "rich_text_preformatted" ->
+            textCharacterCount(object.get("elements"));
+        default -> 0;
+      };
     }
     if (value instanceof List<?> list) {
       int total = 0;

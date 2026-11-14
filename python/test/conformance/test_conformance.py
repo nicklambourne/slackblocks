@@ -17,7 +17,6 @@ from slackblocks import (
     CarouselBlock,
     ChartSegment,
     CheckboxGroup,
-    ColumnSettings,
     ConfirmationDialogue,
     ContainerBlock,
     ContextActionsBlock,
@@ -61,6 +60,7 @@ from slackblocks import (
     PlanBlock,
     RadioButtonGroup,
     RangeError,
+    RawNumber,
     RawText,
     RichTextInput,
     SectionBlock,
@@ -204,6 +204,7 @@ def data_table_with_content(length: int) -> DataTableBlock:
 
 
 INVALID_CASES: dict[str, Callable[[], object]] = {
+    "raw-number-empty-text": lambda: RawNumber(0, ""),
     "layout-home-alert": lambda: HomeTabView(
         blocks=[
             LayoutBlock(
@@ -860,6 +861,26 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "data-table-cell-text-empty": lambda: DataTableBlock(
         [[RawText("Name")], [RawText("")]], caption="Names"
     ),
+    "table-layout-fallback-total-too-long": lambda: Message(
+        channel="C123",
+        blocks=[
+            LayoutBlock(
+                label="Table",
+                rows=[
+                    LayoutRow(items=[LayoutItem(block=TableBlock(rows=[[RawText("😀" * 5000)]]))])
+                ],
+                fallback=[TableBlock(rows=[[RawText("😀" * 5001)]])],
+            )
+        ],
+    ),
+    "table-content-too-long": lambda: TableBlock(rows=[[RawNumber(1, "😀" * 10001)]]),
+    "table-total-content-too-long": lambda: Message(
+        channel="C123",
+        blocks=[
+            TableBlock(rows=[[RawText("😀" * 5000)]]),
+            TableBlock(rows=[[RawNumber(1, "😀" * 5001)]]),
+        ],
+    ),
     "data-table-content-too-long": lambda: DataTableBlock(
         [
             [RawText("Name")],
@@ -987,10 +1008,7 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "container-no-child-blocks": lambda: ContainerBlock(title="Container", child_blocks=[]),
     "table-too-many-column-settings": lambda: TableBlock(
         [[RawText("A")]],
-        column_settings=[
-            ColumnSettings(is_wrapped=True)
-            for _ in range(LIMITS["table"]["column_settings"]["max_items"] + 1)
-        ],
+        column_settings=[None for _ in range(LIMITS["table"]["column_settings"]["max_items"] + 1)],
     ),
     "data-table-row-header-index-negative": lambda: DataTableBlock(
         valid_table_rows(),

@@ -6,7 +6,7 @@
 
 namespace Slackblocks.Objects;
 
-/// <summary>A numeric data table cell with display text.</summary>
+/// <summary>A numeric table or data table cell with display text.</summary>
 /// <remarks>
 /// <list type="bullet">
 /// <item><description>Required: <c>value</c>, <c>text</c>.</description></item>
@@ -14,7 +14,7 @@ namespace Slackblocks.Objects;
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/data-table-block">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
-public sealed partial class RawNumber : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IDataTableCell
+public sealed partial class RawNumber : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.ITableCell, global::Slackblocks.Blocks.IDataTableCell
 {
     /// <summary>Creates and validates a <see cref="RawNumber"/>.</summary>
     /// <param name="value">The numeric value used for sorting. Required. Whole numbers are sent without a decimal point.</param>

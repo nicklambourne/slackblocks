@@ -51,7 +51,7 @@ final class NativeTest extends TestCase
         yield 'file duplicate source' => [fn() => new S\SlackFile(id: 'F012345678', url: 'https://example.org'), S\ErrorCategory::MutuallyExclusive, 'SlackFile'];
         yield 'table ragged' => [fn() => new S\DataTableBlock([[new S\RawText('A')],[new S\RawText('B'),new S\RawText('C')]], caption: 'Table'), $usage, 'DataTableBlock.rows[1]'];
         yield 'table rich header' => [fn() => new S\DataTableBlock([[new S\RichTextBlock([])],[new S\RawText('A')]], caption: 'Table'), $mismatch, 'DataTableBlock.rows[0][0]'];
-        yield 'table empty number text' => [fn() => new S\DataTableBlock([[new S\RawText('A')],[new S\RawNumber(1, '')]], caption: 'Table'), S\ErrorCategory::LengthExceeded, 'DataTableBlock.rows[1][0].text'];
+        yield 'table empty number text' => [fn() => new S\DataTableBlock([[new S\RawText('A')],[new S\RawNumber(1, '')]], caption: 'Table'), S\ErrorCategory::LengthExceeded, 'RawNumber.text'];
         yield 'table unsupported settings' => [fn() => new S\DataTableBlock([[new S\RawText('A')],[new S\RawText('B')]], caption: 'Table', extensions: new S\JsonObject(['column_settings' => []])), $usage, 'DataTableBlock.column_settings'];
         yield 'duplicate categories' => [fn() => new S\AxisConfig(['A','A']), $usage, 'AxisConfig.categories'];
         yield 'duplicate series' => [fn() => new S\LineChart(axisConfig: new S\AxisConfig(['A']), series: [new S\DataSeries('same', [new S\DataPoint('A', 1)]),new S\DataSeries('same', [new S\DataPoint('A', 2)])]), $usage, 'LineChart.series'];

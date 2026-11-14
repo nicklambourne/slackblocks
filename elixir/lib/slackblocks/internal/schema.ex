@@ -946,7 +946,8 @@ defmodule Slackblocks.Internal.Schema do
           :has_default => false,
           :coerce => nil,
           :limits => "table.column_settings",
-          :flags => []
+          :flags => [],
+          :nullable_items => true
         },
         %{
           :key => :block_id,
@@ -3937,7 +3938,7 @@ defmodule Slackblocks.Internal.Schema do
           :flags => []
         }
       ],
-      :roles => ["DataTableCell"]
+      :roles => ["TableCell", "DataTableCell"]
     },
     Slackblocks.Objects.RawText => %{
       :name => "RawText",
@@ -5145,7 +5146,11 @@ defmodule Slackblocks.Internal.Schema do
       Slackblocks.Elements.FeedbackButtons,
       Slackblocks.Elements.IconButton
     ],
-    "TableCell" => [Slackblocks.Blocks.RichText, Slackblocks.Objects.RawText],
+    "TableCell" => [
+      Slackblocks.Blocks.RichText,
+      Slackblocks.Objects.RawNumber,
+      Slackblocks.Objects.RawText
+    ],
     "DataTableCell" => [
       Slackblocks.Blocks.RichText,
       Slackblocks.Objects.RawNumber,
@@ -5363,6 +5368,8 @@ defmodule Slackblocks.Internal.Schema do
     "table.rows.max_items" => 100,
     "table.columns.max_items" => 20,
     "table.column_settings.max_items" => 20,
+    "table.content.max_length" => 10_000,
+    "table.total_content.max_length" => 10_000,
     "data_table.rows.min_items" => 2,
     "data_table.rows.max_items" => 201,
     "data_table.columns.min_items" => 1,

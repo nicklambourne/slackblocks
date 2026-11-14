@@ -79,7 +79,11 @@ defmodule Slackblocks.Internal.Codec do
 
     value
     |> Enum.with_index()
-    |> Enum.map(fn {child, i} -> field_wire(inner, child, path ++ [i], context) end)
+    |> Enum.map(fn {child, i} ->
+      if kind == :list and Map.get(field, :nullable_items, false) and is_nil(child),
+        do: nil,
+        else: field_wire(inner, child, path ++ [i], context)
+    end)
   end
 
   defp field_wire(%{kind: :string}, value, path, _), do: string!(value, path)
@@ -287,7 +291,14 @@ defmodule Slackblocks.Internal.Codec do
        when kind in [:list, :rows, :textList, :stringList] do
     Value.list!(values, path)
     inner = %{f | kind: %{list: :object, rows: :list, textList: :text, stringList: :string}[kind]}
-    values |> Enum.with_index() |> Enum.map(fn {v, i} -> parse_field(inner, v, path ++ [i]) end)
+
+    values
+    |> Enum.with_index()
+    |> Enum.map(fn {v, i} ->
+      if kind == :list and Map.get(f, :nullable_items, false) and is_nil(v),
+        do: nil,
+        else: parse_field(inner, v, path ++ [i])
+    end)
   end
 
   defp parse_field(%{kind: kind, type: "TaskCardBlock"}, value, path)

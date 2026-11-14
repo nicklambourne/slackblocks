@@ -87,7 +87,9 @@
   "table": {
     "rows": { "max_items": 100 },
     "columns": { "max_items": 20 },
-    "column_settings": { "max_items": 20 }
+    "column_settings": { "max_items": 20 },
+    "content": { "max_length": 10000 },
+    "total_content": { "max_length": 10000 }
   },
   "data_table": {
     "rows": { "min_items": 2, "max_items": 201 },

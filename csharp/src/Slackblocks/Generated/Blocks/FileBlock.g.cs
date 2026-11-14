@@ -6,7 +6,7 @@
 
 namespace Slackblocks.Blocks;
 
-/// <summary>A remote file previously added with the files.remote API.</summary>
+/// <summary>A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.</summary>
 /// <remarks>
 /// <list type="bullet">
 /// <item><description>Required: <c>externalId</c>, <c>source</c>.</description></item>

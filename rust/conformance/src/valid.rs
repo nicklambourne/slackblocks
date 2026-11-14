@@ -1037,6 +1037,90 @@ pub const VALID: &[ValidCase] = &[
         parse: |v| TableBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
     },
     ValidCase {
+        id: "blocks/table_sparse_defaults",
+        build: || {
+            Ok(serde_json::to_value(
+                TableBlock::builder()
+                    .block_id("fake_block_id")
+                    .rows([vec![RawText::new("Defaults")?]])
+                    .column_settings(vec![None::<ColumnSettings>; 20])
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| TableBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "blocks/table_numeric",
+        build: || {
+            let value = TableBlock::builder()
+                .block_id("fake_block_id")
+                .rows(vec![
+                    vec![
+                        TableCell::from(RawText::builder().text("Count").build()?),
+                        TableCell::from(RawNumber::builder().value(42).text("42 items").build()?),
+                        TableCell::from(RawNumber::builder().value(0).text("0").build()?),
+                    ],
+                    vec![TableCell::from(
+                        RawNumber::builder().value(3).text("Three").build()?,
+                    )],
+                ])
+                .column_settings(vec![
+                    None,
+                    Some(
+                        ColumnSettings::builder()
+                            .align(ColumnAlign::Right)
+                            .build()?,
+                    ),
+                    None,
+                ])
+                .build()?;
+            Ok(serde_json::to_value(value).unwrap())
+        },
+        parse: |v| TableBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "blocks/table_text_at_limit",
+        build: || {
+            let value = TableBlock::builder()
+                .block_id("fake_block_id")
+                .rows(vec![vec![TableCell::from(
+                    RawNumber::builder()
+                        .value(1)
+                        .text("😀".repeat(10000))
+                        .build()?,
+                )]])
+                .build()?;
+            Ok(serde_json::to_value(value).unwrap())
+        },
+        parse: |v| TableBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "messages/message_table_total_at_limit",
+        build: || {
+            let left = TableBlock::builder()
+                .block_id("fake_block_id")
+                .rows(vec![vec![TableCell::from(
+                    RawText::builder().text("😀".repeat(5000)).build()?,
+                )]])
+                .build()?;
+            let right = TableBlock::builder()
+                .block_id("fake_block_id")
+                .rows(vec![vec![TableCell::from(
+                    RawNumber::builder()
+                        .value(1)
+                        .text("😀".repeat(5000))
+                        .build()?,
+                )]])
+                .build()?;
+            let value = MessagePayload::builder("C123")
+                .blocks(vec![Block::from(left), Block::from(right)])
+                .build()?;
+            Ok(serde_json::to_value(value).unwrap())
+        },
+        parse: |v| MessagePayload::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
         id: "blocks/table_ragged_rows",
         build: || {
             let value = TableBlock::builder()

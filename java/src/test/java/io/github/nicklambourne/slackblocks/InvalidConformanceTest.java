@@ -551,6 +551,8 @@ final class InvalidConformanceTest {
                                                   List.of(
                                                       map("label", "One", "value", 1))))))))))));
 
+      case "raw-number-empty-text" ->
+          invalid("RawNumber", map("type", "raw_number", "value", 0, "text", ""));
       case "text-empty" -> invalid("PlainText", text("plain_text", ""));
       case "text-too-long" -> invalid("PlainText", text("plain_text", repeated("x", 3001)));
       case "button-agent-prompt-too-long" ->
@@ -1092,6 +1094,71 @@ final class InvalidConformanceTest {
       case "data-table-page-size-too-large" -> dataTable(validRows(), "Names", "page_size", 101);
       case "data-table-cell-text-empty" ->
           dataTable(List.of(List.of(rawText("Name")), List.of(rawText(""))), "Names");
+      case "table-layout-fallback-total-too-long" ->
+          invalid(
+              "Message",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  List.of(
+                      map(
+                          "type",
+                          "layout",
+                          "label",
+                          "Table",
+                          "rows",
+                          List.of(
+                              map(
+                                  "items",
+                                  List.of(
+                                      map(
+                                          "block",
+                                          map(
+                                              "type",
+                                              "table",
+                                              "rows",
+                                              List.of(
+                                                  List.of(
+                                                      map(
+                                                          "type",
+                                                          "raw_text",
+                                                          "text",
+                                                          repeated("😀", 5000))))))))),
+                          "fallback",
+                          List.of(
+                              map(
+                                  "type",
+                                  "table",
+                                  "rows",
+                                  List.of(
+                                      List.of(
+                                          map(
+                                              "type",
+                                              "raw_text",
+                                              "text",
+                                              repeated("😀", 5001))))))))));
+      case "table-content-too-long" ->
+          typed(
+              "TableBlock",
+              "table",
+              "rows",
+              List.of(List.of(obj("raw_number", "value", 1, "text", repeated("😀", 10001)))));
+      case "table-total-content-too-long" ->
+          invalid(
+              "Message",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  List.of(
+                      obj("table", "rows", List.of(List.of(rawText(repeated("😀", 5000))))),
+                      obj(
+                          "table",
+                          "rows",
+                          List.of(
+                              List.of(
+                                  obj("raw_number", "value", 1, "text", repeated("😀", 5001))))))));
       case "data-table-content-too-long" ->
           dataTable(
               List.of(List.of(rawText("Name")), List.of(rawText(repeated("x", 20000)))), "Names");
@@ -1270,9 +1337,7 @@ final class InvalidConformanceTest {
               "rows",
               List.of(List.of(rawText("A"))),
               "column_settings",
-              copies(
-                  SlackLimits.TABLE_COLUMN_SETTINGS_MAX_ITEMS + 1,
-                  index -> map("is_wrapped", true)));
+              copies(SlackLimits.TABLE_COLUMN_SETTINGS_MAX_ITEMS + 1, index -> null));
       case "data-table-row-header-index-negative" ->
           dataTable(
               validRows(),

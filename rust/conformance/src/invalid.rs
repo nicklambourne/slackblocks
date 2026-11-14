@@ -9,6 +9,87 @@ pub struct InvalidCase {
 }
 pub const INVALID: &[InvalidCase] = &[
     InvalidCase {
+        id: "raw-number-empty-text",
+        build: || RawNumber::builder().value(0).text("").build().map(|_| ()),
+        parse: || {
+            RawNumber::try_from(serde_json::json!({"type":"raw_number","value":0,"text":""}))
+                .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "table-layout-fallback-total-too-long",
+        build: || {
+            let left = TableBlock::builder()
+                .rows(vec![vec![TableCell::from(
+                    RawText::builder().text("😀".repeat(5000)).build()?,
+                )]])
+                .build()?;
+            let right = TableBlock::builder()
+                .rows(vec![vec![TableCell::from(
+                    RawText::builder().text("😀".repeat(5001)).build()?,
+                )]])
+                .build()?;
+            let item = LayoutItem::builder()
+                .block(LayoutChild::from(left))
+                .build()?;
+            let row = LayoutRow::builder().items(vec![item]).build()?;
+            let layout = LayoutBlock::builder()
+                .label("Table")
+                .rows(vec![row])
+                .fallback(vec![LayoutFallback::from(right)])
+                .build()?;
+            MessagePayload::builder("C123")
+                .blocks(vec![Block::from(layout)])
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel":"C123", "blocks":[{"type":"layout", "label":"Table", "rows":[{"items":[{"block":{"type":"table","rows":[[{"type":"raw_text","text":"😀".repeat(5000)}]]}}]}],"fallback":[{"type":"table","rows":[[{"type":"raw_text","text":"😀".repeat(5001)}]]}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "table-content-too-long",
+        build: || {
+            TableBlock::builder()
+                .rows(vec![vec![TableCell::from(
+                    RawNumber::builder()
+                        .value(1)
+                        .text("😀".repeat(10001))
+                        .build()?,
+                )]])
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            TableBlock::try_from(serde_json::json!({"type":"table","rows":[[{"type":"raw_number","value":1,"text":"😀".repeat(10001)}]]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "table-total-content-too-long",
+        build: || {
+            let left = TableBlock::builder()
+                .rows(vec![vec![TableCell::from(
+                    RawText::builder().text("😀".repeat(5000)).build()?,
+                )]])
+                .build()?;
+            let right = TableBlock::builder()
+                .rows(vec![vec![TableCell::from(
+                    RawNumber::builder()
+                        .value(1)
+                        .text("😀".repeat(5001))
+                        .build()?,
+                )]])
+                .build()?;
+            MessagePayload::builder("C123")
+                .blocks(vec![Block::from(left), Block::from(right)])
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel":"C123","blocks":[{"type":"table","rows":[[{"type":"raw_text","text":"😀".repeat(5000)}]]},{"type":"table","rows":[[{"type":"raw_number","value":1,"text":"😀".repeat(5001)}]]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "layout-home-alert",
         build: || {
             HomeTabView::builder()
@@ -6791,10 +6872,7 @@ pub const INVALID: &[InvalidCase] = &[
                 .rows(vec![vec![TableCell::from(
                     RawText::builder().text("A").build()?,
                 )]])
-                .column_settings(vec![
-                    ColumnSettings::builder().is_wrapped(true).build()?;
-                    21
-                ])
+                .column_settings(vec![None::<ColumnSettings>; 21])
                 .build()?;
             Ok(())
         },

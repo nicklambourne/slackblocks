@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /** Internal conversion and defensive-copy helpers. */
 public final class WireObjects {
@@ -69,10 +70,10 @@ public final class WireObjects {
     return Collections.unmodifiableMap(result);
   }
 
-  private static Object snapshotValue(Object value) {
+  private static @Nullable Object snapshotValue(@Nullable Object value) {
     if (value instanceof List<?> list) {
       List<Object> copy = new ArrayList<>(list.size());
-      list.forEach(item -> copy.add(snapshotValue(Objects.requireNonNull(item, "item"))));
+      list.forEach(item -> copy.add(snapshotValue(item)));
       return Collections.unmodifiableList(copy);
     }
     if (value instanceof Map<?, ?> map) {
@@ -134,7 +135,7 @@ public final class WireObjects {
             + " slackblocks value");
   }
 
-  private static Object materializeValue(Object value) {
+  private static @Nullable Object materializeValue(@Nullable Object value) {
     if (value instanceof Buildable<?> buildable) {
       return buildable.build().toMap();
     }

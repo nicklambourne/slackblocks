@@ -155,6 +155,8 @@ func invalidConstruction(id string) error {
 	case "layout-three-charts":
 		return buildError(slackblocks.NewMessage().Channel("C123").Blocks([]slackblocks.Block{slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...)}...)}...))
 
+	case "raw-number-empty-text":
+		return buildError(slackblocks.NewRawNumber().Value(0).Text(""))
 	case "text-empty":
 		return buildError(slackblocks.NewPlainText().Text(""))
 	case "text-too-long":
@@ -419,6 +421,12 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewDataTableBlock().Rows(validRows()...).Caption("Names").PageSize(101))
 	case "data-table-cell-text-empty":
 		return buildError(slackblocks.NewDataTableBlock().Rows([]slackblocks.DataTableCell{rawText("Name")}, []slackblocks.DataTableCell{rawText("")}).Caption("Names"))
+	case "table-layout-fallback-total-too-long":
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(slackblocks.NewLayoutBlock().Label("Table").Rows(slackblocks.NewLayoutRow().Items(slackblocks.NewLayoutItem().Block(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText(repeated("😀", 5000))})))).Fallback(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText(repeated("😀", 5001))}))))
+	case "table-content-too-long":
+		return buildError(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{slackblocks.NewRawNumber().Value(1).Text(repeated("😀", 10001))}))
+	case "table-total-content-too-long":
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText(repeated("😀", 5000))}), slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{slackblocks.NewRawNumber().Value(1).Text(repeated("😀", 5001))})))
 	case "data-table-content-too-long":
 		return buildError(slackblocks.NewDataTableBlock().Rows([]slackblocks.DataTableCell{rawText("Name")}, []slackblocks.DataTableCell{rawText(repeated("x", 20000))}).Caption("Names"))
 	case "message-too-many-charts":
@@ -505,7 +513,7 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewContainerBlock().Title("Container").ChildBlocks())
 	case "table-too-many-column-settings":
 		return buildError(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText("A")}).ColumnSettings(copies(slackblocks.LimitTableColumnSettingsMaxItems+1, func(int) *slackblocks.ColumnSettingsBuilder {
-			return slackblocks.NewColumnSettings().IsWrapped(true)
+			return nil
 		})...))
 	case "data-table-row-header-index-negative":
 		return buildError(slackblocks.NewDataTableBlock().Rows(validRows()...).Caption("Names").RowHeaderColumnIndex(slackblocks.LimitDataTableRowHeaderColumnIndexMin - 1))

@@ -6,7 +6,7 @@
 
 namespace Slackblocks.Blocks;
 
-/// <summary>A simple table of raw text and rich text cells.</summary>
+/// <summary>A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.</summary>
 /// <remarks>
 /// <list type="bullet">
 /// <item><description>Required: <c>rows</c>.</description></item>
@@ -18,20 +18,20 @@ public sealed partial class TableBlock : global::Slackblocks.SlackObject, global
 {
     /// <summary>Creates and validates a <see cref="TableBlock"/>.</summary>
     /// <param name="rows">Complete table rows in display order. Required. Slack allows at most 100 items.</param>
-    /// <param name="columnSettings">Per-column settings in column order. Provide one entry for every column. Slack allows at most 20 items.</param>
+    /// <param name="columnSettings">Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries. Slack allows at most 20 items.</param>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public TableBlock(
         global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.IEnumerable<global::Slackblocks.Blocks.ITableCell>> rows,
-        global::System.Collections.Generic.IEnumerable<global::Slackblocks.Objects.ColumnSettings>? columnSettings = null,
+        global::System.Collections.Generic.IEnumerable<global::Slackblocks.Objects.ColumnSettings?>? columnSettings = null,
         string? blockId = null,
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("TableBlock", "table");
         Rows = wire.Rows("rows", rows);
-        ColumnSettings = wire.List("column_settings", columnSettings);
+        ColumnSettings = wire.NullableList("column_settings", columnSettings);
         BlockId = wire.String("block_id", blockId);
         Initialize(wire.Build(additionalFields));
     }
@@ -40,9 +40,9 @@ public sealed partial class TableBlock : global::Slackblocks.SlackObject, global
     /// <value>The values in order, or an empty list when none were set.</value>
     public global::System.Collections.Generic.IReadOnlyList<global::System.Collections.Generic.IReadOnlyList<global::Slackblocks.Blocks.ITableCell>> Rows { get; }
 
-    /// <summary>Gets per-column settings in column order. Provide one entry for every column.</summary>
+    /// <summary>Gets the <c>column_settings</c> field.</summary>
     /// <value>The values in order, or an empty list when none were set.</value>
-    public global::System.Collections.Generic.IReadOnlyList<global::Slackblocks.Objects.ColumnSettings> ColumnSettings { get; }
+    public global::System.Collections.Generic.IReadOnlyList<global::Slackblocks.Objects.ColumnSettings?> ColumnSettings { get; }
 
     /// <summary>Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>

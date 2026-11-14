@@ -119,7 +119,7 @@ var (
 	taskStatuses        = stringSet("pending", "in_progress", "complete", "error")
 	conversationTypes   = stringSet("im", "mpim", "private", "public")
 	multiSelectTypes    = stringSet("multi_channels_select", "multi_conversations_select", "multi_external_select", "multi_static_select", "multi_users_select")
-	tableCellTypes      = stringSet("raw_text", "rich_text")
+	tableCellTypes      = stringSet("raw_text", "raw_number", "rich_text")
 	dataTableCellTypes  = stringSet("raw_text", "rich_text", "raw_number")
 )
 
@@ -414,6 +414,9 @@ func validateObject(object Object, path string) error {
 
 	switch typeName {
 	case "raw_number":
+		if err := textLength(object, child(path, "text"), 1, 0); err != nil {
+			return err
+		}
 		if value, ok := object["value"].(json.Number); ok && !jsonNumberPattern.MatchString(string(value)) {
 			return validationError(TypeMismatch, child(path, "value"), "expected valid JSON number syntax")
 		}
@@ -1108,7 +1111,15 @@ func validateTable(object Object, path string, dataTable bool) error {
 			if err := validateEnumField(setting, "align", settingPath, "left", "center", "right"); err != nil {
 				return err
 			}
+			if wrapped, present := setting["is_wrapped"]; present {
+				if _, valid := wrapped.(bool); !valid {
+					return validationError(TypeMismatch, child(settingPath, "is_wrapped"), "expected a boolean")
+				}
+			}
 		}
+	}
+	if !dataTable && contentLength > limitTableContentMaxLength {
+		return validationError(LengthExceeded, child(path, "rows"), "table content exceeds maximum %d", limitTableContentMaxLength)
 	}
 	if dataTable {
 		if pageSize, ok := number(object["page_size"]); ok && (pageSize < limitDataTablePageSizeMin || pageSize > limitDataTablePageSizeMax) {
@@ -1244,18 +1255,22 @@ func validateMessageCollections(object Object, path string) error {
 	if charts > limitMessageDataVisualizationsMaxItems {
 		return validationError(LengthExceeded, path, "a message may contain at most two data visualization blocks")
 	}
-	markdown, tableContent := messageTotals(object["blocks"])
+	markdown, tableContent, plainTableContent := messageTotals(object["blocks"])
 	if attachments, ok := object["attachments"].([]any); ok {
 		for _, raw := range attachments {
 			if attachment, ok := raw.(Object); ok {
-				nestedMarkdown, nestedContent := messageTotals(attachment["blocks"])
+				nestedMarkdown, nestedContent, nestedPlainContent := messageTotals(attachment["blocks"])
 				markdown += nestedMarkdown
 				tableContent += nestedContent
+				plainTableContent += nestedPlainContent
 			}
 		}
 	}
 	if markdown > limitMarkdownTotalTextMaxLength {
 		return validationError(LengthExceeded, path, "markdown block text totals %d characters, exceeding maximum %d", markdown, limitMarkdownTotalTextMaxLength)
+	}
+	if plainTableContent > limitTableTotalContentMaxLength {
+		return validationError(LengthExceeded, path, "message table content exceeds maximum %d", limitTableTotalContentMaxLength)
 	}
 	if tableContent > limitDataTableTotalContentMaxLength {
 		return validationError(LengthExceeded, path, "data table cell text totals %d characters, exceeding maximum %d", tableContent, limitDataTableTotalContentMaxLength)
@@ -1283,27 +1298,30 @@ func chartCount(value any) int {
 }
 
 // messageTotals visits modeled blocks and container children, keeping application JSON opaque.
-func messageTotals(value any) (markdown, tableContent int) {
+func messageTotals(value any) (markdown, tableContent, plainTableContent int) {
 	switch typed := value.(type) {
 	case Object:
 		switch objectType(typed) {
 		case "markdown":
 			text, _ := typed["text"].(string)
-			return utf8.RuneCountInString(text), 0
+			return utf8.RuneCountInString(text), 0, 0
 		case "data_table":
-			return 0, textCharacterCount(typed["rows"])
+			return 0, textCharacterCount(typed["rows"]), 0
+		case "table":
+			return 0, 0, textCharacterCount(typed["rows"])
 		}
 		if objectType(typed) == "container" || objectType(typed) == "layout" {
 			return messageTotals(compositeSurfaceChildren(typed))
 		}
 	case []any:
 		for _, nested := range typed {
-			nestedMarkdown, nestedContent := messageTotals(nested)
+			nestedMarkdown, nestedContent, nestedPlainContent := messageTotals(nested)
 			markdown += nestedMarkdown
 			tableContent += nestedContent
+			plainTableContent += nestedPlainContent
 		}
 	}
-	return markdown, tableContent
+	return markdown, tableContent, plainTableContent
 }
 
 // validatePlanTasks checks a plan's task cards. Plan tasks are sent without a type and, unlike
@@ -1480,24 +1498,19 @@ func number(value any) (float64, bool) {
 func textCharacterCount(value any) int {
 	switch typed := value.(type) {
 	case Object:
-		total := 0
-		for key, nested := range typed {
-			if key == "text" {
-				if text, ok := nested.(string); ok {
-					total += utf8.RuneCountInString(text)
-					continue
-				}
-			}
-			total += textCharacterCount(nested)
+		switch objectType(typed) {
+		case "raw_text", "raw_number", "text", "link":
+			text, _ := typed["text"].(string)
+			return utf8.RuneCountInString(text)
+		case "rich_text", "rich_text_section", "rich_text_list", "rich_text_quote", "rich_text_preformatted":
+			return textCharacterCount(typed["elements"])
 		}
-		return total
 	case []any:
 		total := 0
 		for _, nested := range typed {
 			total += textCharacterCount(nested)
 		}
 		return total
-	default:
-		return 0
 	}
+	return 0
 }

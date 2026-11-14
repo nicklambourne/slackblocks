@@ -458,6 +458,7 @@ const listItem = () => richTextSection([richText("Item")]);
 const validImageUrl = "https://example.com/image.png";
 
 const invalidCases: Record<string, () => unknown> = {
+  "raw-number-empty-text": () => rawNumber(0, ""),
   "layout-message-budget": () => message({channel: "C123", blocks: Array.from({length:51}, () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}))}),
   "layout-view-budget": () => homeTab({blocks: Array.from({length:101}, () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}))}),
   "layout-label-empty": () => layoutBlock({label: "", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}),
@@ -940,6 +941,9 @@ const invalidCases: Record<string, () => unknown> = {
     }),
   "data-table-cell-text-empty": () =>
     dataTableBlock({ rows: [[rawText("Name")], [rawText("")]], caption: "Names" }),
+  "table-layout-fallback-total-too-long": () => message({channel: "C123", blocks: [layoutBlock({label: "Table", rows: [layoutRow({items: [layoutItem({block: tableBlock({rows: [[rawText("😀".repeat(5000))]]})})]})], fallback: [tableBlock({rows: [[rawText("😀".repeat(5001))]]})]})]}),
+  "table-content-too-long": () => tableBlock({ rows: [[rawNumber(1, "😀".repeat(10001))]] }),
+  "table-total-content-too-long": () => message({ channel: "C123", blocks: [tableBlock({rows: [[rawText("😀".repeat(5000))]]}), tableBlock({rows: [[rawNumber(1, "😀".repeat(5001))]]})] }),
   "data-table-content-too-long": () =>
     dataTableBlock({
       rows: [[rawText("Name")], [rawText("x".repeat(limits.data_table.content.max_length))]],
@@ -1073,7 +1077,7 @@ const invalidCases: Record<string, () => unknown> = {
       rows: [[rawText("A")]],
       columnSettings: Array.from(
         { length: limits.table.column_settings.max_items + 1 },
-        () => columnSettings({ align: "left" }),
+        () => null,
       ),
     }),
   "data-table-row-header-index-negative": () =>

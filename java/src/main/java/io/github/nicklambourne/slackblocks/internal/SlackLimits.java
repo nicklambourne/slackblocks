@@ -393,8 +393,14 @@ public final class SlackLimits {
   /** {@code table.columns.max_items} */
   public static final int TABLE_COLUMNS_MAX_ITEMS = 20;
 
+  /** {@code table.content.max_length} */
+  public static final int TABLE_CONTENT_MAX_LENGTH = 10000;
+
   /** {@code table.rows.max_items} */
   public static final int TABLE_ROWS_MAX_ITEMS = 100;
+
+  /** {@code table.total_content.max_length} */
+  public static final int TABLE_TOTAL_CONTENT_MAX_LENGTH = 10000;
 
   /** {@code text.max_length} */
   public static final int TEXT_MAX_LENGTH = 3000;

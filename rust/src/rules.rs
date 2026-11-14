@@ -360,7 +360,6 @@ pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), Validati
                 }
             }
         }
-        "TableBlock" => table(v, path)?,
         "AxisConfig" => {
             let categories = array(&v["categories"]);
             for (i, cat) in categories.iter().enumerate() {
@@ -454,16 +453,23 @@ pub(crate) fn message(
             "a message may contain at most two data visualization blocks",
         ));
     }
-    let (markdown, data_table) = blocks
+    let (markdown, data_table, plain_table) = blocks
         .iter()
         .chain(attachments.iter().flat_map(Attachment::blocks))
         .map(totals)
-        .fold((0, 0), |(a, b), (c, d)| (a + c, b + d));
+        .fold((0, 0, 0), |(a, b, c), (d, e, f)| (a + d, b + e, c + f));
     if markdown > limit("markdown.total_text.max_length") as usize {
         return Err(fail(
             C::LengthExceeded,
             path,
             "message markdown total exceeded",
+        ));
+    }
+    if plain_table > limit("table.total_content.max_length") as usize {
+        return Err(fail(
+            C::LengthExceeded,
+            path,
+            "message plain table total exceeded",
         ));
     }
     if data_table > limit("data_table.total_content.max_length") as usize {
@@ -538,30 +544,44 @@ fn standalone_task(block: &Block, path: &str) -> Result<(), ValidationError> {
     Ok(())
 }
 
-fn totals(block: &Block) -> (usize, usize) {
+fn totals(block: &Block) -> (usize, usize, usize) {
     match block {
-        Block::Markdown(value) => (value.text().chars().count(), 0),
-        Block::DataTable(value) => (0, table_characters(value.rows())),
+        Block::Markdown(value) => (value.text().chars().count(), 0, 0),
+        Block::DataTable(value) => (0, table_characters(value.rows()), 0),
+        Block::Table(value) => (0, 0, plain_table_characters(value.rows())),
         Block::Layout(layout) => layout
             .rows()
             .iter()
             .flat_map(|r| r.items())
             .map(|i| match i.block() {
-                LayoutChild::DataTableBlock(t) => (0, table_characters(t.rows())),
+                LayoutChild::DataTableBlock(t) => (0, table_characters(t.rows()), 0),
+                LayoutChild::TableBlock(t) => (0, 0, plain_table_characters(t.rows())),
                 LayoutChild::ContainerBlock(c) => c
                     .child_blocks()
                     .iter()
                     .map(totals)
-                    .fold((0, 0), |(a, b), (c, d)| (a + c, b + d)),
-                _ => (0, 0),
+                    .fold((0, 0, 0), |(a, b, c), (d, e, f)| (a + d, b + e, c + f)),
+                _ => (0, 0, 0),
             })
-            .fold((0, 0), |(a, b), (c, d)| (a + c, b + d)),
+            .chain(
+                layout
+                    .fallback()
+                    .unwrap_or_default()
+                    .iter()
+                    .map(|block| match block {
+                        crate::LayoutFallback::TableBlock(table) => {
+                            (0, 0, plain_table_characters(table.rows()))
+                        }
+                        _ => (0, 0, 0),
+                    }),
+            )
+            .fold((0, 0, 0), |(a, b, c), (d, e, f)| (a + d, b + e, c + f)),
         Block::Container(value) => value
             .child_blocks()
             .iter()
             .map(totals)
-            .fold((0, 0), |(a, b), (c, d)| (a + c, b + d)),
-        _ => (0, 0),
+            .fold((0, 0, 0), |(a, b, c), (d, e, f)| (a + d, b + e, c + f)),
+        _ => (0, 0, 0),
     }
 }
 
@@ -572,6 +592,30 @@ fn table_characters(rows: &[Vec<DataTableCell>]) -> usize {
             DataTableCell::RawText(v) => v.text().chars().count(),
             DataTableCell::RawNumber(v) => v.text().chars().count(),
             DataTableCell::RichText(v) => v
+                .elements()
+                .iter()
+                .map(|element| match element {
+                    RichTextBlockElement::Section(v) => inline_characters(v.elements()),
+                    RichTextBlockElement::Quote(v) => inline_characters(v.elements()),
+                    RichTextBlockElement::CodeBlock(v) => inline_characters(v.elements()),
+                    RichTextBlockElement::List(v) => v
+                        .elements()
+                        .iter()
+                        .map(|v| inline_characters(v.elements()))
+                        .sum(),
+                })
+                .sum(),
+        })
+        .sum()
+}
+
+fn plain_table_characters(rows: &[Vec<crate::TableCell>]) -> usize {
+    rows.iter()
+        .flatten()
+        .map(|cell| match cell {
+            crate::TableCell::RawText(v) => v.text().chars().count(),
+            crate::TableCell::RawNumber(v) => v.text().chars().count(),
+            crate::TableCell::RichText(v) => v
                 .elements()
                 .iter()
                 .map(|element| match element {
@@ -655,9 +699,16 @@ pub(crate) fn data_table(value: &DataTableBlock, path: &str) -> Result<(), Valid
     Ok(())
 }
 
-fn table(v: &Value, path: &str) -> Result<(), ValidationError> {
-    for (i, row) in array(&v["rows"]).iter().enumerate() {
-        if array(row).len() > limit("table.columns.max_items") as usize {
+pub(crate) fn plain_table(value: &crate::TableBlock, path: &str) -> Result<(), ValidationError> {
+    if plain_table_characters(value.rows()) > limit("table.content.max_length") as usize {
+        return Err(fail(
+            C::LengthExceeded,
+            &format!("{path}.rows"),
+            "table text total exceeded",
+        ));
+    }
+    for (i, row) in value.rows().iter().enumerate() {
+        if row.len() > limit("table.columns.max_items") as usize {
             return Err(fail(
                 C::LengthExceeded,
                 &format!("{path}.rows[{i}]"),

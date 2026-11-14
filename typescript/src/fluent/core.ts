@@ -18,9 +18,11 @@ export type Buildable<Value> =
   | (Value extends readonly (infer Item)[] ? readonly Buildable<Item>[] : never);
 
 type CollectionArgument<Value> =
+  | Extract<Value, null>
   | Buildable<NonNullish<Value>>
   | FluentGroupBuilder<object, NonNullish<Value>>
   | readonly (
+      | Extract<Value, null>
       | Buildable<NonNullish<Value>>
       | FluentGroupBuilder<object, NonNullish<Value>>
     )[];

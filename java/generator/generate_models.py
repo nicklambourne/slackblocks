@@ -191,10 +191,14 @@ def field_methods(model: Model, owner: dict, field: dict, imports: Imports) -> l
             [f'state.set("{wire}", value);'],
         )]
     if kind == "list":
+        if field.get("nullableItems"):
+            imports.add("org.jspecify.annotations.Nullable")
+        item_type = f"@Nullable {target}" if field.get("nullableItems") else target
+        append = "appendNullable" if field.get("nullableItems") else "append"
         return [method(
             field_doc(model, field, ["Each call appends to any values already added."], [("values", f"{{@link {target}}} values appended in order")]),
-            f"Builder {name}({target}... values)",
-            [f'state.append("{wire}", (Object[]) values);'],
+            f"Builder {name}({item_type}... values)",
+            [f'state.{append}("{wire}", (Object[]) values);'],
         )]
     if kind == "rows":
         imports.add("java.util.List")
@@ -364,7 +368,11 @@ def field_getter(model: Model, owner: dict, field: dict, imports: Imports) -> st
             signature, body = f"Optional<{target}>", f"TypedFields.optional(fields, {helper}, {target}.class)"
     elif kind == "list":
         imports.add("java.util.List")
-        signature, body = f"List<{target}>", f"TypedFields.list(fields, {helper}, {target}.class)"
+        if field.get("nullableItems"):
+            imports.add("org.jspecify.annotations.Nullable")
+            signature, body = f"List<@Nullable {target}>", f"TypedFields.nullableList(fields, {helper}, {target}.class)"
+        else:
+            signature, body = f"List<{target}>", f"TypedFields.list(fields, {helper}, {target}.class)"
     elif kind == "rows":
         imports.add("java.util.List")
         signature, body = f"List<List<{target}>>", f"TypedFields.rows(fields, {helper}, {target}.class)"

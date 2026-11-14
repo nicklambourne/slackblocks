@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.5.0",
+  "spec_version": "1.6.0",
   "cases": [
     {
       "id": "text-empty",
@@ -863,7 +863,7 @@
       "id": "table-too-many-column-settings",
       "category": "length-exceeded",
       "constraint": "table.column_settings.max_items",
-      "description": "A table with more than 20 column settings must be rejected"
+      "description": "A table with more than 20 column settings, including skipped null entries, must be rejected"
     },
     {
       "id": "data-table-row-header-index-negative",
@@ -1266,6 +1266,30 @@
       "category": "length-exceeded",
       "constraint": "layout.message.nested_table_total",
       "description": "Data tables inside layouts inside a container still count toward the existing message aggregate text limit."
+    },
+    {
+      "id": "table-content-too-long",
+      "category": "length-exceeded",
+      "constraint": "table.content.max_length",
+      "description": "A plain table with 10001 Unicode code points of cell display text must be rejected"
+    },
+    {
+      "id": "table-total-content-too-long",
+      "category": "length-exceeded",
+      "constraint": "table.total_content.max_length",
+      "description": "Two individually valid plain tables totaling 10001 Unicode code points in a message must be rejected"
+    },
+    {
+      "id": "table-layout-fallback-total-too-long",
+      "category": "length-exceeded",
+      "constraint": "table.total_content.layout_fallback",
+      "description": "A table in a layout child and another in its fallback totaling 10001 code points must be rejected at message construction"
+    },
+    {
+      "id": "raw-number-empty-text",
+      "category": "length-exceeded",
+      "constraint": "raw_number.text.nonempty",
+      "description": "Numeric display text must be non-empty in both plain and data tables"
     }
   ]
 }

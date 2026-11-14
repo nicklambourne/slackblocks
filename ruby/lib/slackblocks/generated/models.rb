@@ -315,7 +315,7 @@ module Slackblocks
     attr_reader :rows, :column_settings, :block_id, :additional_fields
   end
   TableBlock.const_set(:WIRE_TYPE, "table")
-  TableBlock.const_set(:FIELD_SPECS, Value.deep_freeze([{"name" => "rows", "wire" => "rows", "kind" => "rows", "target" => "TableCell", "coerce" => nil, "flags" => nil, "limits" => "table.rows", "required" => true}, {"name" => "column_settings", "wire" => "column_settings", "kind" => "list", "target" => "ColumnSettings", "coerce" => nil, "flags" => nil, "limits" => "table.column_settings", "required" => false}, {"name" => "block_id", "wire" => "block_id", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "block_id", "required" => false}]))
+  TableBlock.const_set(:FIELD_SPECS, Value.deep_freeze([{"name" => "rows", "wire" => "rows", "kind" => "rows", "target" => "TableCell", "coerce" => nil, "flags" => nil, "limits" => "table.rows", "required" => true}, {"name" => "column_settings", "wire" => "column_settings", "kind" => "list", "target" => "ColumnSettings", "coerce" => nil, "flags" => nil, "limits" => "table.column_settings", "required" => false, "nullable_items" => true}, {"name" => "block_id", "wire" => "block_id", "kind" => "string", "target" => nil, "coerce" => nil, "flags" => nil, "limits" => "block_id", "required" => false}]))
   TableBlock.const_set(:DEFAULTS, Value.deep_freeze({}))
   TableBlock.singleton_class.prepend(KeywordOnly)
 
@@ -808,6 +808,7 @@ module Slackblocks
   class RawNumber
     include Value
     include DataTableCell
+    include TableCell
     attr_reader :value, :text, :additional_fields
   end
   RawNumber.const_set(:WIRE_TYPE, "raw_number")

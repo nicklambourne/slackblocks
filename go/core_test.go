@@ -102,3 +102,13 @@ func TestValidationErrorFormatting(t *testing.T) {
 		t.Fatalf("unexpected error: %q", withoutPath)
 	}
 }
+
+func TestSparseTableRejectsInvalidSettings(t *testing.T) {
+	for _, setting := range []any{false, 1, "right", slackblocks.Object{"align": "invalid"}, slackblocks.Object{"is_wrapped": 1}} {
+		_, err := slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{slackblocks.NewRawText().Text("A")}).Set("column_settings", []any{nil, setting}).Build()
+		var validation *slackblocks.ValidationError
+		if !errors.As(err, &validation) || validation.Category != slackblocks.TypeMismatch {
+			t.Fatalf("setting %v: %v", setting, err)
+		}
+	}
+}

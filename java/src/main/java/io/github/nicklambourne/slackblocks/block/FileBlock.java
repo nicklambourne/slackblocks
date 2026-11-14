@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * A remote file previously added with the files.remote API.
+ * A retrieved remote-file representation. Register and share files through the files.remote API;
+ * Slack does not accept directly posting file blocks.
  *
  * <p>Start with {@link #builder()}, set fields with the named fluent methods, and call {@link
  * Builder#build()} to validate and create an immutable value.

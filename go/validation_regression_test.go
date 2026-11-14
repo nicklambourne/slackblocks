@@ -190,3 +190,13 @@ func TestMessageTotalsExcludeApplicationMetadata(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestTableBudgetsIgnoreOpaqueCellExtensions(t *testing.T) {
+	cell := slackblocks.Object{"type": "raw_number", "value": 42, "text": "42", "audit": slackblocks.Object{"text": strings.Repeat("x", 10001)}}
+	table := slackblocks.Object{"type": "table", "rows": []any{[]any{cell}}}
+	for _, payload := range []slackblocks.Object{table, {"blocks": []any{table}}} {
+		if err := slackblocks.Validate(payload); err != nil {
+			t.Fatal(err)
+		}
+	}
+}

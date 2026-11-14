@@ -39,6 +39,7 @@ def native(field):
     if kind in {"number", "double"}: return "Scientific"
     if kind in {"object", "text", "enum"}: return name(field["type"])
     if kind == "list" and field["type"] == "TaskCardBlock": return "[PlanTask]"
+    if kind == "list" and field.get("nullableItems"): return "[Maybe " + name(field["type"]) + "]"
     if kind in {"list", "textList"}: return "[" + name(field["type"]) + "]"
     if kind == "rows": return "[[" + name(field["type"]) + "]]"
     if kind == "stringList": return "[Text]"

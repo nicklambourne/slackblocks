@@ -121,7 +121,7 @@ internal static partial class Validator
     private static readonly FrozenSet<string> AlertLevels = Set("default", "info", "warning", "error", "success");
     private static readonly FrozenSet<string> ContainerWidths = Set("narrow", "standard", "wide", "full");
     private static readonly FrozenSet<string> TaskStatuses = Set("pending", "in_progress", "complete", "error");
-    private static readonly FrozenSet<string> TableCellTypes = Set("raw_text", "rich_text");
+    private static readonly FrozenSet<string> TableCellTypes = Set("raw_text", "raw_number", "rich_text");
     private static readonly FrozenSet<string> DataTableCellTypes = Set("raw_text", "rich_text", "raw_number");
     private static readonly FrozenSet<string> AttachmentColorAliases = Set("good", "warning", "danger");
 
@@ -289,6 +289,9 @@ internal static partial class Validator
 
         switch (type)
         {
+            case "raw_number":
+                TextLength(value, Child(path, "text"), 1, 0);
+                break;
             case "plain_text":
             case "mrkdwn":
                 TextLength(value, Child(path, "text"), SlackLimits.TextMinLength, SlackLimits.TextMaxLength);
@@ -515,7 +518,7 @@ internal static partial class Validator
         {
             if (key != "type" && key != "event_payload")
             {
-                ValidateNested(nested, Child(path, key));
+                ValidateNested(nested, Child(path, key), type == "table" && key == "column_settings");
             }
         }
     }
@@ -1028,8 +1031,23 @@ internal static partial class Validator
                 Child(path, "column_settings"),
                 0,
                 SlackLimits.TableColumnSettingsMaxItems);
+            var settings = ListAt(value["column_settings"], Child(path, "column_settings"));
+            for (var index = 0; index < settings.Count; index++)
+            {
+                if (settings[index] is null) continue;
+                var settingPath = $"{Child(path, "column_settings")}[{index}]";
+                var setting = ObjectAt(settings[index], settingPath);
+                if (setting.ContainsKey("align") && StringAt(setting["align"], Child(settingPath, "align")) is not ("left" or "center" or "right"))
+                    Fail(ErrorCategory.TypeMismatch, Child(settingPath, "align"), "expected left, center or right");
+                if (setting.ContainsKey("is_wrapped") && (setting["is_wrapped"] is not JsonValue wrapped || !wrapped.TryGetValue<bool>(out _)))
+                    Fail(ErrorCategory.TypeMismatch, Child(settingPath, "is_wrapped"), "expected a boolean");
+            }
         }
 
+        if (!dataTable && contentLength > SlackLimits.TableContentMaxLength)
+        {
+            Fail(ErrorCategory.LengthExceeded, Child(path, "rows"), $"table content exceeds maximum {SlackLimits.TableContentMaxLength}");
+        }
         if (dataTable)
         {
             if (JsonValues.Number(value["page_size"]) is double pageSize
@@ -1140,12 +1158,13 @@ internal static partial class Validator
             Fail(ErrorCategory.LengthExceeded, path, "a message may contain at most two data visualization blocks");
         var markdownTotal = 0;
         var dataTableTotal = 0;
-        AddMessageTotals(value["blocks"], ref markdownTotal, ref dataTableTotal);
+        var tableTotal = 0;
+        AddMessageTotals(value["blocks"], ref markdownTotal, ref dataTableTotal, ref tableTotal);
         if (value["attachments"] is JsonArray messageAttachments)
         {
             foreach (var attachment in messageAttachments)
             {
-                AddMessageTotals(ObjectAt(attachment, path)["blocks"], ref markdownTotal, ref dataTableTotal);
+                AddMessageTotals(ObjectAt(attachment, path)["blocks"], ref markdownTotal, ref dataTableTotal, ref tableTotal);
             }
         }
         if (markdownTotal > SlackLimits.MarkdownTotalTextMaxLength)
@@ -1153,6 +1172,10 @@ internal static partial class Validator
             Fail(ErrorCategory.LengthExceeded, path, $"markdown text totals {markdownTotal}, exceeding maximum {SlackLimits.MarkdownTotalTextMaxLength}");
         }
 
+        if (tableTotal > SlackLimits.TableTotalContentMaxLength)
+        {
+            Fail(ErrorCategory.LengthExceeded, path, $"message table content exceeds maximum {SlackLimits.TableTotalContentMaxLength}");
+        }
         if (dataTableTotal > SlackLimits.DataTableTotalContentMaxLength)
         {
             Fail(ErrorCategory.LengthExceeded, path, $"data table content totals {dataTableTotal}, exceeding maximum {SlackLimits.DataTableTotalContentMaxLength}");
@@ -1175,23 +1198,26 @@ internal static partial class Validator
         return 0;
     }
 
-    private static void AddMessageTotals(JsonNode? value, ref int markdownTotal, ref int dataTableTotal)
+    private static void AddMessageTotals(JsonNode? value, ref int markdownTotal, ref int dataTableTotal, ref int tableTotal)
     {
         switch (value)
         {
             case JsonObject obj when ObjectType(obj) == "markdown" && JsonValues.IsString(obj["text"], out var text):
                 markdownTotal += JsonValues.CodePoints(text);
                 break;
+            case JsonObject obj when ObjectType(obj) == "table":
+                tableTotal += TextCharacterCount(obj["rows"]);
+                break;
             case JsonObject obj when ObjectType(obj) == "data_table":
                 dataTableTotal += TextCharacterCount(obj["rows"]);
                 break;
             case JsonObject obj when ObjectType(obj) is "container" or "layout":
-                foreach (var nested in CompositeChildren(obj, true)) AddMessageTotals(nested, ref markdownTotal, ref dataTableTotal);
+                foreach (var nested in CompositeChildren(obj, true)) AddMessageTotals(nested, ref markdownTotal, ref dataTableTotal, ref tableTotal);
                 break;
             case JsonArray array:
                 foreach (var item in array)
                 {
-                    AddMessageTotals(item, ref markdownTotal, ref dataTableTotal);
+                    AddMessageTotals(item, ref markdownTotal, ref dataTableTotal, ref tableTotal);
                 }
 
                 break;
@@ -1216,7 +1242,7 @@ internal static partial class Validator
         }
     }
 
-    private static void ValidateNested(JsonNode? value, string path)
+    private static void ValidateNested(JsonNode? value, string path, bool nullableItems = false)
     {
         switch (value)
         {
@@ -1229,6 +1255,7 @@ internal static partial class Validator
             case JsonArray array:
                 for (var index = 0; index < array.Count; index++)
                 {
+                    if (array[index] is null && nullableItems) continue;
                     ValidateNested(array[index], $"{path}[{index}]");
                 }
 
@@ -1320,28 +1347,22 @@ internal static partial class Validator
 
     private static int TextCharacterCount(JsonNode? value)
     {
-        var total = 0;
-        switch (value)
+        if (value is JsonObject obj)
         {
-            case JsonObject obj:
-                foreach (var (key, nested) in obj)
-                {
-                    total += key == "text" && JsonValues.IsString(nested, out var text)
-                        ? JsonValues.CodePoints(text)
-                        : TextCharacterCount(nested);
-                }
-
-                break;
-            case JsonArray array:
-                foreach (var item in array)
-                {
-                    total += TextCharacterCount(item);
-                }
-
-                break;
+            return ObjectType(obj) switch
+            {
+                "raw_text" or "raw_number" or "text" or "link" => JsonValues.IsString(obj["text"], out var text) ? JsonValues.CodePoints(text) : 0,
+                "rich_text" or "rich_text_section" or "rich_text_list" or "rich_text_quote" or "rich_text_preformatted" => TextCharacterCount(obj["elements"]),
+                _ => 0,
+            };
         }
-
-        return total;
+        if (value is JsonArray array)
+        {
+            var total = 0;
+            foreach (var item in array) total += TextCharacterCount(item);
+            return total;
+        }
+        return 0;
     }
 
     private static void CheckOptionalString(JsonObject value, string field, string path, int maximum)

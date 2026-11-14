@@ -2,11 +2,12 @@
 package io.github.nicklambourne.slackblocks.block;
 
 import io.github.nicklambourne.slackblocks.SlackObject;
+import io.github.nicklambourne.slackblocks.object.RawNumber;
 import io.github.nicklambourne.slackblocks.object.RawText;
 
 /**
- * A value that can appear as a table block cell: raw text or a rich text block.
+ * A value that can appear as a table block cell: raw text, a raw number, or a rich text block.
  *
- * <p>Implemented by {@link RawText}, {@link RichTextBlock}.
+ * <p>Implemented by {@link RawNumber}, {@link RawText}, {@link RichTextBlock}.
  */
 public interface TableCell extends SlackObject {}

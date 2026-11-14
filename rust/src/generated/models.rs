@@ -673,7 +673,7 @@ pub enum Block {
     DataVisualization(Box<DataVisualizationBlock>),
     /// A horizontal rule that separates blocks.
     Divider(Box<DividerBlock>),
-    /// A remote file previously added with the files.remote API.
+    /// A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.
     File(Box<FileBlock>),
     /// Large, bold plain text that introduces a group of blocks.
     Header(Box<HeaderBlock>),
@@ -689,7 +689,7 @@ pub enum Block {
     RichText(Box<RichTextBlock>),
     /// Text, a grid of fields, or both, with an optional accessory element.
     Section(Box<SectionBlock>),
-    /// A simple table of raw text and rich text cells.
+    /// A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.
     Table(Box<TableBlock>),
     /// One task with its status, details, output, and sources.
     TaskCard(Box<TaskCardBlock>),
@@ -1023,12 +1023,14 @@ impl From<IconButtonElement> for ContextActionsElement {
         Self::IconButton(Box::new(value))
     }
 }
-/// A value that can appear as a table block cell: raw text or a rich text block.
+/// A value that can appear as a table block cell: raw text, a raw number, or a rich text block.
 #[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
 pub enum TableCell {
     /// Formatted text built from sections, lists, preformatted blocks, and quotes.
     RichText(RichTextBlock),
+    /// A numeric table or data table cell with display text.
+    RawNumber(RawNumber),
     /// An unformatted table cell.
     RawText(RawText),
 }
@@ -1036,6 +1038,7 @@ impl Serialize for TableCell {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         match self {
             Self::RichText(v) => v.serialize(s),
+            Self::RawNumber(v) => v.serialize(s),
             Self::RawText(v) => v.serialize(s),
         }
     }
@@ -1044,6 +1047,7 @@ impl FromWire for TableCell {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         match value.get("type").and_then(Value::as_str) {
             Some("rich_text") => RichTextBlock::from_wire(value, path).map(Into::into),
+            Some("raw_number") => RawNumber::from_wire(value, path).map(Into::into),
             Some("raw_text") => RawText::from_wire(value, path).map(Into::into),
             _ => Err(wire::mismatch(
                 &format!("{path}.type"),
@@ -1069,6 +1073,11 @@ impl From<RichTextBlock> for TableCell {
         Self::RichText(value)
     }
 }
+impl From<RawNumber> for TableCell {
+    fn from(value: RawNumber) -> Self {
+        Self::RawNumber(value)
+    }
+}
 impl From<RawText> for TableCell {
     fn from(value: RawText) -> Self {
         Self::RawText(value)
@@ -1080,7 +1089,7 @@ impl From<RawText> for TableCell {
 pub enum DataTableCell {
     /// Formatted text built from sections, lists, preformatted blocks, and quotes.
     RichText(RichTextBlock),
-    /// A numeric data table cell with display text.
+    /// A numeric table or data table cell with display text.
     RawNumber(RawNumber),
     /// An unformatted table cell.
     RawText(RawText),
@@ -1968,7 +1977,7 @@ pub enum LayoutChild {
     DataVisualizationBlock(Box<DataVisualizationBlock>),
     /// A horizontal rule that separates blocks.
     DividerBlock(Box<DividerBlock>),
-    /// A remote file previously added with the files.remote API.
+    /// A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.
     FileBlock(Box<FileBlock>),
     /// Large, bold plain text that introduces a group of blocks.
     HeaderBlock(Box<HeaderBlock>),
@@ -1980,7 +1989,7 @@ pub enum LayoutChild {
     RichTextBlock(Box<RichTextBlock>),
     /// Text, a grid of fields, or both, with an optional accessory element.
     SectionBlock(Box<SectionBlock>),
-    /// A simple table of raw text and rich text cells.
+    /// A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.
     TableBlock(Box<TableBlock>),
     /// An embedded video player.
     VideoBlock(Box<VideoBlock>),
@@ -2173,7 +2182,7 @@ pub enum LayoutFallback {
     RichTextBlock(Box<RichTextBlock>),
     /// Text, a grid of fields, or both, with an optional accessory element.
     SectionBlock(Box<SectionBlock>),
-    /// A simple table of raw text and rich text cells.
+    /// A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.
     TableBlock(Box<TableBlock>),
     /// An embedded video player.
     VideoBlock(Box<VideoBlock>),
@@ -4429,7 +4438,7 @@ impl<'de> Deserialize<'de> for DividerBlock {
     }
 }
 
-/// A remote file previously added with the files.remote API.
+/// A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/file-block).
 
@@ -5961,14 +5970,14 @@ impl<'de> Deserialize<'de> for SectionBlock {
     }
 }
 
-/// A simple table of raw text and rich text cells.
+/// A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct TableBlock {
     rows: Vec<Vec<TableCell>>,
-    column_settings: Option<Vec<ColumnSettings>>,
+    column_settings: Option<Vec<Option<ColumnSettings>>>,
     block_id: Option<String>,
     extensions: Map<String, Value>,
 }
@@ -5976,7 +5985,7 @@ pub struct TableBlock {
 #[derive(Clone, Debug)]
 pub struct TableBlockBuilder {
     rows: Option<Vec<Vec<TableCell>>>,
-    column_settings: Option<Vec<ColumnSettings>>,
+    column_settings: Option<Vec<Option<ColumnSettings>>>,
     block_id: Option<String>,
     extensions: Map<String, Value>,
 }
@@ -6008,8 +6017,8 @@ impl TableBlock {
     pub fn rows(&self) -> &[Vec<TableCell>] {
         &self.rows
     }
-    /// Borrows or copies `column_settings`. Adds per-column settings in column order. Provide one entry for every column.
-    pub fn column_settings(&self) -> Option<&[ColumnSettings]> {
+    /// Borrows or copies `column_settings`. Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries.
+    pub fn column_settings(&self) -> Option<&[Option<ColumnSettings>]> {
         self.column_settings.as_deref()
     }
     /// Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
@@ -6063,18 +6072,18 @@ impl TableBlockBuilder {
             .push(row.into_iter().map(Into::into).collect());
         self
     }
-    /// Adds per-column settings in column order. Provide one entry for every column.
+    /// Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries.
     /// Replaces the collection; order is preserved.
     pub fn column_settings<I, T>(mut self, values: I) -> Self
     where
         I: IntoIterator<Item = T>,
-        T: Into<ColumnSettings>,
+        T: Into<Option<ColumnSettings>>,
     {
         self.column_settings = Some(values.into_iter().map(Into::into).collect());
         self
     }
     /// Appends one item to the collection.
-    pub fn column_setting(mut self, value: impl Into<ColumnSettings>) -> Self {
+    pub fn column_setting(mut self, value: impl Into<Option<ColumnSettings>>) -> Self {
         self.column_settings
             .get_or_insert_with(Vec::new)
             .push(value.into());
@@ -6130,10 +6139,7 @@ impl TableBlockBuilder {
         if let Some(v) = &value.block_id {
             crate::rules::length(v.chars().count(), None, Some(255), "TableBlock.block_id")?;
         }
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "TableBlock", e.to_string())
-        })?;
-        crate::rules::validate("TableBlock", &wire, "TableBlock")?;
+        crate::rules::plain_table(&value, "TableBlock")?;
         Ok(value)
     }
 }
@@ -6147,7 +6153,7 @@ impl FromWire for TableBlock {
         let mut map = wire::object(value, "table", path)?;
         let rows = wire::field::<Vec<Vec<TableCell>>>(&mut map, "rows", path)?;
         let column_settings =
-            wire::field::<Vec<ColumnSettings>>(&mut map, "column_settings", path)?;
+            wire::field::<Vec<Option<ColumnSettings>>>(&mut map, "column_settings", path)?;
         let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         TableBlockBuilder {
             rows,
@@ -17276,7 +17282,7 @@ impl<'de> Deserialize<'de> for PlainText {
     }
 }
 
-/// A numeric data table cell with display text.
+/// A numeric table or data table cell with display text.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
 
@@ -17368,6 +17374,12 @@ impl RawNumberBuilder {
             text,
             extensions: self.extensions,
         };
+        crate::rules::length(
+            value.text().chars().count(),
+            Some(1),
+            None,
+            "RawNumber.text",
+        )?;
         Ok(value)
     }
 }

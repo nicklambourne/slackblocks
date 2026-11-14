@@ -59,6 +59,7 @@ from slackblocks._limits import (
     SECTION_TEXT_MAX_LENGTH,
     TABLE_COLUMN_SETTINGS_MAX_ITEMS,
     TABLE_COLUMNS_MAX_ITEMS,
+    TABLE_CONTENT_MAX_LENGTH,
     TABLE_ROWS_MAX_ITEMS,
     VIDEO_ALT_TEXT_MAX_LENGTH,
     VIDEO_AUTHOR_NAME_MAX_LENGTH,
@@ -163,6 +164,7 @@ ALLOWED_INPUT_ELEMENTS = (
 
 ALLOWED_TABLE_CELL_ELEMENTS = (
     RawText,
+    RawNumber,
     RichTextList,
     RichTextCodeBlock,
     RichTextQuote,
@@ -416,7 +418,8 @@ class DividerBlock(Block):
 
 class FileBlock(Block):
     """
-    Displays a remote file (e.g. a PDF).
+    A retrieved remote-file representation (e.g. a PDF), not an outgoing message block.
+    Register and share remote files with the Files API, then read back this representation.
 
     For details on how remote files are exposed to Slack, see
     <https://api.slack.com/messaging/files#adding>.
@@ -818,21 +821,22 @@ class TableBlock(Block):
     A `TableBlock` displays data in a table format.
 
     Args:
-        rows: a list of lists of `RawText` or `RichTextObject` objects.
-        column_settings: a list of `ColumnSettings` objects.
+        rows: a list of lists of `RawText`, `RawNumber` or `RichTextObject` objects.
+        column_settings: settings for leading columns; omitted trailing columns use Slack defaults.
         block_id: you can use this field to provide a deterministic identifier for the block.
 
     Throws:
-        InvalidUsageError: when items in `rows` are not `RawText` or `RichTextObject` objects.
+        InvalidUsageError: when items in `rows` are not `RawText`, `RawNumber` or `RichTextObject` objects.
         InvalidUsageError: when the number of rows is greater than 100.
         InvalidUsageError: when the number of columns in a row is greater than 20.
         InvalidUsageError: when the number of column_settings is greater than 20.
+        LengthError: when displayed cell text exceeds 10,000 Unicode code points.
     """
 
     def __init__(
         self,
-        rows: list[list[RawText | RichTextObject]],
-        column_settings: list[ColumnSettings] | None = None,
+        rows: list[list[RawText | RawNumber | RichTextObject]],
+        column_settings: list[ColumnSettings | None] | None = None,
         block_id: str | None = None,
     ) -> None:
         super().__init__(type_=BlockType.TABLE, block_id=block_id)
@@ -858,7 +862,13 @@ class TableBlock(Block):
             self.rows.append(validated_row)
         if column_settings and len(column_settings) > TABLE_COLUMN_SETTINGS_MAX_ITEMS:
             raise LengthError("`column_settings` can have a maximum of 20 items.")
+        if column_settings is not None:
+            for setting in column_settings:
+                if setting is not None and not isinstance(setting, ColumnSettings):
+                    raise TypeMismatchError("Column settings must be ColumnSettings or None.")
         self.column_settings = column_settings
+        if _text_character_count(self._resolve()["rows"]) > TABLE_CONTENT_MAX_LENGTH:
+            raise LengthError("Table cell text exceeds the 10,000-character limit.")
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -869,14 +879,14 @@ class TableBlock(Block):
             }
         )
 
-    def _resolve_cell(self, cell: RawText | RichTextObject) -> dict[str, Any]:
+    def _resolve_cell(self, cell: RawText | RawNumber | RichTextObject) -> dict[str, Any]:
         """
         Resolve a table cell to its JSON representation.
 
-        RawText cells are resolved directly.
+        RawText and RawNumber cells are resolved directly.
         RichTextObject cells are wrapped in a rich_text structure.
         """
-        if isinstance(cell, RawText):
+        if isinstance(cell, (RawText, RawNumber)):
             return cell._resolve()
         else:
             # Wrap RichTextObject in rich_text structure
@@ -1409,8 +1419,11 @@ class DataTableBlock(Block):
             for cell in row:
                 if not isinstance(cell, RawText | RawNumber | RichTextBlock):
                     raise TypeMismatchError("Unsupported data table cell type.")
-                if isinstance(cell, RawText) and len(cell.text) < DATA_TABLE_CELL_TEXT_MIN_LENGTH:
-                    raise LengthError("Data table raw text cells cannot be empty.")
+                if (
+                    isinstance(cell, RawText | RawNumber)
+                    and len(cell.text) < DATA_TABLE_CELL_TEXT_MIN_LENGTH
+                ):
+                    raise LengthError("Data table raw text and numeric labels cannot be empty.")
         if any(isinstance(cell, RichTextBlock) for cell in rows[0]):
             raise TypeMismatchError("Data table header cells cannot contain rich text.")
         self.page_size = validate_int(
@@ -1446,12 +1459,18 @@ class DataTableBlock(Block):
 
 def _text_character_count(value: Any) -> int:
     if isinstance(value, dict):
-        return sum(
-            len(nested)
-            if key == "text" and isinstance(nested, str)
-            else _text_character_count(nested)
-            for key, nested in value.items()
-        )
+        if value.get("type") in {"raw_text", "raw_number", "text", "link"}:
+            text = value.get("text")
+            return len(text) if isinstance(text, str) else 0
+        if value.get("type") in {
+            "rich_text",
+            "rich_text_section",
+            "rich_text_list",
+            "rich_text_quote",
+            "rich_text_preformatted",
+        }:
+            return _text_character_count(value.get("elements", []))
+        return 0
     if isinstance(value, list):
         return sum(_text_character_count(item) for item in value)
     return 0

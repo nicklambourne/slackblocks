@@ -4,6 +4,7 @@ defmodule Slackblocks.Test.InvalidConstructions do
   # Explicit native attempts, maintained independently of the fixture JSON and API generator.
   def all do
     [
+      {"raw-number-empty-text", fn -> Objects.RawNumber.new!(value: 0, text: "") end},
       {"layout-home-alert",
        fn ->
          Views.Home.new!(
@@ -1273,6 +1274,52 @@ defmodule Slackblocks.Test.InvalidConstructions do
            caption: "Names"
          )
        end},
+      {"table-layout-fallback-total-too-long",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Table",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block:
+                         Blocks.Table.new!(
+                           rows: [[Objects.RawText.new!(text: String.duplicate("😀", 5000))]]
+                         )
+                     )
+                   ]
+                 )
+               ],
+               fallback: [
+                 Blocks.Table.new!(
+                   rows: [[Objects.RawText.new!(text: String.duplicate("😀", 5001))]]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"table-content-too-long",
+       fn ->
+         Blocks.Table.new!(
+           rows: [[Objects.RawNumber.new!(value: 1, text: String.duplicate("😀", 10_001))]]
+         )
+       end},
+      {"table-total-content-too-long",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Table.new!(rows: [[Objects.RawText.new!(text: String.duplicate("😀", 5000))]]),
+             Blocks.Table.new!(
+               rows: [[Objects.RawNumber.new!(value: 1, text: String.duplicate("😀", 5001))]]
+             )
+           ]
+         )
+       end},
       {"data-table-content-too-long",
        fn ->
          Blocks.DataTable.new!(
@@ -1538,7 +1585,7 @@ defmodule Slackblocks.Test.InvalidConstructions do
        fn ->
          Blocks.Table.new!(
            rows: [[Objects.RawText.new!(text: "A")]],
-           column_settings: List.duplicate(Objects.ColumnSettings.new!(is_wrapped: true), 21)
+           column_settings: List.duplicate(nil, 21)
          )
        end},
       {"data-table-row-header-index-negative",

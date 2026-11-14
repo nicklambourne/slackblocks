@@ -51,14 +51,13 @@ fn table_contexts_and_nested_pending_tasks() -> Result<(), ValidationError> {
             .build()
             .is_err()
     );
-    let numeric = RawNumber::builder().text("").value(1_i64).build()?;
-    assert!(
-        DataTableBlock::builder()
-            .caption("Data")
-            .rows([vec![DataTableCell::from(raw("A"))], vec![numeric.into()]])
-            .build()
-            .is_err()
-    );
+    let error = RawNumber::builder()
+        .text("")
+        .value(1_i64)
+        .build()
+        .unwrap_err();
+    assert_eq!(error.category(), ErrorCategory::LengthExceeded);
+    assert_eq!(error.path(), "RawNumber.text");
     let task = TaskCardBlock::builder()
         .task_id("one")
         .title("Work")

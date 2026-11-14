@@ -414,7 +414,7 @@ export function dividerBlock(
 }
 
 /**
- * Creates a block that displays a Slack remote file.
+ * Represents a retrieved Slack remote file. Use the Files API to register and share it; this block cannot be posted directly.
  *
  * @param input - Remote-file identifier, source, and optional block identifier.
  * @param settings - Per-call validation settings.
@@ -580,7 +580,7 @@ export function richTextBlock(
 }
 
 /**
- * Creates a table block from raw-text or rich-text cells.
+ * Creates a table block from raw-text, raw-number or rich-text cells.
  *
  * @param input - Rows, optional column display settings, and optional block identifier.
  * @param settings - Per-call validation settings.
@@ -589,10 +589,10 @@ export function richTextBlock(
  */
 export function tableBlock(
   input: {
-    /** Up to 100 rows of raw-text or rich-text cells. */
+    /** Up to 100 rows of raw-text, raw-number or rich-text cells. */
     rows: JsonObject[][];
-    /** Optional display settings for each column. */
-    columnSettings?: JsonObject[];
+    /** Optional leading-column settings; null preserves the default at that position. */
+    columnSettings?: (JsonObject | null)[];
     /** Deterministic identifier, up to 255 characters. */
     blockId?: string;
   },

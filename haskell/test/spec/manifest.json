@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.5.0",
+  "spec_version": "1.6.0",
   "fixtures": [
     {
       "id": "attachments/attachment_multi_block",
@@ -720,6 +720,30 @@
       "description": "A chart has three fifths of the row weight",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
       "since": "1.5.0"
+    },
+    {
+      "id": "blocks/table_numeric",
+      "description": "Numeric display text with ragged rows and partial leading-column settings",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/table-block/",
+      "since": "1.6.0"
+    },
+    {
+      "id": "blocks/table_sparse_defaults",
+      "description": "Twenty skipped column settings retain their positions and count toward the limit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/table-block/",
+      "since": "1.6.0"
+    },
+    {
+      "id": "blocks/table_text_at_limit",
+      "description": "Numeric display text at the 10000 Unicode code-point per-table boundary",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/table-block/",
+      "since": "1.6.0"
+    },
+    {
+      "id": "messages/message_table_total_at_limit",
+      "description": "Raw and numeric text across two tables at the 10000-code-point message boundary",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/table-block/",
+      "since": "1.6.0"
     }
   ]
 }

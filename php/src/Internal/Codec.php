@@ -187,6 +187,10 @@ final class Codec
                 }
                 $result = [];
                 foreach ($value as $i => $item) {
+                    if ($kind === 'list' && ($field['nullableItems'] ?? false) && $item === null) {
+                        $result[] = null;
+                        continue;
+                    }
                     $inner = $field;
                     $inner['kind'] = match ($kind) {
                         'rows' => 'list', 'textList' => 'text', 'stringList' => 'string', default => 'object',

@@ -56,6 +56,10 @@ instance FromSlackJSON Scientific where
   fromSlackJSON value@(Number number) = checkJSONNumbers value >> Right number
   fromSlackJSON _ = failure TypeMismatch [] "type" "expected a number"
 
+instance (FromSlackJSON a) => FromSlackJSON (Maybe a) where
+  fromSlackJSON Null = Right Nothing
+  fromSlackJSON value = Just <$> fromSlackJSON value
+
 instance (FromSlackJSON a) => FromSlackJSON [a] where
   fromSlackJSON (Array values) = traverse (\(index, value) -> atIndex index (fromSlackJSON value)) (zip [0 ..] (V.toList values))
   fromSlackJSON _ = failure TypeMismatch [] "type" "expected an array"

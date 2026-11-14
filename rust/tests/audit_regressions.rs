@@ -252,3 +252,76 @@ fn nested_blocks_and_attachments_still_contribute_to_message_totals() -> Result<
     );
     Ok(())
 }
+
+#[test]
+fn plain_table_text_boundaries_include_each_modeled_rich_text_kind() -> Result<(), ValidationError>
+{
+    let elements: Vec<RichTextSectionElement> = vec![
+        RichTextText::builder()
+            .text("🦀".repeat(2498))
+            .extension("audit", opaque())
+            .build()?
+            .into(),
+        RichTextLink::builder()
+            .url("https://example.com")
+            .text("l")
+            .build()?
+            .into(),
+    ];
+    let section = RichTextSection::builder()
+        .elements(elements.clone())
+        .build()?;
+    let rich = RichTextBlock::builder()
+        .elements([
+            RichTextBlockElement::from(section.clone()),
+            RichTextQuote::builder()
+                .elements(elements.clone())
+                .build()?
+                .into(),
+            RichTextCodeBlock::builder()
+                .elements(elements)
+                .build()?
+                .into(),
+            RichTextList::builder()
+                .style(RichTextListStyle::Bullet)
+                .element(section)
+                .build()?
+                .into(),
+        ])
+        .build()?;
+    let rows = vec![
+        vec![TableCell::from(RawText::new("head")?)],
+        vec![rich.clone().into()],
+    ];
+    let table = TableBlock::builder().rows(rows).build()?;
+    roundtrip(&table);
+    roundtrip(&MessagePayload::builder("C1").block(table.clone()).build()?);
+    let error = MessagePayload::builder("C1")
+        .block(table)
+        .attachment(
+            Attachment::builder()
+                .block(TableBlock::builder().row([RawText::new("x")?]).build()?)
+                .build()?,
+        )
+        .build()
+        .unwrap_err();
+    assert_eq!(error.category(), ErrorCategory::LengthExceeded);
+    let overflow = rich
+        .into_builder()
+        .element(
+            RichTextSection::builder()
+                .element(RichTextText::new("x")?)
+                .build()?,
+        )
+        .build()?;
+    let error = TableBlock::builder()
+        .rows(vec![
+            vec![TableCell::from(RawText::new("head")?)],
+            vec![overflow.into()],
+        ])
+        .build()
+        .unwrap_err();
+    assert_eq!(error.category(), ErrorCategory::LengthExceeded);
+    assert_eq!(error.path(), "TableBlock.rows");
+    Ok(())
+}

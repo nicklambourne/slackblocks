@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Preserve sparse `column_settings` null placeholders in all ten native APIs and checked parsers. Nulls count toward the 20-entry maximum. This explicitly requested documented wire support is an exception to the stricter-validator policy: Slack’s reference permits null, but the 2026-11-14 structural validator rejects it. Record the discrepancy and default-object fallback in the guide and evidence. Require non-empty numeric display labels, as confirmed by an isolated accepted/rejected control pair.
+
+- Spec 1.6.0 adds `RawNumber` to native plain-table cells and enforces the documented 10,000-code-point table and message totals in all ten languages. Count displayed cell text, including rich-text links, rather than numeric sorting values, URLs or metadata. Ragged rows and partial leading-column settings remain valid. The structural Slack validator accepts over-limit content; retain the stricter published contract and document this discrepancy in `evidence/table-contract.json`. Package versions and runtime floors are unchanged.
+
 - Clarify card action placement in shared/native documentation: Slack keeps a danger button in the right-hand group with two actions and moves it to the far left with three. Preserve the caller's serialized order, existing three-button limit and spec 1.5.0. Native recipe outputs and the local preview are checked separately; real Slack desktop rendering was verified on 2026-11-07 (see `evidence/card-actions-alignment.json`). No wire or validation change.
 
 - Add layout blocks, untagged rows/items, dedicated width/alignment/grid vocabularies and closed child/fallback roles in all ten implementations (spec 1.5.0). Enforce documented dimensions, receiving-surface gating, two-level layout/container nesting and wide-content/chart allocation. Retain omitted optional fields and explicit false/empty values. Native examples, boundary tests, typed API/SDK consumers and compiler controls accompany the new shared fixtures.

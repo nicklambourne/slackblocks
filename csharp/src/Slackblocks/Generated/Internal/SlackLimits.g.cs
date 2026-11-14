@@ -398,8 +398,14 @@ internal static class SlackLimits
     /// <summary><c>table.columns.max_items</c></summary>
     public const int TableColumnsMaxItems = 20;
 
+    /// <summary><c>table.content.max_length</c></summary>
+    public const int TableContentMaxLength = 10000;
+
     /// <summary><c>table.rows.max_items</c></summary>
     public const int TableRowsMaxItems = 100;
+
+    /// <summary><c>table.total_content.max_length</c></summary>
+    public const int TableTotalContentMaxLength = 10000;
 
     /// <summary><c>text.max_length</c></summary>
     public const int TextMaxLength = 3000;

@@ -538,6 +538,8 @@ module Slackblocks.Models
     TableCell,
     richTextBlockAsTableCell,
     matchTableCellRichTextBlock,
+    rawNumberAsTableCell,
+    matchTableCellRawNumber,
     rawTextAsTableCell,
     matchTableCellRawText,
     DataTableCell,
@@ -755,7 +757,7 @@ specVersion :: Text
 
 packageVersion = "3.2.0"
 
-specVersion = "1.5.0"
+specVersion = "1.6.0"
 
 -- | Severity levels supported by alert blocks.
 data AlertLevel
@@ -1571,7 +1573,7 @@ instance FromSlackJSON DividerBlock where
 
 instance FromJSON DividerBlock where parseJSON = checkedParser
 
--- | A remote file previously added with the files.remote API.
+-- | A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.
 --
 -- <https://docs.slack.dev/reference/block-kit/blocks/file-block>
 newtype FileBlock = CheckedFileBlock FileBlockFields deriving (Eq, Show)
@@ -1999,7 +2001,7 @@ instance FromSlackJSON SectionBlock where
 
 instance FromJSON SectionBlock where parseJSON = checkedParser
 
--- | A simple table of raw text and rich text cells.
+-- | A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.
 --
 -- <https://docs.slack.dev/reference/block-kit/blocks/table-block>
 newtype TableBlock = CheckedTableBlock TableBlockFields deriving (Eq, Show)
@@ -2008,8 +2010,8 @@ newtype TableBlock = CheckedTableBlock TableBlockFields deriving (Eq, Show)
 data TableBlockFields = TableBlockFields
   { -- | Adds complete table rows in display order. Required. Shared limit: @table.rows@.
     tableBlockRows :: [[TableCell]],
-    -- | Adds per-column settings in column order. Provide one entry for every column. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @table.column_settings@.
-    tableBlockColumnSettings :: Maybe ([ColumnSettings]),
+    -- | Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @table.column_settings@.
+    tableBlockColumnSettings :: Maybe ([Maybe ColumnSettings]),
     -- | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @block_id@.
     tableBlockBlockId :: Maybe (Text),
     -- | Unmodeled extension fields. Reserved and modeled keys are rejected.
@@ -4753,7 +4755,7 @@ instance FromSlackJSON PlainText where
 
 instance FromJSON PlainText where parseJSON = checkedParser
 
--- | A numeric data table cell with display text.
+-- | A numeric table or data table cell with display text.
 --
 -- <https://docs.slack.dev/reference/block-kit/blocks/data-table-block>
 newtype RawNumber = CheckedRawNumber RawNumberFields deriving (Eq, Show)
@@ -6508,10 +6510,11 @@ matchContextActionsElementIconButtonElement (ContextActionsElementIconButtonElem
 matchContextActionsElementIconButtonElement _ = Nothing
 
 -- | Closed role: only checked members may enter this position.
-data TableCell = TableCellRichTextBlock RichTextBlock | TableCellRawText RawText deriving (Eq, Show)
+data TableCell = TableCellRichTextBlock RichTextBlock | TableCellRawNumber RawNumber | TableCellRawText RawText deriving (Eq, Show)
 
 instance ToJSON TableCell where
   toJSON (TableCellRichTextBlock value) = toJSON value
+  toJSON (TableCellRawNumber value) = toJSON value
   toJSON (TableCellRawText value) = toJSON value
 
 instance FromSlackJSON TableCell where
@@ -6519,6 +6522,7 @@ instance FromSlackJSON TableCell where
     tag <- wireTag value
     case tag of
       "rich_text" -> TableCellRichTextBlock <$> fromSlackJSON value
+      "raw_number" -> TableCellRawNumber <$> fromSlackJSON value
       "raw_text" -> TableCellRawText <$> fromSlackJSON value
       _ -> failure TypeMismatch [Field "type"] "role" "unsupported child type"
 
@@ -6532,6 +6536,15 @@ richTextBlockAsTableCell = TableCellRichTextBlock
 matchTableCellRichTextBlock :: TableCell -> Maybe RichTextBlock
 matchTableCellRichTextBlock (TableCellRichTextBlock value) = Just value
 matchTableCellRichTextBlock _ = Nothing
+
+-- | Place a checked RawNumber in the TableCell role. The receiving parent retains its contextual validation.
+rawNumberAsTableCell :: RawNumber -> TableCell
+rawNumberAsTableCell = TableCellRawNumber
+
+-- | Return the RawNumber member when present, otherwise Nothing; no unchecked cast.
+matchTableCellRawNumber :: TableCell -> Maybe RawNumber
+matchTableCellRawNumber (TableCellRawNumber value) = Just value
+matchTableCellRawNumber _ = Nothing
 
 -- | Place a checked RawText in the TableCell role. The receiving parent retains its contextual validation.
 rawTextAsTableCell :: RawText -> TableCell

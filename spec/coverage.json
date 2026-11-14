@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.5.0",
+  "spec_version": "1.6.0",
   "capabilities": {
     "blocks.actions": ["blocks/actions_block_checkboxes"],
     "blocks.alert": ["blocks/alert_block"],
@@ -31,7 +31,7 @@
     "blocks.plan": ["blocks/plan_block"],
     "blocks.rich_text": ["blocks/rich_text_block_basic"],
     "blocks.section": ["blocks/section_block_text_only"],
-    "blocks.table": ["blocks/table_block", "blocks/table_ragged_rows"],
+    "blocks.table": ["blocks/table_block", "blocks/table_ragged_rows", "blocks/table_numeric", "blocks/table_sparse_defaults", "blocks/table_text_at_limit", "messages/message_table_total_at_limit"],
     "blocks.task_card": ["blocks/task_card_block"],
     "blocks.video": ["blocks/video_block_basic"],
     "elements.button": ["elements/button_basic", "elements/button_text_at_limit", "elements/button_without_action_id", "elements/button_agent_prompt", "elements/button_agent_prompt_display", "elements/button_agent_prompt_at_limit", "elements/button_agent_prompt_empty"],
@@ -70,7 +70,7 @@
     "messages.message": ["messages/message_basic", "messages/message_two_charts"],
     "messages.message_response": ["messages/message_response"],
     "messages.webhook_message": ["messages/webhook_message_basic"],
-    "objects.column_settings": ["blocks/table_block"],
+    "objects.column_settings": ["blocks/table_block", "blocks/table_numeric", "blocks/table_sparse_defaults"],
     "objects.axis_config": ["blocks/data_visualization_line"],
     "objects.chart_segment": ["blocks/data_visualization_pie"],
     "objects.confirmation": ["objects/confirmation_dialogue_basic"],
@@ -87,7 +87,7 @@
     "objects.option_group": ["objects/option_group_basic"],
     "objects.plain_text": ["objects/text_plaintext_basic"],
     "objects.raw_text": ["blocks/table_block"],
-    "objects.raw_number": ["blocks/data_table_block"],
+    "objects.raw_number": ["blocks/data_table_block", "blocks/table_numeric", "blocks/table_text_at_limit"],
     "objects.slack_icon": ["blocks/card_block"],
     "objects.slack_file": [
       "elements/image_slack_file_id",

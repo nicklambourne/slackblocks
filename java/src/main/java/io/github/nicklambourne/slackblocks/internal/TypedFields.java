@@ -72,6 +72,18 @@ public final class TypedFields {
     return Collections.unmodifiableList(result);
   }
 
+  /** Returns a nullable list field without dropping skipped positions. */
+  public static <T> List<@Nullable T> nullableList(
+      Map<String, Object> fields, String owner, String field, Class<T> type) {
+    Object value = fields.get(field);
+    if (value == null) return List.of();
+    List<@Nullable T> result = new ArrayList<>();
+    for (Object item : cast(value, owner, field, List.class)) {
+      result.add(item == null ? null : cast(item, owner, field, type));
+    }
+    return Collections.unmodifiableList(result);
+  }
+
   /** Returns table rows, or an empty list when none were set. */
   public static <T> List<List<T>> rows(
       Map<String, Object> fields, String owner, String field, Class<T> type) {

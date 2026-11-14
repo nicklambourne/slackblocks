@@ -15,6 +15,14 @@ class EdgeCasesTest < Minitest::Test
     assert_category("type-mismatch") { Slackblocks::AxisConfig.new(categories: "one") }
   end
 
+  def test_table_budgets_ignore_opaque_cell_extensions
+    hidden = {"text" => "x" * 10_001}
+    cell = Slackblocks::RawNumber.new(value: 42, text: "42", additional_fields: {"audit" => hidden})
+    table = Slackblocks::TableBlock.new(rows: [[cell]])
+    message = Slackblocks::WebhookMessage.new(blocks: [table])
+    assert_equal hidden, message.as_json["blocks"][0]["rows"][0][0]["audit"]
+  end
+
   def test_additional_fields_reject_non_json_and_cyclic_values
     assert_category("type-mismatch") { Slackblocks::DividerBlock.new(additional_fields: []) }
     assert_category("type-mismatch") { Slackblocks::DividerBlock.new(additional_fields: {42 => "value"}) }

@@ -61,7 +61,7 @@ func NewColumnSettings() *ColumnSettingsBuilder {
 // NewRawText creates an unformatted table cell.
 func NewRawText() *RawTextBuilder { return newRawTextBuilder(newBuilder("RawText", "raw_text")) }
 
-// NewRawNumber creates a numeric data-table cell.
+// NewRawNumber creates a numeric table or data-table cell.
 func NewRawNumber() *RawNumberBuilder {
 	return newRawNumberBuilder(newBuilder("RawNumber", "raw_number"))
 }

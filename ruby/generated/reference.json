@@ -405,7 +405,7 @@
     {
       "name": "FileBlock",
       "package": "block",
-      "description": "A remote file previously added with the files.remote API.",
+      "description": "A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/file-block",
       "wireType": "file",
       "fields": [
@@ -693,7 +693,7 @@
     {
       "name": "TableBlock",
       "package": "block",
-      "description": "A simple table of raw text and rich text cells.",
+      "description": "A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/table-block",
       "wireType": "table",
       "fields": [
@@ -708,10 +708,10 @@
         {
           "name": "column_settings",
           "wire": "column_settings",
-          "type": "Array[ColumnSettings]",
-          "readerType": "Array[ColumnSettings]",
+          "type": "Array[ColumnSettings?]",
+          "readerType": "Array[ColumnSettings?]",
           "required": false,
-          "description": "Adds per-column settings in column order. Provide one entry for every column."
+          "description": "Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries."
         },
         {
           "name": "block_id",
@@ -2893,7 +2893,7 @@
     {
       "name": "RawNumber",
       "package": "object",
-      "description": "A numeric data table cell with display text.",
+      "description": "A numeric table or data table cell with display text.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-table-block",
       "wireType": "raw_number",
       "fields": [

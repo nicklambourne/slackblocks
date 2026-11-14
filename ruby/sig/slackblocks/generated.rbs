@@ -361,12 +361,12 @@ module Slackblocks
     include LayoutChild
     include LayoutFallback
     attr_reader rows: Array[Array[TableCell]]
-    attr_reader column_settings: (Array[ColumnSettings])?
+    attr_reader column_settings: (Array[ColumnSettings?])?
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
-    def initialize: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
-    def self.new: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
-    def self.[]: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
+    def initialize: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings?])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings?])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
+    def self.[]: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings?])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
   end
 
   class TaskCardBlock
@@ -1029,6 +1029,7 @@ module Slackblocks
   class RawNumber
     include Value
     include DataTableCell
+    include TableCell
     attr_reader value: Integer | Float
     attr_reader text: String
     attr_reader additional_fields: Hash[String, untyped]

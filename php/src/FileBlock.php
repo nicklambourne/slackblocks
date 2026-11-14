@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Slackblocks;
 
 /**
- * A remote file previously added with the files.remote API.
+ * A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.
  * @see https://docs.slack.dev/reference/block-kit/blocks/file-block
  */
 final readonly class FileBlock extends Value implements Block, LayoutChild

@@ -101,17 +101,17 @@ function textCharacterCount(value: JsonValue): number {
     return value.reduce<number>((total, item) => total + textCharacterCount(item), 0);
   }
   if (value !== null && typeof value === "object") {
-    return Object.entries(value).reduce<number>(
-      (total, [key, nested]) =>
-        total +
-        (key === "text" && typeof nested === "string"
-          ? codePointLength(nested)
-          : textCharacterCount(nested)),
-      0,
-    );
+    switch (value.type) {
+      case "raw_text": case "raw_number": case "text": case "link":
+        return typeof value.text === "string" ? codePointLength(value.text) : 0;
+      case "rich_text": case "rich_text_section": case "rich_text_list":
+      case "rich_text_quote": case "rich_text_preformatted":
+        return textCharacterCount(value.elements ?? []);
+    }
   }
   return 0;
 }
+
 
 function validateSeriesChart(object: JsonObject, path: string): void {
   if (!Array.isArray(object.series)) {
@@ -542,6 +542,9 @@ function validateKnownObject(
   }
 
   switch (type) {
+    case "raw_number":
+      length(object.text as string, child(path, "text"), 1, undefined);
+      break;
     case "plain_text":
     case "mrkdwn":
       validateTextObject(object, path);
@@ -1043,6 +1046,9 @@ function validateKnownObject(
       break;
     }
     case "table": {
+      if (textCharacterCount(object.rows ?? []) > limits.table.content.max_length) {
+        throw new LengthError(child(path, "rows"), "table cell text exceeds 10000 characters");
+      }
       if (!Array.isArray(object.rows)) {
         throw new TypeMismatchError(child(path, "rows"), "expected an array");
       }
@@ -1056,7 +1062,7 @@ function validateKnownObject(
         rawRow.forEach((rawCell, cellIndex) => {
           const cellPath = `${rowPath}[${cellIndex}]`;
           const cell = objectAt(rawCell, cellPath);
-          if (!["raw_text", "rich_text"].includes(String(cell.type))) {
+          if (!["raw_text", "raw_number", "rich_text"].includes(String(cell.type))) {
             throw new TypeMismatchError(cellPath, "unsupported table cell");
           }
         });
@@ -1071,6 +1077,17 @@ function validateKnownObject(
           undefined,
           limits.table.column_settings.max_items,
         );
+        object.column_settings.forEach((raw, index) => {
+          if (raw === null) return;
+          const settingPath = `${child(path, "column_settings")}[${index}]`;
+          const setting = objectAt(raw, settingPath);
+          if (setting.align !== undefined && (typeof setting.align !== "string" || !["left", "center", "right"].includes(setting.align))) {
+            throw new TypeMismatchError(child(settingPath, "align"), "expected left, center or right");
+          }
+          if (setting.is_wrapped !== undefined && typeof setting.is_wrapped !== "boolean") {
+            throw new TypeMismatchError(child(settingPath, "is_wrapped"), "expected a boolean");
+          }
+        });
       }
       break;
     }
@@ -1348,6 +1365,10 @@ function validateMessagePayload(payload: JsonObject): void {
       `${markdown} characters of markdown block text exceed maximum ` +
         `${limits.markdown.total_text.max_length} per message`,
     );
+  }
+  const plainTableContent = typedTotal(payload, "table", (block) => textCharacterCount(block.rows ?? []));
+  if (plainTableContent > limits.table.total_content.max_length) {
+    throw new LengthError("blocks", "table cell text exceeds 10000 characters per message");
   }
   const tableContent = typedTotal(payload, "data_table", (block) =>
     textCharacterCount(block.rows ?? []),
