@@ -32,7 +32,14 @@ NAMES = {
     "OptionGroup": "SelectOptionGroup",
     "Confirmation": "ConfirmationDialogue",
 }
-BOXED = {"Block", "Element", "InputElement", "ContextActionsElement", "LayoutChild", "LayoutFallback"}
+BOXED = {
+    "Block",
+    "Element",
+    "InputElement",
+    "ContextActionsElement",
+    "LayoutChild",
+    "LayoutFallback",
+}
 SINGULAR = {
     "series": "series_entry",
     "data": "point",
@@ -155,7 +162,7 @@ def rust_type(f):
         "enum": t,
         "object": t,
         "text": t,
-        "list": f"Vec<{t}>",
+        "list": f"Vec<Option<{t}>>" if f.get("nullableItems") else f"Vec<{t}>",
         "rows": f"Vec<Vec<{t}>>",
         "textList": f"Vec<{t}>",
         "stringList": "Vec<String>",
@@ -375,7 +382,9 @@ def emit_setters(fs):
         inp = input_type(f)
         s += [docs(f["description"])]
         if f.get("coerce") == "decimal_string":
-            s += [f"pub fn {id}(mut self, value: impl std::fmt::Display) -> Self {{ self.{id}=Some(value.to_string()); self }}"]
+            s += [
+                f"pub fn {id}(mut self, value: impl std::fmt::Display) -> Self {{ self.{id}=Some(value.to_string()); self }}"
+            ]
         elif k in {"list", "textList", "stringList"}:
             inner = inp[4:-1]
             s += [
@@ -562,6 +571,7 @@ def emit_model(t, registry):
                 f'if let Some(v) = &value.{ident(f["wire"])} {{ crate::rules::style(v, &{json.dumps(f["flags"])}, "{n}.{f["wire"]}")?; }}'
             )
     typed_rules = {
+        "RawNumber": 'crate::rules::length(value.text().chars().count(), Some(1), None, "RawNumber.text")?;',
         "Attachment": 'crate::rules::attachment(&value, "Attachment")?;',
         "DataTableBlock": 'crate::rules::data_table(&value, "DataTableBlock")?;',
         "TableBlock": 'crate::rules::plain_table(&value, "TableBlock")?;',
@@ -724,7 +734,9 @@ def generate(model, registry=None):
             serde_ingress(role),
         ]
         if role in {"Block", "LayoutChild", "LayoutFallback"}:
-            s.append(f"impl {role} {{ pub(crate) fn wire_type(&self) -> &'static str {{ match self {{")
+            s.append(
+                f"impl {role} {{ pub(crate) fn wire_type(&self) -> &'static str {{ match self {{"
+            )
             s += [f'Self::{variant(t["name"], role)}(_) => "{t["wireType"]}",' for t in members]
             s.append("}}}")
         for t in members:

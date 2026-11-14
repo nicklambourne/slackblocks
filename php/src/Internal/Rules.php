@@ -49,6 +49,9 @@ final class Rules
     public static function validate(S\Value $value, \stdClass $wire): void
     {
         $path = Codec::name($value);
+        if ($value instanceof S\RawNumber && $value->text === '') {
+            Validator::fail(C::LengthExceeded, $path . '.text', 'numeric display text must not be empty');
+        }
         if ($value instanceof S\ButtonElement && $value->agentPromptDisplay !== null && $value->agentPrompt === null) {
             Validator::fail(C::MissingRequired, $path . '.agent_prompt', 'required when agent_prompt_display is supplied');
         }

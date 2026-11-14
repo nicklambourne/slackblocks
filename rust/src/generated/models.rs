@@ -5977,7 +5977,7 @@ impl<'de> Deserialize<'de> for SectionBlock {
 #[derive(Clone, Debug, PartialEq)]
 pub struct TableBlock {
     rows: Vec<Vec<TableCell>>,
-    column_settings: Option<Vec<ColumnSettings>>,
+    column_settings: Option<Vec<Option<ColumnSettings>>>,
     block_id: Option<String>,
     extensions: Map<String, Value>,
 }
@@ -5985,7 +5985,7 @@ pub struct TableBlock {
 #[derive(Clone, Debug)]
 pub struct TableBlockBuilder {
     rows: Option<Vec<Vec<TableCell>>>,
-    column_settings: Option<Vec<ColumnSettings>>,
+    column_settings: Option<Vec<Option<ColumnSettings>>>,
     block_id: Option<String>,
     extensions: Map<String, Value>,
 }
@@ -6017,8 +6017,8 @@ impl TableBlock {
     pub fn rows(&self) -> &[Vec<TableCell>] {
         &self.rows
     }
-    /// Borrows or copies `column_settings`. Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid.
-    pub fn column_settings(&self) -> Option<&[ColumnSettings]> {
+    /// Borrows or copies `column_settings`. Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries.
+    pub fn column_settings(&self) -> Option<&[Option<ColumnSettings>]> {
         self.column_settings.as_deref()
     }
     /// Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
@@ -6072,18 +6072,18 @@ impl TableBlockBuilder {
             .push(row.into_iter().map(Into::into).collect());
         self
     }
-    /// Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid.
+    /// Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries.
     /// Replaces the collection; order is preserved.
     pub fn column_settings<I, T>(mut self, values: I) -> Self
     where
         I: IntoIterator<Item = T>,
-        T: Into<ColumnSettings>,
+        T: Into<Option<ColumnSettings>>,
     {
         self.column_settings = Some(values.into_iter().map(Into::into).collect());
         self
     }
     /// Appends one item to the collection.
-    pub fn column_setting(mut self, value: impl Into<ColumnSettings>) -> Self {
+    pub fn column_setting(mut self, value: impl Into<Option<ColumnSettings>>) -> Self {
         self.column_settings
             .get_or_insert_with(Vec::new)
             .push(value.into());
@@ -6153,7 +6153,7 @@ impl FromWire for TableBlock {
         let mut map = wire::object(value, "table", path)?;
         let rows = wire::field::<Vec<Vec<TableCell>>>(&mut map, "rows", path)?;
         let column_settings =
-            wire::field::<Vec<ColumnSettings>>(&mut map, "column_settings", path)?;
+            wire::field::<Vec<Option<ColumnSettings>>>(&mut map, "column_settings", path)?;
         let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         TableBlockBuilder {
             rows,
@@ -17374,6 +17374,12 @@ impl RawNumberBuilder {
             text,
             extensions: self.extensions,
         };
+        crate::rules::length(
+            value.text().chars().count(),
+            Some(1),
+            None,
+            "RawNumber.text",
+        )?;
         Ok(value)
     }
 }

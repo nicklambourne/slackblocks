@@ -89,6 +89,9 @@ func (t typing) typedMethods(typeName string, field modelField, comment string) 
 	}
 	call := func(arguments string) string { return fmt.Sprintf("\tb.core.%s(%s)\n", method, arguments) }
 	spread := func(values string) string {
+		if field.NullableItems {
+			return fmt.Sprintf("\titems := make([]any, len(%s))\n\tfor index, value := range %s {\n\t\tif value != nil { items[index] = value }\n\t}\n\tb.core.%s(items...)\n", values, values, method)
+		}
 		return fmt.Sprintf("\titems := make([]any, len(%s))\n\tfor index, value := range %s {\n\t\titems[index] = value\n\t}\n\tb.core.%s(items...)\n", values, values, method)
 	}
 	scalars := map[string]string{"string": "string", "boolean": "bool", "int": "int", "long": "int64", "double": "float64", "number": "float64"}

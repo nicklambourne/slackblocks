@@ -17,7 +17,6 @@ from slackblocks import (
     CarouselBlock,
     ChartSegment,
     CheckboxGroup,
-    ColumnSettings,
     ConfirmationDialogue,
     ContainerBlock,
     ContextActionsBlock,
@@ -205,6 +204,7 @@ def data_table_with_content(length: int) -> DataTableBlock:
 
 
 INVALID_CASES: dict[str, Callable[[], object]] = {
+    "raw-number-empty-text": lambda: RawNumber(0, ""),
     "layout-home-alert": lambda: HomeTabView(
         blocks=[
             LayoutBlock(
@@ -1008,10 +1008,7 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "container-no-child-blocks": lambda: ContainerBlock(title="Container", child_blocks=[]),
     "table-too-many-column-settings": lambda: TableBlock(
         [[RawText("A")]],
-        column_settings=[
-            ColumnSettings(is_wrapped=True)
-            for _ in range(LIMITS["table"]["column_settings"]["max_items"] + 1)
-        ],
+        column_settings=[None for _ in range(LIMITS["table"]["column_settings"]["max_items"] + 1)],
     ),
     "data-table-row-header-index-negative": lambda: DataTableBlock(
         valid_table_rows(),

@@ -289,6 +289,9 @@ internal static partial class Validator
 
         switch (type)
         {
+            case "raw_number":
+                TextLength(value, Child(path, "text"), 1, 0);
+                break;
             case "plain_text":
             case "mrkdwn":
                 TextLength(value, Child(path, "text"), SlackLimits.TextMinLength, SlackLimits.TextMaxLength);
@@ -515,7 +518,7 @@ internal static partial class Validator
         {
             if (key != "type" && key != "event_payload")
             {
-                ValidateNested(nested, Child(path, key));
+                ValidateNested(nested, Child(path, key), type == "table" && key == "column_settings");
             }
         }
     }
@@ -1028,6 +1031,17 @@ internal static partial class Validator
                 Child(path, "column_settings"),
                 0,
                 SlackLimits.TableColumnSettingsMaxItems);
+            var settings = ListAt(value["column_settings"], Child(path, "column_settings"));
+            for (var index = 0; index < settings.Count; index++)
+            {
+                if (settings[index] is null) continue;
+                var settingPath = $"{Child(path, "column_settings")}[{index}]";
+                var setting = ObjectAt(settings[index], settingPath);
+                if (setting.ContainsKey("align") && StringAt(setting["align"], Child(settingPath, "align")) is not ("left" or "center" or "right"))
+                    Fail(ErrorCategory.TypeMismatch, Child(settingPath, "align"), "expected left, center or right");
+                if (setting.ContainsKey("is_wrapped") && (setting["is_wrapped"] is not JsonValue wrapped || !wrapped.TryGetValue<bool>(out _)))
+                    Fail(ErrorCategory.TypeMismatch, Child(settingPath, "is_wrapped"), "expected a boolean");
+            }
         }
 
         if (!dataTable && contentLength > SlackLimits.TableContentMaxLength)
@@ -1228,7 +1242,7 @@ internal static partial class Validator
         }
     }
 
-    private static void ValidateNested(JsonNode? value, string path)
+    private static void ValidateNested(JsonNode? value, string path, bool nullableItems = false)
     {
         switch (value)
         {
@@ -1241,6 +1255,7 @@ internal static partial class Validator
             case JsonArray array:
                 for (var index = 0; index < array.Count; index++)
                 {
+                    if (array[index] is null && nullableItems) continue;
                     ValidateNested(array[index], $"{path}[{index}]");
                 }
 

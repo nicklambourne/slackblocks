@@ -48,6 +48,9 @@ final class Validator
                 self::fail(C::TypeMismatch, $path, 'expected a list');
             }
             foreach ($item as $index => $child) {
+                if ($kind === 'list' && ($field['nullableItems'] ?? false) && $child === null) {
+                    continue;
+                }
                 $inner = $field;
                 $inner['kind'] = match ($kind) {
                     'rows' => 'list', 'textList' => 'text', 'stringList' => 'string', default => 'object',

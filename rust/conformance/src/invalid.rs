@@ -9,6 +9,14 @@ pub struct InvalidCase {
 }
 pub const INVALID: &[InvalidCase] = &[
     InvalidCase {
+        id: "raw-number-empty-text",
+        build: || RawNumber::builder().value(0).text("").build().map(|_| ()),
+        parse: || {
+            RawNumber::try_from(serde_json::json!({"type":"raw_number","value":0,"text":""}))
+                .map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "table-layout-fallback-total-too-long",
         build: || {
             let left = TableBlock::builder()
@@ -6864,10 +6872,7 @@ pub const INVALID: &[InvalidCase] = &[
                 .rows(vec![vec![TableCell::from(
                     RawText::builder().text("A").build()?,
                 )]])
-                .column_settings(vec![
-                    ColumnSettings::builder().is_wrapped(true).build()?;
-                    21
-                ])
+                .column_settings(vec![None::<ColumnSettings>; 21])
                 .build()?;
             Ok(())
         },

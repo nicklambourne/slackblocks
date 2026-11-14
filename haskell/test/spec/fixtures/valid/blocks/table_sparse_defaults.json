@@ -1,0 +1,34 @@
+{
+  "type": "table",
+  "rows": [
+    [
+      {
+        "type": "raw_text",
+        "text": "Defaults"
+      }
+    ]
+  ],
+  "column_settings": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "block_id": "fake_block_id"
+}

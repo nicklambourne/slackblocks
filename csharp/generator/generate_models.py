@@ -223,6 +223,8 @@ class Field:
         elif kind in ("object", "text"):
             self.parameter_type = self.property_type = f"{t}{optional}"
         elif kind == "list":
+            if field.get("nullableItems"):
+                t += "?"
             self.parameter_type = f"global::System.Collections.Generic.IEnumerable<{t}>{optional}"
             self.property_type = f"global::System.Collections.Generic.IReadOnlyList<{t}>"
         elif kind == "rows":
@@ -274,7 +276,8 @@ class Field:
         elif kind in ("style", "object"):
             call = f"wire.Object({wire}, {value})"
         elif kind == "list":
-            call = f"wire.List({wire}, {value})"
+            method = "NullableList" if self.field.get("nullableItems") else "List"
+            call = f"wire.{method}({wire}, {value})"
         elif kind == "rows":
             call = f"wire.Rows({wire}, {value})"
         elif kind == "text":

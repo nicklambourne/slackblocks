@@ -106,6 +106,15 @@ impl FromWire for JsonNumber {
         }
     }
 }
+impl<T: FromWire> FromWire for Option<T> {
+    fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
+        if value.is_null() {
+            Ok(None)
+        } else {
+            T::from_wire(value, path).map(Some)
+        }
+    }
+}
 impl<T: FromWire> FromWire for Vec<T> {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let Value::Array(values) = value else {

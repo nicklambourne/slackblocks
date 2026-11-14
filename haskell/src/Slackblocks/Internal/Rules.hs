@@ -100,6 +100,7 @@ validateFields owner value = do
 
 rules :: Text -> Value -> Result ()
 rules owner value = case owner of
+  "RawNumber" -> check LengthExceeded [Field "text"] "raw_number.text.nonempty" (count (get "text") > 0)
   "ButtonElement" -> check MissingRequired [Field "agent_prompt"] "button.agent_prompt_display.requires_agent_prompt" (not (present "agent_prompt_display") || present "agent_prompt")
   "SlackIcon" -> check TypeMismatch [Field "name"] "slack_icon_names" (text (get "name") `elem` icons)
   "ExternalMultiSelectElement" -> check InvalidUsage [Field "focus_on_load"] "external_multi_select.focus_on_load" (not (present "focus_on_load"))

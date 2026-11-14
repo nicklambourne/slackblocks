@@ -542,6 +542,9 @@ function validateKnownObject(
   }
 
   switch (type) {
+    case "raw_number":
+      length(object.text as string, child(path, "text"), 1, undefined);
+      break;
     case "plain_text":
     case "mrkdwn":
       validateTextObject(object, path);
@@ -1074,6 +1077,17 @@ function validateKnownObject(
           undefined,
           limits.table.column_settings.max_items,
         );
+        object.column_settings.forEach((raw, index) => {
+          if (raw === null) return;
+          const settingPath = `${child(path, "column_settings")}[${index}]`;
+          const setting = objectAt(raw, settingPath);
+          if (setting.align !== undefined && (typeof setting.align !== "string" || !["left", "center", "right"].includes(setting.align))) {
+            throw new TypeMismatchError(child(settingPath, "align"), "expected left, center or right");
+          }
+          if (setting.is_wrapped !== undefined && typeof setting.is_wrapped !== "boolean") {
+            throw new TypeMismatchError(child(settingPath, "is_wrapped"), "expected a boolean");
+          }
+        });
       }
       break;
     }

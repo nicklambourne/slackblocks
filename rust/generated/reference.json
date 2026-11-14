@@ -913,8 +913,9 @@
           "wire": "column_settings",
           "kind": "list",
           "type": "ColumnSettings",
-          "description": "Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid.",
-          "limits": "table.column_settings"
+          "description": "Optional settings for leading columns, up to 20 entries. Use null to retain a column\u2019s default settings without shifting later entries.",
+          "limits": "table.column_settings",
+          "nullableItems": true
         },
         {
           "method": "blockId",

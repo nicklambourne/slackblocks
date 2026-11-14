@@ -63,6 +63,7 @@ final class FluentDriver {
    * several Java types (such as {@code image}), the expected type chooses between them.
    */
   Object build(JsonElement json, Class<?> expected, String path) throws Exception {
+    if (json.isJsonNull()) return null;
     if (json.isJsonArray()) {
       List<Object> result = new ArrayList<>();
       for (JsonElement item : json.getAsJsonArray()) {
@@ -322,7 +323,7 @@ final class FluentDriver {
     Object array = Array.newInstance(target, items.size());
     for (int index = 0; index < items.size(); index++) {
       Object built = build(items.get(index), target, path + "[" + index + "]");
-      if (!target.isInstance(built)) {
+      if (built != null && !target.isInstance(built)) {
         return null;
       }
       Array.set(array, index, built);

@@ -10,6 +10,11 @@
         "type": "raw_number",
         "value": 42,
         "text": "42 items"
+      },
+      {
+        "type": "raw_number",
+        "value": 0,
+        "text": "0"
       }
     ],
     [
@@ -21,9 +26,11 @@
     ]
   ],
   "column_settings": [
+    null,
     {
       "align": "right"
-    }
+    },
+    null
   ],
   "block_id": "fake_block_id"
 }

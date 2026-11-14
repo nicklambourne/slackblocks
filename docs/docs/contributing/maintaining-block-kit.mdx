@@ -84,7 +84,10 @@ Edit `spec/model.json` for the type/field definition, including the existing
 package/name conventions, wire name/type, role interfaces, field kind and child
 type, required/default/coercion behavior, descriptions, rule descriptions and
 Slack link. Model prose should explain the wire contract without promising one
-language's SDK behavior to every language.
+language's SDK behavior to every language. A list marked `nullableItems: true`
+preserves explicit null items in their original positions; it does not allow
+nulls in other lists or change whole-field omission. Cover its native types,
+checked parsers and item-count limits in every language.
 
 Check all parents that should accept the new type. A matching `type` string is
 not enough: image blocks and image elements share a discriminator but have

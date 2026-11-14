@@ -4,6 +4,7 @@ defmodule Slackblocks.Test.InvalidConstructions do
   # Explicit native attempts, maintained independently of the fixture JSON and API generator.
   def all do
     [
+      {"raw-number-empty-text", fn -> Objects.RawNumber.new!(value: 0, text: "") end},
       {"layout-home-alert",
        fn ->
          Views.Home.new!(
@@ -1584,7 +1585,7 @@ defmodule Slackblocks.Test.InvalidConstructions do
        fn ->
          Blocks.Table.new!(
            rows: [[Objects.RawText.new!(text: "A")]],
-           column_settings: List.duplicate(Objects.ColumnSettings.new!(is_wrapped: true), 21)
+           column_settings: List.duplicate(nil, 21)
          )
        end},
       {"data-table-row-header-index-negative",

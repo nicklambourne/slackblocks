@@ -12,6 +12,11 @@ defmodule Slackblocks.Internal.Rules do
     :ok
   end
 
+  defp local("RawNumber", w, p) do
+    if w["text"] == "",
+      do: fail(:length_exceeded, p ++ ["text"], "numeric display text must not be empty")
+  end
+
   defp local("ExternalMultiSelectElement", w, p) do
     if Map.has_key?(w, "focus_on_load"),
       do:

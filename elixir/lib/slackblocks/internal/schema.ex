@@ -946,7 +946,8 @@ defmodule Slackblocks.Internal.Schema do
           :has_default => false,
           :coerce => nil,
           :limits => "table.column_settings",
-          :flags => []
+          :flags => [],
+          :nullable_items => true
         },
         %{
           :key => :block_id,

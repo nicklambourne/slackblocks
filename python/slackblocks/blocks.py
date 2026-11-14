@@ -836,7 +836,7 @@ class TableBlock(Block):
     def __init__(
         self,
         rows: list[list[RawText | RawNumber | RichTextObject]],
-        column_settings: list[ColumnSettings] | None = None,
+        column_settings: list[ColumnSettings | None] | None = None,
         block_id: str | None = None,
     ) -> None:
         super().__init__(type_=BlockType.TABLE, block_id=block_id)
@@ -862,6 +862,10 @@ class TableBlock(Block):
             self.rows.append(validated_row)
         if column_settings and len(column_settings) > TABLE_COLUMN_SETTINGS_MAX_ITEMS:
             raise LengthError("`column_settings` can have a maximum of 20 items.")
+        if column_settings is not None:
+            for setting in column_settings:
+                if setting is not None and not isinstance(setting, ColumnSettings):
+                    raise TypeMismatchError("Column settings must be ColumnSettings or None.")
         self.column_settings = column_settings
         if _text_character_count(self._resolve()["rows"]) > TABLE_CONTENT_MAX_LENGTH:
             raise LengthError("Table cell text exceeds the 10,000-character limit.")
@@ -1415,8 +1419,11 @@ class DataTableBlock(Block):
             for cell in row:
                 if not isinstance(cell, RawText | RawNumber | RichTextBlock):
                     raise TypeMismatchError("Unsupported data table cell type.")
-                if isinstance(cell, RawText) and len(cell.text) < DATA_TABLE_CELL_TEXT_MIN_LENGTH:
-                    raise LengthError("Data table raw text cells cannot be empty.")
+                if (
+                    isinstance(cell, RawText | RawNumber)
+                    and len(cell.text) < DATA_TABLE_CELL_TEXT_MIN_LENGTH
+                ):
+                    raise LengthError("Data table raw text and numeric labels cannot be empty.")
         if any(isinstance(cell, RichTextBlock) for cell in rows[0]):
             raise TypeMismatchError("Data table header cells cannot contain rich text.")
         self.page_size = validate_int(

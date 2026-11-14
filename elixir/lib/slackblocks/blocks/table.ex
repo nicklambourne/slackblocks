@@ -8,7 +8,7 @@ defmodule Slackblocks.Blocks.Table do
   ## Fields
 
   * `rows` — Adds complete table rows in display order. Required.
-  * `column_settings` — Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid. Optional; `nil` omits the field.
+  * `column_settings` — Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries. Optional; `nil` omits the field.
   * `block_id` — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; `nil` omits the field.
   """
   alias Slackblocks.Internal.Value
@@ -17,7 +17,7 @@ defmodule Slackblocks.Blocks.Table do
 
   @type t :: %__MODULE__{
           rows: [[Slackblocks.Types.table_cell()]],
-          column_settings: [Slackblocks.Objects.ColumnSettings.t()] | nil,
+          column_settings: [Slackblocks.Objects.ColumnSettings.t() | nil] | nil,
           block_id: binary() | nil
         }
 

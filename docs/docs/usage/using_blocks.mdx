@@ -2350,12 +2350,16 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 A table block lays out raw text, numeric and rich text cells in rows and columns. Optional `column_settings` control each column's alignment and whether its text wraps.
 
-Required: `rows`. Plain tables allow rows of different lengths. `column_settings` may describe only the leading columns; remaining columns use Slack’s defaults. Data tables have separate rectangular-row rules.
+Required: `rows`. Plain tables allow rows of different lengths. `column_settings` may describe only the leading columns; remaining columns use Slack’s defaults. Use `null` entries to skip individual columns without shifting later settings. These entries count toward the 20-setting limit. Data tables have separate rectangular-row rules.
 
-For example, rows with two cells followed by one cell and a single right-aligned column setting are valid. The setting applies only to the first column.
+For example, `[null, {"align": "left"}]` leaves the first column at Slack’s defaults and aligns the second to the left. The native examples below produce that sparse list.
+
+Slack documents null entries, but the stress workspace’s `blocks.validate` endpoint rejected them on 2026-11-14. Slackblocks preserves the documented wire form consistently across all ten languages. Until the receiving path supports it, use `{}` (a default `ColumnSettings` value) instead of `null` to retain a skipped position; live rendering of sparse settings has not been verified.
 
 :::note Shared contract 1.6.0 (unreleased)
-All ten native APIs accept `RawNumber` cells with both a numeric `value` and displayed `text`. The example below displays `42 items` while preserving the numeric value `42`.
+All ten native APIs accept `RawNumber` cells with both a numeric `value` and displayed `text`. The example below displays `42 items` while preserving the numeric value `42`. Numeric display labels must be non-empty in both plain and data tables. Numeric values must be finite JSON numbers.
+
+Sparse settings use `None` in Python, `null` in TypeScript/Java/C#/PHP, `nil` in Go/Ruby/Elixir, `Option<ColumnSettings>` in Rust and `Maybe ColumnSettings` in Haskell. Haskell callers updating this development branch must wrap existing entries in `Just`; Rust getters now expose optional entries, while setters still accept ordinary settings.
 
 Displayed cell text is limited to 10,000 Unicode code points per table and across plain tables in a message, including attachments, containers and layout fallbacks. This counts rich-text text/link labels and numeric display text; sorting values, URLs and message metadata do not consume the budget. Data-table and Markdown budgets are separate. Previously accepted oversized tables now fail local validation.
 
@@ -2381,7 +2385,7 @@ from slackblocks import (
 TableBlock(
     block_id="fake_block_id",
     column_settings=[
-        ColumnSettings(align="right", is_wrapped=True),
+        None,
         ColumnSettings(align="left"),
     ],
     rows=[
@@ -2425,7 +2429,7 @@ import {
 TableBlock()
   .blockId("fake_block_id")
   .columnSettings(
-    ColumnSettings().align("right").isWrapped(true),
+    null,
     ColumnSettings().align("left"),
   )
   .rows([
@@ -2454,7 +2458,7 @@ TableBlock()
 block, err := slackblocks.NewTableBlock().
     BlockID("fake_block_id").
     ColumnSettings(
-        slackblocks.NewColumnSettings().Align("right").IsWrapped(true),
+        nil,
         slackblocks.NewColumnSettings().Align("left"),
     ).
     Rows(
@@ -2489,7 +2493,7 @@ block, err := slackblocks.NewTableBlock().
 TableBlock block = TableBlock.builder()
     .blockId("fake_block_id")
     .columnSettings(
-        ColumnSettings.builder().align(ColumnAlign.RIGHT).isWrapped(true).build(),
+        null,
         ColumnSettings.builder().align(ColumnAlign.LEFT).build())
     .rows(
         List.of(
@@ -2543,7 +2547,7 @@ var block = new TableBlock(
         ],
     ],
     columnSettings: [
-        new ColumnSettings(align: ColumnAlign.Right, isWrapped: true),
+        null,
         new ColumnSettings(align: ColumnAlign.Left),
     ],
     blockId: "fake_block_id");
@@ -2583,7 +2587,7 @@ block = TableBlock.new(
       )
     ]
   ],
-  column_settings: [ColumnSettings.new(align: :right, is_wrapped: true), ColumnSettings.new(align: :left)],
+  column_settings: [nil, ColumnSettings.new(align: :left)],
   block_id: "fake_block_id"
 )
 puts block.to_json
@@ -2648,13 +2652,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             ],
         ])
         .column_settings(vec![
-            ColumnSettings::from(
-                ColumnSettings::builder()
-                    .align(ColumnAlign::Right)
-                    .is_wrapped(true)
-                    .build()?,
-            ),
-            ColumnSettings::from(ColumnSettings::builder().align(ColumnAlign::Left).build()?),
+            None,
+            Some(ColumnSettings::builder().align(ColumnAlign::Left).build()?),
         ])
         .build()?;
     println!("{}", serde_json::to_string(&block)?);
@@ -2700,10 +2699,7 @@ $block = new S\TableBlock(
             )],
         )],
     )]],
-    columnSettings: [new S\ColumnSettings(
-        align: S\ColumnAlign::Right,
-        isWrapped: true,
-    ), new S\ColumnSettings(
+    columnSettings: [null, new S\ColumnSettings(
         align: S\ColumnAlign::Left,
     )],
     blockId: 'fake_block_id',
@@ -2759,7 +2755,7 @@ block =
       ]
     ],
     column_settings: [
-      Slackblocks.Objects.ColumnSettings.new!(align: :right, is_wrapped: true),
+      nil,
       Slackblocks.Objects.ColumnSettings.new!(align: :left)
     ]
   )
@@ -2791,9 +2787,8 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
   richTextLinkValue1 <- buildRichTextLink ((richTextLink ("https://slack.com")) {richTextLinkText = Just ("Datum 2")})
   richTextSectionValue3 <- buildRichTextSection (richTextSection ([(richTextLinkAsRichTextSectionElement richTextLinkValue1)]))
   richTextBlockValue3 <- buildRichTextBlock (richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue3)]))
-  columnSettingsValue1 <- buildColumnSettings ((columnSettings) {columnSettingsAlign = Just (ColumnAlignRight), columnSettingsIsWrapped = Just (True)})
   columnSettingsValue2 <- buildColumnSettings ((columnSettings) {columnSettingsAlign = Just (ColumnAlignLeft)})
-  tableBlockValue1 <- buildTableBlock ((tableBlock ([[(richTextBlockAsTableCell richTextBlockValue1), (richTextBlockAsTableCell richTextBlockValue2)], [(rawNumberAsTableCell rawNumberValue1), (richTextBlockAsTableCell richTextBlockValue3)]])) {tableBlockColumnSettings = Just ([columnSettingsValue1, columnSettingsValue2]), tableBlockBlockId = Just ("fake_block_id")})
+  tableBlockValue1 <- buildTableBlock ((tableBlock ([[(richTextBlockAsTableCell richTextBlockValue1), (richTextBlockAsTableCell richTextBlockValue2)], [(rawNumberAsTableCell rawNumberValue1), (richTextBlockAsTableCell richTextBlockValue3)]])) {tableBlockColumnSettings = Just ([Nothing, Just columnSettingsValue2]), tableBlockBlockId = Just ("fake_block_id")})
   pure tableBlockValue1
 ```
 
@@ -2868,10 +2863,7 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
         ]
     ],
     "column_settings": [
-        {
-            "align": "right",
-            "is_wrapped": true
-        },
+        null,
         {
             "align": "left"
         }
@@ -2885,7 +2877,7 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 ![An example of the UI output of a Table Block](/img/usage/table.png)
 
-This historical Slack capture uses the earlier raw-text cell example. The executable examples above now demonstrate a numeric cell; this image does not verify its Slack rendering.
+This historical Slack capture uses the earlier raw-text cell example. The executable examples above now demonstrate a numeric cell and sparse column settings; this image does not verify its Slack rendering.
 
 
 </TabItem>

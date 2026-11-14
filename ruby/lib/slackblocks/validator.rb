@@ -40,6 +40,8 @@ module Slackblocks
 
     def self.special(klass, wire, path)
       case klass.name.split("::").last
+      when "RawNumber"
+        fail!("length-exceeded", "#{path}.text", "numeric display text must not be empty") if wire.fetch("text").empty?
       when "ButtonElement"
         if wire.key?("agent_prompt_display") && !wire.key?("agent_prompt")
           fail!("missing-required", "#{path}.agent_prompt", "required when agent_prompt_display is supplied")

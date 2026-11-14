@@ -591,8 +591,8 @@ export function tableBlock(
   input: {
     /** Up to 100 rows of raw-text, raw-number or rich-text cells. */
     rows: JsonObject[][];
-    /** Optional display settings for each column. */
-    columnSettings?: JsonObject[];
+    /** Optional leading-column settings; null preserves the default at that position. */
+    columnSettings?: (JsonObject | null)[];
     /** Deterministic identifier, up to 255 characters. */
     blockId?: string;
   },

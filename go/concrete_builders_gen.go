@@ -4097,13 +4097,15 @@ func (b *TableBlockBuilder) Rows(rows ...[]TableCell) *TableBlockBuilder {
 	return b
 }
 
-// ColumnSettings adds settings for leading columns in column order. Omitted trailing columns
-// retain Slack defaults; fewer entries than columns are valid. Slack allows at most 20 items.
+// ColumnSettings Optional settings for leading columns, up to 20 entries. Use null to retain a
+// column’s default settings without shifting later entries. Slack allows at most 20 items.
 // Each call appends to any values already added.
 func (b *TableBlockBuilder) ColumnSettings(values ...*ColumnSettingsBuilder) *TableBlockBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
-		items[index] = value
+		if value != nil {
+			items[index] = value
+		}
 	}
 	b.core.ColumnSettings(items...)
 	return b

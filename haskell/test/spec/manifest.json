@@ -728,6 +728,12 @@
       "since": "1.6.0"
     },
     {
+      "id": "blocks/table_sparse_defaults",
+      "description": "Twenty skipped column settings retain their positions and count toward the limit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/table-block/",
+      "since": "1.6.0"
+    },
+    {
       "id": "blocks/table_text_at_limit",
       "description": "Numeric display text at the 10000 Unicode code-point per-table boundary",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/table-block/",

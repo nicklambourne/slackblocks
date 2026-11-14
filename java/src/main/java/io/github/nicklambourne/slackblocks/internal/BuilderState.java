@@ -2,6 +2,7 @@ package io.github.nicklambourne.slackblocks.internal;
 
 import io.github.nicklambourne.slackblocks.SlackObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,16 @@ public final class BuilderState {
       int index = existing.size();
       existing.add(Objects.requireNonNull(addition, () -> field + "[" + index + "] is null"));
     }
+    values.put(field, existing);
+  }
+
+  /** Appends nullable values, preserving column positions. */
+  public void appendNullable(String field, @Nullable Object... additions) {
+    Objects.requireNonNull(additions, field);
+    if (additions.length == 0) return;
+    List<@Nullable Object> existing =
+        values.get(field) instanceof List<?> list ? new ArrayList<>(list) : new ArrayList<>();
+    Collections.addAll(existing, additions);
     values.put(field, existing);
   }
 

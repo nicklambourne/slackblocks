@@ -2,6 +2,7 @@
 # Each case is constructed through the public Ruby API by FixtureDriver.
 module InvalidCases
   IDS = %w[
+    raw-number-empty-text
     layout-home-alert
     layout-modal-fallback-table
     layout-chart-three-items
@@ -226,6 +227,7 @@ module InvalidCases
 
   def for(id)
     case id
+    when "raw-number-empty-text" then invalid_case("RawNumber", map("type", "raw_number", "value", 0, "text", ""))
     when "layout-home-alert" then invalid_case("HomeTabView", map("type", "home", "blocks", items(map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "alert", "text", map("type", "plain_text", "text", "Modal only"))))))))))
     when "layout-modal-fallback-table" then invalid_case("ModalView", map("type", "modal", "title", map("type", "plain_text", "text", "Grid"), "blocks", items(map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider"))))), "fallback", items(map("type", "table", "rows", items(items(map("type", "raw_text", "text", "Cell")))))))))
     when "layout-chart-three-items" then invalid_case("LayoutRow", map("items", items(map("block", map("type", "divider")), map("block", map("type", "data_visualization", "title", "Chart", "chart", map("type", "pie", "segments", items(map("label", "One", "value", 1))))), map("block", map("type", "divider")))))
@@ -419,7 +421,7 @@ module InvalidCases
     when "image-block-url-and-slack-file" then typed("ImageBlock", "image", "image_url", "https://example.com/image.png", "slack_file", map("id", "F0123ABC456"), "alt_text", "Alt")
     when "image-block-missing-source" then typed("ImageBlock", "image", "alt_text", "Alt")
     when "container-no-child-blocks" then typed("ContainerBlock", "container", "title", plain("Container"), "child_blocks", items)
-    when "table-too-many-column-settings" then typed("TableBlock", "table", "rows", items(items(raw_text("A"))), "column_settings", copies(limit("table.column_settings.max_items") + 1, ->(index) { map("is_wrapped", true) }))
+    when "table-too-many-column-settings" then typed("TableBlock", "table", "rows", items(items(raw_text("A"))), "column_settings", copies(limit("table.column_settings.max_items") + 1, ->(index) {}))
     when "data-table-row-header-index-negative" then data_table_case(valid_rows, "Names", "row_header_column_index", limit("data_table.row_header_column_index.min") - 1)
     when "data-table-total-content-too-long" then two_data_tables_over_message_total
     when "markdown-total-too-long" then two_markdown_blocks_over_message_total

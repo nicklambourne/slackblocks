@@ -271,6 +271,7 @@ public final class Validator {
     }
 
     switch (type) {
+      case "raw_number" -> textLength(value, child(path, "text"), 1, 0);
       case "plain_text", "mrkdwn" ->
           textLength(
               value, child(path, "text"), SlackLimits.TEXT_MIN_LENGTH, SlackLimits.TEXT_MAX_LENGTH);
@@ -505,7 +506,10 @@ public final class Validator {
 
     for (Map.Entry<String, Object> field : value.entrySet()) {
       if (!field.getKey().equals("type") && !field.getKey().equals("event_payload")) {
-        validateNested(field.getValue(), child(path, field.getKey()));
+        validateNested(
+            field.getValue(),
+            child(path, field.getKey()),
+            type.equals("table") && field.getKey().equals("column_settings"));
       }
     }
   }
@@ -1026,6 +1030,23 @@ public final class Validator {
           child(path, "column_settings"),
           0,
           SlackLimits.TABLE_COLUMN_SETTINGS_MAX_ITEMS);
+      List<?> settings = listAt(value.get("column_settings"), child(path, "column_settings"));
+      for (int index = 0; index < settings.size(); index++) {
+        if (settings.get(index) == null) continue;
+        String settingPath = child(path, "column_settings") + "[" + index + "]";
+        Map<String, Object> setting = objectAt(settings.get(index), settingPath);
+        if (setting.containsKey("align")
+            && (!(setting.get("align") instanceof String alignment)
+                || !Set.of("left", "center", "right").contains(alignment))) {
+          fail(
+              ErrorCategory.TYPE_MISMATCH,
+              child(settingPath, "align"),
+              "expected left, center or right");
+        }
+        if (setting.containsKey("is_wrapped") && !(setting.get("is_wrapped") instanceof Boolean)) {
+          fail(ErrorCategory.TYPE_MISMATCH, child(settingPath, "is_wrapped"), "expected a boolean");
+        }
+      }
     }
     if (!dataTable && contentLength > SlackLimits.TABLE_CONTENT_MAX_LENGTH) {
       fail(
@@ -1222,14 +1243,15 @@ public final class Validator {
     }
   }
 
-  private static void validateNested(@Nullable Object value, String path) {
+  private static void validateNested(@Nullable Object value, String path, boolean nullableItems) {
     if (value == null) {
       fail(ErrorCategory.TYPE_MISMATCH, path, "expected a value, not null");
     } else if (value instanceof Map<?, ?>) {
       validateObject(objectAt(value, path), path);
     } else if (value instanceof List<?> list) {
       for (int index = 0; index < list.size(); index++) {
-        validateNested(list.get(index), path + "[" + index + "]");
+        if (list.get(index) == null && nullableItems) continue;
+        validateNested(list.get(index), path + "[" + index + "]", false);
       }
     } else if (value instanceof Double number && !Double.isFinite(number)) {
       fail(ErrorCategory.TYPE_MISMATCH, path, "expected a finite number");

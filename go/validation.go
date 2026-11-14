@@ -414,6 +414,9 @@ func validateObject(object Object, path string) error {
 
 	switch typeName {
 	case "raw_number":
+		if err := textLength(object, child(path, "text"), 1, 0); err != nil {
+			return err
+		}
 		if value, ok := object["value"].(json.Number); ok && !jsonNumberPattern.MatchString(string(value)) {
 			return validationError(TypeMismatch, child(path, "value"), "expected valid JSON number syntax")
 		}
@@ -1107,6 +1110,11 @@ func validateTable(object Object, path string, dataTable bool) error {
 			}
 			if err := validateEnumField(setting, "align", settingPath, "left", "center", "right"); err != nil {
 				return err
+			}
+			if wrapped, present := setting["is_wrapped"]; present {
+				if _, valid := wrapped.(bool); !valid {
+					return validationError(TypeMismatch, child(settingPath, "is_wrapped"), "expected a boolean")
+				}
 			}
 		}
 	}

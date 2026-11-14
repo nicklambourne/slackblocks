@@ -719,3 +719,25 @@ def test_plan_block() -> None:
 def test_url_source() -> None:
     source = URLSource("https://docs.slack.dev/", "Slack API docs")
     assert fetch_sample(path="elements/url_source_basic.json") == repr(source)
+
+
+@pytest.mark.parametrize("settings", [[], [None], [None] * 20])
+def test_table_accepts_default_column_settings(settings):
+    block = TableBlock(rows=[[RawNumber(0, "0")]], column_settings=settings)
+    assert block._resolve().get("column_settings", []) == settings
+
+
+def test_table_rejects_too_many_skipped_columns():
+    with pytest.raises(LengthError):
+        TableBlock(rows=[[RawText("x")]], column_settings=[None] * 21)
+
+
+@pytest.mark.parametrize("setting", [False, 1, "right", {}])
+def test_table_rejects_invalid_column_setting(setting):
+    with pytest.raises(TypeMismatchError):
+        TableBlock(rows=[[RawText("x")]], column_settings=[None, setting])
+
+
+def test_data_table_rejects_empty_numeric_label():
+    with pytest.raises(LengthError):
+        DataTableBlock(rows=[[RawText("Header")], [RawNumber(0, "")]], caption="Numbers")

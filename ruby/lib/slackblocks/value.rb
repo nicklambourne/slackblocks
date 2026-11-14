@@ -154,7 +154,8 @@ module Slackblocks
           elsif kind == "stringList"
             string(item, item_path)
           else
-            fail!("type-mismatch", item_path, "wrong item type") unless item.is_a?(target)
+            nullable_item = item.nil? && field["nullable_items"]
+            fail!("type-mismatch", item_path, "wrong item type") unless item.is_a?(target) || nullable_item
 
             item
           end

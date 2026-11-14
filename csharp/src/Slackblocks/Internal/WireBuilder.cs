@@ -139,6 +139,21 @@ internal sealed class WireBuilder
         return new ReadOnlyCollection<T>(copy);
     }
 
+    public IReadOnlyList<T?> NullableList<T>(string field, IEnumerable<T?>? items)
+        where T : class, ISlackObject
+    {
+        if (items is null) return Array.Empty<T?>();
+        var copy = new List<T?>();
+        var array = new JsonArray();
+        foreach (var item in items)
+        {
+            copy.Add(item);
+            array.Add(item is null ? null : Node(item));
+        }
+        Set(field, array);
+        return new ReadOnlyCollection<T?>(copy);
+    }
+
     public IReadOnlyList<string> Strings(string field, IEnumerable<string>? items)
     {
         if (items is null)

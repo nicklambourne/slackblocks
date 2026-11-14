@@ -93,7 +93,7 @@ def field_type(field: dict, enum_values: dict[str, list[str]]) -> str:
     if kind == "object":
         return target
     if kind == "list":
-        return f"Array[{target}]"
+        return f"Array[{target}?]" if field.get("nullableItems") else f"Array[{target}]"
     if kind == "rows":
         return f"Array[Array[{target}]]"
     if kind == "text":
@@ -181,6 +181,7 @@ def model_outputs(model: dict) -> tuple[str, str, str]:
                 "target": field.get("type"), "coerce": field.get("coerce"),
                 "flags": field.get("flags"), "limits": field.get("limits"),
                 "required": field.get("required", False),
+                **({"nullable_items": True} if field.get("nullableItems") else {}),
             })
         defaults = {
             ruby_name(next(field["method"] for field in item["fields"] if field["wire"] == wire)): value

@@ -2010,8 +2010,8 @@ newtype TableBlock = CheckedTableBlock TableBlockFields deriving (Eq, Show)
 data TableBlockFields = TableBlockFields
   { -- | Adds complete table rows in display order. Required. Shared limit: @table.rows@.
     tableBlockRows :: [[TableCell]],
-    -- | Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @table.column_settings@.
-    tableBlockColumnSettings :: Maybe ([ColumnSettings]),
+    -- | Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @table.column_settings@.
+    tableBlockColumnSettings :: Maybe ([Maybe ColumnSettings]),
     -- | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Optional; Nothing omits the field. Factory default: @Nothing@. Shared limit: @block_id@.
     tableBlockBlockId :: Maybe (Text),
     -- | Unmodeled extension fields. Reserved and modeled keys are rejected.

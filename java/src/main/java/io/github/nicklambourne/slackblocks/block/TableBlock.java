@@ -11,6 +11,7 @@ import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.ColumnSettings;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode
@@ -58,15 +59,14 @@ public final class TableBlock implements Block, LayoutChild, LayoutFallback {
   }
 
   /**
-   * Returns settings for leading columns in column order. Omitted trailing columns retain Slack
-   * defaults; fewer entries than columns are valid.
+   * Returns the {@code column_settings} field.
    *
    * @return the values in order, or an empty list when none were set
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
    *     type cannot represent
    */
-  public List<ColumnSettings> getColumnSettings() {
-    return TypedFields.list(fields, "TableBlock", "column_settings", ColumnSettings.class);
+  public List<@Nullable ColumnSettings> getColumnSettings() {
+    return TypedFields.nullableList(fields, "TableBlock", "column_settings", ColumnSettings.class);
   }
 
   @Override
@@ -116,16 +116,16 @@ public final class TableBlock implements Block, LayoutChild, LayoutFallback {
     }
 
     /**
-     * Adds settings for leading columns in column order. Omitted trailing columns retain Slack
-     * defaults; fewer entries than columns are valid.
+     * Optional settings for leading columns, up to 20 entries. Use null to retain a column’s
+     * default settings without shifting later entries.
      *
      * <p>Slack allows at most 20 items. Each call appends to any values already added.
      *
      * @param values {@link ColumnSettings} values appended in order
      * @return this builder
      */
-    public Builder columnSettings(ColumnSettings... values) {
-      state.append("column_settings", (Object[]) values);
+    public Builder columnSettings(@Nullable ColumnSettings... values) {
+      state.appendNullable("column_settings", (Object[]) values);
       return this;
     }
 

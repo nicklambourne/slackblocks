@@ -78,7 +78,7 @@ def doc_type(field, parameter=False):
     kind = field["kind"]
     target = field.get("type", "string")
     base = {
-        "list": f"list<{target}>",
+        "list": f"list<{target}|null>" if field.get("nullableItems") else f"list<{target}>",
         "rows": f"list<list<{target}>>",
         "textList": f"list<{target}|string>" if parameter else f"list<{target}>",
         "stringList": "list<string>",

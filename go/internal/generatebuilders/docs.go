@@ -43,15 +43,16 @@ type modelType struct {
 }
 
 type modelField struct {
-	GoMethod    string   `json:"goMethod"`
-	Wire        string   `json:"wire"`
-	Kind        string   `json:"kind"`
-	Type        string   `json:"type"`
-	Coerce      string   `json:"coerce"`
-	Flags       []string `json:"flags"`
-	Description string   `json:"description"`
-	Required    bool     `json:"required"`
-	Limits      string   `json:"limits"`
+	NullableItems bool     `json:"nullableItems"`
+	GoMethod      string   `json:"goMethod"`
+	Wire          string   `json:"wire"`
+	Kind          string   `json:"kind"`
+	Type          string   `json:"type"`
+	Coerce        string   `json:"coerce"`
+	Flags         []string `json:"flags"`
+	Description   string   `json:"description"`
+	Required      bool     `json:"required"`
+	Limits        string   `json:"limits"`
 }
 
 // builderDocs holds the documentation generated for one constructor's builder.

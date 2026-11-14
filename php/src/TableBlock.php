@@ -17,8 +17,8 @@ final readonly class TableBlock extends Value implements Block, LayoutChild, Lay
      */
     public array $rows;
 
-    /** Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid.
-     * @var list<ColumnSettings>|null
+    /** Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries.
+     * @var list<ColumnSettings|null>|null
      */
     public array|null $columnSettings;
 
@@ -29,7 +29,7 @@ final readonly class TableBlock extends Value implements Block, LayoutChild, Lay
 
     /**
      * @param list<list<TableCell>> $rows Adds complete table rows in display order.
-     * @param list<ColumnSettings>|null $columnSettings Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid.
+     * @param list<ColumnSettings|null>|null $columnSettings Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries.
      * @param string|null $blockId Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
      * @param JsonObject|null $extensions Additional JSON fields; modeled names and type are reserved.
      */

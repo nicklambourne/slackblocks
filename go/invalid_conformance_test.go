@@ -155,6 +155,8 @@ func invalidConstruction(id string) error {
 	case "layout-three-charts":
 		return buildError(slackblocks.NewMessage().Channel("C123").Blocks([]slackblocks.Block{slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...), slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments([]*slackblocks.ChartSegmentBuilder{slackblocks.NewChartSegment().Label("One").Value(1)}...)))}...)}...)}...))
 
+	case "raw-number-empty-text":
+		return buildError(slackblocks.NewRawNumber().Value(0).Text(""))
 	case "text-empty":
 		return buildError(slackblocks.NewPlainText().Text(""))
 	case "text-too-long":
@@ -511,7 +513,7 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewContainerBlock().Title("Container").ChildBlocks())
 	case "table-too-many-column-settings":
 		return buildError(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText("A")}).ColumnSettings(copies(slackblocks.LimitTableColumnSettingsMaxItems+1, func(int) *slackblocks.ColumnSettingsBuilder {
-			return slackblocks.NewColumnSettings().IsWrapped(true)
+			return nil
 		})...))
 	case "data-table-row-header-index-negative":
 		return buildError(slackblocks.NewDataTableBlock().Rows(validRows()...).Caption("Names").RowHeaderColumnIndex(slackblocks.LimitDataTableRowHeaderColumnIndexMin - 1))

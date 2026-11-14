@@ -551,6 +551,8 @@ final class InvalidConformanceTest {
                                                   List.of(
                                                       map("label", "One", "value", 1))))))))))));
 
+      case "raw-number-empty-text" ->
+          invalid("RawNumber", map("type", "raw_number", "value", 0, "text", ""));
       case "text-empty" -> invalid("PlainText", text("plain_text", ""));
       case "text-too-long" -> invalid("PlainText", text("plain_text", repeated("x", 3001)));
       case "button-agent-prompt-too-long" ->
@@ -1335,9 +1337,7 @@ final class InvalidConformanceTest {
               "rows",
               List.of(List.of(rawText("A"))),
               "column_settings",
-              copies(
-                  SlackLimits.TABLE_COLUMN_SETTINGS_MAX_ITEMS + 1,
-                  index -> map("is_wrapped", true)));
+              copies(SlackLimits.TABLE_COLUMN_SETTINGS_MAX_ITEMS + 1, index -> null));
       case "data-table-row-header-index-negative" ->
           dataTable(
               validRows(),

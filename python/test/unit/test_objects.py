@@ -395,3 +395,14 @@ def test_axis_chart_repr_renders_as_json(chart_class: type, type_name: str) -> N
 def test_axis_chart_axis_config_must_be_an_axis_config() -> None:
     with pytest.raises(TypeMismatchError):
         LineChart([DataSeries("Series", [DataPoint("A", 1)])], axis_config="nope")
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_raw_number_rejects_non_finite(value):
+    with pytest.raises(InvalidUsageError):
+        RawNumber(value, "number")
+
+
+def test_raw_number_preserves_large_integer():
+    cell = RawNumber(10**400, "large")
+    assert cell._resolve() == {"type": "raw_number", "value": 10**400, "text": "large"}

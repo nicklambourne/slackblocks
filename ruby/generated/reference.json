@@ -708,10 +708,10 @@
         {
           "name": "column_settings",
           "wire": "column_settings",
-          "type": "Array[ColumnSettings]",
-          "readerType": "Array[ColumnSettings]",
+          "type": "Array[ColumnSettings?]",
+          "readerType": "Array[ColumnSettings?]",
           "required": false,
-          "description": "Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid."
+          "description": "Optional settings for leading columns, up to 20 entries. Use null to retain a column’s default settings without shifting later entries."
         },
         {
           "name": "block_id",

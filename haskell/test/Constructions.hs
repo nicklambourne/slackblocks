@@ -32,7 +32,8 @@ numericTable = do
   count <- buildRawNumber (rawNumber 42 "42 items")
   three <- buildRawNumber (rawNumber 3 "Three")
   setting <- buildColumnSettings (columnSettings {columnSettingsAlign = Just ColumnAlignRight})
-  buildTableBlock ((tableBlock [[rawTextAsTableCell label, rawNumberAsTableCell count], [rawNumberAsTableCell three]]) {tableBlockColumnSettings = Just [setting], tableBlockBlockId = Just "fake_block_id"})
+  zero <- buildRawNumber (rawNumber 0 "0")
+  buildTableBlock ((tableBlock [[rawTextAsTableCell label, rawNumberAsTableCell count, rawNumberAsTableCell zero], [rawNumberAsTableCell three]]) {tableBlockColumnSettings = Just [Nothing, Just setting, Nothing], tableBlockBlockId = Just "fake_block_id"})
 
 numericTextTable :: Int -> Result TableBlock
 numericTextTable n = do
@@ -319,7 +320,7 @@ valid32 = do
   v9 <- buildRichTextBlock ((richTextBlock [richTextSectionAsRichTextBlockElement v8]) {richTextBlockBlockId = Nothing})
   v10 <- buildColumnSettings (columnSettings {columnSettingsAlign = Nothing, columnSettingsIsWrapped = Just True})
   v11 <- buildColumnSettings (columnSettings {columnSettingsAlign = Just ColumnAlignRight, columnSettingsIsWrapped = Nothing})
-  v12 <- buildTableBlock ((tableBlock [[rawTextAsTableCell v0, rawTextAsTableCell v1], [rawTextAsTableCell v2, richTextBlockAsTableCell v5], [rawTextAsTableCell v6, richTextBlockAsTableCell v9]]) {tableBlockColumnSettings = Just [v10, v11], tableBlockBlockId = Just "fake_block_id"})
+  v12 <- buildTableBlock ((tableBlock [[rawTextAsTableCell v0, rawTextAsTableCell v1], [rawTextAsTableCell v2, richTextBlockAsTableCell v5], [rawTextAsTableCell v6, richTextBlockAsTableCell v9]]) {tableBlockColumnSettings = Just [Just v10, Just v11], tableBlockBlockId = Just "fake_block_id"})
   pure (toJSON v12)
 
 valid33 :: Result Value
@@ -913,6 +914,7 @@ validCases =
     ("blocks/section_block_single_field_value_coercion", valid30, \value -> toJSON <$> (fromValue value :: Result SectionBlock)),
     ("blocks/section_block_text_only", valid31, \value -> toJSON <$> (fromValue value :: Result SectionBlock)),
     ("blocks/table_block", valid32, \value -> toJSON <$> (fromValue value :: Result TableBlock)),
+    ("blocks/table_sparse_defaults", toJSON <$> sparseDefaultsTable, \value -> toJSON <$> (fromValue value :: Result TableBlock)),
     ("blocks/table_numeric", toJSON <$> numericTable, \value -> toJSON <$> (fromValue value :: Result TableBlock)),
     ("blocks/table_text_at_limit", toJSON <$> numericTextTable 10000, \value -> toJSON <$> (fromValue value :: Result TableBlock)),
     ("messages/message_table_total_at_limit", toJSON <$> tableMessage 5000, \value -> toJSON <$> (fromValue value :: Result MessagePayload)),
@@ -2012,8 +2014,7 @@ invalid165 = do
 invalid166 :: Result ()
 invalid166 = do
   v0 <- buildRawText (rawText "A")
-  v1 <- buildColumnSettings (columnSettings {columnSettingsAlign = Nothing, columnSettingsIsWrapped = Just True})
-  v2 <- buildTableBlock ((tableBlock [[rawTextAsTableCell v0]]) {tableBlockColumnSettings = Just (replicate 21 v1), tableBlockBlockId = Nothing})
+  v2 <- buildTableBlock ((tableBlock [[rawTextAsTableCell v0]]) {tableBlockColumnSettings = Just (replicate 21 Nothing), tableBlockBlockId = Nothing})
   v2 `seq` pure ()
 
 invalid167 :: Result ()
@@ -2197,7 +2198,8 @@ invalid188 = do
 
 invalidCases :: [(String, Maybe (Result ()), Result ())]
 invalidCases =
-  [ ("layout-home-alert", Just invalidLayoutAudit0, void (fromValue (object ["type" .= String "home", "blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "alert", "text" .= object ["type" .= String "plain_text", "text" .= String "Modal only"]]]] :: [Value])]] :: [Value])]] :: [Value])]) :: Result HomeTabView)),
+  [ ("raw-number-empty-text", Just (void (buildRawNumber (rawNumber 0 ""))), void (fromValue (object ["type" .= String "raw_number", "value" .= (0 :: Int), "text" .= String ""]) :: Result RawNumber)),
+    ("layout-home-alert", Just invalidLayoutAudit0, void (fromValue (object ["type" .= String "home", "blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "alert", "text" .= object ["type" .= String "plain_text", "text" .= String "Modal only"]]]] :: [Value])]] :: [Value])]] :: [Value])]) :: Result HomeTabView)),
     ("layout-modal-fallback-table", Just invalidLayoutAudit1, void (fromValue (object ["type" .= String "modal", "title" .= object ["type" .= String "plain_text", "text" .= String "Grid"], "blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value]), "fallback" .= toJSON ([object ["type" .= String "table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "Cell"]] :: [Value])] :: [Value])]] :: [Value])]] :: [Value])]) :: Result ModalView)),
     ("layout-chart-three-items", Just invalidLayoutAudit2, void (fromValue (object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]], object ["block" .= object ["type" .= String "data_visualization", "title" .= String "Chart", "chart" .= object ["type" .= String "pie", "segments" .= toJSON ([object ["label" .= String "One", "value" .= Number 1]] :: [Value])]]], object ["block" .= object ["type" .= String "divider"]]] :: [Value])]) :: Result LayoutRow)),
     ("layout-nested-table-total", Just invalidLayoutAudit3, void (fromValue (object ["channel" .= String "C123", "blocks" .= toJSON ([object ["type" .= String "container", "title" .= object ["type" .= String "plain_text", "text" .= String "Group"], "child_blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "H"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String (T.replicate 10000 "x")]] :: [Value])] :: [Value]), "caption" .= String "Data"]]] :: [Value])]] :: [Value])], object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "H"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String (T.replicate 10000 "x")]] :: [Value])] :: [Value]), "caption" .= String "Data"]]] :: [Value])]] :: [Value])]] :: [Value])]] :: [Value])]) :: Result MessagePayload)),
@@ -2387,7 +2389,7 @@ invalidCases =
     ("image-block-url-and-slack-file", Just invalid163, void (fromValue (object ["type" .= String "image", "image_url" .= String "https://example.com/image.png", "slack_file" .= object ["id" .= String "F0123ABC456"], "alt_text" .= String "Alt"]) :: Result ImageBlock)),
     ("image-block-missing-source", Just invalid164, void (fromValue (object ["type" .= String "image", "alt_text" .= String "Alt"]) :: Result ImageBlock)),
     ("container-no-child-blocks", Just invalid165, void (fromValue (object ["type" .= String "container", "title" .= object ["type" .= String "plain_text", "text" .= String "Container"], "child_blocks" .= toJSON ([] :: [Value])]) :: Result ContainerBlock)),
-    ("table-too-many-column-settings", Just invalid166, void (fromValue (object ["type" .= String "table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "A"]] :: [Value])] :: [Value]), "column_settings" .= toJSON (replicate 21 (object ["is_wrapped" .= Bool True]))]) :: Result TableBlock)),
+    ("table-too-many-column-settings", Just invalid166, void (fromValue (object ["type" .= String "table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "A"]] :: [Value])] :: [Value]), "column_settings" .= toJSON (replicate 21 Null)]) :: Result TableBlock)),
     ("data-table-row-header-index-negative", Just invalid167, void (fromValue (object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "Name"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String "Alice"]] :: [Value])] :: [Value]), "caption" .= String "Names", "row_header_column_index" .= Number (-1)]) :: Result DataTableBlock)),
     ("data-table-total-content-too-long", Just invalid168, void (fromValue (object ["channel" .= String "C123", "blocks" .= toJSON ([object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "Name"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String (T.replicate 9997 "x")]] :: [Value])] :: [Value]), "caption" .= String "Names"], object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "Name"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String (T.replicate 9997 "x")]] :: [Value])] :: [Value]), "caption" .= String "Names"]] :: [Value])]) :: Result MessagePayload)),
     ("markdown-total-too-long", Just invalid169, void (fromValue (object ["channel" .= String "C123", "blocks" .= toJSON ([object ["type" .= String "markdown", "text" .= String (T.replicate 6001 "x")], object ["type" .= String "markdown", "text" .= String (T.replicate 6001 "x")]] :: [Value])]) :: Result MessagePayload)),
@@ -2729,3 +2731,8 @@ invalidLayoutAudit3 = do
   v13 <- buildContainerBlock ((containerBlock [layoutBlockAsBlock v6, layoutBlockAsBlock v12]) {containerBlockTitle = Just v0})
   v14 <- buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [containerBlockAsBlock v13]})
   v14 `seq` pure ()
+
+sparseDefaultsTable :: Result TableBlock
+sparseDefaultsTable = do
+  cell <- buildRawText (rawText "Defaults")
+  buildTableBlock ((tableBlock [[rawTextAsTableCell cell]]) {tableBlockColumnSettings = Just (replicate 20 Nothing), tableBlockBlockId = Just "fake_block_id"})

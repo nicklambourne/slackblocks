@@ -282,7 +282,7 @@ internal sealed class FixtureDriver
 
                 return false;
             case "list":
-                return value is JsonArray items && TryTypedArray(items, target, path, out argument);
+                return value is JsonArray items && TryTypedArray(items, target, path, out argument, field["nullableItems"]?.GetValue<bool>() == true);
             case "rows":
                 return value is JsonArray rows && TryRows(rows, target, path, out argument);
             case "text":
@@ -322,13 +322,13 @@ internal sealed class FixtureDriver
         }
     }
 
-    private bool TryTypedArray(JsonArray items, Type target, string path, out object? argument)
+    private bool TryTypedArray(JsonArray items, Type target, string path, out object? argument, bool nullableItems = false)
     {
         var array = Array.CreateInstance(target, items.Count);
         for (var index = 0; index < items.Count; index++)
         {
             var built = Build(items[index], target, $"{path}[{index}]");
-            if (!target.IsInstanceOfType(built))
+            if (!(built is null && nullableItems) && !target.IsInstanceOfType(built))
             {
                 argument = null;
                 return false;

@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+- Require non-empty numeric display labels in both plain and data tables, matching the isolated Slack validation probe.
+
+- Preserve skipped columns in sparse table column settings through native APIs and supported parsers. Null entries count toward the existing 20-column-settings limit.
+- Expose table column settings as `Option<ColumnSettings>` entries; existing non-null setter inputs remain accepted.
+
 - Add numeric plain-table cells and enforce Slack’s documented 10,000-character per-table and message-wide limits (spec 1.6.0). Count displayed cell text as Unicode code points, including composed blocks and attachments; ragged rows and partial column settings remain valid. Previously accepted over-limit tables now fail validation. Runtime floors and package versions are unchanged.
 
 ## [3.2.0] — 2026-10-31

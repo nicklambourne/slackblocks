@@ -126,6 +126,7 @@ def generate():
                     coerce=f.get("coerce"),
                     limits=f.get("limits"),
                     flags=f.get("flags", []),
+                    **({"nullable_items": True} if f.get("nullableItems") else {}),
                 )
             )
             defaults.append(f"{key}: {literal(default)}")
@@ -150,7 +151,7 @@ def generate():
                     else f"{names[ref]}.t()"
                 )
                 if kind in ("list", "textList"):
-                    typ = f"[{typ}]"
+                    typ = f"[{typ} | nil]" if f.get("nullableItems") else f"[{typ}]"
                 elif kind == "rows":
                     typ = f"[[{typ}]]"
             if not f.get("required"):

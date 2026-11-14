@@ -457,10 +457,16 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
             ],
         ],
     ),
+    "blocks/table_sparse_defaults": lambda: TableBlock(
+        rows=[[RawText("Defaults")]], column_settings=[None] * 20, block_id="fake_block_id"
+    ),
     "blocks/table_numeric": lambda: TableBlock(
         block_id="fake_block_id",
-        rows=[[RawText("Count"), RawNumber(42, "42 items")], [RawNumber(3, "Three")]],
-        column_settings=[ColumnSettings(align="right")],
+        rows=[
+            [RawText("Count"), RawNumber(42, "42 items"), RawNumber(0, "0")],
+            [RawNumber(3, "Three")],
+        ],
+        column_settings=[None, ColumnSettings(align="right"), None],
     ),
     "blocks/table_text_at_limit": lambda: TableBlock(
         block_id="fake_block_id", rows=[[RawNumber(1, "😀" * 10000)]]

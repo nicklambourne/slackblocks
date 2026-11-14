@@ -1037,6 +1037,20 @@ pub const VALID: &[ValidCase] = &[
         parse: |v| TableBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
     },
     ValidCase {
+        id: "blocks/table_sparse_defaults",
+        build: || {
+            Ok(serde_json::to_value(
+                TableBlock::builder()
+                    .block_id("fake_block_id")
+                    .rows([vec![RawText::new("Defaults")?]])
+                    .column_settings(vec![None::<ColumnSettings>; 20])
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| TableBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
         id: "blocks/table_numeric",
         build: || {
             let value = TableBlock::builder()
@@ -1045,15 +1059,20 @@ pub const VALID: &[ValidCase] = &[
                     vec![
                         TableCell::from(RawText::builder().text("Count").build()?),
                         TableCell::from(RawNumber::builder().value(42).text("42 items").build()?),
+                        TableCell::from(RawNumber::builder().value(0).text("0").build()?),
                     ],
                     vec![TableCell::from(
                         RawNumber::builder().value(3).text("Three").build()?,
                     )],
                 ])
                 .column_settings(vec![
-                    ColumnSettings::builder()
-                        .align(ColumnAlign::Right)
-                        .build()?,
+                    None,
+                    Some(
+                        ColumnSettings::builder()
+                            .align(ColumnAlign::Right)
+                            .build()?,
+                    ),
+                    None,
                 ])
                 .build()?;
             Ok(serde_json::to_value(value).unwrap())
