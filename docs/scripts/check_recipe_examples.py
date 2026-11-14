@@ -76,7 +76,11 @@ def check_result(recipe, value, language):
     assert isinstance(value, dict), (recipe, value)
     objects = list(descendants(value))
     types = {obj.get("type") for obj in objects if isinstance(obj.get("type"), str)}
-    contract = next(item["contract"] for item in json.loads((EXAMPLES / "catalog.json").read_text()) if item["id"] == recipe)
+    contract = next(
+        item["contract"]
+        for item in json.loads((EXAMPLES / "catalog.json").read_text())
+        if item["id"] == recipe
+    )
     root = contract.get("root_by_language", {}).get(language, contract["root"])
     actual_root = "result" if "handled" in value else value.get("type", "message")
     assert actual_root == root, (recipe, language, actual_root, root)
@@ -84,10 +88,15 @@ def check_result(recipe, value, language):
     if recipe == "build-notification":
         assert any(obj.get("type") == "section" and obj.get("fields") for obj in objects)
     elif recipe == "rich-alert":
-        assert any(obj.get("type") == "text" and obj.get("style", {}).get("bold") is True for obj in objects)
+        assert any(
+            obj.get("type") == "text" and obj.get("style", {}).get("bold") is True
+            for obj in objects
+        )
     elif recipe == "workflow-button":
         button = next(obj for obj in objects if obj.get("type") == "workflow_button")
-        assert button["action_id"] and button["workflow"]["trigger"]["url"].startswith("https://slack.com/shortcuts/")
+        assert button["action_id"] and button["workflow"]["trigger"]["url"].startswith(
+            "https://slack.com/shortcuts/"
+        )
         assert button["workflow"]["trigger"]["customizable_input_parameters"]
     elif recipe == "parse-json":
         assert value["text"]["text"]
@@ -107,12 +116,19 @@ def check_result(recipe, value, language):
         assert value["response_type"] == "ephemeral"
     elif recipe == "status-table":
         assert value["channel"] == "C1" and value["text"] == "Service status"
-        table, = value["blocks"]
+        (table,) = value["blocks"]
         assert [[c["text"] for c in row] for row in table["rows"]] == [
-            ["Service", "Status"], ["API", "Healthy"], ["Worker", "Degraded"],
+            ["Service", "Status"],
+            ["API", "Healthy"],
+            ["Worker", "Degraded"],
         ]
     elif recipe == "colored-attachment":
-        assert value["attachments"][0]["color"] in {"good", "warning", "danger", "#ffff00"}
+        assert value["attachments"][0]["color"] in {
+            "good",
+            "warning",
+            "danger",
+            "#ffff00",
+        }
         assert value["attachments"][0]["blocks"]
     elif recipe == "validation-errors":
         assert value == {"category": "length-exceeded", "handled": True}
@@ -150,13 +166,21 @@ def check_result(recipe, value, language):
             assert len(actions) == count
             assert [item["type"] for item in actions] == ["button"] * count
             # Deliberately differs from Slack's visual order. Do not sort the wire array.
-            assert [item["action_id"] for item in actions] == ["approve", "reject", "details"][
-                :count
-            ]
-            assert [item.get("style") for item in actions] == ["primary", "danger", None][:count]
-            assert [item["text"]["text"] for item in actions] == ["Approve", "Reject", "Details"][
-                :count
-            ]
+            assert [item["action_id"] for item in actions] == [
+                "approve",
+                "reject",
+                "details",
+            ][:count]
+            assert [item.get("style") for item in actions] == [
+                "primary",
+                "danger",
+                None,
+            ][:count]
+            assert [item["text"]["text"] for item in actions] == [
+                "Approve",
+                "Reject",
+                "Details",
+            ][:count]
             assert all(item["value"] == "release-42" for item in actions)
 
 

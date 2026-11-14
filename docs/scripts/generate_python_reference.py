@@ -173,11 +173,18 @@ def render_docstring(doc: str, parent: Any = None) -> str:
             rendered.append(section.value)
         elif isinstance(section, griffe.DocstringSectionParameters):
             rows = [
-                (f"`{parameter.name}`", render_type(parameter.annotation), parameter.description)
+                (
+                    f"`{parameter.name}`",
+                    render_type(parameter.annotation),
+                    parameter.description,
+                )
                 for parameter in section.value
             ]
             rendered.extend(
-                ["<h3>Arguments</h3>", markdown_table(("Argument", "Type", "Description"), rows)]
+                [
+                    "<h3>Arguments</h3>",
+                    markdown_table(("Argument", "Type", "Description"), rows),
+                ]
             )
         elif isinstance(section, griffe.DocstringSectionRaises):
             rows = [(render_type(error.annotation), error.description) for error in section.value]
@@ -218,7 +225,10 @@ def render_symbol(name: str, value: Any, parent: Any = None) -> str:
     alias = TYPE_ALIAS_DETAILS.get(name)
     if get_origin(value) is Literal:
         values = ", ".join(repr(item) for item in get_args(value))
-        alias = (f"Literal[{values}]", "Accepted wire values. Use one of these strings; this alias is not a constructor.")
+        alias = (
+            f"Literal[{values}]",
+            "Accepted wire values. Use one of these strings; this alias is not a constructor.",
+        )
     kind = (
         "Type alias"
         if alias

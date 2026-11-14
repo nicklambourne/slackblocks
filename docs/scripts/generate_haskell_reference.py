@@ -70,6 +70,7 @@ def describe_limits(text, limits):
             value = value[part]
         bounds = ", ".join(f"{name.replace('_', ' ')}: {bound}" for name, bound in value.items())
         return f"Shared limit: `{key}` ({bounds})."
+
     text = re.sub(r"Shared limit: `([^`]+)`\.", replace, text)
     # Some native comments contain literal URLs rather than Haddock hyperlinks.
     return re.sub(r"(?<![\[(])(https://docs\.slack\.dev/[^\s<>]+)", r"[Slack reference](\1)", text)
@@ -223,10 +224,18 @@ def main():
     if directory.exists():
         shutil.rmtree(directory)
     directory.mkdir(parents=True)
+
     def family(entry):
         name = entry["name"].rsplit(".", 1)[-1]
         for model in sorted(model_domains, key=len, reverse=True):
-            if name.startswith((model, model[0].lower() + model[1:], "build" + model, "inspect" + model)):
+            if name.startswith(
+                (
+                    model,
+                    model[0].lower() + model[1:],
+                    "build" + model,
+                    "inspect" + model,
+                )
+            ):
                 return (model.lower(), 0 if name == model else 1, name.lower())
         return (name.lower(), 0, name.lower())
 
@@ -234,7 +243,16 @@ def main():
         text = f"---\nsidebar_position: {position}\n---\n\n# {title}\n\nSignatures come from GHC; descriptions come from compiled Haddock comments. Import `Slackblocks` or the defining public module. Checked values encode with Aeson; field records must be built first.\n\n"
         selected = sorted((entry for entry in entries if entry["domain"] == slug), key=family)
         text += "import ReferenceIndex from '@site/src/components/ReferenceIndex';\n\n"
-        text += "<ReferenceIndex entries={" + json.dumps([{"name": e["name"].rsplit(".", 1)[-1], "href": "#" + e["anchor"]} for e in selected]) + "} />\n\n"
+        text += (
+            "<ReferenceIndex entries={"
+            + json.dumps(
+                [
+                    {"name": e["name"].rsplit(".", 1)[-1], "href": "#" + e["anchor"]}
+                    for e in selected
+                ]
+            )
+            + "} />\n\n"
+        )
         for entry in selected:
             text += (
                 f"## {entry['name'].rsplit('.', 1)[-1]} {{#{entry['anchor']}}}\n\n{entry['doc']}\n\n```haskell\n"
