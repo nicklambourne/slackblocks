@@ -206,13 +206,23 @@ def main():
                 return model_domains[model]
         return "core"
 
-    links = {name: f"/reference/haskell/{domain(name)}#{anchor(name)}" for name in signatures}
+    # Keep existing type anchors; case-distinct value names need their own targets.
+    anchors = {}
+    used = set()
+    for name in sorted(signatures):
+        target = anchor(name)
+        if target in used:
+            target += "-value"
+        assert target not in used, (name, target)
+        used.add(target)
+        anchors[name] = target
+    links = {name: f"/reference/haskell/{domain(name)}#{anchors[name]}" for name in signatures}
     limits = json.loads((ROOT / "spec/limits.json").read_text())
     entries = [
         {
             "name": name,
             "domain": domain(name),
-            "anchor": anchor(name),
+            "anchor": anchors[name],
             "signatures": signatures[name],
             "doc": describe_limits(prose(comments[name], links).strip(), limits),
         }
