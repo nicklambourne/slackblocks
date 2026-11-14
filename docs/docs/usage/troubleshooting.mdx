@@ -14,7 +14,7 @@ omitted values, plus native helper and numeric examples.
 
 ## Why is my message body coming through with literal `*asterisks*` instead of bold?
 
-Slack supports two text types: `mrkdwn` (a Slack-flavoured markdown) and `plain_text`. `slackblocks` uses `mrkdwn` by default for `SectionBlock` text, but **`HeaderBlock`, button labels, modal titles, input labels, and tab/option labels are forced to `plain_text` by Slack** — markdown syntax in those fields is rendered literally.
+Slack supports two text types: `mrkdwn` (a Slack-flavoured markdown) and `plain_text`. `slackblocks` uses `mrkdwn` by default for `SectionBlock` text, but **`HeaderBlock`, button labels, modal titles, input labels, and tab and select/overflow option labels are forced to `plain_text` by Slack** — markdown syntax in those fields is rendered literally.
 
 If you need bold/italic styling in those places, you can't get it. If you need it elsewhere and aren't getting it, double-check you're not accidentally constructing a `Text(type_=TextType.PLAINTEXT, ...)`.
 
@@ -84,8 +84,8 @@ If a field exceeds its limit, truncate or split the content.
 
 `slackblocks` only constructs the *outgoing* payload. Handling button clicks, menu selections, and modal submissions requires:
 
-1. A public HTTPS endpoint registered as your app's **Interactivity & Shortcuts** URL.
-2. An interaction handler that parses the payload Slack POSTs to that URL.
+1. Either a public HTTPS **Interactivity & Shortcuts** Request URL, or a [Socket Mode](https://docs.slack.dev/apis/events-api/using-socket-mode/) connection. Socket Mode does not require a public HTTP endpoint.
+2. An interaction handler that processes and acknowledges the payload received through the chosen HTTP or Socket Mode transport.
 
 The [`slack-bolt`](https://slack.dev/bolt-python/) framework is the easiest way to wire this up.
 
@@ -111,13 +111,18 @@ import requests
 
 from slackblocks import Message, SectionBlock
 
-message = Message(channel="#general", blocks=SectionBlock("Hi!"))
+message = Message(channel="C0123456", text="Hi!", blocks=SectionBlock("Hi!"))
 
-requests.post(
+response = requests.post(
     "https://slack.com/api/chat.postMessage",
     json=message.to_dict(),
     headers={"Authorization": f"Bearer {os.environ['SLACK_API_TOKEN']}"},
-).raise_for_status()
+    timeout=30,
+)
+response.raise_for_status()
+result = response.json()
+if result.get("ok") is not True:
+    raise RuntimeError(f"Slack rejected the message: {result.get('error')}")
 ```
 
 ## Can I use `slackblocks` with async code?
@@ -157,7 +162,7 @@ Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 
 ## Why is my message showing literal `*asterisks*` instead of bold text?
 
-Slack supports `mrkdwn` and `plain_text`. `SectionBlock().text()` turns a string into `mrkdwn` by default, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. Markdown syntax in those fields is displayed literally.
+Slack supports `mrkdwn` and `plain_text`. `SectionBlock().text()` turns a string into `mrkdwn` by default, but Slack requires headers, button labels, modal titles, input labels, and select/overflow option labels to use `plain_text`. Markdown syntax in those fields is displayed literally.
 
 If styling is missing from a field that supports it, check that you have not wrapped the value with `PlainText()`. Use `Markdown()` when you need to choose the text type explicitly.
 
@@ -224,7 +229,7 @@ If Slack adds a field or raises a limit before the package catches up, pass `{ v
 
 ## Why don't my buttons or selects do anything when clicked?
 
-`slackblocks` only constructs outgoing payloads. Handling interactions requires a public HTTPS endpoint configured as your Slack app's **Interactivity & Shortcuts** request URL, plus code that handles the payload Slack sends there.
+`slackblocks` only constructs outgoing payloads. Handle interactions through either a public HTTPS **Interactivity & Shortcuts** Request URL or [Socket Mode](https://docs.slack.dev/apis/events-api/using-socket-mode/). Your application must acknowledge and handle the received payload using its chosen transport.
 
 [`@slack/bolt`](https://slack.dev/bolt-js/) is the usual starting point for a TypeScript or JavaScript app.
 
@@ -292,7 +297,7 @@ Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 
 ## Why is Slack showing literal `*asterisks*`?
 
-`NewSectionBlock().Text(...)` promotes a string to `mrkdwn`, but Slack requires headers, button labels, modal titles, input labels, and option labels to be `plain_text`. Markdown syntax in those fields is intentionally literal.
+`NewSectionBlock().Text(...)` promotes a string to `mrkdwn`, but Slack requires headers, button labels, modal titles, input labels, and select/overflow option labels to be `plain_text`. Markdown syntax in those fields is intentionally literal.
 
 ## Why should a message set fallback text?
 
@@ -334,7 +339,7 @@ if errors.As(err, &validation) {
 }
 ```
 
-Categories are identical across all seven languages: `length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`, `missing-required`, and `invalid-usage`.
+Categories are identical across all maintained languages: `length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`, `missing-required`, and `invalid-usage`.
 
 ## How many blocks can a payload contain?
 
@@ -346,7 +351,7 @@ Categories are identical across all seven languages: `length-exceeded`, `out-of-
 
 ## Why do buttons and select menus not respond by themselves?
 
-slackblocks only constructs outgoing JSON. Your app still needs a public HTTPS interactivity endpoint and a handler for Slack's request payload. The builders are synchronous and side-effect-free, so they work normally inside concurrent handlers.
+slackblocks only constructs outgoing JSON. Your app still needs an interaction handler, reached through either an HTTPS Request URL or [Socket Mode](https://docs.slack.dev/apis/events-api/using-socket-mode/). The builders are synchronous and side-effect-free, so they work normally inside concurrent handlers.
 
 ## How do I preview a payload?
 
@@ -383,7 +388,7 @@ invalid.
 
 ## Why is Slack showing literal `*asterisks*`?
 
-`SectionBlock.builder().markdownText(...)` creates `mrkdwn`, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. Markdown syntax in those fields is intentionally literal.
+`SectionBlock.builder().markdownText(...)` creates `mrkdwn`, but Slack requires headers, button labels, modal titles, input labels, and select/overflow option labels to use `plain_text`. Markdown syntax in those fields is intentionally literal.
 
 ## Why should a message set fallback text?
 
@@ -461,7 +466,7 @@ these models invalid.
 
 ## Why is Slack showing literal `*asterisks*`?
 
-Strings passed to a section's text become `mrkdwn`, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. slackblocks sends those fields as `plain_text`, so Markdown syntax in them is intentionally literal.
+Strings passed to a section's text become `mrkdwn`, but Slack requires headers, button labels, modal titles, input labels, and select/overflow option labels to use `plain_text`. slackblocks sends those fields as `plain_text`, so Markdown syntax in them is intentionally literal.
 
 ## Why should a message set fallback text?
 
@@ -577,6 +582,18 @@ Yes. Values are immutable and the library makes no network calls; use any asynch
 ## Where do I report bugs or request features?
 
 Use the [repository issue tracker](https://github.com/nicklambourne/slackblocks/issues).
+
+## How do I update immutable values?
+
+Keep the original value and create a checked copy with `with`. `as_json` is detached data, so edits to that hash do not mutate the original object and are not automatically revalidated. Prefer native constructors/`with` for modeled fields. See [metadata and safe edits](/usage/recipes/metadata).
+
+## Why does a builder succeed but Slack rejects the write?
+
+Local validation checks the modeled contract, not workspace permissions, trigger expiry, channel membership or feature rollout. Inspect the receiving API’s `ok` and `error`; use the [validation boundary](validation-boundary) and [live prerequisites](/usage/recipes/live-prerequisites) guides before assuming a library error.
+
+## Where do my button callbacks run?
+
+The gem constructs outgoing JSON; an application handles interactions over HTTP or Socket Mode. Authenticate the transport, acknowledge promptly, and read the action ID/value to decide the business operation. Accordion and paginator helpers also require that application handler; they do not retain server-side state.
 
 </Ruby>
 <Rust>
@@ -788,9 +805,13 @@ clears an optional field.
 </Haskell>
 </LanguageContent>
 
+## Option text depends on the parent
+
+Select, multi-select and overflow option labels require `plain_text`. Checkbox and radio-button options also accept `mrkdwn`; this is a parent-specific rule, not a rule that every option label is plain text. See [Slack’s option object](https://docs.slack.dev/reference/block-kit/composition-objects/option-object/).
+
 ## `submit_disabled` on ordinary modals
 
-Slack reserves `submit_disabled` for [workflow configuration modals](https://docs.slack.dev/reference/views/modal-views/). An ordinary `views.open` or `views.push` request should omit the field. Explicit `false` still supplies an unsupported field; it is not equivalent to omission. The general modal constructor retains the field because configuration views use the same wire type, and cannot infer the receiving workflow from the value alone.
+Slack reserves `submit_disabled` for [workflow configuration modals](https://docs.slack.dev/reference/views/modal-views/). An ordinary `views.open` or `views.push` request should omit the field. On the wire, explicit `false` still supplies an unsupported field. Python’s legacy serializer currently omits false values for this field; other APIs can preserve explicit false. Leave the option unspecified in every language rather than depending on normalization. The general modal constructor retains the field because configuration views use the same wire type, and cannot infer the receiving workflow from the value alone.
 
 | Language | Ordinary-modal construction |
 | --- | --- |
@@ -803,6 +824,7 @@ Slack reserves `submit_disabled` for [workflow configuration modals](https://doc
 | Rust | Do not call `.submit_disabled(...)` on `ModalView::builder()`. |
 | PHP | Leave `submitDisabled:` unspecified on `new ModalView(...)`. |
 | Elixir | Leave `submit_disabled:` unspecified on `Slackblocks.Views.Modal.new/1` or `new!/1`; `nil` also omits it. |
+| Haskell | Keep `modalViewSubmitDisabled = Nothing` on the `modalView` fields record. |
 
 The shared `views/modal_with_blocks` and `views/modal_without_blocks` fixtures exercise ordinary modal omission through every native conformance consumer. Slack's configuration-modal link now redirects to the [legacy Steps from Apps retirement notice](https://docs.slack.dev/changelog/2023-08-workflow-steps-from-apps-step-back/). Keeping this field preserves the documented wire API; it does not establish that a configuration workflow is currently available. Configuration-specific delivery remains unverified.
 
@@ -820,7 +842,7 @@ As an application compatibility workaround, explicitly supply a decimal string
 without redundant fractional zeros, such as `"42.5"` instead of `"42.50"` or
 `"42"` instead of `"42.00"`. Keep a zero before the decimal point (`"0.5"`). Use
 the native `initial_value` argument in Python/Ruby/Rust/Elixir, `initialValue` in
-TypeScript/Java/C#/PHP, or `InitialValue` in Go. No JSON editing is required.
+TypeScript/Java/C#/PHP, `InitialValue` in Go, or `numberInputInitialValue = Just "42.5"` in Haskell. No JSON editing is required.
 
 This is not a normative formatting restriction: the official
 [number-input reference](https://docs.slack.dev/reference/block-kit/block-elements/number-input-element/)

@@ -13,7 +13,7 @@ export const recipeOutputs = {
     "blocks": [
       {
         "text": {
-          "text": "*Approve deployment?*",
+          "text": "Approve deployment?",
           "type": "mrkdwn"
         },
         "type": "section"
@@ -28,7 +28,7 @@ export const recipeOutputs = {
               "type": "plain_text"
             },
             "type": "button",
-            "value": "482"
+            "value": "release-42"
           },
           {
             "action_id": "reject",
@@ -38,7 +38,16 @@ export const recipeOutputs = {
               "type": "plain_text"
             },
             "type": "button",
-            "value": "482"
+            "value": "release-42"
+          },
+          {
+            "action_id": "details",
+            "text": {
+              "text": "Details",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "url": "https://approvals.example.com/release-42"
           }
         ],
         "type": "actions"
@@ -82,6 +91,15 @@ export const recipeOutputs = {
             "action_id": "reject",
             "value": "release-42",
             "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "url": "https://approvals.example.com/release-42"
           }
         ]
       }
@@ -117,6 +135,15 @@ export const recipeOutputs = {
             },
             "type": "button",
             "value": "release-42"
+          },
+          {
+            "action_id": "details",
+            "text": {
+              "text": "Details",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "url": "https://approvals.example.com/release-42"
           }
         ],
         "type": "actions"
@@ -158,6 +185,15 @@ export const recipeOutputs = {
             "action_id": "reject",
             "value": "release-42",
             "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "url": "https://approvals.example.com/release-42"
           }
         ]
       }
@@ -197,6 +233,15 @@ export const recipeOutputs = {
             "action_id": "reject",
             "value": "release-42",
             "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "url": "https://approvals.example.com/release-42"
           }
         ]
       }
@@ -211,7 +256,7 @@ export const recipeOutputs = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "*Approve deployment?*"
+          "text": "Approve deployment?"
         }
       },
       {
@@ -224,7 +269,7 @@ export const recipeOutputs = {
               "text": "Approve"
             },
             "action_id": "approve",
-            "value": "482",
+            "value": "release-42",
             "style": "primary"
           },
           {
@@ -234,8 +279,17 @@ export const recipeOutputs = {
               "text": "Reject"
             },
             "action_id": "reject",
-            "value": "482",
+            "value": "release-42",
             "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "url": "https://approvals.example.com/release-42"
           }
         ]
       }
@@ -244,13 +298,13 @@ export const recipeOutputs = {
     "mrkdwn": true
   },
   "rust": {
-    "channel": "C01234567",
+    "channel": "C1",
     "blocks": [
       {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "Approve this release?"
+          "text": "Approve deployment?"
         }
       },
       {
@@ -275,6 +329,15 @@ export const recipeOutputs = {
             "action_id": "reject",
             "value": "release-42",
             "style": "danger"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Details"
+            },
+            "action_id": "details",
+            "url": "https://approvals.example.com/release-42"
           }
         ]
       }
@@ -286,7 +349,7 @@ export const recipeOutputs = {
     "blocks": [
       {
         "text": {
-          "text": "*Approve deployment?*",
+          "text": "Approve deployment?",
           "type": "mrkdwn"
         },
         "type": "section"
@@ -301,7 +364,7 @@ export const recipeOutputs = {
               "type": "plain_text"
             },
             "type": "button",
-            "value": "482"
+            "value": "release-42"
           },
           {
             "action_id": "reject",
@@ -311,7 +374,16 @@ export const recipeOutputs = {
               "type": "plain_text"
             },
             "type": "button",
-            "value": "482"
+            "value": "release-42"
+          },
+          {
+            "action_id": "details",
+            "text": {
+              "text": "Details",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "url": "https://approvals.example.com/release-42"
           }
         ],
         "type": "actions"
@@ -354,6 +426,15 @@ export const recipeOutputs = {
             "value": "release-42",
             "style": "danger",
             "type": "button"
+          },
+          {
+            "text": {
+              "text": "Details",
+              "type": "plain_text"
+            },
+            "action_id": "details",
+            "url": "https://approvals.example.com/release-42",
+            "type": "button"
           }
         ],
         "type": "actions"
@@ -365,24 +446,16 @@ export const recipeOutputs = {
     "mrkdwn": true,
     "blocks": [
       {
-        "type": "header",
-        "block_id": "<generated-block-id>",
-        "text": {
-          "type": "plain_text",
-          "text": ":hand: Approval needed"
-        }
-      },
-      {
         "type": "section",
         "block_id": "<generated-block-id>",
         "text": {
           "type": "mrkdwn",
-          "text": "*Requested by:* Nick\n\nDeploy version 3.1.0?"
+          "text": "Approve deployment?"
         }
       },
       {
         "type": "actions",
-        "block_id": "approval:release-42",
+        "block_id": "<generated-block-id>",
         "elements": [
           {
             "type": "button",
@@ -408,92 +481,45 @@ export const recipeOutputs = {
             "type": "button",
             "text": {
               "type": "plain_text",
-              "text": "View details"
+              "text": "Details"
             },
             "action_id": "details",
             "url": "https://approvals.example.com/release-42"
           }
         ]
-      },
-      {
-        "type": "context",
-        "block_id": "<generated-block-id>",
-        "elements": [
-          {
-            "type": "mrkdwn",
-            "text": "Request ID: `release-42`"
-          }
-        ]
       }
     ],
-    "text": "Approval requested by Nick"
+    "text": "Approval requested"
   }
 };
 
 # Approval request with action buttons
 
-Carry a stable request identifier in action values. The application must authenticate callbacks and implement the approve/reject actions.
+Every language builds the same message: a deployment question, Approve/Reject actions carrying `release-42`, and a Details link. The application authenticates and acknowledges callbacks through HTTP or Socket Mode and implements the approve/reject actions. No request is sent by these examples.
 
 <RecipeOutput recipe="approval-request" outputs={recipeOutputs} />
 
 ## Code
 
+**Shared example contract:** The same release-42 approval message in every language: Approve, Reject and Details, with matching actions and fallback text.
+
 <LanguageContent>
 
 <Python>
 
-An approval flow with approve, reject and details buttons. The buttons carry `value` or `action_id` so your interaction handler can identify them.
-
 ```python
-from slackblocks import (
-    ActionsBlock,
-    Button,
-    ContextBlock,
-    HeaderBlock,
-    Message,
-    SectionBlock,
-    Text,
-)
+from slackblocks import ActionsBlock, Button, Message, SectionBlock
 
-
-def approval_request(*, channel: str, request_id: str, requester: str, summary: str) -> Message:
-    return Message(
-        channel=channel,
-        text=f"Approval requested by {requester}",
-        blocks=[
-            HeaderBlock(":hand: Approval needed"),
-            SectionBlock(text=f"*Requested by:* {requester}\n\n{summary}"),
-            ActionsBlock(
-                block_id=f"approval:{request_id}",
-                elements=[
-                    Button(
-                        text="Approve",
-                        action_id="approve",
-                        value=request_id,
-                        style="primary",
-                    ),
-                    Button(
-                        text="Reject",
-                        action_id="reject",
-                        value=request_id,
-                        style="danger",
-                    ),
-                    Button(
-                        text="View details",
-                        action_id="details",
-                        url=f"https://approvals.example.com/{request_id}",
-                    ),
-                ],
-            ),
-            ContextBlock(
-                elements=[Text(f"Request ID: `{request_id}`")],
-            ),
-        ],
-    )
-print(approval_request(channel="C1", request_id="release-42", requester="Nick", summary="Deploy version 3.1.0?").json())
+message = Message(channel="C1", text="Approval requested", blocks=[
+    SectionBlock("Approve deployment?"),
+    ActionsBlock(elements=[
+        Button(text="Approve", action_id="approve", value="release-42", style="primary"),
+        Button(text="Reject", action_id="reject", value="release-42", style="danger"),
+        Button(text="Details", action_id="details", url="https://approvals.example.com/release-42"),
+    ]),
+])
+print(message.json())
 ```
-
-When the user clicks a button, Slack will POST an interaction payload to your app. Match on `action_id` (`approve` / `reject` / `details`) and pull the request ID from `block_id` or the button's `value`.
 
 </Python>
 
@@ -507,6 +533,7 @@ const message = S.Message().channel("C1").text("Approval requested").blocks(
   S.ActionsBlock().elements(
     S.Button().text("Approve").actionId("approve").value("release-42").style("primary"),
     S.Button().text("Reject").actionId("reject").value("release-42").style("danger"),
+    S.Button().text("Details").actionId("details").url("https://approvals.example.com/release-42"),
   ),
 ).build();
 console.log(JSON.stringify(message));
@@ -531,6 +558,7 @@ func main() {
 		s.NewActionsBlock().Elements(
 			s.NewButton().Text("Approve").ActionID("approve").Value("release-42").Style("primary"),
 			s.NewButton().Text("Reject").ActionID("reject").Value("release-42").Style("danger"),
+			s.NewButton().Text("Details").ActionID("details").URL("https://approvals.example.com/release-42"),
 		),
 	).Build()
 	if err != nil {
@@ -562,7 +590,8 @@ public final class Recipe {
     SectionBlock.builder().markdownText("Approve deployment?").build(),
     ActionsBlock.builder().elements(
     ButtonElement.builder().text("Approve").actionId("approve").value("release-42").style(ButtonStyle.PRIMARY).build(),
-    ButtonElement.builder().text("Reject").actionId("reject").value("release-42").style(ButtonStyle.DANGER).build()).build()).build();
+    ButtonElement.builder().text("Reject").actionId("reject").value("release-42").style(ButtonStyle.DANGER).build(),
+    ButtonElement.builder().text("Details").actionId("details").url("https://approvals.example.com/release-42").build()).build()).build();
     System.out.println(value.toJson());
   }
 }
@@ -587,6 +616,7 @@ var value = new MessagePayload("C1", text: "Approval requested", blocks: [
     new ActionsBlock(elements: [
         new ButtonElement("Approve", actionId: "approve", value: "release-42", style: ButtonStyle.Primary),
         new ButtonElement("Reject", actionId: "reject", value: "release-42", style: ButtonStyle.Danger),
+        new ButtonElement("Details", actionId: "details", url: "https://approvals.example.com/release-42"),
     ]),
 ]);
 Console.WriteLine(value.ToJson());
@@ -604,7 +634,8 @@ value = MessagePayload.new(channel: "C1", text: "Approval requested", blocks: [
   SectionBlock.new(text: "Approve deployment?"),
   ActionsBlock.new(elements: [
     ButtonElement.new(text: "Approve", action_id: "approve", value: "release-42", style: ButtonStyle::PRIMARY),
-    ButtonElement.new(text: "Reject", action_id: "reject", value: "release-42", style: ButtonStyle::DANGER)
+    ButtonElement.new(text: "Reject", action_id: "reject", value: "release-42", style: ButtonStyle::DANGER),
+    ButtonElement.new(text: "Details", action_id: "details", url: "https://approvals.example.com/release-42")
   ])
 ])
 puts value.to_json
@@ -636,12 +667,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .style(ButtonStyle::Danger)
                 .build()?,
         )
+        .element(ButtonElement::builder().text("Details").action_id("details").url("https://approvals.example.com/release-42").build()?)
         .build()?;
-    let message = MessagePayload::builder("C01234567")
+    let message = MessagePayload::builder("C1")
         .text("Approval requested")
         .block(
             SectionBlock::builder()
-                .text("Approve this release?")
+                .text("Approve deployment?")
                 .build()?,
         )
         .block(actions)
@@ -665,10 +697,11 @@ require 'vendor/autoload.php';
 use Slackblocks as S;
 
 $message = new S\MessagePayload(channel: 'C1', text: 'Approval requested', blocks: [
-    new S\SectionBlock('*Approve deployment?*'),
+    new S\SectionBlock('Approve deployment?'),
     new S\ActionsBlock(elements: [
-        new S\ButtonElement(text: 'Approve', actionId: 'approve', value: '482', style: S\ButtonStyle::Primary),
-        new S\ButtonElement(text: 'Reject', actionId: 'reject', value: '482', style: S\ButtonStyle::Danger),
+        new S\ButtonElement(text: 'Approve', actionId: 'approve', value: 'release-42', style: S\ButtonStyle::Primary),
+        new S\ButtonElement(text: 'Reject', actionId: 'reject', value: 'release-42', style: S\ButtonStyle::Danger),
+        new S\ButtonElement(text: 'Details', actionId: 'details', url: 'https://approvals.example.com/release-42'),
     ]),
 ]);
 echo $message->toJson();
@@ -681,10 +714,11 @@ echo $message->toJson();
 ```elixir
 alias Slackblocks.{Message, Blocks, Elements.Button}
 Message.new!(channel: "C1", text: "Approval requested", blocks: [
-  Blocks.Section.new!(text: "*Approve deployment?*"),
+  Blocks.Section.new!(text: "Approve deployment?"),
   Blocks.Actions.new!(elements: [
-    Button.new!(text: "Approve", action_id: "approve", value: "482", style: :primary),
-    Button.new!(text: "Reject", action_id: "reject", value: "482", style: :danger)
+    Button.new!(text: "Approve", action_id: "approve", value: "release-42", style: :primary),
+    Button.new!(text: "Reject", action_id: "reject", value: "release-42", style: :danger),
+    Button.new!(text: "Details", action_id: "details", url: "https://approvals.example.com/release-42")
   ])
 ]) |> Slackblocks.to_map!()
 ```
@@ -701,13 +735,15 @@ import qualified Data.Map.Strict as Map
 import Slackblocks
 
 example = do
-  question <- buildMarkdownText (markdownText "*Approve deployment?*")
+  question <- buildMarkdownText (markdownText "Approve deployment?")
   section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText question)})
   yes <- buildPlainText (plainText "Approve")
   no <- buildPlainText (plainText "Reject")
-  approve <- buildButtonElement ((buttonElement yes) {buttonElementActionId = Just "approve", buttonElementValue = Just "482", buttonElementStyle = Just ButtonStylePrimary})
-  reject <- buildButtonElement ((buttonElement no) {buttonElementActionId = Just "reject", buttonElementValue = Just "482", buttonElementStyle = Just ButtonStyleDanger})
-  actions <- buildActionsBlock (actionsBlock [buttonElementAsElement approve, buttonElementAsElement reject])
+  approve <- buildButtonElement ((buttonElement yes) {buttonElementActionId = Just "approve", buttonElementValue = Just "release-42", buttonElementStyle = Just ButtonStylePrimary})
+  reject <- buildButtonElement ((buttonElement no) {buttonElementActionId = Just "reject", buttonElementValue = Just "release-42", buttonElementStyle = Just ButtonStyleDanger})
+  label <- buildPlainText (plainText "Details")
+  details <- buildButtonElement ((buttonElement label) {buttonElementActionId = Just "details", buttonElementUrl = Just "https://approvals.example.com/release-42"})
+  actions <- buildActionsBlock (actionsBlock [buttonElementAsElement approve, buttonElementAsElement reject, buttonElementAsElement details])
   buildMessagePayload ((messagePayload "C1") {messagePayloadText = Just "Approval requested", messagePayloadBlocks = Just [sectionBlockAsBlock section, actionsBlockAsBlock actions]})
 ```
 

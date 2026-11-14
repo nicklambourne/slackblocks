@@ -94,7 +94,26 @@ Read a known modeled section and validate or reconstruct it with the native API.
 
 <RecipeOutput recipe="parse-json" outputs={recipeOutputs} />
 
+## Parsing capabilities
+
+This is the shared parsing inventory used by the landing, migration and reference guides. These APIs accept modeled Block Kit shapes; none is a general Slack event-envelope decoder. Preserve the original JSON when acting as a lossless proxy.
+
+| Language | Checked entry point | Boundary |
+| --- | --- | --- |
+| Python | `Block.from_dict` and selected composition parsers | Partial support; see the Python inventory below. Unknown fields can be dropped. |
+| TypeScript | `validate` after `JSON.parse` | Validates the supplied modeled JSON; does not construct native class instances. |
+| Go | Native builders after application JSON decoding | No general inbound model parser; the example adapts one known section shape. |
+| Java | Native builders after application JSON decoding | No general inbound model parser; the example adapts one known section shape. |
+| C# | Native constructors after application JSON decoding | No general inbound model parser; the example adapts one known section shape. |
+| Ruby | Native constructors after `JSON.parse` | No general inbound model parser; the example adapts one known section shape. |
+| Rust | `TryFrom<serde_json::Value>` | Checked modeled values and roles, with structured validation errors. |
+| PHP | `fromJson` / `fromArray` | Checked modeled values; unmodeled extension fields survive checked editing. |
+| Elixir | `Slackblocks.decode` / `decode!` | Decode a named model or role; use checked `change` functions to edit it. |
+| Haskell | Typed `decode` | Returns a checked value; inspect its field record and rebuild to edit it. |
+
 ## Code
+
+**Shared example contract:** Checked parsing of a section followed by native access or editing. Haskell demonstrates a checked immutable edit. Python intentionally uses a supported partial-parser type; this is not a promise of universal Python round trips.
 
 <LanguageContent>
 

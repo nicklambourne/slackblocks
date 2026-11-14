@@ -11,7 +11,7 @@ This page walks through every block type supported by `slackblocks`, with:
 - A short description of what the block is for.
 - The `slackblocks` code to construct it in your selected language.
 - The JSON payload that's produced.
-- A screenshot of how it looks in Slack.
+- A visual example. PNG images are historical Slack captures; SVG images are illustrative local previews, not proof of current Slack rendering. See [validation boundaries](validation-boundary) for dated receiving-path evidence.
 
 <LanguageContent>
 <Python>
@@ -770,7 +770,7 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 ## Header Block
 
-A header shows large, bold plain text that introduces a group of blocks. Plain strings are converted to Slack `plain_text` objects automatically.
+A header shows large, bold plain text that introduces a group of blocks. Languages with string coercion convert plain strings to Slack `plain_text` objects. APIs with explicit text roles, including Haskell, require their native plain-text constructor.
 
 Required: `text` (up to 150 characters).
 
@@ -941,7 +941,7 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 Slack added the `markdown` block type in 2024, primarily for AI / agentic apps. Unlike the `mrkdwn` text inside a [Section Block](#section-block), `MarkdownBlock` renders **GitHub-flavored Markdown**, supporting tables, code blocks, and richer list semantics.
 
-`text` is required (1 - 12,000 characters).
+`text` is required and accepts an empty string locally. The maximum is 12,000 Unicode code points, including the aggregate Markdown text in a complete message. A constructed block alone does not establish that Slack will accept the final payload.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1109,7 +1109,7 @@ See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#markd
 
 An image block displays a standalone image from a URL, with alternative text for screen readers and an optional plain-text title.
 
-Required: `image_url` (up to 3,000 characters) and `alt_text` (up to 2,000 characters).
+Required: `alt_text` (up to 2,000 characters) and exactly one image source: `image_url` (up to 3,000 characters) or a `slack_file` object. Use the native `SlackFile` composition object for an existing Slack file; see [Slack’s image-block reference](https://docs.slack.dev/reference/block-kit/blocks/image-block/).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1660,7 +1660,7 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 ## File Block
 
-A file block displays a remote file that was previously added to Slack with the `files.remote.add` API. It references the existing file by ID and does not upload anything itself.
+A file block represents a remote file registered with `files.remote.add`. Slack returns this block in retrieved messages; apps cannot post a FileBlock directly to a message, modal or App Home. Register and share the remote file using Slack’s file APIs, then read back the resulting message. Construction support represents that returned JSON and does not upload or share a file. See [live prerequisites](/usage/recipes/live-prerequisites) and [Slack’s FileBlock restriction](https://docs.slack.dev/reference/block-kit/blocks/file-block/).
 
 Required: `external_id`. `source` defaults to `remote`, the only value Slack currently accepts.
 
@@ -2350,7 +2350,13 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 A table block lays out raw text and rich text cells in rows and columns. Optional `column_settings` control each column's alignment and whether its text wraps.
 
-Required: `rows`. Every row must have the same number of cells, and `column_settings` needs one entry for every column.
+Required: `rows`. Plain tables allow rows of different lengths. `column_settings` may describe only the leading columns; remaining columns use Slack’s defaults. Data tables have separate rectangular-row rules.
+
+For example, rows with two cells followed by one cell and a single right-aligned column setting are valid. The setting applies only to the first column.
+
+:::note Current implementation boundary
+Slack also documents numeric (`raw_number`) cells and a 10,000-character limit per table and across tables in a message. The current plain-table API supports raw text and rich text; it does not yet enforce those character totals. Keep outgoing tables within Slack’s documented limit. Native numeric cells and table character validation require the shared-contract follow-up.
+:::
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -2880,9 +2886,9 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 ## Video Block
 
 
-Embeds a video from a Slack-supported provider such as YouTube or Vimeo. Plain strings supplied for `title` and `description` are converted to Slack `plain_text` objects automatically.
+Embeds a video from a Slack-supported provider such as YouTube or Vimeo. Use plain-text values for `title` and `description`; APIs that accept strings coerce them, while explicitly typed APIs require their native plain-text values.
 
-Required: `alt_text`, `thumbnail_url`, `title`, `video_url`. Slack restricts which domains may be embedded — supplying an unsupported URL will produce a Slack API error rather than an `InvalidUsageError` at construction.
+Required: `alt_text`, `thumbnail_url`, `title`, `video_url`. Slack restricts which domains may be embedded — supplying an unsupported URL will produce a Slack API error rather than a local construction error. Python calls that category `InvalidUsageError`; each language uses its native error API.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -4787,7 +4793,7 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 Task cards show a task's state, optional rich-text details or output, and the URL sources used to produce it.
 
-Required: `task_id` and `title`.
+Required: `task_id`, `title`, and `status`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -5018,7 +5024,7 @@ The native examples below deliberately use one plan and unique task IDs.
 
 A plan groups task cards. `slackblocks` automatically renders nested tasks in Slack's plan-specific wire format.
 
-Required: `title`.
+Required: `title` and `tasks`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -5562,6 +5568,8 @@ See [Components](/reference/elixir/components) for all options and defaults.
 </Elixir>
 
 <Haskell>
+
+## Higher-Level Components
 
 ```haskell
 {-# LANGUAGE OverloadedStrings #-}

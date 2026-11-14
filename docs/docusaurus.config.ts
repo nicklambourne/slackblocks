@@ -223,7 +223,7 @@ function legacyTypeScriptRedirect(path: string): string | undefined {
 
 const config: Config = {
   title: "slackblocks",
-  tagline: "Validated Slack Block Kit construction for Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP",
+  tagline: "Validated Slack Block Kit construction for Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, Elixir, and Haskell",
   favicon: "img/sb.png",
   url: "https://nicklambourne.github.io",
   baseUrl: "/slackblocks/",

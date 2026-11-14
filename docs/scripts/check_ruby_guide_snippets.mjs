@@ -70,5 +70,5 @@ for (const guide of guides) {
     checked += runOtherSnippets(source);
   }
 }
-assert.equal(checked, 43, `only ${checked} Ruby guide snippets were exercised`);
+assert.equal(checked, 44, `only ${checked} Ruby guide snippets were exercised`);
 console.log(`Executed ${checked} Ruby guide snippets; block payloads match the documented JSON.`);

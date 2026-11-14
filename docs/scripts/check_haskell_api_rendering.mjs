@@ -8,6 +8,7 @@ const model = JSON.parse(await read("spec/model.json"));
 const expected = [...new Set(Object.values(inventory.exports).flat())].sort();
 assert.deepEqual(reference.exports, inventory.exports);
 assert.deepEqual(reference.entries.map(entry => entry.name), expected);
+assert.equal(new Set(reference.entries.map(entry => entry.anchor)).size, reference.entries.length, "Each Haskell symbol needs a distinct anchor");
 const byName = new Map(reference.entries.map(entry => [entry.name, entry]));
 let fields = 0;
 for (const type of model.types) {
@@ -31,7 +32,7 @@ for (const domain of ["blocks", "elements", "objects", "payloads", "components",
   for (const entry of reference.entries.filter(entry => entry.domain === domain)) {
     assert.ok(entry.doc.trim() && entry.signatures.length, entry.name);
     assert.ok(mdx.includes(`{#${entry.anchor}}`), entry.name);
-    assert.ok(html.includes(`id="${entry.anchor}"`), `${entry.name}: rendered anchor absent`);
+    assert.equal(html.split(`id="${entry.anchor}"`).length - 1, 1, `${entry.name}: rendered anchor must be unique`);
     for (const signature of entry.signatures) {
       assert.ok(mdx.includes(signature), `${entry.name}: native signature absent`);
       assert.doesNotMatch(signature, /\.Internal\.|[a-z][a-z0-9-]*-\d[^\s:]*:/, `${entry.name}: private dependency name leaked`);

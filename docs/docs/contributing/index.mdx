@@ -21,6 +21,18 @@ slug: /contributing
 - `haskell/` contains checked immutable values, explicit field records and Aeson JSON, with a separate HTTP application. Haskell joins the coordinated release in 3.1.0.
 - `docs/` contains this Docusaurus site and executable examples.
 
+## Documentation-only edits
+
+Edit current pages under `docs/docs/`; leave frozen release snapshots unchanged. For prose-only corrections, start with these lightweight checks from the repository root (Python 3.11+ for the TOML checker):
+
+```bash
+node docs/scripts/check_language_content.mjs
+node docs/scripts/check_guide_previews.mjs
+python3 docs/scripts/check_documented_contract.py
+```
+
+Changing a literal code example also requires its native snippet/recipe checks. Reference changes belong in native comments or generators, followed by regeneration. The full Documentation CI job compiles examples and references in all ten languages, builds the site and checks rendered output, navigation and immutable snapshots. A lightweight check alone is not a substitute for that job. Shared Block Kit contract changes follow [Adding New Block Kit Features](./maintaining-block-kit.mdx).
+
 ## Set up the workspace
 
 Python development uses [uv](https://docs.astral.sh/uv/):

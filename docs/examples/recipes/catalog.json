@@ -4,35 +4,77 @@
     "title": "Build status notification",
     "anchors": [
       "build-status-notification"
-    ]
+    ],
+    "contract": {
+      "root": "message",
+      "requires": [
+        "header",
+        "section"
+      ]
+    },
+    "native_variations": "A build result with a heading and structured details. Some variants also include a build link. Example build numbers, fields and URLs vary; the message journey is the same."
   },
   {
     "id": "approval-request",
     "title": "Approval request with action buttons",
     "anchors": [
       "approval-request-with-action-buttons"
-    ]
+    ],
+    "contract": {
+      "root": "message",
+      "requires": [
+        "section",
+        "actions",
+        "button"
+      ]
+    },
+    "native_variations": "The same release-42 approval message in every language: Approve, Reject and Details, with matching actions and fallback text."
   },
   {
     "id": "rich-alert",
     "title": "Rich-formatted alert",
     "anchors": [
       "rich-formatted-alert"
-    ]
+    ],
+    "contract": {
+      "root": "message",
+      "requires": [
+        "rich_text",
+        "text"
+      ],
+      "root_by_language": {
+        "Elixir": "modal",
+        "PHP": "modal",
+        "Haskell": "modal"
+      }
+    },
+    "native_variations": "Formatted alert text with a bold span. Elixir, PHP and Haskell also demonstrate an AlertBlock inside a modal; other variants use a rich-text message. AlertBlock itself is modal-only."
   },
   {
     "id": "confirmation-modal",
     "title": "Confirmation modal",
     "anchors": [
       "confirmation-modal"
-    ]
+    ],
+    "contract": {
+      "root": "modal",
+      "requires": [
+        "input"
+      ]
+    },
+    "native_variations": "A modal with a labelled input and submit action. Titles, input IDs and copy vary; applications still need a fresh trigger ID and a submission handler."
   },
   {
     "id": "threaded-reply",
     "title": "Threaded reply",
     "anchors": [
       "threaded-reply"
-    ]
+    ],
+    "contract": {
+      "root": "message",
+      "requires": []
+    },
+    "native_variations": "A complete message targeting an existing thread timestamp. Sample progress/completion text and timestamps vary."
   },
   {
     "id": "ephemeral-response",
@@ -40,7 +82,12 @@
     "anchors": [
       "ephemeral-slash-command-response",
       "ephemeral-interaction-response"
-    ]
+    ],
+    "contract": {
+      "root": "message",
+      "requires": []
+    },
+    "native_variations": "An interaction response with ephemeral visibility. Sample response text varies; this is a response payload, not chat.postEphemeral."
   },
   {
     "id": "status-table",
@@ -48,7 +95,15 @@
     "anchors": [
       "multi-column-status-report-table",
       "multi-column-status-report"
-    ]
+    ],
+    "contract": {
+      "root": "message",
+      "requires": [
+        "table",
+        "raw_text"
+      ]
+    },
+    "native_variations": "The same service-status message in every language: Service/Status, API/Healthy and Worker/Degraded."
   },
   {
     "id": "colored-attachment",
@@ -57,7 +112,14 @@
       "deprecated-colored-bar-attachment",
       "colored-bar-attachment",
       "colored-attachment"
-    ]
+    ],
+    "contract": {
+      "root": "message",
+      "requires": [
+        "section"
+      ]
+    },
+    "native_variations": "A message containing a colored attachment. Python shows a warning and other variants show success; colors and copy intentionally differ."
   },
   {
     "id": "builder-preview",
@@ -66,7 +128,12 @@
       "preview-a-message-in-the-browser",
       "preview-a-message",
       "preview-in-block-kit-builder"
-    ]
+    ],
+    "contract": {
+      "root": "url",
+      "requires": []
+    },
+    "native_variations": "A Block Kit Builder URL containing encoded native blocks. The optional workspace path and example content vary; this does not send to Slack."
   },
   {
     "id": "parse-json",
@@ -76,7 +143,14 @@
       "parse-modeled-block-kit-json",
       "parse-incoming-modeled-json",
       "checked-json-and-immutable-edits"
-    ]
+    ],
+    "contract": {
+      "root": "section",
+      "requires": [
+        "section"
+      ]
+    },
+    "native_variations": "Checked parsing of a section followed by native access or editing. Haskell demonstrates a checked immutable edit. Python intentionally uses a supported partial-parser type; this is not a promise of universal Python round trips."
   },
   {
     "id": "workflow-button",
@@ -85,14 +159,29 @@
       "one-line-workflow-trigger",
       "workflow-trigger-shortcut",
       "workflow-button"
-    ]
+    ],
+    "contract": {
+      "root": "workflow_button",
+      "requires": [
+        "workflow_button"
+      ],
+      "root_by_language": {
+        "Python": "message"
+      }
+    },
+    "native_variations": "A workflow button with an action ID, trigger URL and customizable input parameter. Python additionally demonstrates a surrounding message; other variants print the element. Replace the example trigger and parameter with those from your workflow."
   },
   {
     "id": "validation-errors",
     "title": "Typed validation error handling",
     "anchors": [
       "typed-exception-handling"
-    ]
+    ],
+    "contract": {
+      "root": "result",
+      "requires": []
+    },
+    "native_variations": "Catch the native length error and emit the shared handled/category result. The exception or result type follows each language\u2019s API."
   },
   {
     "id": "accordion-pagination",
@@ -101,7 +190,15 @@
       "reusable-accordion-and-pagination",
       "accordion-and-pagination",
       "accordion-and-paginator"
-    ]
+    ],
+    "contract": {
+      "root": "message",
+      "requires": [
+        "container",
+        "button"
+      ]
+    },
+    "native_variations": "A collapsible section plus paginated blocks and a next-page action carrying page 2. Generated action-ID prefixes and omitted defaults vary by native helper; state remains application-owned."
   },
   {
     "id": "metadata",
@@ -109,18 +206,41 @@
     "anchors": [
       "opaque-metadata-and-safe-edits",
       "opaque-metadata-preserves-json-values"
-    ]
+    ],
+    "contract": {
+      "root": "message",
+      "requires": []
+    },
+    "native_variations": "Preserve opaque false/zero metadata through a safe native edit. Java omits null because its native metadata map rejects null values; other variants retain null. Updated/Complete are alternate sample text."
   },
   {
     "id": "layout-grid",
     "title": "Weighted layout grid",
     "anchors": [
       "weighted-layout-grid"
-    ]
+    ],
+    "contract": {
+      "root": "layout",
+      "requires": [
+        "layout",
+        "section"
+      ]
+    },
+    "native_variations": "The same two-row weighted service grid, visible label and plain fallback in every language."
   },
   {
     "id": "card-actions",
     "title": "Card actions",
-    "anchors": ["card-actions"]
+    "anchors": [
+      "card-actions"
+    ],
+    "contract": {
+      "root": "message",
+      "requires": [
+        "card",
+        "button"
+      ]
+    },
+    "native_variations": "The same two- and three-button cards in every language. Wire order is deliberate and may differ from Slack\u2019s displayed order."
   }
 ]
