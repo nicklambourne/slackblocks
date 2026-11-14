@@ -522,7 +522,7 @@ See the [native API](https://nicklambourne.github.io/slackblocks/reference/haske
 
 - [`python/`](python/) — the established Python package (`slackblocks` on PyPI).
 - [`typescript/`](typescript/) — the TypeScript package (`@nicklambourne/slackblocks` on npm).
-- [`go/`](go/) — the Go v3 module (`github.com/nicklambourne/slackblocks/go/v4`).
+- [`go/`](go/) — the Go v4 module (`github.com/nicklambourne/slackblocks/go/v4`).
 - [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
