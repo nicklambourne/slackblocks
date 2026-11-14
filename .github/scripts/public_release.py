@@ -559,6 +559,14 @@ def aggregate(directory, version, source):
         "Incomplete or mismatched release verification",
     )
     require(
+        all(
+            re.search(RUNTIMES[r["language"]][1], r["runtime"])
+            and all(command.get("exit_code") == 0 for command in r["commands"])
+            for r in receipts
+        ),
+        "Minimum runtime or successful command evidence differs",
+    )
+    require(
         len({r.get("payload_sha256") for r in receipts}) == 1
         and re.fullmatch(r"[0-9a-f]{64}", receipts[0].get("payload_sha256", "")),
         "Cross-language payloads differ",

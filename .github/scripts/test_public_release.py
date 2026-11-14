@@ -26,7 +26,18 @@ class PublicReleaseTests(unittest.TestCase):
             source=self.source,
             passed=True,
             state="verified",
-            runtime="minimum runtime",
+            runtime={
+                "python": "Python 3.10.20",
+                "typescript": "v20.19.0",
+                "go": "go version go1.22.0",
+                "java": 'openjdk version "17.0.17"',
+                "csharp": "8.0.415",
+                "ruby": "ruby 3.3.9",
+                "rust": "rustc 1.85.0",
+                "php": "PHP 8.2.28",
+                "elixir": "Erlang/OTP 26 Elixir 1.16.3",
+                "haskell": "GHC version 9.6.7",
+            }[language],
             commands=[{"exit_code": 0}],
             registry_evidence="registry.json",
             payload_sha256="b" * 64,
@@ -114,6 +125,8 @@ class PublicReleaseTests(unittest.TestCase):
             passed=True,
             state="verified",
             releases=[{"language": language} for language in public.LANGUAGES],
+            documentation=[{"language": language} for language in ("rust", "elixir", "haskell")],
+            website=[{"version": self.version}, {"version": "3.2.0"}],
         )
         (self.root / "identity/identity.json").write_text(json.dumps(identity))
         publishers = self.root / "publishers"

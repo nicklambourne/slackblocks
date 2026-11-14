@@ -57,14 +57,10 @@ def website(repo, version, source, folder):
             data, final = response.read(), response.url
         text = data.decode()
         require(marker in text, "Deployed documentation version marker differs")
-        if marker == "docs-version-current":
-            require(
-                re.search(
-                    r'<option value="current" selected="">' + re.escape(version) + r"</option>",
-                    text,
-                ),
-                "Current documentation is for a different version",
-            )
+        if marker == "docs-version-current" and not re.search(
+            r'<option value="current" selected="">' + re.escape(version) + r"</option>", text
+        ):
+            raise availability.Pending("Current documentation has not deployed the release version")
         (folder / f"website-{target}.html").write_bytes(data)
         result.append(dict(version=target, url=final, sha256=hashlib.sha256(data).hexdigest()))
     return result
@@ -151,6 +147,12 @@ def complete(directory, version, source, coordinator_run):
     )
     require(
         {r["language"] for r in identity["releases"]} == set(PREFIXES), "Missing public releases"
+    )
+    require(
+        {d["language"] for d in identity.get("documentation", [])} == {"rust", "elixir", "haskell"}
+        and len(identity.get("website", [])) == 2
+        and version in {d["version"] for d in identity["website"]},
+        "Registry or current/frozen documentation evidence is missing",
     )
     records = [
         json.loads(p.read_text()) for p in (directory / "publishers").rglob("publisher.json")
