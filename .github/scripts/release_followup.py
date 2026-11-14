@@ -24,6 +24,8 @@ def eligible(records, consumers, identity, run_id, now):
     started = min(datetime.datetime.fromisoformat(r["release_started_at"].replace("Z", "+00:00")) for r in records)
     if not datetime.timedelta(0) <= now - started < datetime.timedelta(hours=24):
         return None
+    if any(r.get("passed") is not (r["state"] == "publisher_verified") for r in records):
+        return None
     if any(r["state"] == "awaiting_availability" for r in records):
         return version
     if not identity or identity.get("version") != version or identity.get("source") != source:
@@ -55,6 +57,11 @@ def main():
             continue
         if run["head_branch"] != "master" or run["path"] != ".github/workflows/coordinated-release.yml":
             continue
+        title = re.fullmatch(r"Coordinated release (\d+\.\d+\.\d+)(?: \(resume\))?", run.get("display_title", ""))
+        if title:
+            if title[1] in seen:
+                continue
+            seen.add(title[1])
         artifacts = pages(f"repos/{repo}/actions/runs/{run['id']}/artifacts?per_page=100", "artifacts")
         records, consumers, identity = [], [], None
         for artifact in artifacts:
@@ -73,9 +80,12 @@ def main():
         if len(versions) != 1:
             continue
         version = next(iter(versions))
-        if version in seen:
+        if title and version != title[1]:
             continue
-        seen.add(version)
+        if not title:
+            if version in seen:
+                continue
+            seen.add(version)
         if run["conclusion"] != "failure" or not eligible(records, consumers, identity, run["id"], now):
             continue
         record = dict(version=version, previous_coordinator=run["id"], state="resume_requested", at=now.isoformat())

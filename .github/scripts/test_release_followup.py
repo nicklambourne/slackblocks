@@ -8,7 +8,7 @@ class FollowupTests(unittest.TestCase):
     def setUp(self):
         self.now = datetime.datetime(2026, 11, 15, 12, tzinfo=followup.UTC)
         self.records = [dict(language=lang, version="4.0.0", source="a" * 40, coordinator_run="123",
-                             state="publisher_verified", release_started_at="2026-11-15T10:00:00Z") for lang in followup.PREFIXES]
+                             state="publisher_verified", passed=True, release_started_at="2026-11-15T10:00:00Z") for lang in followup.PREFIXES]
 
     def eligible(self, consumers=None, identity=None):
         return followup.eligible(self.records, consumers or [], identity, 123, self.now)
@@ -16,6 +16,7 @@ class FollowupTests(unittest.TestCase):
     def test_only_pending_complete_identity_can_resume(self):
         self.assertIsNone(self.eligible())
         self.records[-1]["state"] = "awaiting_availability"
+        self.records[-1]["passed"] = False
         self.assertEqual(self.eligible(), "4.0.0")
         for field, value in (("state", "blocked"), ("source", "b" * 40), ("version", "3.2.0"),
                              ("coordinator_run", "124"), ("release_started_at", "2026-11-14T10:00:00Z")):
