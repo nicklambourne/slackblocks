@@ -76,10 +76,14 @@ def check_result(recipe, value, language):
     assert isinstance(value, dict), (recipe, value)
     objects = list(descendants(value))
     types = {obj.get("type") for obj in objects if isinstance(obj.get("type"), str)}
-    contract = next(
-        item["contract"]
-        for item in json.loads((EXAMPLES / "catalog.json").read_text())
-        if item["id"] == recipe
+    contract = (
+        {"root": "layout", "requires": ["layout", "section"]}
+        if recipe == "layout-basic"
+        else next(
+            item["contract"]
+            for item in json.loads((EXAMPLES / "catalog.json").read_text())
+            if item["id"] == recipe
+        )
     )
     root = contract.get("root_by_language", {}).get(language, contract["root"])
     actual_root = "result" if "handled" in value else value.get("type", "message")
