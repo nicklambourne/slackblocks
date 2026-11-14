@@ -430,6 +430,38 @@ class ElixirDocsTests(unittest.TestCase):
 
 
 class ElixirWorkflowTests(unittest.TestCase):
+    def test_recovery_commands_pass_tag_from_a_master_dispatch(self):
+        workflow = (fixtures.ROOT / ".github/workflows/recover-hex.yml").read_text()
+        targets = (
+            "python3 source/.github/scripts/verify-release.py publisher",
+            "python3 tooling/elixir/tools/release.py publish",
+            "python3 elixir/tools/github_release.py",
+        )
+        commands = [
+            line.strip().removeprefix("run: ")
+            for line in workflow.splitlines()
+            if any(target in line for target in targets)
+        ]
+        self.assertEqual(len(commands), len(targets))
+        tag = f"elixir/v{fixtures.VERSION}"
+        for command in commands:
+            with self.subTest(command=command):
+                observed = subprocess.check_output(
+                    [
+                        "bash",
+                        "-c",
+                        'python3() { printf "%s\\n" "$GITHUB_REF"; }\n' + command,
+                    ],
+                    env={
+                        **os.environ,
+                        "GITHUB_REF": "refs/heads/master",
+                        "RELEASE_TAG": tag,
+                    },
+                    text=True,
+                ).strip()
+                self.assertEqual(observed, "refs/tags/" + tag)
+        self.assertNotRegex(workflow, r"(?m)^ +GITHUB_REF:")
+
     def test_recovery_binds_original_source_and_artifact_before_credentials(self):
         workflow = (fixtures.ROOT / ".github/workflows/recover-hex.yml").read_text()
         self.assertIn("if: github.ref == 'refs/heads/master'", workflow)
