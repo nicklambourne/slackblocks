@@ -7,6 +7,7 @@ import importlib.util
 import json
 import os
 import subprocess
+import tarfile
 import tempfile
 import time
 import urllib.error
@@ -81,9 +82,26 @@ def metadata(root):
     return info
 
 
-def package(root, destination):
-    run(root, "mix", "hex.build", "--output", str(destination))
+def package(root, destination, reference=None):
     with tempfile.TemporaryDirectory(prefix="slackblocks-hex-inspect-", dir=scratch()) as tmp:
+        args = [str(destination)]
+        if reference is not None:
+            with tarfile.open(reference) as archive:
+                metadata_path = Path(tmp) / "metadata.config"
+                metadata_path.write_bytes(archive.extractfile("metadata.config").read())
+            args.append(str(metadata_path))
+        run(
+            root,
+            "mix",
+            "do",
+            "compile",
+            "--no-prune-code-paths",
+            "+",
+            "run",
+            "--no-start",
+            str(Path(__file__).with_name("release_archive.exs")),
+            *args,
+        )
         extract_archive(destination, Path(tmp) / "package")
 
 
@@ -130,7 +148,7 @@ def verify(root, directory, rebuild=False):
         )
         with tempfile.TemporaryDirectory(prefix="slackblocks-hex-rebuild-", dir=scratch()) as tmp:
             rebuilt = Path(tmp) / ARCHIVE
-            package(root, rebuilt)
+            package(root, rebuilt, reference=directory / ARCHIVE)
             require(digest(rebuilt) == record["sha256"], "Hex package reproduction differs")
     return record
 
@@ -257,7 +275,19 @@ def publish(root, directory):
     release = registry(record)
     if release is None:
         try:
-            run(root, "mix", "hex.publish", "package", "--yes")
+            run(
+                root,
+                "mix",
+                "do",
+                "compile",
+                "--no-prune-code-paths",
+                "+",
+                "run",
+                "--no-start",
+                str(Path(__file__).with_name("publish_archive.exs")),
+                str(directory / ARCHIVE),
+                record["sha256"],
+            )
         except subprocess.CalledProcessError:
             # An upload may have succeeded despite a lost response. Re-query identity;
             # never retry the write automatically or use Hex's replacement window.
@@ -315,19 +345,22 @@ def main():
     parser.add_argument(
         "command", choices=["prepare", "verify", "readiness", "publish", "consumer"]
     )
-    parser.add_argument("--directory", type=Path, default=ROOT / "elixir/dist")
+    parser.add_argument("--source-root", type=Path, default=ROOT)
+    parser.add_argument("--directory", type=Path)
     args = parser.parse_args()
+    root = args.source_root.resolve()
+    directory = (args.directory or root / "elixir/dist").resolve()
     try:
         if args.command == "prepare":
-            prepare(ROOT, args.directory.resolve())
+            prepare(root, directory)
         elif args.command == "verify":
-            verify(ROOT, args.directory.resolve(), rebuild=True)
+            verify(root, directory, rebuild=True)
         elif args.command == "readiness":
-            readiness(ROOT)
+            readiness(root)
         elif args.command == "publish":
-            publish(ROOT, args.directory.resolve())
+            publish(root, directory)
         else:
-            consumer(ROOT, preflight.validate(ROOT))
+            consumer(root, preflight.validate(root))
     except (preflight.ReleaseError, subprocess.CalledProcessError, urllib.error.URLError) as error:
         raise SystemExit(str(error)) from error
 

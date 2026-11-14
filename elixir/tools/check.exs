@@ -25,6 +25,7 @@ if quality? do
   run.(python, ["generator/generate.py", "--check"])
   run.(python, ["generator/test_generate.py"])
   run.(python, ["tools/test_check_profiles.py"])
+  run.(python, ["tools/test_release_archive.py"])
 
   ruff =
     System.get_env("SLACKBLOCKS_RUFF") || System.find_executable("ruff") ||

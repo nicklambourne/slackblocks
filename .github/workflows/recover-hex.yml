@@ -1,0 +1,165 @@
+name: Recover Tested Hex Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing immutable Elixir tag (elixir/vX.Y.Z)
+        required: true
+        type: string
+      artifact_run:
+        description: Original publisher run containing the tested elixir-release artifact
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: hex-release-refs/tags/${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    name: Reproduce and publish original Hex artifact
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    environment:
+      name: hex
+      url: https://hex.pm/packages/slackblocks
+    steps:
+      - name: Check out reviewed recovery tooling
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          path: tooling
+          persist-credentials: false
+      - name: Check out immutable package source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.release_tag }}
+          path: source
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify original artifact provenance and coordinated tags
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          ARTIFACT_RUN: ${{ inputs.artifact_run }}
+          REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: refs/tags/${{ inputs.release_tag }}
+        run: |
+          python3 source/.github/scripts/verify-release.py publisher --language elixir
+          python3 - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+          tag, run, repo = (os.environ[k] for k in ('RELEASE_TAG', 'ARTIFACT_RUN', 'REPOSITORY'))
+          assert re.fullmatch(r'elixir/v\d+\.\d+\.\d+', tag)
+          assert run.isdigit()
+          def api(path):
+              return json.loads(subprocess.check_output(['gh', 'api', f'repos/{repo}/{path}'], text=True))
+          head = subprocess.check_output(['git', '-C', 'source', 'rev-parse', 'HEAD'], text=True).strip()
+          original = api(f'actions/runs/{run}')
+          assert original['head_sha'] == head and original['head_branch'] == tag
+          assert original['path'] == '.github/workflows/publish-hex.yml'
+          assert original['event'] == 'workflow_dispatch' and original['status'] == 'completed'
+          jobs = api(f'actions/runs/{run}/jobs?filter=latest&per_page=100')['jobs']
+          builds = [j for j in jobs if j['name'] == 'Build and verify Hex release']
+          assert len(builds) == 1
+          build = builds[0]
+          assert build['head_sha'] == head and build['conclusion'] == 'success'
+          assert build['runner_group_name'] == 'GitHub Actions' and build['labels'] == ['ubuntu-24.04']
+          assert build['steps'] and all(s['status'] == 'completed' and s['conclusion'] == 'success' for s in build['steps'])
+          artifacts = api(f'actions/runs/{run}/artifacts')['artifacts']
+          matches = [a for a in artifacts if a['name'] == 'elixir-release' and not a['expired']]
+          assert len(matches) == 1
+          Path('provenance.json').write_text(json.dumps({'source': head, 'tag': tag, 'run': original, 'build': build, 'artifact': matches[0]}, indent=2))
+          PY
+      - name: Download the original tested artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: elixir-release
+          run-id: ${{ inputs.artifact_run }}
+          github-token: ${{ github.token }}
+          path: artifact
+      - name: Install the pinned release compiler
+        uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          version-type: strict
+      - name: Resolve locked tools and reproduce the original archive bytes
+        run: |
+          cd source/elixir
+          mix local.hex 2.5.1 --force
+          mix deps.get --check-locked
+          cd ../..
+          python3 tooling/elixir/tools/release.py verify --source-root source --directory artifact
+      - name: Publish only missing original package and documentation
+        env:
+          HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
+          GITHUB_REF: refs/tags/${{ inputs.release_tag }}
+        run: python3 tooling/elixir/tools/release.py publish --source-root source --directory artifact
+      - name: Preserve recovery provenance
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: hex-recovery-provenance
+          path: |
+            provenance.json
+            artifact/release.json
+          if-no-files-found: error
+
+  consumers:
+    name: Verify recovered Hex install (Elixir ${{ matrix.elixir }})
+    needs: recover
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {elixir: "1.16.3", otp: "26.2"}
+          - {elixir: "1.20.4", otp: "29.1"}
+    steps:
+      - name: Check out immutable package source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.release_tag }}
+          persist-credentials: false
+      - name: Install the consumer runtime
+        uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+          version-type: strict
+      - name: Verify fresh public registry consumer
+        run: |
+          mix local.hex 2.5.1 --force
+          python3 elixir/tools/release.py consumer
+
+  github-release:
+    name: Complete original Elixir GitHub Release
+    needs: consumers
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Check out immutable package source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.release_tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download original tested assets
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: elixir-release
+          run-id: ${{ inputs.artifact_run }}
+          github-token: ${{ github.token }}
+          path: elixir/dist
+      - name: Verify and publish immutable release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REF: refs/tags/${{ inputs.release_tag }}
+        run: python3 elixir/tools/github_release.py

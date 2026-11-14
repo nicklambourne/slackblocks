@@ -712,6 +712,23 @@ Tags created by the coordinator are annotated as `github-actions[bot]` but
 are not signed with a maintainer's personal key; CI deliberately does not
 store that private key.
 
+## Hex archive reproduction and recovery
+
+Hex 2.5.1 traverses directories in filesystem order. The release packager sorts
+new archive inventories and reproduces older tested inventories in their recorded
+order, while still requiring identical full archive bytes and source metadata.
+Publication uploads that exact tested archive; it does not run an implicit rebuild.
+
+If an immutable tagged publisher failed before uploading because its fresh runner
+produced a different file order, keep its successful build artifact and all tags.
+After the corrected tooling passes CI on master, run **Recover Tested Hex Release**
+with the existing `elixir/vX.Y.Z` tag and original publisher run ID. It verifies the
+original hosted build, artifact provenance, source commit, complete coordinated
+tag set, metadata and full checksum before entering the existing publication path.
+It uploads only missing content, verifies minimum/current registry consumers and
+completes the original GitHub assets without overwriting them. Original failures
+remain part of the release evidence. Never rerun an uncertain upload blindly.
+
 ## Exact NuGet consumer verification
 
 A successful pack or local-feed install does not establish public availability.
