@@ -861,7 +861,18 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "data-table-cell-text-empty": lambda: DataTableBlock(
         [[RawText("Name")], [RawText("")]], caption="Names"
     ),
-    "table-layout-fallback-total-too-long": lambda: Message(channel="C123", blocks=[LayoutBlock(label="Table", rows=[LayoutRow(items=[LayoutItem(block=TableBlock(rows=[[RawText("😀" * 5000)]]))])], fallback=[TableBlock(rows=[[RawText("😀" * 5001)]])])]),
+    "table-layout-fallback-total-too-long": lambda: Message(
+        channel="C123",
+        blocks=[
+            LayoutBlock(
+                label="Table",
+                rows=[
+                    LayoutRow(items=[LayoutItem(block=TableBlock(rows=[[RawText("😀" * 5000)]]))])
+                ],
+                fallback=[TableBlock(rows=[[RawText("😀" * 5001)]])],
+            )
+        ],
+    ),
     "table-content-too-long": lambda: TableBlock(rows=[[RawNumber(1, "😀" * 10001)]]),
     "table-total-content-too-long": lambda: Message(
         channel="C123",

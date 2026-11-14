@@ -1341,7 +1341,7 @@ def to_json: (?untyped options) -> String
 
 ## FileBlock
 
-A remote file previously added with the files.remote API.
+A retrieved remote-file representation. Register and share files through the files.remote API; Slack does not accept directly posting file blocks.
 
 See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/file-block).
 
@@ -2506,7 +2506,7 @@ def to_json: (?untyped options) -> String
 
 ## TableBlock
 
-A simple table of raw text and rich text cells.
+A simple table of raw text, numeric and rich text cells. Cell text is limited to 10,000 Unicode code points per table and across tables in a message.
 
 See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
 
@@ -2521,7 +2521,7 @@ def self.new: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSet
 | Parameter | Description |
 | --- | --- |
 | `rows` | Adds complete table rows in display order. |
-| `column_settings` | Adds per-column settings in column order. Provide one entry for every column. |
+| `column_settings` | Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid. |
 | `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
 | `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
 
@@ -2559,7 +2559,7 @@ def rows: () -> Array[Array[TableCell]]
 
 ### column_settings
 
-Adds per-column settings in column order. Provide one entry for every column. Wire key: column_settings.
+Adds settings for leading columns in column order. Omitted trailing columns retain Slack defaults; fewer entries than columns are valid. Wire key: column_settings.
 
 ```ruby
 def column_settings: () -> (Array[ColumnSettings])?
@@ -2625,7 +2625,7 @@ def to_json: (?untyped options) -> String
 
 ## TableCell
 
-A value that can appear as a table block cell: raw text or a rich text block.
+A value that can appear as a table block cell: raw text, a raw number, or a rich text block.
 
 ## TaskCardBlock
 

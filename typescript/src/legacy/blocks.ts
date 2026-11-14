@@ -414,7 +414,7 @@ export function dividerBlock(
 }
 
 /**
- * Creates a block that displays a Slack remote file.
+ * Represents a retrieved Slack remote file. Use the Files API to register and share it; this block cannot be posted directly.
  *
  * @param input - Remote-file identifier, source, and optional block identifier.
  * @param settings - Per-call validation settings.

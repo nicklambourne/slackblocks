@@ -2348,14 +2348,18 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
 
 ## Table Block
 
-A table block lays out raw text and rich text cells in rows and columns. Optional `column_settings` control each column's alignment and whether its text wraps.
+A table block lays out raw text, numeric and rich text cells in rows and columns. Optional `column_settings` control each column's alignment and whether its text wraps.
 
 Required: `rows`. Plain tables allow rows of different lengths. `column_settings` may describe only the leading columns; remaining columns use Slack’s defaults. Data tables have separate rectangular-row rules.
 
 For example, rows with two cells followed by one cell and a single right-aligned column setting are valid. The setting applies only to the first column.
 
-:::note Current implementation boundary
-Slack also documents numeric (`raw_number`) cells and a 10,000-character limit per table and across tables in a message. The current plain-table API supports raw text and rich text; it does not yet enforce those character totals. Keep outgoing tables within Slack’s documented limit. Native numeric cells and table character validation require the shared-contract follow-up.
+:::note Shared contract 1.6.0 (unreleased)
+All ten native APIs accept `RawNumber` cells with both a numeric `value` and displayed `text`. The example below displays `42 items` while preserving the numeric value `42`.
+
+Displayed cell text is limited to 10,000 Unicode code points per table and across plain tables in a message, including attachments, containers and layout fallbacks. This counts rich-text text/link labels and numeric display text; sorting values, URLs and message metadata do not consume the budget. Data-table and Markdown budgets are separate. Previously accepted oversized tables now fail local validation.
+
+Slack’s [table reference](https://docs.slack.dev/reference/block-kit/blocks/table-block/) specifies these limits. Structural checks on 2026-11-14 accepted 10,001-character inputs; the library follows the stricter published contract. Those checks establish neither message delivery nor rendering. This support is on the development branch and is not in the published 3.2.0 packages.
 :::
 
 <Tabs>
@@ -2367,7 +2371,7 @@ Slack also documents numeric (`raw_number`) cells and a 10,000-character limit p
 ```python
 from slackblocks import (
     ColumnSettings,
-    RawText,
+    RawNumber,
     RichText,
     RichTextLink,
     RichTextSection,
@@ -2390,7 +2394,7 @@ TableBlock(
             ),
         ],
         [
-            RawText(text="Datum 1"),
+            RawNumber(value=42, text="42 items"),
             RichTextSection(
                 elements=[
                     RichTextLink(
@@ -2410,7 +2414,7 @@ TableBlock(
 ```ts
 import {
   ColumnSettings,
-  RawText,
+  RawNumber,
   RichText,
   RichTextBlock,
   RichTextLink,
@@ -2433,7 +2437,7 @@ TableBlock()
     ),
   ])
   .rows([
-    RawText().text("Datum 1"),
+    RawNumber().value(42).text("42 items"),
     RichTextBlock().elements(
       RichTextSection().elements(
         RichTextLink().url("https://slack.com").text("Datum 2"),
@@ -2467,7 +2471,7 @@ block, err := slackblocks.NewTableBlock().
             ),
         },
         []slackblocks.TableCell{
-            slackblocks.NewRawText().Text("Datum 1"),
+            slackblocks.NewRawNumber().Value(42).Text("42 items"),
             slackblocks.NewRichTextBlock().Elements(
                 slackblocks.NewRichTextSection().Elements(
                     slackblocks.NewRichTextLink().URL("https://slack.com").Text("Datum 2"),
@@ -2496,7 +2500,7 @@ TableBlock block = TableBlock.builder()
                 .elements(RichTextText.builder().text("Header 2")
                     .bold(true).build()).build()).build()),
         List.of(
-            RawText.builder().text("Datum 1").build(),
+            RawNumber.builder().value(42).text("42 items").build(),
             RichTextBlock.builder().elements(RichTextSection.builder()
                 .elements(RichTextLink.builder().url("https://slack.com").text("Datum 2").build())
                 .build()).build()))
@@ -2530,7 +2534,7 @@ var block = new TableBlock(
                 ]),
         ],
         [
-            new RawText("Datum 1"),
+            new RawNumber(42, "42 items"),
             new RichTextBlock(
                 elements: [
                     new RichTextSection(
@@ -2571,7 +2575,7 @@ block = TableBlock.new(
       )
     ],
     [
-      RawText.new(text: "Datum 1"),
+      RawNumber.new(value: 42, text: "42 items"),
       RichTextBlock.new(
         elements: [
           RichTextSection.new(elements: [RichTextLink.new(url: "https://slack.com", text: "Datum 2")])
@@ -2626,7 +2630,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 ),
             ],
             vec![
-                TableCell::from(RawText::builder().text("Datum 1").build()?),
+                TableCell::from(RawNumber::builder().value(42).text("42 items").build()?),
                 TableCell::from(
                     RichTextBlock::builder()
                         .elements(vec![RichTextBlockElement::from(
@@ -2685,8 +2689,9 @@ $block = new S\TableBlock(
                 style: new S\RichTextStyle(bold: true),
             )],
         )],
-    )], [new S\RawText(
-        text: 'Datum 1',
+    )], [new S\RawNumber(
+        value: 42,
+        text: '42 items',
     ), new S\RichTextBlock(
         elements: [new S\RichTextSection(
             elements: [new S\RichTextLink(
@@ -2741,7 +2746,7 @@ block =
         )
       ],
       [
-        Slackblocks.Objects.RawText.new!(text: "Datum 1"),
+        Slackblocks.Objects.RawNumber.new!(value: 42, text: "42 items"),
         Slackblocks.Blocks.RichText.new!(
           elements: [
             Slackblocks.RichText.Section.new!(
@@ -2782,13 +2787,13 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
   richTextTextValue2 <- buildRichTextText ((richTextText ("Header 2")) {richTextTextStyle = Just ((richTextStyle {styleBold = Just True}))})
   richTextSectionValue2 <- buildRichTextSection (richTextSection ([(richTextTextAsRichTextSectionElement richTextTextValue2)]))
   richTextBlockValue2 <- buildRichTextBlock (richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue2)]))
-  rawTextValue1 <- buildRawText (rawText ("Datum 1"))
+  rawNumberValue1 <- buildRawNumber (rawNumber 42 "42 items")
   richTextLinkValue1 <- buildRichTextLink ((richTextLink ("https://slack.com")) {richTextLinkText = Just ("Datum 2")})
   richTextSectionValue3 <- buildRichTextSection (richTextSection ([(richTextLinkAsRichTextSectionElement richTextLinkValue1)]))
   richTextBlockValue3 <- buildRichTextBlock (richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue3)]))
   columnSettingsValue1 <- buildColumnSettings ((columnSettings) {columnSettingsAlign = Just (ColumnAlignRight), columnSettingsIsWrapped = Just (True)})
   columnSettingsValue2 <- buildColumnSettings ((columnSettings) {columnSettingsAlign = Just (ColumnAlignLeft)})
-  tableBlockValue1 <- buildTableBlock ((tableBlock ([[(richTextBlockAsTableCell richTextBlockValue1), (richTextBlockAsTableCell richTextBlockValue2)], [(rawTextAsTableCell rawTextValue1), (richTextBlockAsTableCell richTextBlockValue3)]])) {tableBlockColumnSettings = Just ([columnSettingsValue1, columnSettingsValue2]), tableBlockBlockId = Just ("fake_block_id")})
+  tableBlockValue1 <- buildTableBlock ((tableBlock ([[(richTextBlockAsTableCell richTextBlockValue1), (richTextBlockAsTableCell richTextBlockValue2)], [(rawNumberAsTableCell rawNumberValue1), (richTextBlockAsTableCell richTextBlockValue3)]])) {tableBlockColumnSettings = Just ([columnSettingsValue1, columnSettingsValue2]), tableBlockBlockId = Just ("fake_block_id")})
   pure tableBlockValue1
 ```
 
@@ -2841,8 +2846,9 @@ main = either (fail . show) (LBS.putStrLn . encode) $ do
         ],
         [
             {
-                "type": "raw_text",
-                "text": "Datum 1"
+                "type": "raw_number",
+                "value": 42,
+                "text": "42 items"
             },
             {
                 "type": "rich_text",

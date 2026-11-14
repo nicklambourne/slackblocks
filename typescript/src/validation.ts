@@ -1043,7 +1043,7 @@ function validateKnownObject(
       break;
     }
     case "table": {
-      if (textCharacterCount(object.rows) > limits.table.content.max_length) {
+      if (textCharacterCount(object.rows ?? []) > limits.table.content.max_length) {
         throw new LengthError(child(path, "rows"), "table cell text exceeds 10000 characters");
       }
       if (!Array.isArray(object.rows)) {
