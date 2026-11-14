@@ -47,6 +47,20 @@ assert.match(
   "TextLike must show its useful alias declaration",
 );
 
+for (const [domain, names] of [
+  ["blocks", ["AlertLevel", "ContainerWidth", "LayoutAlignment", "LayoutGridLines", "LayoutWidth", "TaskStatus"]],
+  ["objects", ["SlackIconName"]],
+]) {
+  for (const name of names) {
+    const section = pages.get(domain).split(`## ${name}\n`)[1]?.split("\n## ")[0];
+    assert.ok(section, `Missing literal alias ${name}`);
+    assert.match(section, /\*\*Type alias\*\*/);
+    assert.ok(section.includes(`${name} = Literal[`), `${name} must expose accepted values`);
+    assert.doesNotMatch(section, /\(\*args, \*\*kwargs\)/);
+  }
+}
+assert.doesNotMatch(rendered, /InvalidUsageException|No public documentation is available/);
+
 for (const match of rendered.matchAll(
   /<a href="\/reference\/python\/([a-z_]+)#([a-z0-9_]+)">([^<]+)<\/a>/g,
 )) {

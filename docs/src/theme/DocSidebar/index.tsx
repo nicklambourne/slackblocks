@@ -11,7 +11,6 @@ import type { Props } from "@theme/DocSidebar";
 // Renaming or moving one of those documents must update these lists, or the
 // renamed page silently loses its hiding/ordering behaviour.
 const NON_PYTHON_HIDDEN_DOCS = new Set([
-  "usage/compatibility",
   "usage/migration",
 ]);
 

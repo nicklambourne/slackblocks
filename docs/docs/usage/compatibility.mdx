@@ -22,14 +22,13 @@ Start with the Python version used by your application or deployment environment
 | `2.x` | 3.10 | Modern typing (`X \| Y`, `list[X]`), dataclasses with `slots`, `match` statements, and other Python 3.10+ features used internally. |
 | `3.x` (current) | 3.10 | Corrected number-input bound APIs; the interpreter minimum is unchanged from 2.x. |
 
-If you cannot upgrade Python, pin to the appropriate major version:
+Choose exactly one release line. The copyable files below select current 3.x on Python 3.10+. For a Python 3.8/3.9 application, replace that single constraint with `slackblocks>=1,<2` (Poetry: `^1`) and set the project’s Python constraint to its actual runtime; do not install both lines together:
 
 <Tabs>
 <TabItem value={"pip-requirements-txt"} label={"pip (`requirements.txt`)"}>
 
 ```text
-slackblocks>=1,<2     # Python 3.8/3.9 friendly
-slackblocks>=3,<4     # Python 3.10+; current API
+slackblocks>=3,<4
 ```
 
 
@@ -37,8 +36,9 @@ slackblocks>=3,<4     # Python 3.10+; current API
 <TabItem value={"poetry-pyproject-toml"} label={"poetry (`pyproject.toml`)"}>
 
 ```toml
-slackblocks = "^1"    # Python 3.8/3.9 friendly
-slackblocks = "^3"    # Python 3.10+; current API
+[tool.poetry.dependencies]
+python = ">=3.10"
+slackblocks = "^3"
 ```
 
 
@@ -46,29 +46,20 @@ slackblocks = "^3"    # Python 3.10+; current API
 <TabItem value={"uv-pyproject-toml"} label={"uv (`pyproject.toml`)"}>
 
 ```toml
-"slackblocks>=1,<2"   # Python 3.8/3.9 friendly
-"slackblocks>=3,<4"   # Python 3.10+; current API
+[project]
+name = "slackblocks-example"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["slackblocks>=3,<4"]
 ```
 
 
 </TabItem>
 </Tabs>
 
-## Why we move forward
+## Runtime support and upstream maintenance
 
-`slackblocks` follows the upstream Python release cycle. Once a Python version reaches its [official end-of-life](https://devguide.python.org/versions/), it stops receiving security patches, and we prefer not to ship new feature work targeting unmaintained runtimes.
-
-| Python version | EOL date |
-| --- | --- |
-| 3.8 | 2024-10-07 |
-| 3.9 | 2025-10-31 |
-| 3.10 | 2026-10 |
-| 3.11 | 2027-10 |
-| 3.12 | 2028-10 |
-| 3.13 | 2029-10 |
-| 3.14 | 2030-10 |
-
-Bugfix releases on existing lines may continue past these dates on a best-effort basis, but new feature work will target supported Pythons.
+The current package continues to support Python 3.10+, including after upstream Python 3.10 end-of-life. Upstream [maintenance dates](https://devguide.python.org/versions/) help applications choose a supported interpreter; they do not automatically change slackblocks’ minimum. A future floor change requires an explicit compatibility decision and release notes.
 
 ## Choosing a version
 
@@ -82,7 +73,11 @@ For an upgrade walkthrough from `1.x` to `2.x`, see the
 </Python>
 <TypeScript>
 
-See [Installation](installation) and the [TypeScript API reference](../reference/typescript) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+## Node and package support
+
+The engine range is `^20.19.0 || >=22.12.0`: Node 20.19+ within the 20.x line, or Node 22.12+. Node 21 and Node 22.0–22.11 are excluded. CI executes package consumers on Node 20.19.0, 22 and 24.
+
+The package ships one ESM module; use `import` in an ESM application or dynamic `import()` from CommonJS. Fluent builders validate at `.build()` and emit plain JSON-compatible objects. The distributed bundle has no runtime package dependencies; TypeScript, tsdown and the Slack type declarations are build/development inputs, not additional consumer runtime requirements. Use the [parsing recipe](/usage/recipes/parse-json) for checked JSON ingress and [Sending Messages](sending_messages) for optional clients.
 
 </TypeScript>
 <Go>
@@ -214,17 +209,29 @@ for the native API and installation instructions.
 </Go>
 <Java>
 
-See [Installation](installation) and the [Java API reference](../reference/java) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+## Java support
+
+Consumers require Java 17+. CI tests Java 17, 21, 25 and the latest available JDK. The repository’s formatter and extra static analysis run on JDK 21+; this build-tool requirement does not raise the published artifact’s Java 17 floor.
+
+Values implement the official Slack SDK’s block interfaces and validate at `build()`. The core artifact supplies model/serialization dependencies; an application chooses its HTTP client, including the optional official `slack-api-client`. Keep its version compatible with the selected Slack SDK model dependency. Avoid wildcard imports from both libraries because names overlap. [Sending Messages](sending_messages) shows native handoff; [parsing](/usage/recipes/parse-json) explains checked reconstruction.
 
 </Java>
 <CSharp>
 
-See [Installation](installation) and the [C# API reference](../reference/csharp) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+## .NET support
+
+Consumers require .NET 8+. The library targets .NET 8 without third-party runtime dependencies. CI exercises .NET 8 and 10, Windows and packaged NuGet consumers. A newer SDK used to build the repository does not change the consumer target framework.
+
+Constructors produce validated immutable values; `ToJson()` serializes them. Native `with` updates and parsing must follow the checked API described in [parsing](/usage/recipes/parse-json). Delivery remains application-owned: use `HttpClient` or a client’s raw JSON path rather than converting into incomplete third-party block models. See [Sending Messages](sending_messages).
 
 </CSharp>
 <Ruby>
 
-See [Installation](installation) and the [Ruby API reference](../reference/ruby) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+## Ruby support
+
+MRI Ruby 3.3+ is supported. CI covers Ruby 3.3, 3.4 and 4.0 on Linux, macOS and Windows, plus Ruby head as an early-warning lane. The gem has no third-party runtime dependencies; JSON comes from Ruby. ActiveSupport, test, formatting and typing packages are development dependencies.
+
+Keyword constructors produce validated immutable values. `as_json` returns a fresh hash, and `to_json` encodes it. Use `with` for checked copies; missing optional values are omitted, while false and zero are preserved where accepted. RBS signatures describe the native API. Reconstruction examples cover selected modeled values, not a general decoder; see [parsing](/usage/recipes/parse-json). Optional `slack-ruby-client` or HTTP dependencies belong to the application, as shown in [Sending Messages](sending_messages).
 
 </Ruby>
 <Rust>

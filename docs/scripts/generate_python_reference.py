@@ -10,7 +10,7 @@ import re
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal, get_args, get_origin
 
 import griffe
 
@@ -216,6 +216,9 @@ def render_method(name: str, value: Any, parent: Any = None) -> str:
 
 def render_symbol(name: str, value: Any, parent: Any = None) -> str:
     alias = TYPE_ALIAS_DETAILS.get(name)
+    if get_origin(value) is Literal:
+        values = ", ".join(repr(item) for item in get_args(value))
+        alias = (f"Literal[{values}]", "Accepted wire values. Use one of these strings; this alias is not a constructor.")
     kind = (
         "Type alias"
         if alias

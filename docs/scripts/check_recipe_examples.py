@@ -76,24 +76,29 @@ def check_result(recipe, value, language):
     assert isinstance(value, dict), (recipe, value)
     objects = list(descendants(value))
     types = {obj.get("type") for obj in objects if isinstance(obj.get("type"), str)}
-    required = {
-        "build-notification": "header",
-        "approval-request": "actions",
-        "rich-alert": "rich_text",
-        "confirmation-modal": "input",
-        "status-table": "table",
-        "parse-json": "section",
-        "workflow-button": "workflow_button",
-        "accordion-pagination": "container",
-        "layout-grid": "layout",
-    }
-    if recipe in required:
-        assert required[recipe] in types, (recipe, types)
-    if recipe == "approval-request":
-        assert {obj.get("action_id") for obj in objects if obj.get("type") == "button"} >= {
-            "approve",
-            "reject",
-        }
+    contract = next(item["contract"] for item in json.loads((EXAMPLES / "catalog.json").read_text()) if item["id"] == recipe)
+    root = contract.get("root_by_language", {}).get(language, contract["root"])
+    actual_root = "result" if "handled" in value else value.get("type", "message")
+    assert actual_root == root, (recipe, language, actual_root, root)
+    assert set(contract["requires"]) <= types, (recipe, language, types)
+    if recipe == "build-notification":
+        assert any(obj.get("type") == "section" and obj.get("fields") for obj in objects)
+    elif recipe == "rich-alert":
+        assert any(obj.get("type") == "text" and obj.get("style", {}).get("bold") is True for obj in objects)
+    elif recipe == "workflow-button":
+        button = next(obj for obj in objects if obj.get("type") == "workflow_button")
+        assert button["action_id"] and button["workflow"]["trigger"]["url"].startswith("https://slack.com/shortcuts/")
+        assert button["workflow"]["trigger"]["customizable_input_parameters"]
+    elif recipe == "parse-json":
+        assert value["text"]["text"]
+    elif recipe == "approval-request":
+        assert value["channel"] == "C1" and value["text"] == "Approval requested"
+        assert value["blocks"][0]["text"]["text"] == "Approve deployment?"
+        buttons = value["blocks"][1]["elements"]
+        assert [b["action_id"] for b in buttons] == ["approve", "reject", "details"]
+        assert [b["value"] for b in buttons[:2]] == ["release-42", "release-42"]
+        assert [b["style"] for b in buttons[:2]] == ["primary", "danger"]
+        assert buttons[2]["url"] == "https://approvals.example.com/release-42"
     elif recipe == "confirmation-modal":
         assert value["type"] == "modal" and value["submit"]["text"]
     elif recipe == "threaded-reply":
@@ -101,9 +106,14 @@ def check_result(recipe, value, language):
     elif recipe == "ephemeral-response":
         assert value["response_type"] == "ephemeral"
     elif recipe == "status-table":
-        assert any(len(obj.get("rows", [])) >= 2 for obj in objects)
+        assert value["channel"] == "C1" and value["text"] == "Service status"
+        table, = value["blocks"]
+        assert [[c["text"] for c in row] for row in table["rows"]] == [
+            ["Service", "Status"], ["API", "Healthy"], ["Worker", "Degraded"],
+        ]
     elif recipe == "colored-attachment":
-        assert value["attachments"][0]["color"]
+        assert value["attachments"][0]["color"] in {"good", "warning", "danger", "#ffff00"}
+        assert value["attachments"][0]["blocks"]
     elif recipe == "validation-errors":
         assert value == {"category": "length-exceeded", "handled": True}
     elif recipe == "accordion-pagination":
@@ -167,6 +177,7 @@ def sources():
             snippets = re.findall(rf"^```{fence}\n(.*?)\n```", regions[0], re.S | re.M)
             assert len(snippets) == 1, (name, language, "expected one complete program")
             result[language][name] = snippets[0]
+    assert all(item.get("contract") and item.get("native_variations") for item in catalog)
     assert len(catalog) == 16, "Review the complete recipe catalogue when changing it"
     layout = (ROOT / "docs/docs/usage/layouts.mdx").read_text()
     for language, fence in LANGUAGES.items():

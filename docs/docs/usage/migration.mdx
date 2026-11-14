@@ -208,21 +208,7 @@ block = Block.from_dict(incoming["blocks"][0])
 print(block.text.text)  # for a SectionBlock, etc.
 ```
 
-`Block.from_dict` dispatches by `type`; direct typed parsers also require the
-matching discriminator. This is a partial parser, not a general Slack JSON loader:
-
-| Parse support | Block types |
-| --- | --- |
-| Supported | Alert, Divider, File, Header, Image, Markdown, Video |
-| Supported subset | Section without accessory; Context with text elements only |
-| Raises `NotImplementedError` | Actions, Input, RichText, Table, Card, Carousel, Container, Layout (3.2.0+), ContextActions, DataTable, DataVisualization, TaskCard, Plan; Section with accessory; Context with images |
-
-Unknown future fields are ignored, so this is not a lossless storage format.
-Keep the original JSON when forwarding or archiving unsupported or future fields.
-`Text`, `ConfirmationDialogue`, `Option`, `OptionGroup`,
-`DispatchActionConfiguration`, `ConversationFilter`, `InputParameter`, `SlackFile`,
-`Trigger`, and `Workflow` have composition-object parsers; check individual
-references rather than assuming every composition type is parseable.
+`Block.from_dict` is a partial parser. Use the canonical [parsing capability inventory](/usage/recipes/parse-json#parsing-capabilities) for the supported types, unsupported nested shapes and other languages’ entry points. Unknown future fields can be dropped; keep the original JSON when forwarding or archiving it.
 
 ### Two new block types
 
@@ -375,7 +361,7 @@ a field; explicit null inside a `JsonObject` is preserved.
 
 ## Starting with Elixir
 
-2.8.0 is the first planned Elixir release, so there is no older Elixir API to migrate.
+2.8.0 was the first Elixir release, so there is no older Elixir API to migrate.
 Use native constructors, lists and atom enums rather than translating another
 language's builder chains. Names use Slack's wire `snake_case`.
 

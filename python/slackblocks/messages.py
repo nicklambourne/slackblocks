@@ -107,9 +107,11 @@ class _MessagePayloadMixin:
         raise NotImplementedError
 
     def to_dict(self) -> dict[str, Any]:
+        """Return a fresh Slack-shaped dictionary, validating the resolved payload."""
         return self._resolve()
 
     def json(self) -> str:
+        """Return the validated Slack-shaped payload as indented JSON."""
         return dumps(self._resolve(), indent=4)
 
     def __repr__(self) -> str:
@@ -119,6 +121,7 @@ class _MessagePayloadMixin:
         return self._resolve()[item]
 
     def keys(self) -> list[str]:
+        """Return the serialized field names for mapping-style SDK argument unpacking."""
         return list(self._resolve().keys())
 
 
@@ -192,7 +195,7 @@ class Message(BaseMessage):
             automatically unfurl.
         metadata: optional message metadata, including `event_type` and `event_payload`.
     Throws:
-        InvalidUsageException: in the event that the items passed to `blocks`
+        InvalidUsageError: in the event that the items passed to `blocks`
             are not valid [`Blocks`](/slackblocks/latest/reference/blocks).
     """
 

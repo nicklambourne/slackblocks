@@ -7,6 +7,10 @@ toc_max_heading_level: 3
 
 This page documents the Ruby API for validation and errors. Values use keyword-only construction, validate before freezing, and serialize to Slack JSON.
 
+import ReferenceIndex from '@site/src/components/ReferenceIndex';
+
+<ReferenceIndex entries={[{"name":"ValidationError","href":"#validationerror"}]} />
+
 ## ValidationError
 
 Raised when a Slack rule fails. category is one of six stable wire names; path identifies the offending value.

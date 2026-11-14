@@ -26,7 +26,9 @@ class Modal(ModalView):
         return dumps(self._resolve(), indent=4)
 
     def to_dict(self) -> dict[str, Any]:
+        """Return a fresh Slack-shaped dictionary, validating the resolved payload."""
         return self._resolve()
 
     def json(self) -> str:
+        """Return the validated Slack-shaped payload as indented JSON."""
         return dumps(self._resolve(), indent=4)

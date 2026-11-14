@@ -89,7 +89,7 @@ The [PHP API reference](/reference/php) covers every public class, interface, en
 The [Elixir API reference](/reference/elixir) covers every public module,
 struct field, constructor, editing function, helper and typespec. Documentation
 and signatures come from compiled Elixir metadata, including functions with default arguments.
-[HexDocs](https://hexdocs.pm/slackblocks) will become available after the first release.
+[HexDocs](https://hexdocs.pm/slackblocks) hosts the published Elixir API documentation.
 
 </Elixir>
 <Haskell>
@@ -102,3 +102,18 @@ anchors. Native Haddock is also built from the actual source archive.
 
 </Haskell>
 </LanguageContent>
+
+## Choose a payload and receiving surface
+
+| Task | Native payload | Additional receiving requirements |
+| --- | --- | --- |
+| Post or update a message | Message / MessagePayload | Channel ID, fallback text, suitable token/scopes; inspect the API result. |
+| Incoming webhook | WebhookMessage | Configured webhook URL and endpoint-specific response handling. |
+| Interaction response | MessageResponse / WebhookMessage | Genuine `response_url` or immediate command response; visibility/replacement rules differ from webhooks. |
+| Open/update a modal | Modal / ModalView | View request envelope plus fresh trigger ID or existing view ID/hash. |
+| Publish App Home | HomeTabView | Request envelope with the target user ID. |
+| Display a registered remote file | FileBlock representation | Register/share through remote-file APIs, then retrieve; FileBlock is not directly postable. |
+
+The [sending guide](/usage/sending_messages) supplies native examples. Check [parsing capabilities](/usage/recipes/parse-json) before accepting incoming JSON and [validation boundaries](/usage/validation-boundary) before relying on local acceptance. Field roles, allowed parents and surface restrictions are separate: for example, a value accepted as an input element is not automatically a section accessory. Use the native parameter type and that block’s official reference.
+
+For each language, start with installation/runtime compatibility, construct and serialize a value, inspect an error, then follow the relevant sending and safe-edit recipe. General decoder support, automatic IDs and string coercion differ deliberately; the recipe and reference name those differences.

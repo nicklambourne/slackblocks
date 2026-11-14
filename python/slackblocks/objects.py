@@ -130,7 +130,7 @@ class Text(CompositionObject):
             names, user names will not automatically be rendered as links.
 
     Throws:
-        InvalidUsageException: if the provided `text` fails validation.
+        InvalidUsageError: if the provided `text` fails validation.
     """
 
     def __init__(
@@ -641,7 +641,7 @@ class ConversationFilter(CompositionObject):
         exclude_bot_users: whether to remove bot users from the list of conversations.
 
     Throws:
-        InvalidUsageException: in the event that the user provides none of `include`,
+        InvalidUsageError: in the event that the user provides none of `include`,
             `exclude_external_shared_channels`, or `exclude_bot_users` arguments.
     """
 
@@ -907,7 +907,7 @@ class RawText:
             escaped into text format (e.g. `:smile:`).
 
     Throws:
-        InvalidUsageException: if the provided `text` fails validation.
+        InvalidUsageError: if the provided `text` fails validation.
     """
 
     def __init__(
