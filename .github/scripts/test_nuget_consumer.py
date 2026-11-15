@@ -93,11 +93,30 @@ class ExactConsumer(unittest.TestCase):
         self.assertEqual(self.sleeps, [])
         self.assertFalse(json.loads((self.root / "receipt.json").read_text())["passed"])
 
+    def test_fatal_error_after_availability_delay_cannot_remain_retryable(self):
+        missing = subprocess.CompletedProcess([], 1, "error NU1102: Unable to find package Slackblocks with version (= 2.7.0)")
+        failures = [
+            subprocess.CompletedProcess([], 1, "error NU1301: Feed authentication denied"),
+            subprocess.CompletedProcess([], 1, "error NU1102: Unable to find package Other with version (= 1.0.0)"),
+            OSError("restore process could not start"),
+        ]
+        for index, failure in enumerate(failures):
+            self.root = self.root.with_name(f"consumer-{index}")
+            with self.subTest(failure=failure), self.assertRaises((RuntimeError, OSError)):
+                self.run_consumer([missing, failure], attempts=3)
+            receipt = json.loads((self.root / "receipt.json").read_text())
+            self.assertEqual(receipt["state"], "failed")
+            self.assertFalse(receipt["passed"])
+            self.assertTrue(receipt["error"])
+            self.assertEqual(len(self.calls), 2)
+            self.assertEqual(len(self.sleeps), 1)
+
     def test_missing_version_stops_at_attempt_bound(self):
         failure = subprocess.CompletedProcess([], 1, "error NU1102: Unable to find package Slackblocks with version (= 2.7.0)")
         with self.assertRaises(consumer.availability.Pending):
             self.run_consumer([failure] * 6, attempts=6)
         receipt = json.loads((self.root / "receipt.json").read_text())
+        self.assertEqual(receipt["state"], "awaiting_availability")
         self.assertEqual(len(receipt["attempts"]), 6)
         self.assertEqual(len(self.sleeps), 5)
         self.assertFalse(receipt["passed"])
