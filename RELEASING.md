@@ -855,3 +855,44 @@ jobs, immutable tags and existing artifacts. Never retry an uncertain upload
 without first reconciling the public package identity. PHP checks the ordinary
 Composer p2 feed and uses isolated Composer metadata for both archive and source
 installs; a Packagist page or a warmed local cache is insufficient evidence.
+
+## Resuming a coordinated release
+
+Dispatch **Coordinated Release** from master with the same version and `resume`
+selected. The current tooling checks out the immutable Python release tag,
+verifies all ten annotated tags and source ancestry, and observes the existing
+publisher runs. Successful publishers are reused; active publishers keep their
+run IDs. Each matrix job preserves `publisher-record-<language>-<attempt>` with
+source/tooling SHAs, run/attempt IDs, official jobs, actual hosted runners and
+artifact IDs/digests. Keep these records with the release evidence.
+
+Only failed NuGet, Composer or Hackage consumer jobs with explicit pending
+availability receipts may rerun automatically, once per coordinator attempt.
+Successful upload jobs are not repeated. Missing runs after a prior dispatch,
+unknown upload outcomes, authentication errors, changed source identities and
+consumer failures stop for investigation. A pending or blocked record never
+means the coordinated release is complete. A new initial dispatch for the same
+source is allowed only after proving every previous attempt stopped before tag
+creation, no release tags exist and no publisher was dispatched. This permits
+retrying repaired readiness checks without a dummy source change. Any uncertain
+tag creation or publication still requires reconciliation or resume.
+
+Resume uses current reviewed tooling while retaining the tagged release source.
+It does not recreate tags, change package bytes, repeat credential readiness
+writes, or repair a failed upload automatically. Resolve a genuinely failed
+publisher with its existing immutable-artifact recovery process before resuming.
+
+After merge, **Follow Up Pending Release** checks hourly for recorded availability
+waits. It may dispatch resume for an existing release only when all ten publisher
+identities agree, no coordinator is active, and the original publication started
+less than 24 hours ago. It also recognizes pending public-consumer or documentation
+receipts. Successful, blocked, incomplete, expired and mismatched evidence does
+not trigger retries. After the 24-hour window, investigate the retained failure
+and resume manually. This follow-up has no publication credentials and never
+starts a new version; the coordinator's upload and source guards still apply.
+
+Publisher success also requires every job and critical step listed in
+`.github/release-publishers.json` to execute successfully. Conditional token/OIDC
+upload steps must have exactly one successful path. Only explicitly listed
+nonessential jobs may be skipped; keep this contract aligned with publisher
+workflow and matrix changes.

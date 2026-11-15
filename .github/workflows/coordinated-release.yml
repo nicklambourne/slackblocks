@@ -1,4 +1,5 @@
 name: Coordinated Release
+run-name: Coordinated release ${{ inputs.version || github.ref_name }}${{ inputs.resume && ' (resume)' || '' }}
 
 on:
   pull_request:
@@ -31,6 +32,7 @@ on:
       - "rust/CHANGELOG.md"
       - ".github/workflows/publish-crates.yml"
       - ".github/scripts/**"
+      - ".github/release-publishers.json"
       - ".github/workflows/publish-packagist.yml"
       - "php/**"
       - "elixir/**"
@@ -46,9 +48,14 @@ on:
         description: Release version (X.Y.Z)
         required: true
         type: string
+      resume:
+        description: Observe an existing tagged release without repeating successful uploads
+        type: boolean
+        default: false
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: coordinated-release-${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref }}
@@ -60,11 +67,26 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      source: ${{ steps.source.outputs.sha }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
+          path: tooling
+          persist-credentials: false
+
+      - name: Check out immutable release source on resume
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          path: source
+          persist-credentials: false
+          ref: ${{ inputs.resume && format('refs/tags/python/v{0}', inputs.version) || github.sha }}
+
+      - name: Record release source
+        id: source
+        run: echo "sha=$(git -C source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Install Python for shared release guards
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -72,17 +94,27 @@ jobs:
           python-version: "3.13"
 
       - name: Test release preflight and publisher wiring without credentials
-        run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
+        run: python -m unittest discover -s tooling/.github/scripts -p 'test_*.py' -v
 
       - name: Validate all ten languages and release activation
         id: version
         env:
           REQUESTED_VERSION: ${{ inputs.version }}
-        run: python .github/scripts/verify-release.py coordinator
+          RESUME: ${{ inputs.resume }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
+        run: |
+          flags=()
+          if [ "$RESUME" = true ]; then flags+=(--resume); fi
+          python tooling/.github/scripts/verify-release.py coordinator --source-root source "${flags[@]}"
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && [ "$RESUME" != true ]; then
+            python tooling/.github/scripts/release_coordinator.py --check-start --repo "$GH_REPO" --source "$SOURCE_SHA" --version "$REQUESTED_VERSION"
+          fi
 
   php-readiness:
     name: Verify PHP registry and monorepo readiness before tags
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && !inputs.resume
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -103,7 +135,7 @@ jobs:
 
   hex-readiness:
     name: Verify Hex readiness before tags
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && !inputs.resume
     needs: validate
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -130,7 +162,7 @@ jobs:
 
   hackage-readiness:
     name: Verify Hackage account and ownership before tags
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && !inputs.resume
     needs: validate
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -147,7 +179,7 @@ jobs:
 
   create-tags:
     name: Create coordinated tags
-    if: github.event_name == 'workflow_dispatch'
+    if: always() && github.event_name == 'workflow_dispatch' && needs.validate.result == 'success' && (inputs.resume || (needs.php-readiness.result == 'success' && needs.hex-readiness.result == 'success' && needs.hackage-readiness.result == 'success'))
     needs: [validate, php-readiness, hex-readiness, hackage-readiness]
     runs-on: ubuntu-latest
     permissions:
@@ -157,10 +189,12 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
+          ref: ${{ needs.validate.outputs.source }}
 
       - name: Create or verify release tags
         env:
           VERSION: ${{ needs.validate.outputs.version }}
+          SOURCE_SHA: ${{ needs.validate.outputs.source }}
         run: |
           set -euo pipefail
 
@@ -171,15 +205,15 @@ jobs:
             if git show-ref --verify --quiet "refs/tags/$tag"; then
               existing=$((existing + 1))
               target=$(git rev-list -n 1 "$tag")
-              if [ "$target" != "$GITHUB_SHA" ]; then
-                echo "::error::Existing tag '$tag' points to $target instead of $GITHUB_SHA."
+              if [ "$target" != "$SOURCE_SHA" ]; then
+                echo "::error::Existing tag '$tag' points to $target instead of $SOURCE_SHA."
                 exit 1
               fi
             fi
           done
 
           if [ "$existing" -eq "${#tags[@]}" ]; then
-            echo "All coordinated tags already point to $GITHUB_SHA; reusing them."
+            echo "All coordinated tags already point to $SOURCE_SHA; reusing them."
             exit 0
           fi
           if [ "$existing" -ne 0 ]; then
@@ -203,7 +237,7 @@ jobs:
 
   publish:
     name: Publish ${{ matrix.language }}
-    if: github.event_name == 'workflow_dispatch'
+    if: always() && github.event_name == 'workflow_dispatch' && needs.validate.result == 'success' && needs.create-tags.result == 'success'
     needs:
       - validate
       - create-tags
@@ -215,64 +249,58 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - language: Python
+          - language: python
             workflow: publish.yml
             tag_prefix: python/v
-          - language: TypeScript
+          - language: typescript
             workflow: publish-npm.yml
             tag_prefix: ts/v
-          - language: Go
+          - language: go
             workflow: publish-go.yml
             tag_prefix: go/v
-          - language: Java
+          - language: java
             workflow: publish-java.yml
             tag_prefix: java/v
-          - language: C#
+          - language: csharp
             workflow: publish-nuget.yml
             tag_prefix: csharp/v
-          - language: Ruby
+          - language: ruby
             workflow: publish-rubygems.yml
             tag_prefix: ruby/v
-          - language: Rust
+          - language: rust
             workflow: publish-crates.yml
             tag_prefix: rust/v
-          - language: PHP
+          - language: php
             workflow: publish-packagist.yml
             tag_prefix: php/v
-          - language: Haskell
+          - language: haskell
             workflow: publish-hackage.yml
             tag_prefix: haskell/v
-          - language: Elixir
+          - language: elixir
             workflow: publish-hex.yml
             tag_prefix: elixir/v
+    timeout-minutes: 35
     steps:
-      - name: Dispatch and monitor publisher
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Observe or safely resume the exact publisher
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          PUBLISH_WORKFLOW: ${{ matrix.workflow }}
-          RELEASE_TAG: ${{ format('{0}{1}', matrix.tag_prefix, needs.validate.outputs.version) }}
+          LANGUAGE: ${{ matrix.language }}
+          VERSION: ${{ needs.validate.outputs.version }}
+          SOURCE_SHA: ${{ needs.validate.outputs.source }}
+          RESUME: ${{ inputs.resume }}
         run: |
-          set -euo pipefail
-
-          previous_run=$(gh run list --workflow "$PUBLISH_WORKFLOW" --event workflow_dispatch --branch "$RELEASE_TAG" --limit 1 --json databaseId --jq '.[0].databaseId // empty')
-          gh workflow run "$PUBLISH_WORKFLOW" --ref "$RELEASE_TAG"
-
-          run_id=""
-          for _ in {1..12}; do
-            run_id=$(gh run list --workflow "$PUBLISH_WORKFLOW" --event workflow_dispatch --branch "$RELEASE_TAG" --limit 1 --json databaseId --jq '.[0].databaseId // empty')
-            if [ -n "$run_id" ] && [ "$run_id" != "$previous_run" ]; then
-              break
-            fi
-            sleep 5
-          done
-
-          if [ -z "$run_id" ] || [ "$run_id" = "$previous_run" ]; then
-            echo "::error::Could not find the dispatched $PUBLISH_WORKFLOW run for $RELEASE_TAG."
-            exit 1
-          fi
-
-          run_url=$(gh run view "$run_id" --json url --jq .url)
-          echo "Monitoring $run_url"
-          echo "- [${RELEASE_TAG} publisher](${run_url})" >> "$GITHUB_STEP_SUMMARY"
-          gh run watch "$run_id" --exit-status
+          flags=()
+          if [ "$RESUME" = true ]; then flags+=(--resume); fi
+          python3 .github/scripts/release_coordinator.py --repo "$GH_REPO" --source "$SOURCE_SHA" \
+            --version "$VERSION" --language "$LANGUAGE" --directory "$RUNNER_TEMP/publisher-record" "${flags[@]}"
+      - name: Preserve publisher identity, attempts, jobs and artifact digests
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: publisher-record-${{ matrix.language }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/publisher-record/
+          if-no-files-found: error

@@ -360,7 +360,7 @@ def release_commit(root):
     return head
 
 
-def coordinator(root, version, event, ref):
+def coordinator(root, version, event, ref, resume=False):
     strict = event == "workflow_dispatch"
     require(
         event in ("pull_request", "workflow_dispatch"),
@@ -370,11 +370,14 @@ def coordinator(root, version, event, ref):
     if strict:
         require(ref == "refs/heads/master", "Dispatch coordinated releases from master")
         head = release_commit(root)
-        require(
-            head == git(root, "rev-parse", "origin/master"),
-            "Dispatch the current master commit",
-        )
-        tag_state(root, version, head)
+        if resume:
+            require(tag_state(root, version, head) == len(LANGUAGES), "Resume requires the complete immutable tag set")
+        else:
+            require(
+                head == git(root, "rev-parse", "origin/master"),
+                "Dispatch the current master commit",
+            )
+            tag_state(root, version, head)
     return version
 
 
@@ -403,8 +406,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=("validate", "coordinator", "publisher"))
     parser.add_argument("--language", choices=LANGUAGES)
+    parser.add_argument("--source-root", type=Path)
+    parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
-    root = Path(__file__).resolve().parents[2]
+    root = args.source_root.resolve() if args.source_root else Path(__file__).resolve().parents[2]
     ref = os.environ.get("GITHUB_REF", "")
     try:
         if args.command == "validate":
@@ -415,6 +420,7 @@ def main():
                 os.environ.get("REQUESTED_VERSION") or None,
                 os.environ.get("GITHUB_EVENT_NAME", ""),
                 ref,
+                args.resume,
             )
         else:
             require(args.language is not None, "Publisher requires --language")
