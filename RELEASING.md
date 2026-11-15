@@ -872,7 +872,10 @@ Successful upload jobs are not repeated. Missing runs after a prior dispatch,
 unknown upload outcomes, authentication errors, changed source identities and
 consumer failures stop for investigation. A pending or blocked record never
 means the coordinated release is complete. A new initial dispatch for the same
-source is rejected; use resume even when the previous coordinator is red.
+source is allowed only after proving every previous attempt stopped before tag
+creation, no release tags exist and no publisher was dispatched. This permits
+retrying repaired readiness checks without a dummy source change. Any uncertain
+tag creation or publication still requires reconciliation or resume.
 
 Resume uses current reviewed tooling while retaining the tagged release source.
 It does not recreate tags, change package bytes, repeat credential readiness
@@ -887,6 +890,12 @@ receipts. Successful, blocked, incomplete, expired and mismatched evidence does
 not trigger retries. After the 24-hour window, investigate the retained failure
 and resume manually. This follow-up has no publication credentials and never
 starts a new version; the coordinator's upload and source guards still apply.
+
+Publisher success also requires every job and critical step listed in
+`.github/release-publishers.json` to execute successfully. Conditional token/OIDC
+upload steps must have exactly one successful path. Only explicitly listed
+nonessential jobs may be skipped; keep this contract aligned with publisher
+workflow and matrix changes.
 
 ## Public verification and the completion record
 

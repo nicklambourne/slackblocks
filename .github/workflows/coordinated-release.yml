@@ -32,6 +32,7 @@ on:
       - "rust/CHANGELOG.md"
       - ".github/workflows/publish-crates.yml"
       - ".github/scripts/**"
+      - ".github/release-publishers.json"
       - ".github/workflows/publish-packagist.yml"
       - "php/**"
       - "elixir/**"
