@@ -158,10 +158,32 @@ jobs:
         run: |
           gh auth setup-git --hostname github.com
           python3 php/bin/release.py publish --apply
+
+  verify-registry:
+    name: Verify public Packagist installations
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: php-distribution
+          path: php/dist
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: "8.2"
           tools: composer:v2
           coverage: none
       - name: Verify Packagist archive and source installs against the monorepo commit
-        run: python3 php/bin/release.py verify-registry
+        run: python3 php/bin/release.py verify-registry --receipt "$RUNNER_TEMP/php-registry/receipt.json"
+      - name: Preserve registry availability and consumer evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: php-public-consumer
+          path: ${{ runner.temp }}/php-registry/
+          if-no-files-found: error

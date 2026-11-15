@@ -555,3 +555,46 @@ class HaskellGitHubRecoveryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class HackageIndexConsumerTests(unittest.TestCase):
+    def test_refresh_before_build_and_no_retry_of_build_failure(self):
+        for fail_build in (False, True):
+            with self.subTest(fail_build=fail_build), tempfile.TemporaryDirectory(dir=hackage.scratch()) as temp:
+                root = Path(temp)
+                (root / "haskell/consumer").mkdir(parents=True)
+                (root / "haskell/consumer/Main.hs").write_text("main = pure ()\n")
+                receipt = root / "receipt.json"
+                commands = []
+                now = [0]
+                wait = hackage.availability.wait
+
+                def run(command, cwd, env, check):
+                    self.assertNotIn("HACKAGE_TOKEN", env)
+                    self.assertNotIn("CABAL_CONFIG", env)
+                    self.assertTrue(env["CABAL_DIR"].startswith(str(cwd)))
+                    commands.append(command)
+                    if command[1] == "run":
+                        if fail_build:
+                            raise subprocess.CalledProcessError(1, command)
+                        target = cwd / "dist-newstyle/cache/plan.json"
+                        target.parent.mkdir(parents=True)
+                        target.write_text(json.dumps({"install-plan": [{"pkg-name": "slackblocks", "pkg-version": VERSION, "pkg-src": {"type": "repo-tar"}}]}))
+
+                with (
+                    patch.object(hackage.preflight, "validate", return_value=VERSION),
+                    patch.object(hackage.preflight, "git", return_value="source-sha"),
+                    patch.object(hackage.subprocess, "run", side_effect=run),
+                    patch.object(hackage.subprocess, "check_output", side_effect=["slackblocks 1.0.0\n", f"slackblocks {VERSION}\n"]),
+                    patch.object(hackage.availability, "wait", side_effect=lambda *a, **kw: wait(*a, **kw, clock=lambda: now[0], sleep=lambda seconds: now.__setitem__(0, now[0] + seconds))),
+                    patch.dict(os.environ, {"HACKAGE_TOKEN": "secret", "CABAL_CONFIG": "private"}),
+                ):
+                    if fail_build:
+                        with self.assertRaises(subprocess.CalledProcessError):
+                            hackage.consumer(root, receipt)
+                    else:
+                        hackage.consumer(root, receipt)
+                self.assertEqual([c[1] for c in commands], ["update", "update", "run"])
+                saved = json.loads(receipt.read_text())
+                self.assertEqual(saved["state"], "failed" if fail_build else "verified")
+                self.assertEqual(saved["passed"], not fail_build)
+                self.assertEqual(len(saved["observations"]), 1)

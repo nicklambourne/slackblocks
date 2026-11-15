@@ -309,38 +309,41 @@ class PHPReleaseTests(unittest.TestCase):
                 ):
                     php.consumer(self.root, self.directory, registry=True)
 
-    def test_registry_indexing_retry_is_bounded_and_content_mismatches_fail_immediately(
-        self,
-    ):
-        unavailable = subprocess.CalledProcessError(2, "composer")
-        cases = [
-            ([unavailable, unavailable, self.record, self.record], None, 4, 2),
-            ([unavailable] * 12, subprocess.CalledProcessError, 12, 11),
-            (
-                [php.preflight.ReleaseError("content differs")],
-                php.preflight.ReleaseError,
-                1,
-                0,
-            ),
-        ]
-        for outcomes, error, calls, sleeps in cases:
+    def test_registry_wait_precedes_consumers_and_never_retries_content_errors(self):
+        receipt = self.directory / "registry-receipt.json"
+        for error in (None, php.preflight.ReleaseError("content differs")):
             with (
                 self.subTest(error=error),
-                patch("sys.argv", ["release.py", "verify-registry"]),
+                patch("sys.argv", ["release.py", "verify-registry", "--directory", str(self.directory)]),
+                patch.object(php, "ROOT", self.root),
                 patch.object(php.preflight, "publisher"),
-                patch.object(php, "consumer", side_effect=outcomes) as consumer,
-                patch.object(php.time, "sleep") as sleep,
+                patch.object(php.availability, "packagist", return_value={}) as probe,
+                patch.object(php, "consumer", side_effect=error, return_value=self.record) as consumer,
                 contextlib.redirect_stdout(io.StringIO()),
             ):
                 if error is None:
                     php.main()
+                    self.assertEqual(consumer.call_count, 2)
+                    self.assertEqual(json.loads(receipt.read_text())["state"], "verified")
                 else:
-                    with self.assertRaises(error):
+                    with self.assertRaises(php.preflight.ReleaseError):
                         php.main()
-                self.assertEqual(consumer.call_count, calls)
-                self.assertEqual(sleep.call_count, sleeps)
-                for call in sleep.call_args_list:
-                    self.assertEqual(call.args, (15,))
+                    self.assertEqual(consumer.call_count, 1)
+                    self.assertEqual(json.loads(receipt.read_text())["state"], "failed")
+                probe.assert_called_once_with(self.record["version"], self.record["source_commit"])
+
+    def test_pending_registry_never_executes_a_consumer(self):
+        with (
+            patch("sys.argv", ["release.py", "verify-registry", "--directory", str(self.directory), "--wait-seconds", "0"]),
+            patch.object(php, "ROOT", self.root),
+            patch.object(php.preflight, "publisher"),
+            patch.object(php.availability, "packagist", side_effect=php.availability.Pending("old index")),
+            patch.object(php, "consumer") as consumer,
+            self.assertRaises(php.availability.Pending),
+        ):
+            php.main()
+        consumer.assert_not_called()
+        self.assertFalse(json.loads((self.directory / "registry-receipt.json").read_text())["passed"])
 
     def test_github_lookup_finds_drafts_across_pages_and_fails_closed(self):
         tag = "php/v" + fixtures.VERSION

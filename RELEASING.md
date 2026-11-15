@@ -835,3 +835,23 @@ After a failure, check:
 If a bad artifact was published, do not delete and re-upload: registries
 reject reused file names and versions. Yank, deprecate, or unlist the broken
 version and release a new coordinated patch version of **all ten** packages.
+
+## Registry availability and verification retries
+
+A registry accepting an upload does not prove that a normal package-manager
+client can install the version. NuGet and PHP run public installation checks in
+separate, credential-free jobs after publication. Hackage refreshes its secure
+consumer index until the exact version is listed. Verification waits are bounded
+at fifteen minutes; only explicitly classified missing-version or temporary
+registry responses are retryable. Authentication, checksum, source, dependency
+and native execution failures remain fatal.
+
+Availability receipts distinguish `awaiting_availability`, `available`, `verified`
+and `failed`. Only `verified` with `passed: true` establishes a working consumer.
+A wait that expires exits with status 75 and preserves a pending receipt; it does
+not make the publisher or coordinated release successful. Resume the failed
+verification job after the registry catches up, preserving successful upload
+jobs, immutable tags and existing artifacts. Never retry an uncertain upload
+without first reconciling the public package identity. PHP checks the ordinary
+Composer p2 feed and uses isolated Composer metadata for both archive and source
+installs; a Packagist page or a warmed local cache is insufficient evidence.

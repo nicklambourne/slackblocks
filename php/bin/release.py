@@ -8,6 +8,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 import urllib.error
@@ -16,6 +17,11 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+availability_spec = importlib.util.spec_from_file_location(
+    "release_availability", ROOT / ".github/scripts/release_availability.py"
+)
+availability = importlib.util.module_from_spec(availability_spec)
+availability_spec.loader.exec_module(availability)
 _spec = importlib.util.spec_from_file_location(
     "release_preflight", ROOT / ".github/scripts/verify-release.py"
 )
@@ -177,6 +183,11 @@ def consumer(root, directory, registry=False, source=False):
                 {"packagist.org": False},
             ]
         (project / "composer.json").write_text(json.dumps(manifest))
+        env = {k: v for k, v in os.environ.items() if k not in ("COMPOSER_AUTH", "COMPOSER")}
+        env.update(
+            COMPOSER_HOME=str(project / "composer-home"),
+            COMPOSER_CACHE_DIR=str(project / "composer-cache"),
+        )
         run(
             "composer",
             "install",
@@ -185,6 +196,7 @@ def consumer(root, directory, registry=False, source=False):
             "--no-scripts",
             "--no-plugins",
             cwd=project,
+            env=env,
         )
         installed = project / "vendor" / record["package"]
         preflight.require(not installed.is_symlink(), "Installed PHP package must not be a symlink")
@@ -451,6 +463,8 @@ def main():
     parser.add_argument("--directory", type=Path, default=ROOT / "php/dist")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--source", action="store_true", help="Verify a native source installation")
+    parser.add_argument("--receipt", type=Path)
+    parser.add_argument("--wait-seconds", type=int, default=900)
     args = parser.parse_args()
     if args.command == "readiness":
         preflight.coordinator(ROOT, None, "workflow_dispatch", os.environ.get("GITHUB_REF", ""))
@@ -467,20 +481,40 @@ def main():
     else:
         preflight.publisher(ROOT, "php", os.environ.get("GITHUB_REF", ""))
         if args.command == "verify-registry":
-            # Indexing can lag a webhook. No credentials or registry writes here.
-            for attempt in range(12):
-                try:
-                    result = consumer(ROOT, args.directory, registry=True)
-                    break
-                except subprocess.CalledProcessError:
-                    if attempt == 11:
-                        raise
-                    time.sleep(15)
-            consumer(ROOT, args.directory, registry=True, source=True)
+            record = verify(ROOT, args.directory)
+            receipt = args.receipt or args.directory / "registry-receipt.json"
+            identity = {
+                "language": "php",
+                "version": record["version"],
+                "source": record["source_commit"],
+            }
+            availability.wait(
+                lambda: availability.packagist(record["version"], record["source_commit"]),
+                receipt,
+                identity,
+                timeout=args.wait_seconds,
+            )
+            try:
+                result = consumer(ROOT, args.directory, registry=True)
+                consumer(ROOT, args.directory, registry=True, source=True)
+            except Exception as error:
+                availability.finish(receipt, state="failed", passed=False, error=str(error))
+                raise
+            availability.finish(
+                receipt,
+                state="verified",
+                passed=True,
+                archive_sha256=record["sha256"],
+                transports=["dist", "source"],
+            )
         else:
             result = publish(ROOT, args.directory, args.apply)
     print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except availability.Pending as error:
+        print(error, file=sys.stderr)
+        sys.exit(75)

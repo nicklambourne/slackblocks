@@ -54,6 +54,13 @@ jobs:
         working-directory: csharp
         run: dotnet pack src/Slackblocks/Slackblocks.csproj --configuration Release --output artifacts/package
 
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: nuget-package
+          path: csharp/artifacts/package/*
+          if-no-files-found: error
+
       - name: Log in with trusted publishing
         if: env.NUGET_API_KEY == ''
         id: login
@@ -70,11 +77,24 @@ jobs:
           API_KEY: ${{ env.NUGET_API_KEY != '' && env.NUGET_API_KEY || steps.login.outputs.NUGET_API_KEY }}
         run: dotnet nuget push "*.nupkg" --api-key "$API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
 
+
+  verify-registry:
+    name: Verify public NuGet installation
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Install minimum .NET
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: 8.0.x
       - name: Verify exact version from the public registry
         run: |
           version="${GITHUB_REF_NAME#csharp/v}"
           python3 .github/scripts/verify-nuget-consumer.py --version "$version" \
-            --workdir "$RUNNER_TEMP/nuget-consumer-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --attempts 6
+            --workdir "$RUNNER_TEMP/nuget-consumer-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --attempts 31 --interval 30
 
       - name: Retain public-registry install receipt
         if: always()
@@ -86,16 +106,10 @@ jobs:
             ${{ runner.temp }}/nuget-consumer-*/attempt-*/*.log
           if-no-files-found: ignore
 
-      - name: Upload release artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: nuget-package
-          path: csharp/artifacts/package/*
-          if-no-files-found: error
 
   github-release:
     name: Create GitHub Release
-    needs: publish
+    needs: verify-registry
     runs-on: ubuntu-latest
     permissions:
       contents: write

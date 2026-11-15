@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tarfile
 import tempfile
 import urllib.error
@@ -19,6 +20,11 @@ import urllib.parse
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[2]
+availability_spec = importlib.util.spec_from_file_location(
+    "release_availability", ROOT / ".github/scripts/release_availability.py"
+)
+availability = importlib.util.module_from_spec(availability_spec)
+availability_spec.loader.exec_module(availability)
 spec = importlib.util.spec_from_file_location(
     "preflight", ROOT / ".github/scripts/verify-release.py"
 )
@@ -372,7 +378,7 @@ def publish(root, directory):
     )
 
 
-def consumer(root):
+def consumer(root, receipt=None, wait_seconds=900):
     version = preflight.validate(root)
     with tempfile.TemporaryDirectory(prefix="hackage-consumer-", dir=scratch()) as temp:
         folder = Path(temp)
@@ -381,18 +387,35 @@ def consumer(root):
             f"cabal-version: 3.0\nname: registry-consumer\nversion: 0.0.0\nbuild-type: Simple\nexecutable registry-consumer\n  main-is: Main.hs\n  default-language: GHC2021\n  build-depends: base, slackblocks =={version}, aeson, containers\n"
         )
         (folder / "cabal.project").write_text("packages: .\n")
-        subprocess.run(["cabal", "update"], cwd=folder, check=True)
-        subprocess.run(
-            ["cabal", "run", "registry-consumer", "--jobs=2"], cwd=folder, check=True
-        )
-        plan = json.loads((folder / "dist-newstyle/cache/plan.json").read_text())
-        own = [p for p in plan["install-plan"] if p["pkg-name"] == "slackblocks"]
-        require(
-            len(own) == 1
-            and own[0]["pkg-version"] == version
-            and own[0]["pkg-src"]["type"] == "repo-tar",
-            "Consumer did not resolve the public registry package",
-        )
+        env = {k: v for k, v in os.environ.items() if k not in ("HACKAGE_TOKEN", "CABAL_CONFIG")}
+        env["CABAL_DIR"] = str(folder / "cabal-home")
+        receipt = receipt or folder / "registry-receipt.json"
+        identity = {"language": "haskell", "version": version, "source": preflight.git(root, "rev-parse", "HEAD")}
+
+        def indexed():
+            subprocess.run(["cabal", "update"], cwd=folder, env=env, check=True)
+            listing = subprocess.check_output(["cabal", "list", "--simple-output", "slackblocks"],
+                                              cwd=folder, env=env, text=True)
+            if ["slackblocks", version] not in [line.split() for line in listing.splitlines()]:
+                raise availability.Pending(f"Secure Hackage index does not yet contain {version}")
+
+        availability.wait(indexed, receipt, identity, timeout=wait_seconds)
+        try:
+            subprocess.run(
+                ["cabal", "run", "registry-consumer", "--jobs=2"], cwd=folder, env=env, check=True
+            )
+            plan = json.loads((folder / "dist-newstyle/cache/plan.json").read_text())
+            own = [p for p in plan["install-plan"] if p["pkg-name"] == "slackblocks"]
+            require(
+                len(own) == 1
+                and own[0]["pkg-version"] == version
+                and own[0]["pkg-src"]["type"] == "repo-tar",
+                "Consumer did not resolve the public registry package",
+            )
+        except Exception as error:
+            availability.finish(receipt, state="failed", passed=False, error=str(error))
+            raise
+        availability.finish(receipt, state="verified", passed=True, transport="repo-tar")
 
 
 def main():
@@ -400,6 +423,8 @@ def main():
     parser.add_argument(
         "command", choices=["prepare", "verify", "readiness", "publish", "consumer"]
     )
+    parser.add_argument("--receipt", type=Path)
+    parser.add_argument("--wait-seconds", type=int, default=900)
     args = parser.parse_args()
     directory = ROOT / "haskell/dist-release"
     if args.command == "readiness":
@@ -414,9 +439,13 @@ def main():
     elif args.command == "publish":
         publish(ROOT, directory)
     else:
-        consumer(ROOT)
+        consumer(ROOT, args.receipt, args.wait_seconds)
     print(f"Haskell {args.command} checks passed.")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except availability.Pending as error:
+        print(error, file=sys.stderr)
+        sys.exit(75)
