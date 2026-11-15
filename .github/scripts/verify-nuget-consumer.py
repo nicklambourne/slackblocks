@@ -115,6 +115,11 @@ def main():
                 raise RuntimeError(f"Native consumer failed; inspect {work / 'consumer.log'}")
             receipt.update(passed=True, state="verified", native_consumer="constructor, serialization, validation")
             break
+    except availability.Pending:
+        raise
+    except Exception as error:
+        receipt.update(state="failed", passed=False, error=str(error))
+        raise
     finally:
         (root / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
     print(json.dumps(receipt))
