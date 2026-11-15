@@ -1,0 +1,22 @@
+name: Release Recovery Tests
+on:
+  pull_request:
+    paths:
+      - .github/scripts/**
+      - .github/release-publishers.json
+      - .github/release-verification.json
+      - .github/workflows/coordinated-release.yml
+      - .github/workflows/verify-public-release.yml
+      - .github/workflows/test-release-recovery.yml
+      - .github/workflows/release-recovery-fixture.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release-recovery-test-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  recovery:
+    uses: ./.github/workflows/release-recovery-fixture.yml
+    with:
+      resume: true

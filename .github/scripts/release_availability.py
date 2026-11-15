@@ -12,6 +12,20 @@ import urllib.request
 class Pending(RuntimeError):
     """The exact version is not yet available through the consumer's registry."""
 
+    def __init__(self, message, response=None):
+        super().__init__(message)
+        self.response = response
+
+
+class RegistryDocument(dict):
+    """JSON data with response diagnostics kept outside the registry payload."""
+
+
+def response_metadata(response, url):
+    allowed = ("Date", "Age", "ETag", "Last-Modified", "Cache-Control", "CF-Cache-Status", "X-Cache")
+    return {"url": url, "status": response.code,
+            "headers": {name: response.headers[name] for name in allowed if response.headers.get(name) is not None}}
+
 
 def save(path, receipt):
     path = Path(path)
@@ -32,7 +46,7 @@ def wait(probe, path, identity, *, timeout=900, interval=30, clock=time.monotoni
             try:
                 result = probe()
             except Pending as error:
-                receipt["observations"].append({"at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "detail": str(error)})
+                receipt["observations"].append({"at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "detail": str(error), "response": error.response})
                 receipt["elapsed_seconds"] = round(clock() - start, 3)
                 save(path, receipt)
                 if clock() - start >= timeout:
@@ -40,7 +54,8 @@ def wait(probe, path, identity, *, timeout=900, interval=30, clock=time.monotoni
                 sleep(min(interval, max(0, timeout - (clock() - start))))
             else:
                 # Availability is separate from successful compilation and native execution.
-                receipt.update(state="available", elapsed_seconds=round(clock() - start, 3))
+                receipt.update(state="available", elapsed_seconds=round(clock() - start, 3),
+                               response=getattr(result, "response_metadata", None))
                 save(path, receipt)
                 return result
     except Pending:
@@ -57,15 +72,21 @@ def finish(path, **updates):
     save(path, receipt)
 
 
-def json_response(url):
+def open_response(url):
     request = urllib.request.Request(url, headers={"User-Agent": "slackblocks-release-verifier"})
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
-            return json.load(response)
+        return urllib.request.urlopen(request, timeout=30)
     except urllib.error.HTTPError as error:
         if error.code in (404, 429, 502, 503, 504):
-            raise Pending(f"Registry HTTP {error.code}: {url}") from error
+            raise Pending(f"Registry HTTP {error.code}: {url}", response_metadata(error, url)) from error
         raise
+
+
+def json_response(url):
+    with open_response(url) as response:
+        result = RegistryDocument(json.load(response))
+        result.response_metadata = response_metadata(response, url)
+        return result
 
 
 def packagist(version, commit):
@@ -85,7 +106,7 @@ def packagist(version, commit):
         if package["source"]["url"].removesuffix(".git") != "https://github.com/nicklambourne/slackblocks":
             raise ValueError("Packagist source repository differs")
         return package
-    raise Pending(f"Composer public metadata does not yet contain {version}")
+    raise Pending(f"Composer public metadata does not yet contain {version}", getattr(data, "response_metadata", None))
 
 
 def missing_nuget_version(output):

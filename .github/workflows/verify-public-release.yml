@@ -1,0 +1,198 @@
+name: Verify Public Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact already-published version (read-only verification)
+        required: true
+        type: string
+      source:
+        description: Immutable release source SHA
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      source:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-release-${{ github.ref }}-${{ inputs.version }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  identity:
+    name: Verify public release identity and documentation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    outputs:
+      version: ${{ steps.identity.outputs.version }}
+      source: ${{ steps.identity.outputs.source }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.13'
+      - name: Resolve reviewed release identity
+        id: identity
+        env:
+          VERSION: ${{ inputs.version }}
+          SOURCE: ${{ inputs.source }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          baseline = json.loads(Path('.github/release-verification.json').read_text())
+          version, source = os.environ['VERSION'], os.environ['SOURCE']
+          if os.environ['GITHUB_EVENT_NAME'] == 'pull_request':
+              version, source = baseline['version'], baseline['source']
+          assert re.fullmatch(r'\d+\.\d+\.\d+', version)
+          assert re.fullmatch(r'[0-9a-f]{40}', source)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write(f'version={version}\nsource={source}\n')
+          PY
+      - name: Check out immutable source for archive comparison
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ steps.identity.outputs.source }}
+          path: source
+          persist-credentials: false
+      - name: Verify annotated tags, public assets, Composer alias and registry docs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.identity.outputs.version }}
+          SOURCE: ${{ steps.identity.outputs.source }}
+        run: python3 .github/scripts/release_evidence.py --version "$VERSION" --source "$SOURCE" --directory "$RUNNER_TEMP/public-identity" --source-root source
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: always()
+        with:
+          name: public-release-identity-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/public-identity/
+          if-no-files-found: error
+
+  consumers:
+    name: Public consumer (${{ matrix.language }})
+    needs: identity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python, typescript, go, java, csharp, ruby, rust, php, elixir, haskell]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          path: tooling
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.identity.outputs.source }}
+          path: source
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.language == 'python' && '3.10' || '3.13' }}
+      - uses: actions/setup-node@v7
+        if: matrix.language == 'typescript'
+        with:
+          node-version: '20.19.0'
+      - uses: actions/setup-go@v7
+        if: matrix.language == 'go'
+        with:
+          go-version: '1.22.0'
+          cache: false
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        if: matrix.language == 'java'
+        with:
+          java-version: '17'
+          distribution: temurin
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        if: matrix.language == 'csharp'
+        with:
+          dotnet-version: '8.0.x'
+      - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1
+        if: matrix.language == 'ruby'
+        with:
+          ruby-version: '3.3'
+      - name: Install minimum Rust
+        if: matrix.language == 'rust'
+        run: rustup toolchain install 1.85.0 --profile minimal
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        if: matrix.language == 'php'
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: none
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: matrix.language == 'elixir'
+        with:
+          elixir-version: '1.16.3'
+          otp-version: '26.2'
+          version-type: strict
+      - uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2
+        if: matrix.language == 'haskell'
+        with:
+          ghc-version: '9.6.7'
+          cabal-version: '3.16.1.0'
+      - name: Install public package and execute the literal native recipe
+        env:
+          VERSION: ${{ needs.identity.outputs.version }}
+          SOURCE: ${{ needs.identity.outputs.source }}
+          LANGUAGE: ${{ matrix.language }}
+        run: |
+          python3 tooling/.github/scripts/public_release.py --source-root source --source "$SOURCE" \
+            --version "$VERSION" --language "$LANGUAGE" --directory "$RUNNER_TEMP/public-consumer"
+      - name: Retain exact-version install and native execution evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: always()
+        with:
+          name: public-release-consumer-${{ matrix.language }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/public-consumer/receipt.json
+            ${{ runner.temp }}/public-consumer/registry.json
+            ${{ runner.temp }}/public-consumer/layout.json
+            ${{ runner.temp }}/public-consumer/install.json
+            ${{ runner.temp }}/public-consumer/*lock*
+            ${{ runner.temp }}/public-consumer/go.sum
+            ${{ runner.temp }}/public-consumer/classpath.txt
+            ${{ runner.temp }}/public-consumer/*.stdout
+            ${{ runner.temp }}/public-consumer/*.stderr
+          if-no-files-found: error
+
+  verify:
+    name: Require all ten public consumers
+    if: always()
+    needs: [identity, consumers]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Require official completion of identity and every consumer job
+        env:
+          IDENTITY: ${{ needs.identity.result }}
+          CONSUMERS: ${{ needs.consumers.result }}
+        run: test "$IDENTITY" = success && test "$CONSUMERS" = success
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          pattern: public-release-consumer-*-${{ github.run_attempt }}
+          path: evidence
+      - name: Require ten exact-source receipts and identical native payloads
+        env:
+          VERSION: ${{ needs.identity.outputs.version }}
+          SOURCE: ${{ needs.identity.outputs.source }}
+        run: python3 .github/scripts/public_release.py --aggregate --version "$VERSION" --source "$SOURCE" --directory evidence
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: public-release-summary-${{ github.run_attempt }}
+          path: evidence/summary.json
+          if-no-files-found: error

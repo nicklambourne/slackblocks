@@ -896,3 +896,47 @@ Publisher success also requires every job and critical step listed in
 upload steps must have exactly one successful path. Only explicitly listed
 nonessential jobs may be skipped; keep this contract aligned with publisher
 workflow and matrix changes.
+
+## Public verification and the completion record
+
+`Verify Public Release` is read-only and runs after all publishers succeed. It can
+also be dispatched independently with an exact version and immutable source SHA;
+this repeats verification only. Pull requests that change release tooling exercise
+the same workflow against the known published version in
+`.github/release-verification.json`. Update that baseline only after a newer
+coordinated release has been verified complete.
+
+The workflow checks all ten annotated release tags, public GitHub release assets
+and the plain Composer tag. It checks versioned Rust, Hex and Hackage API docs,
+then installs exact packages from the public registries in isolated consumer
+projects. Native layout recipes come from the immutable source. Consumers run on
+Python 3.10, Node 20.19.0, Go 1.22.0, Java 17, .NET 8, Ruby 3.3, Rust 1.85.0,
+PHP 8.2, Elixir 1.16.3/OTP 26.2 and GHC 9.6.7. PHP verifies both installation
+transports; TypeScript checks ESM execution and CommonJS exports. Existing
+publisher artifact, profile, current-runtime and documentation-snapshot gates
+remain required.
+
+`Require all ten public consumers` rejects missing, duplicate, pending, stale or
+mismatched receipts and requires identical native JSON output. The coordinator
+then combines those receipts with this run's successful publisher records and
+public identity evidence. Only that final job writes `release-completion.json`
+with `complete: true`. A green upload job or a public registry page is insufficient.
+Keep the completion artifact together with the per-language install logs and
+publisher records. If registry propagation outlasts a bounded wait, resume the
+same coordinated version later; the original publisher run is retained and the
+public verifier runs again without publication credentials.
+
+Public identity checks require the exact asset inventory for PHP, Hex and Hackage.
+Their `release.json` version/source and archive checksums must match; package
+source bytes are compared with a clean checkout of the immutable release commit,
+including Hex lock and Hackage dependency inputs. Implementations that do not
+publish GitHub assets retain an explicitly empty inventory.
+
+`Release Recovery Tests` exercises the real coordinator guards through a simulated
+GitHub transport: failed readiness, a proven safe restart, a pending NuGet
+consumer and a later resume through the completion gate. It asserts that each
+upload happens once and immutable tags are preserved. The hosted fixture uses
+the production dependency/condition graph (checked for drift), deliberately skips
+readiness on resume, and then invokes the real read-only public consumer workflow
+against the published baseline. It has no publication credentials or write
+permissions and produces a recovery-test artifact, not a release completion claim.
