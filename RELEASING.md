@@ -925,3 +925,18 @@ Keep the completion artifact together with the per-language install logs and
 publisher records. If registry propagation outlasts a bounded wait, resume the
 same coordinated version later; the original publisher run is retained and the
 public verifier runs again without publication credentials.
+
+Public identity checks require the exact asset inventory for PHP, Hex and Hackage.
+Their `release.json` version/source and archive checksums must match; package
+source bytes are compared with a clean checkout of the immutable release commit,
+including Hex lock and Hackage dependency inputs. Implementations that do not
+publish GitHub assets retain an explicitly empty inventory.
+
+`Release Recovery Tests` exercises the real coordinator guards through a simulated
+GitHub transport: failed readiness, a proven safe restart, a pending NuGet
+consumer and a later resume through the completion gate. It asserts that each
+upload happens once and immutable tags are preserved. The hosted fixture uses
+the production dependency/condition graph (checked for drift), deliberately skips
+readiness on resume, and then invokes the real read-only public consumer workflow
+against the published baseline. It has no publication credentials or write
+permissions and produces a recovery-test artifact, not a release completion claim.

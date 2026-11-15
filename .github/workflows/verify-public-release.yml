@@ -1,12 +1,6 @@
 name: Verify Public Release
 
 on:
-  pull_request:
-    paths:
-      - .github/scripts/**
-      - .github/release-verification.json
-      - .github/workflows/verify-public-release.yml
-      - .github/workflows/coordinated-release.yml
   workflow_dispatch:
     inputs:
       version:
@@ -66,12 +60,18 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
               out.write(f'version={version}\nsource={source}\n')
           PY
+      - name: Check out immutable source for archive comparison
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ steps.identity.outputs.source }}
+          path: source
+          persist-credentials: false
       - name: Verify annotated tags, public assets, Composer alias and registry docs
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.identity.outputs.version }}
           SOURCE: ${{ steps.identity.outputs.source }}
-        run: python3 .github/scripts/release_evidence.py --version "$VERSION" --source "$SOURCE" --directory "$RUNNER_TEMP/public-identity"
+        run: python3 .github/scripts/release_evidence.py --version "$VERSION" --source "$SOURCE" --directory "$RUNNER_TEMP/public-identity" --source-root source
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:

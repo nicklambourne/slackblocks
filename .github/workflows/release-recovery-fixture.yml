@@ -1,0 +1,134 @@
+# Same dependency/condition graph as production, with publication replaced by
+# local fixtures. test_release_recovery.py checks the graphs remain aligned.
+name: Credential-free release recovery fixture
+on:
+  workflow_call:
+    inputs:
+      resume:
+        required: true
+        type: boolean
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.baseline.outputs.version }}
+      source: ${{ steps.baseline.outputs.source }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.13'
+      - name: Exercise failed readiness, propagation and completed recovery
+        env:
+          RELEASE_RECOVERY_TEST_OUTPUT: ${{ runner.temp }}/recovery-simulation
+        run: python3 -m unittest discover -s .github/scripts -p test_release_recovery.py -v
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: recovery-simulation-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/recovery-simulation/simulation.json
+          if-no-files-found: error
+      - id: baseline
+        name: Select the already-published read-only verification baseline
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          baseline = json.loads(Path('.github/release-verification.json').read_text())
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
+              stream.write(f"version={baseline['version']}\nsource={baseline['source']}\n")
+          PY
+  php-readiness:
+    if: '!inputs.resume'
+    needs: validate
+    runs-on: ubuntu-24.04
+    steps:
+      - run: exit 1  # Resume must never enter credential readiness.
+  hex-readiness:
+    if: '!inputs.resume'
+    needs: validate
+    runs-on: ubuntu-24.04
+    steps:
+      - run: exit 1
+  hackage-readiness:
+    if: '!inputs.resume'
+    needs: validate
+    runs-on: ubuntu-24.04
+    steps:
+      - run: exit 1
+  create-tags:
+    if: always() && needs.validate.result == 'success' && (inputs.resume || (needs.php-readiness.result == 'success' && needs.hex-readiness.result == 'success' && needs.hackage-readiness.result == 'success'))
+    needs: [validate, php-readiness, hex-readiness, hackage-readiness]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Prove readiness was skipped without creating real tags
+        env:
+          PHP: ${{ needs.php-readiness.result }}
+          HEX: ${{ needs.hex-readiness.result }}
+          HASKELL: ${{ needs.hackage-readiness.result }}
+        run: test "$PHP" = skipped && test "$HEX" = skipped && test "$HASKELL" = skipped
+  publish:
+    if: always() && needs.validate.result == 'success' && needs.create-tags.result == 'success'
+    needs: [validate, create-tags]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: recovery-simulation-${{ github.run_attempt }}
+          path: evidence
+      - name: Recheck the recovered publishers and prove uploads were not repeated
+        run: |
+          python3 - <<'PYCODE'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0, '.github/scripts')
+          import release_coordinator as coordinator
+          simulation = json.loads(Path('evidence/simulation.json').read_text())
+          assert simulation['simulated'] and not simulation['publication_performed']
+          assert simulation['dispatch_count'] == 10 and simulation['consumer_reruns'] == 2 and simulation['upload_attempt'] == 1
+          assert simulation['completion']['complete']
+          for record in simulation['completion']['publishers']:
+              coordinator.verify_publisher(record['language'], record['jobs'])
+          PYCODE
+  public-verification:
+    if: always() && needs.validate.result == 'success' && needs.publish.result == 'success'
+    needs: [validate, publish]
+    uses: ./.github/workflows/verify-public-release.yml
+    with:
+      version: ${{ needs.validate.outputs.version }}
+      source: ${{ needs.validate.outputs.source }}
+  complete:
+    if: always()
+    needs: [validate, publish, public-verification]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require recovery to reach real public verification and completion
+        env:
+          VALIDATE: ${{ needs.validate.result }}
+          PUBLISH: ${{ needs.publish.result }}
+          PUBLIC: ${{ needs.public-verification.result }}
+        run: test "$VALIDATE" = success && test "$PUBLISH" = success && test "$PUBLIC" = success
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: public-release-summary-${{ github.run_attempt }}
+          path: evidence
+      - name: Record recovery test completion separately from publication evidence
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          summary = json.loads(Path('evidence/summary.json').read_text())
+          assert summary['passed'] and len(summary['languages']) == 10
+          Path('evidence/recovery-test.json').write_text(json.dumps({'recovery_test_passed': True, 'publication_performed': False, 'public_verification': summary}, indent=2))
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: release-recovery-test-${{ github.run_attempt }}
+          path: evidence/recovery-test.json
+          if-no-files-found: error

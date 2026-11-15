@@ -307,7 +307,7 @@ jobs:
 
   public-verification:
     name: Verify public packages across all ten languages
-    if: github.event_name == 'workflow_dispatch'
+    if: always() && github.event_name == 'workflow_dispatch' && needs.validate.result == 'success' && needs.publish.result == 'success'
     needs: [validate, publish]
     uses: ./.github/workflows/verify-public-release.yml
     with:

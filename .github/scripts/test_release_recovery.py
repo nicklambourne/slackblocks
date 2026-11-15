@@ -3,6 +3,7 @@
 import datetime
 import json
 import os
+import re
 from pathlib import Path
 import unittest
 from unittest.mock import patch
@@ -258,3 +259,97 @@ class RecoveryTests(unittest.TestCase):
             )
             self.assertEqual(upload["run_attempt"], 1)
             self.assertEqual(upload["previous_attempts"], [])
+            # Exercise the production completion gate with synthetic consumer
+            # evidence. The hosted fixture separately runs real public consumers.
+            import release_evidence
+            from test_public_release import PublicReleaseTests
+
+            consumers = PublicReleaseTests()
+            consumers.version, consumers.source = version, source
+            consumers.consumers(evidence / "consumers")
+            for path in (evidence / "consumers").glob("*/receipt.json"):
+                receipt = json.loads(path.read_text())
+                receipt["run_id"] = "11"
+                path.write_text(json.dumps(receipt))
+            identity = dict(
+                version=version,
+                source=source,
+                passed=True,
+                state="verified",
+                releases=[{"language": language} for language in coordinator.WORKFLOWS],
+                documentation=[
+                    {"language": language} for language in ("rust", "elixir", "haskell")
+                ],
+                website=[{"version": version}, {"version": "1.0.0"}],
+            )
+            (evidence / "identity").mkdir()
+            (evidence / "identity/identity.json").write_text(json.dumps(identity))
+            completed = release_evidence.complete(evidence, version, source, "11")
+            self.assertTrue(completed["complete"])
+            path = evidence / "consumers/php/receipt.json"
+            receipt = json.loads(path.read_text())
+            path.write_text(
+                json.dumps(
+                    {**receipt, "state": "awaiting_availability", "passed": False}
+                )
+            )
+            with self.assertRaises(ValueError):
+                release_evidence.complete(evidence, version, source, "11")
+            path.write_text(json.dumps(receipt))
+            output = os.environ.get("RELEASE_RECOVERY_TEST_OUTPUT")
+            if output:
+                folder = Path(output)
+                folder.mkdir(parents=True, exist_ok=True)
+                (folder / "simulation.json").write_text(
+                    json.dumps(
+                        dict(
+                            simulated=True,
+                            publication_performed=False,
+                            dispatch_count=len(service.dispatches),
+                            consumer_reruns=len(service.reruns),
+                            upload_attempt=upload["run_attempt"],
+                            completion=completed,
+                        ),
+                        indent=2,
+                    )
+                )
+
+
+class WorkflowGraphTests(unittest.TestCase):
+    def test_hosted_fixture_keeps_production_dependency_and_resume_conditions(self):
+        workflows = common.ROOT / ".github/workflows"
+
+        def graph(name):
+            text = (workflows / name).read_text().split("\njobs:\n", 1)[1]
+            split = re.split(r"(?m)^  ([\w-]+):\s*$", text)
+            result = {}
+            for index in range(1, len(split), 2):
+                name, body = split[index : index + 2]
+                condition = re.search(r"(?m)^    if: (.*)$", body)
+                condition = condition[1] if condition else "success()"
+                if condition.startswith(("'", '"')):
+                    condition = condition[1:-1]
+                condition = condition.replace(
+                    "github.event_name == 'workflow_dispatch' && ", ""
+                ).replace(" && github.event_name == 'workflow_dispatch'", "")
+                needs = re.search(
+                    r"(?m)^    needs:([^\n]*)(\n(?:      - [^\n]+\n?)+)?", body
+                )
+                dependencies = []
+                if needs:
+                    value = needs[1].strip()
+                    dependencies = (
+                        [x.strip() for x in value.strip("[]").split(",")]
+                        if value
+                        else re.findall(r"- ([\w-]+)", needs[2])
+                    )
+                result[name] = (condition, sorted(dependencies))
+            return result
+
+        self.assertEqual(
+            graph("coordinated-release.yml"), graph("release-recovery-fixture.yml")
+        )
+        for filename in ("test-release-recovery.yml", "release-recovery-fixture.yml"):
+            text = (workflows / filename).read_text()
+            self.assertNotIn("secrets.", text)
+            self.assertNotRegex(text, r"(?:contents|actions|id-token): write")
