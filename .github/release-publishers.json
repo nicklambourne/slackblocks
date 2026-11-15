@@ -1,0 +1,200 @@
+{
+  "python": {
+    "jobs": {
+      "Build and verify Python release": [
+        "Verify nine-language release activation, tags and commit",
+        "Run tests",
+        "Build sdist and wheel",
+        "Validate package metadata"
+      ],
+      "Publish to PyPI": [
+        "Publish with trusted publishing"
+      ],
+      "Create GitHub Release": [
+        "Create release from changelog"
+      ]
+    },
+    "allowed_skipped_jobs": []
+  },
+  "typescript": {
+    "jobs": {
+      "Build, verify, and publish to npm": [
+        "Verify nine-language release activation, tags and commit",
+        "Run checks",
+        [
+          "Publish with npm token (first-publish bootstrap)",
+          "Publish with trusted publishing"
+        ]
+      ],
+      "Create GitHub Release": [
+        "Create release from changelog"
+      ]
+    },
+    "allowed_skipped_jobs": []
+  },
+  "go": {
+    "jobs": {
+      "Verify tagged Go module": [
+        "Verify nine-language release activation, tags and commit",
+        "Check formatting",
+        "Run vet",
+        "Run tests"
+      ],
+      "Create GitHub Release": [
+        "Create release from changelog"
+      ]
+    },
+    "allowed_skipped_jobs": []
+  },
+  "java": {
+    "jobs": {
+      "Build, verify, and publish to Maven Central": [
+        "Verify nine-language release activation, tags and commit",
+        "Publish signed bundle"
+      ],
+      "Create GitHub Release": [
+        "Create release from changelog"
+      ]
+    },
+    "allowed_skipped_jobs": []
+  },
+  "csharp": {
+    "jobs": {
+      "Build, verify, and publish to NuGet": [
+        "Verify nine-language release activation, tags and commit",
+        "Run checks",
+        "Pack with package validation",
+        "Upload release artifacts",
+        "Publish to NuGet"
+      ],
+      "Verify public NuGet installation": [
+        "Verify exact version from the public registry"
+      ],
+      "Create GitHub Release": [
+        "Create release from changelog"
+      ]
+    },
+    "allowed_skipped_jobs": []
+  },
+  "ruby": {
+    "jobs": {
+      "Build and verify Ruby release": [
+        "Verify nine-language release activation, tags and commit",
+        "Run Ruby tests and verify generated sources",
+        "Build, install, and inspect the gem outside the checkout",
+        "Build release gem"
+      ],
+      "Publish to RubyGems": [
+        "Publish to RubyGems"
+      ],
+      "Create GitHub Release": [
+        "Create release from changelog"
+      ]
+    },
+    "allowed_skipped_jobs": []
+  },
+  "rust": {
+    "jobs": {
+      "Detect relevant Rust release changes": [
+        "Compare changed files against Rust release scope"
+      ],
+      "Build and verify Rust release": [
+        "Verify release activation, commit, seven tags and registry state",
+        "Verify generated code, native API, conformance and documentation",
+        "Verify standalone archives and fresh consumers",
+        "Exercise native Cargo publish without uploading",
+        "Prepare reproducible release artifact"
+      ],
+      "Verify Rust release artifact": [
+        "Verify downloaded bytes and reproduce the crate without credentials"
+      ],
+      "Publish to crates.io": [
+        "Recheck release and reproduce the exact tested crate before authentication",
+        [
+          "Publish with the scoped API token",
+          "Publish with the short-lived trusted credential"
+        ]
+      ],
+      "Create Rust GitHub Release": [
+        "Create release from changelog"
+      ]
+    },
+    "allowed_skipped_jobs": []
+  },
+  "php": {
+    "jobs": {
+      "Detect relevant PHP release changes": [
+        "Check release scope"
+      ],
+      "Build PHP distribution": [
+        "Verify coordinated release activation and all eight tags",
+        "Install and check native PHP",
+        "Repeat sending integration checks before publication",
+        "Prepare deterministic allowlisted ZIP and provenance"
+      ],
+      "Verify PHP distribution (8.2)": [
+        "Reproduce downloaded bytes and verify archive and source consumers"
+      ],
+      "Verify PHP distribution (8.5)": [
+        "Reproduce downloaded bytes and verify archive and source consumers"
+      ],
+      "Publish PHP archive and Composer version tag": [
+        "Reverify tested artifact before enabling write credentials",
+        "Publish verified assets before exposing the Composer tag"
+      ],
+      "Verify public Packagist installations": [
+        "Verify Packagist archive and source installs against the monorepo commit"
+      ]
+    },
+    "allowed_skipped_jobs": [
+      "PHP release checks"
+    ]
+  },
+  "elixir": {
+    "jobs": {
+      "Build and verify Hex release": [
+        "Verify nine-language release activation, tags and commit",
+        "Test native API, real artifact and credential-free docs dry run",
+        "Verify archive ordering and immutable upload guards",
+        "Build and reproduce tested archive"
+      ],
+      "Publish immutable Hex package and docs": [
+        "Recheck activation and exact tag before using credentials",
+        "Resolve locked release tools and verify package reproduction",
+        "Publish missing package/docs and verify public identity"
+      ],
+      "Verify Hex install (Elixir 1.16.3)": [
+        "Install from the public Hex registry and exercise the API"
+      ],
+      "Verify Hex install (Elixir 1.20.4)": [
+        "Install from the public Hex registry and exercise the API"
+      ],
+      "Create Elixir GitHub Release": [
+        "Create or verify the tag's release and immutable assets"
+      ]
+    },
+    "allowed_skipped_jobs": []
+  },
+  "haskell": {
+    "jobs": {
+      "Build and verify Hackage release": [
+        "Verify ten-language activation, tags and commit",
+        "Build tested source and native Haddock artifacts, then verify reproduction"
+      ],
+      "Publish Hackage package and Haddock": [
+        "Recheck activation and exact tag before credentials",
+        "Upload only missing matching artifacts and verify public bytes"
+      ],
+      "Verify Hackage install (GHC 9.6.7)": [
+        "Independently install public registry package and execute consumer"
+      ],
+      "Verify Hackage install (GHC 9.14.1)": [
+        "Independently install public registry package and execute consumer"
+      ],
+      "Create Haskell GitHub Release": [
+        "Complete exact-tag release without replacing existing assets"
+      ]
+    },
+    "allowed_skipped_jobs": []
+  }
+}
