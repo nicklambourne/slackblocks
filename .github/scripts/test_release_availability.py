@@ -51,6 +51,17 @@ class Availability(unittest.TestCase):
         for extra in ["\nerror NU1301: denied", "\nerror NU1102: Unable to find package Other with version (= 1.0.0)"]:
             self.assertFalse(a.missing_nuget_version(target + extra))
 
+    def test_pending_response_retains_cache_diagnostics_without_cookie_headers(self):
+        from types import SimpleNamespace
+        response = SimpleNamespace(code=404, headers={"Age": "7200", "ETag": "old", "Set-Cookie": "private"})
+        metadata = a.response_metadata(response, "https://registry.example/package")
+        self.assertEqual(metadata["headers"], {"Age": "7200", "ETag": "old"})
+        with self.assertRaises(a.Pending):
+            self.wait(lambda: (_ for _ in ()).throw(a.Pending("stale", metadata)), timeout=0)
+        receipt = json.loads(self.path.read_text())
+        self.assertEqual(receipt["observations"][0]["response"]["headers"]["Age"], "7200")
+        self.assertFalse(receipt["passed"])
+
     def test_normal_composer_feed_and_commit_guard(self):
         package = {"version": "v4.1.0", "description": "removed", "source": {"reference": "sha", "url": "https://github.com/nicklambourne/slackblocks.git"}, "dist": {"reference": "sha"}}
         data = {"packages": {"nicklambourne/slackblocks": [package, {"version": "v4.0.0", "description": "__unset"}]}}
