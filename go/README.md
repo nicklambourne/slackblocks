@@ -71,8 +71,8 @@ go get github.com/nicklambourne/slackblocks/go/v4
 ```
 
 Go 1.22+ is supported with the default slack-go v0.17.3 dependency. Applications
-on Go 1.25+ can select the separately tested v0.23.1 SDK. Release 4.0.0 includes
-a tested v0.35.0 profile for Go 1.26+, including the file-URL and interaction-parser security fixes. See the
+on Go 1.25+ can select the separately tested v0.23.1 SDK. The current checkout tests
+a v0.36.0 profile for Go 1.26+, including the file-URL and interaction-parser security fixes. See the
 [Go support matrix](https://nicklambourne.github.io/slackblocks/usage/compatibility?language=go)
 for selection commands, upstream requirements and update policy. The separate
 `integrations` module tests the newer SDK; its alternate `go125.mod` preserves
