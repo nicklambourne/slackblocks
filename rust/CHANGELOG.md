@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Test optional sending examples with Slack Morphism 2.34.0 and Jiff 1.0 on Rust 1.85 and stable. Document the SDK's date/time type changes; the core crate's API, dependency requirements and Rust 1.85 minimum remain unchanged.
+
 ## [4.0.0] — 2026-11-14
 
 - Coordinate the ten-language 4.0.0 release with shared contract 1.6.0. Supported runtime floors are unchanged. See the 4.0.0 migration guide for Go imports, sparse-setting types and stricter validation.
