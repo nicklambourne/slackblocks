@@ -3,6 +3,10 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
+## [Unreleased]
+
+- Update the optional Go 1.26 SDK integration profile to slack-go v0.36.0. Keep the Go 1.22 / SDK v0.17.3 default and Go 1.25 / SDK v0.23.1 profile unchanged. The SDK changes RTM group-rename fields, Events API challenge/call-rejected shapes and decoding into reused values; review the compatibility guide before selecting it. Existing SDK security regressions remain enforced.
+
 ## [4.0.0] — 2026-11-14
 
 - Breaking: move the module and all imports from `github.com/nicklambourne/slackblocks/go/v3` to `github.com/nicklambourne/slackblocks/go/v4`. Run `go get github.com/nicklambourne/slackblocks/go/v4@v4.0.0`, update imports, then `go mod tidy` and your tests.
