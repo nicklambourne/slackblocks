@@ -1952,10 +1952,6 @@ packages:
     resolution: {integrity: sha512-F4JJd1SY5Nro1O6O4izMrBv0/IOpr+a8GGewr23tnP8zO1t9mWFLBjpNPv6nxuxhhw4JVRM9CPltBnLkZj7Ucw==}
     engines: {node: '>= 20', npm: '>=9.6.4'}
 
-  '@slack/types@3.3.1':
-    resolution: {integrity: sha512-F4JJd1SY5Nro1O6O4izMrBv0/IOpr+a8GGewr23tnP8zO1t9mWFLBjpNPv6nxuxhhw4JVRM9CPltBnLkZj7Ucw==}
-    engines: {node: '>= 20', npm: '>=9.6.4'}
-
   '@slack/web-api@8.5.0':
     resolution: {integrity: sha512-mbqNGN/geNqV4j0VB8pq/HR5RA2KpvwPxuSe3Y0VZtel9b419hZNeIyEx4aluuIaxXSEhEZiFnp0QniBsk8/SA==}
     engines: {node: '>= 20', npm: '>=9.6.4'}
@@ -9113,8 +9109,6 @@ snapshots:
   '@slack/logger@5.0.0':
     dependencies:
       '@types/node': 26.6.6
-
-  '@slack/types@3.3.1': {}
 
   '@slack/types@3.3.1': {}
 
