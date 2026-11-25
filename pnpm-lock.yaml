@@ -85,8 +85,8 @@ importers:
   typescript:
     dependencies:
       '@slack/types':
-        specifier: ^3.3.0
-        version: 3.3.0
+        specifier: ^3.3.1
+        version: 3.3.1
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.18.5
@@ -1948,8 +1948,8 @@ packages:
     resolution: {integrity: sha512-VGXhmmgsAo9shdQYh4tFDndd+7nsgp0Y5h0UPDaUp8K359pBasI6YdkMqFW3mCOxLQkq09qj7o7cq6f3DuXcJQ==}
     engines: {node: '>= 20', npm: '>=9.6.4'}
 
-  '@slack/types@3.3.0':
-    resolution: {integrity: sha512-11r2kM9Zy/UlaV6OwPibZueVlyNJ5xtHEHK/iYDnPLyhQcxRtsifNAwNhJ1Lm0nszW4jrWCHThXCHCNJC/hvqg==}
+  '@slack/types@3.3.1':
+    resolution: {integrity: sha512-F4JJd1SY5Nro1O6O4izMrBv0/IOpr+a8GGewr23tnP8zO1t9mWFLBjpNPv6nxuxhhw4JVRM9CPltBnLkZj7Ucw==}
     engines: {node: '>= 20', npm: '>=9.6.4'}
 
   '@slack/types@3.3.1':
@@ -9114,7 +9114,7 @@ snapshots:
     dependencies:
       '@types/node': 26.6.6
 
-  '@slack/types@3.3.0': {}
+  '@slack/types@3.3.1': {}
 
   '@slack/types@3.3.1': {}
 
